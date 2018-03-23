@@ -1,0 +1,19 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+<?php if (!$this->headline): ?>
+    <h1><?= $this->downloadListHeadline ?></h1>
+<?php endif; ?>
+<?php if ($this->empty): ?>
+    <p><?= $this->empty; ?></p>
+<?php else: ?>
+    <div class="watchlist-download-list">
+        <?php foreach ($this->items as $id => $item): ?>
+            <?= $item; ?>
+        <?php endforeach; ?>
+    </div>
+    <?php if ($this->downloadAllButton === true): ?>
+        <a class="watchlist-download-all-button btn btn-primary watchlist-download-list-download-all" title="<?= $this->downloadAllTitle; ?>" href="<?= $this->downloadAllHref; ?>"><?= $this->downloadAllLink; ?></a>
+    <?php endif; ?>
+<?php endif; ?>
+<?php $this->endblock(); ?>

@@ -1,0 +1,4 @@
+<button class="watchlist-add-item <?php if($this->added):?>added<?php endif; ?>"  id="watchlist-add-<?= $this->id ?>" data-item-id="<?= $this->id; ?>" data-module-id="<?= $this->moduleId ?>" data-dc="<?= $this->dataContainer?>" data-action="<?= $this->action; ?>"
+        title="<?= $this->title; ?>">
+    <span><?= $this->link; ?></span>
+</button>

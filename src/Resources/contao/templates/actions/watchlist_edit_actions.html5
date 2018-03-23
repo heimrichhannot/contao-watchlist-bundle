@@ -1,0 +1,1 @@
+<button class="watchlist-delete-item" id="watchlist-delete-item-<?= $this->id ?>" data-id="<?= $this->id; ?>" data-watchlist-delete-action="<?php echo $this->delHref; ?>" title="<?php echo $this->delTitle; ?>"><span><?php echo $this->delLink; ?></span></button>

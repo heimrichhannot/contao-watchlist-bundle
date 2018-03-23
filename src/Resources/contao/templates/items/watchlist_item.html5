@@ -1,0 +1,1 @@
+<div class="watchlist-list-item <?php echo $this->cssClass; ?>"><?= $this->item; ?><?= $this->actions; ?></div>

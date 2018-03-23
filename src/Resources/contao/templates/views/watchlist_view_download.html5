@@ -1,0 +1,20 @@
+<div class="wl_download">
+    <?php if ($this->isImage): ?>
+        <figure class="image_container">
+            <?php if ($this->picture): ?>
+                <?php $this->insert('picture_default', $this->picture); ?>
+            <?php else: ?>
+                <img src="<?= $this->image ?>"/>
+            <?php endif; ?>
+        </figure>
+    <?php endif; ?>
+    <?php if ($this->download) : ?>
+        <div>
+            <a href="<?= $this->href ?>"><?= $this->link ?></a>
+        </div>
+        <div><span class="size"><?php echo $this->filesize; ?></span></div>
+    <?php else: ?>
+        <div class="watchlist-no-download-item"><?php echo $this->link; ?></div>
+    <?php endif; ?>
+    <div><?php echo $this->actions; ?></div>
+</div>

@@ -1,0 +1,14 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+<div id="watchlist-notify">
+    <div class="watchlist-notification"></div>
+</div>
+
+<button class="watchlist-show-modal" data-module="<?= $this->moduleId; ?>" data-action="<?= $this->action; ?>">
+    <?php if($this->count > 0):?>
+    <span id="watchlist-badge" class="badge pull-right"><?= $this->count; ?></span>
+    <?php endif; ?>
+    <?= $this->toggleLink; ?>
+</button>
+<?php $this->endblock(); ?>

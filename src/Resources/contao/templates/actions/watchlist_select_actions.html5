@@ -1,0 +1,14 @@
+<?php if (!empty($this->select)): ?>
+    <div class="form-group" id="watchlist-select-input-<?= $this->id ?>">
+        <label for="watchlist-select-input-<?= $this->id ?>"><?= $this->label ?></label>
+        <select id="watchlist-select-input-<?= $this->id ?>">
+            <?php foreach ($this->select as $value): ?>
+                <?php if ($key === intval($this->selected)): ?>
+                    <option selected value="<?= $value->id ?>" <?php if(isset($value->downloadFile)):?>data-uuid="<?= $value->downloadFile ?>"<?php endif; ?>> <?= $value->title ?></option>
+                <?php else: ?>
+                    <option value="<?= $value->id ?>" <?php if(isset($value->downloadFile)):?>data-uuid="<?= $value->downloadFile ?>"<?php endif; ?>> <?= $value->title ?></option>
+                <?php endif ?>
+            <?php endforeach; ?>
+        </select>
+    </div>
+<?php endif; ?>

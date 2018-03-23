@@ -1,0 +1,28 @@
+services:
+  huh.watchlist.ajax_manager:
+    class: HeimrichHannot\WatchlistBundle\Manager\AjaxManager
+    arguments:
+      - "@contao.framework"
+      - "@huh.watchlist.template_manager"
+      - "@huh.watchlist.action_manager"
+      - "@huh.watchlist.watchlist_manager"
+  huh.watchlist.watchlist_manager:
+    class: HeimrichHannot\WatchlistBundle\Manager\WatchlistManager
+    arguments:
+      - "@contao.framework"
+      - "@huh.watchlist.action_manager"
+  huh.watchlist.watchlist_item_manager:
+    class: HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager
+    arguments:
+      - "@contao.framework"
+      - "@huh.utils.model"
+  huh.watchlist.action_manager:
+      class: HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager
+      arguments:
+        - "@contao.framework"
+  huh.watchlist.template_manager:
+    class: HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager
+    arguments:
+      - "@contao.framework"
+
+
