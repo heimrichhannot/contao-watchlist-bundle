@@ -21,6 +21,10 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 
 class WatchlistItemManager
 {
+    const WATCHLIST_ITEM_TYPE_FILE = 'file';
+    const WATCHLIST_ITEM_TYPE_ENTITY = 'entity';
+    
+    
     /**
      * @var ContaoFrameworkInterface
      */

@@ -15,6 +15,7 @@ use Contao\FrontendTemplate;
 use Contao\FrontendUser;
 use Contao\ModuleModel;
 use Contao\Session;
+use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\AjaxBundle\Response\ResponseData;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
@@ -29,13 +30,14 @@ class AjaxManager
     
     const XHR_PARAMETER_MODULE_ID                     = 'moduleId';
     const XHR_PARAMETER_WATCHLIST_ITEM_ID             = 'itemId';
+    const XHR_PARAMETER_WATCHLIST_ITEM_UUID             = 'uuid';
     const XHR_PARAMETER_WATCHLIST_ITEM_TITLE          = 'title';
     const XHR_PARAMETER_WATCHLIST_ITEM_DATA_CONTAINER = 'dataContainer';
-    const XHR_PARAMETER_WATCHLIST_ITEM_CID            = 'cid';
     const XHR_PARAMETER_WATCHLIST_ITEM_PAGE           = 'pageID';
     const XHR_PARAMETER_WATCHLIST_ITEM_TYPE           = 'type';
     const XHR_PARAMETER_WATCHLIST_NAME                = 'watchlist';
     const XHR_PARAMETER_WATCHLIST_DURABILITY          = 'durability';
+    const XHR_PARAMETER_WATCHLIST_ITEM_OPTIONS        = 'options';
     const XHR_WATCHLIST_ADD_ACTION                    = 'watchlistAddAction';
     const XHR_WATCHLIST_DELETE_ACTION                 = 'watchlistDeleteAction';
     const XHR_WATCHLIST_DELETE_ALL_ACTION             = 'watchlistDeleteAllAction';
@@ -98,86 +100,84 @@ class AjaxManager
     
     protected function addAjaxActions()
     {
-        $GLOBALS['AJAX'][\HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_GROUP] = [
+        $GLOBALS['AJAX'][static::XHR_GROUP] = [
             'actions' => [
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION          => [
+                static::XHR_WATCHLIST_SHOW_MODAL_ACTION          => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_MODULE_ID,
+                        static::XHR_PARAMETER_MODULE_ID,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_ADD_ACTION                 => [
+                static::XHR_WATCHLIST_ADD_ACTION                 => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_MODULE_ID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_DATA_CONTAINER,
+                        static::XHR_PARAMETER_MODULE_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_OPTIONS,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_UUID
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION      => [
+                static::XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION      => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_CID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_PAGE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_TITLE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_PAGE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_TITLE,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_UPDATE_ACTION              => [
+                static::XHR_WATCHLIST_UPDATE_ACTION              => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_UPDATE_MODAL_ADD_ACTION    => [
+                static::XHR_WATCHLIST_UPDATE_MODAL_ADD_ACTION    => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION       => [
+                static::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION       => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_DELETE_ACTION              => [
+                static::XHR_WATCHLIST_DELETE_ACTION              => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_DELETE_ALL_ACTION          => [
+                static::XHR_WATCHLIST_DELETE_ALL_ACTION          => [
                     'arguments' => [],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_SELECT_ACTION              => [
+                static::XHR_WATCHLIST_SELECT_ACTION              => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_MULTIPLE_ADD_ACTION        => [
+                static::XHR_WATCHLIST_MULTIPLE_ADD_ACTION        => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_CID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_PAGE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_TITLE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_NAME,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_DURABILITY,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_PAGE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_TITLE,
+                        static::XHR_PARAMETER_WATCHLIST_NAME,
+                        static::XHR_PARAMETER_WATCHLIST_DURABILITY,
                     ],
                     'optional'  => [],
                 ],
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_MULTIPLE_SELECT_ADD_ACTION => [
+                static::XHR_WATCHLIST_MULTIPLE_SELECT_ADD_ACTION => [
                     'arguments' => [
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_CID,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_PAGE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_ITEM_TITLE,
-                        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_WATCHLIST_NAME,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_PAGE,
+                        static::XHR_PARAMETER_WATCHLIST_ITEM_TITLE,
+                        static::XHR_PARAMETER_WATCHLIST_NAME,
                     ],
                     'optional'  => [],
                 ],
@@ -212,7 +212,7 @@ class AjaxManager
         }
         
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData($this->getWatchlistModal(($moduleId))));
+        $response->setResult(new ResponseData('',['modal' => $this->getWatchlistModal(($moduleId))]));
         
         return $response;
     }
@@ -220,23 +220,31 @@ class AjaxManager
     /**
      * clicked on the add to watchlist button
      *
-     * @param int $itemId
-     * @param int $moduleId
+     * @param int    $moduleId
+     * @param string $type
+     * @param null   $options
+     * @param null   $uuid
      *
-     * @return ResponseSuccess
+     * @return ResponseError|ResponseSuccess
      */
-    public function watchlistAddAction(int $itemId, int $moduleId, string $dataContainer)
+    public function watchlistAddAction($moduleId, $type, $options = null, $uuid = null)
     {
-        if (false !== ($options = $this->checkForOptions($itemId, $moduleId, $dataContainer))) {
+        if(null !== $options)
+        {
             return $this->getWatchlistItemOptionsModal($options);
         }
-        
-        
-        if (FE_USER_LOGGED_IN) {
-            return $this->watchlistShowModalAddAction($itemId, $moduleId);
+    
+        if(null === $uuid)
+        {
+            return new ResponseError();
         }
         
-        return $this->addItemToWatchlist($itemId, Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT));
+        if (FE_USER_LOGGED_IN) {
+            return $this->watchlistShowModalAddAction($uuid, $moduleId);
+        }
+        
+        
+        return $this->addItemToWatchlist($uuid, Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT));
     }
     
     
@@ -249,30 +257,31 @@ class AjaxManager
      */
     protected function getWatchlistItemOptionsModal($options)
     {
-        $template = new FrontendTemplate('watchlist_add_size_modal');
+        $template = new FrontendTemplate('watchlist_add_option_modal');
         
         $selectTemplate = new FrontendTemplate('watchlist_select_actions');
         
         $selectTemplate->label  = $GLOBALS['TL_LANG']['WATCHLIST']['selectOption'];
         $selectTemplate->select = $options;
         
-        $template->options = $selectTemplate->parse();
+        $template->options  = $selectTemplate->parse();
         $template->abort    = $GLOBALS['TL_LANG']['WATCHLIST']['abort'];
         $template->addTitle = $GLOBALS['TL_LANG']['WATCHLIST']['addTitle'];
+        $template->addLink = $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
         $template->action   =
             System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
-    
+        
         return $this->getModalResponse($template->parse());
     }
     
     
     protected function getModalResponse($content)
     {
-        $template = new FrontendTemplate('watchlist_modal_wrapper');
+        $template          = new FrontendTemplate('watchlist_modal_wrapper');
         $template->content = $content;
         
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('',['modal' => $template->parse()]));
+        $response->setResult(new ResponseData('', ['modal' => $template->parse()]));
         
         return $response;
         
@@ -535,24 +544,24 @@ class AjaxManager
         if (null === ($module = $this->framework->getAdapter(ModuleModel::class)->findByPk($moduleId))) {
             return null;
         }
-
+        
         // if multiple watchlists are not allowed add the item to the watchlist and return the message
         if (!$module->useMultipleWatchlist) {
             $user = FrontendUser::getInstance();
-
+            
             return $this->addItemToWatchlist($itemId, $user->id);
         }
-
+        
         $wrapperTemplate = new FrontendTemplate('watchlist_modal_wrapper');
         $template        = new FrontendTemplate('watchlist_add_modal');
-
+        
         if (!empty($options = $this->getWatchlistOptions($module))) {
             $template->watchlistOptions = $this->getSelectAction($itemId);
         }
-
+        
         $template->newWatchlist = $GLOBALS['TL_LANG']['WATCHLIST']['newWatchlist'];
-
-
+        
+        
         if ($module->addDurability) {
             $template->durability      =
                 [$GLOBALS['TL_LANG']['WATCHLIST']['durability']['default'], $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal']];
@@ -573,13 +582,13 @@ class AjaxManager
         $template->addLink         = $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
         $template->selectWatchlist = $GLOBALS['TL_LANG']['WATCHLIST']['selectWatchlist'];
 //        $template->watchlistTitle  = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['watchlistModalTitle'], $data['name']);
-        $template->active          = true;
-        $template->abort           = $GLOBALS['TL_LANG']['WATCHLIST']['abort'];
+        $template->active = true;
+        $template->abort  = $GLOBALS['TL_LANG']['WATCHLIST']['abort'];
 //        $template->id              = $id;
-
-
+        
+        
         $wrapperTemplate->content = $template->parse();
-
+        
         return $wrapperTemplate->parse();
     }
     
