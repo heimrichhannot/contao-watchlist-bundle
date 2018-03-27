@@ -4,7 +4,7 @@
         <select>
             <option value="" selected>-</option>
             <?php foreach ($this->select as $key => $value): ?>
-                <option value="<?= $value['uuid'] ?>"><?= $value['title'] ?></option>
+                <option value='<?= json_encode($value) ?>'><?= $value['title'] ?></option>
             <?php endforeach; ?>
         </select>
     </div>

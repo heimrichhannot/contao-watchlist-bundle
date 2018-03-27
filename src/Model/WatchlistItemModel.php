@@ -18,8 +18,8 @@ use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 
 class WatchlistItemModel extends Model
 {
-    const WATCHLIST_ITEM_TYPE_DOWNLOAD    = 'download';
-    const WATCHLIST_ITEM_TYPE_NO_DOWNLOAD = 'no_download';
+    const WATCHLIST_ITEM_TYPE_FILE = 'file';
+    const WATCHLIST_ITEM_TYPE_ENTITY = 'entity';
     
     protected static $strTable = 'tl_watchlist_item';
     
@@ -59,6 +59,26 @@ class WatchlistItemModel extends Model
             static::$strTable,
             [static::$strTable . '.pid=?'],
             [$pid],
+            $options
+        );
+    }
+    
+    public function findByPidAndPtableAndPtableId($pid,$ptable,$ptableId, array $options = [])
+    {
+        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
+            static::$strTable,
+            [static::$strTable . '.pid=?', static::$strTable . '.ptable=?',static::$strTable . '.ptableId=?'],
+            [$pid,$ptable,$ptableId],
+            $options
+        );
+    }
+    
+    public function findInstanceByPk($pk, array $options = [])
+    {
+        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(
+            static::$strTable,
+            [static::$strTable . '.id=?'],
+            [$pk],
             $options
         );
     }

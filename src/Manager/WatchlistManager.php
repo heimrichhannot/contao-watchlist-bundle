@@ -44,12 +44,18 @@ class WatchlistManager
     
     
     /**
-     * @param int $moduleId
+     * @param null $moduleId
+     * @param null $watchlistId
      *
-     * @return array|WatchlistModel|null
+     * @return WatchlistModel|null
      */
-    public function getWatchlistModel(int $moduleId)
+    public function getWatchlistModel($moduleId = null, $watchlistId = null)
     {
+        if(null !== $watchlistId)
+        {
+            return $this->framework->getAdapter(WatchlistModel::class)->findModelInstanceByPk($watchlistId);
+        }
+        
         if (FE_USER_LOGGED_IN) {
             return $this->getMultipleWatchlistModelByUserOrGroups($moduleId);
         }
@@ -108,9 +114,13 @@ class WatchlistManager
      */
     public function getWatchlistByUser()
     {
-        $user = FrontendUser::getInstance();
+        if(FE_USER_LOGGED_IN)
+        {
+            $user = FrontendUser::getInstance();
+            return $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedByPid($user->id);
+        }
         
-        return $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedByPid($user->id);
+        return $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedBySessionId(session_id());
     }
     
     

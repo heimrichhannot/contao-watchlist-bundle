@@ -1,1 +1,19 @@
-<div class="watchlist-list-item <?php echo $this->cssClass; ?>"><?= $this->item; ?><?= $this->actions; ?></div>
+<div class="watchlist-list-item <?php echo $this->cssClass; ?>">
+    <?php if($this->picture || $this->image): ?>
+    <figure class="image_container">
+        <?php if($this->picture): ?>
+            <?php $this->insert('picture_default', $this->picture); ?>
+        <?php elseif($this->image): ?>
+        <img src="<?= $this->image->path ?>" title="<?= $this->image->name ?>" />
+        <?php endif; ?>
+    </figure>
+    <?php endif; ?>
+    
+    <div class="watchlist-item-title">
+        <?= $this->title; ?>
+    </div>
+    
+    <div class="watchlist-action-buttons">
+        <?= $this->actions; ?>
+    </div>
+</div>

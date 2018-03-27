@@ -5,7 +5,7 @@
     <div class="watchlist-notification"></div>
 </div>
 
-<button class="watchlist-show-modal" data-module="<?= $this->moduleId; ?>" data-action="<?= $this->action; ?>">
+<button class="watchlist-show-modal" data-module="<?= $this->moduleId; ?>" data-watchlist="<?= $this->currentWatchlist ?>" data-action="<?= $this->action; ?>">
     <?php if($this->count > 0):?>
     <span id="watchlist-badge" class="badge pull-right"><?= $this->count; ?></span>
     <?php endif; ?>

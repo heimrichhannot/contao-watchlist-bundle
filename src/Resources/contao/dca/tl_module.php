@@ -14,7 +14,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
 /**
  * Palettes
  */
-$dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},useMultipleWatchlist,useDownloadLink,useGroupWatchlist,fileFieldEntity,fileFieldChildEntity;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
+$dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},useMultipleWatchlist,useDownloadLink,useGroupWatchlist;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
 
 $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend};{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
 
@@ -65,48 +65,6 @@ $arrFields = [
         'eval'       => ['mandatory' => true, 'multiple' => true],
         'sql'        => "blob NULL",
         'relation'   => ['type' => 'hasMany', 'load' => 'lazy'],
-    ],
-    'fileFieldEntity' => [
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['fileFieldEntity'],
-        'inputType' => 'multiColumnEditor',
-        'eval'      => [
-            'tl_class'          => 'long clr',
-            'multiColumnEditor' => [
-                'minRowCount' => 0,
-                'sortable' => true,
-                'fields' => [
-                    'fieldName'   => [
-                        'label'            => &$GLOBALS['TL_LANG']['tl_module']['fieldName'],
-                        'exclude'          => true,
-                        'filter'           => true,
-                        'inputType'        => 'text',
-                        'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true]
-                    ],
-                ],
-            ],
-        ],
-        'sql'       => "blob NULL",
-    ],
-    'fileFieldChildEntity' => [
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['fileFieldChildEntity'],
-        'inputType' => 'multiColumnEditor',
-        'eval'      => [
-            'tl_class'          => 'long clr',
-            'multiColumnEditor' => [
-                'minRowCount' => 0,
-                'sortable' => true,
-                'fields' => [
-                    'fieldName'   => [
-                        'label'            => &$GLOBALS['TL_LANG']['tl_module']['fieldName'],
-                        'exclude'          => true,
-                        'filter'           => true,
-                        'inputType'        => 'text',
-                        'eval'             => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true]
-                    ],
-                ],
-            ],
-        ],
-        'sql'       => "blob NULL",
     ]
 ];
 

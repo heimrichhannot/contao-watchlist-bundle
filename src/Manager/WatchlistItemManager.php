@@ -21,10 +21,6 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 
 class WatchlistItemManager
 {
-    const WATCHLIST_ITEM_TYPE_FILE = 'file';
-    const WATCHLIST_ITEM_TYPE_ENTITY = 'entity';
-    
-    
     /**
      * @var ContaoFrameworkInterface
      */
@@ -36,7 +32,7 @@ class WatchlistItemManager
     public function __construct(ContaoFrameworkInterface $framework, $module)
     {
         $this->framework = $framework;
-        $this->module = $module;
+        $this->module    = $module;
     }
     
     public function getItemsFromWatchlist(int $watchlist)
@@ -44,38 +40,46 @@ class WatchlistItemManager
         return $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlist);
     }
     
+    public function getWatchlistIdFromItem(int $itemId)
+    {
+        if(null === ($watchlistItem = $this->framework->getAdapter(WatchlistItemModel::class)->findInstanceByPk($itemId)))
+        {
+            return null;
+        }
+        
+        return $watchlistItem->pid;
+    }
+    
     
     public function prepareItem($item)
     {
         /** @var $objPage PageModel */
         global $objPage;
-    
+        
         $basePath = $objPage->getFrontendUrl();
         
         if (Request::getGet('watchlist')) {
             $basePath .= '?watchlist=' . Request::getGet('watchlist');
         }
-    
+        
         
         $template           = new FrontendTemplate('watchlist_download_list_item');
         $template->download = true;
-    
+        
         $fileAdapter = $this->framework->getAdapter(FilesModel::class);
         
-        if(null === ($file = $fileAdapter->findByUuid($item->uuid)))
-        {
+        if (null === ($file = $fileAdapter->findByUuid($item->uuid))) {
             return;
         }
         
-        if(in_array($file->extension,Config::get('validImageTypes')))
-        {
-            $this->addImageToTemplate($template,$file->path);
+        if (in_array($file->extension, Config::get('validImageTypes'))) {
+            $this->addImageToTemplate($template, $file->path);
         }
         
         if ($item->type !== WatchlistItemModel::WATCHLIST_ITEM_TYPE_DOWNLOAD) {
             $template->download = false;
         }
-    
+        
         $template->copyright     = $this->getCopyright($file);
         $template->title         = $item->title;
         $template->id            = $item->id;
@@ -83,7 +87,7 @@ class WatchlistItemManager
         $template->downloadLink  = $basePath . '&file=' . $file->path;
         $template->downloadTitle = $GLOBALS['TL_LANG']['WATCHLIST']['download'];
         $template->noDownload    = $GLOBALS['TL_LANG']['WATCHLIST']['noDownload'];
-    
+        
         // HOOK: add custom logic
         if (isset($GLOBALS['TL_HOOKS']['parseWatchlistItems']) && is_array($GLOBALS['TL_HOOKS']['parseWatchlistItems'])) {
             foreach ($GLOBALS['TL_HOOKS']['parseWatchlistItems'] as $callback) {
@@ -91,7 +95,7 @@ class WatchlistItemManager
                 $this->{$callback[0]}->{$callback[1]}($template, $item, $this);
             }
         }
-    
+        
         return $template->parse();
     }
     
@@ -104,14 +108,13 @@ class WatchlistItemManager
      */
     protected function getCopyRight($file)
     {
-        $copyrights = deserialize($file,true);
+        $copyrights = deserialize($file, true);
         
-        if(empty($copyrights))
-        {
+        if (empty($copyrights)) {
             return '';
         }
         
-        return implode(',',$copyrights);
+        return implode(',', $copyrights);
     }
     
     /**
@@ -122,45 +125,88 @@ class WatchlistItemManager
      */
     protected function addImageToTemplate(FrontendTemplate $template, string $path)
     {
-        if(!isset($path))
-        {
+        if (!isset($path)) {
             return;
         }
         
         $template->image = $path;
-    
+        
         // resize image if set
         if ($this->module->imgSize != '') {
             $image = [];
-        
+            
             $size = deserialize($this->module->imgSize);
-        
+            
             if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 $image['size'] = $this->module->imgSize;
             }
-        
+            
             $image['singleSRC'] = $path;
             Controller::addImageToTemplate($template, $image);
         }
     }
     
     /**
-     * check if item has already been added to a watchlist
+     * * check if item has already been added to a watchlist
      *
-     * @param string      $itemUuid
-     * @param int|null $watchlistId
+     * @param int         $watchlistId
+     * @param string|null $itemUuid
+     * @param int|null    $ptable
+     * @param int|null    $ptableId
      *
      * @return bool
      */
-    public function isItemInWatchlist(string $itemUuid, int $watchlistId = null)
+    public function isItemInWatchlist(int $watchlistId, string $itemUuid = null, int $ptable = null, int $ptableId = null)
     {
-        if(null === ($watchlistItem = $this->framework->getAdapter(WatchlistItemModel::class)->findByUuid($itemUuid)))
-        {
+        if (null === $watchlistId) {
             return false;
         }
         
-        if(null !== $watchlistId && null === ($watchlistItem = $this->framework->getAdapter(WatchlistItemModel::class)->findByPidAndUuid($watchlistId,$itemUuid)))
-        {
+        if (null === $itemUuid && null === $ptable && null === $ptableId) {
+            return false;
+        }
+        
+        
+        if (null !== $itemUuid) {
+            return $this->checkWatchlistForFile($watchlistId, $itemUuid);
+        }
+        
+        if (null !== $ptable && null !== $ptableId) {
+            return $this->checkWatchlistForEntity($watchlistId, $ptable, $ptableId);
+        }
+        
+        return false;
+    }
+    
+    /**
+     * check item existence in watchlist on uuid
+     *
+     * @param $watchlistId
+     * @param $itemUuid
+     *
+     * @return bool
+     */
+    protected function checkWatchlistForFile($watchlistId, $itemUuid)
+    {
+        if (null === $this->framework->getAdapter(WatchlistItemModel::class)->findByPidAndUuid($watchlistId, $itemUuid)) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * check item existence in watchlist on ptable and ptableId
+     *
+     * @param $watchlistId
+     * @param $ptable
+     * @param $ptableId
+     *
+     * @return bool
+     */
+    protected function checkWatchlistForEntity($watchlistId, $ptable, $ptableId)
+    {
+        if (null === $this->framework->getAdapter(WatchlistItemModel::class)->findByPidAndPtableAndPtableId($watchlistId, $ptable, $ptableId)) {
             return false;
         }
         

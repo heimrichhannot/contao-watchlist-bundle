@@ -13,6 +13,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendUser;
 use Contao\Module;
 use Contao\ModuleModel;
+use Contao\Session;
 use Contao\System;
 use HeimrichHannot\Ajax\AjaxAction;
 use HeimrichHannot\Request\Request;
@@ -83,7 +84,7 @@ class ModuleWatchlist extends Module
         if (Request::getGet('file')) {
             Controller::sendFileToBrowser(Request::getGet('file'));
         }
-    
+        
         
         return parent::generate();
     }
@@ -93,22 +94,22 @@ class ModuleWatchlist extends Module
     {
         $count                     = 0;
         $this->Template->watchlist = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
+        
         /* @var $watchlist WatchlistModel */
         if (null === ($watchlist = $this->watchlistManager->getWatchlistModel($this->id))) {
             $count = 0;
         }
-
-
+        
         if (null !== ($watchlistItems = $this->watchlistItemManager->getItemsFromWatchlist($watchlist->id))) {
-            $count = $watchlistItems->countAll();
+            $count = $watchlistItems->count();
         }
-
-
-        $this->Template->count      = $count;
-        $this->Template->toggleLink = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
-        $this->Template->moduleId   = $this->id;
-//        $this->Template->updateHref    = AjaxAction::generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_UPDATE_ACTION, ['id' => $this->id]);
-        $this->Template->action =
+        
+        
+        $this->Template->count            = $count;
+        $this->Template->toggleLink       = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
+        $this->Template->moduleId         = $this->id;
+        $this->Template->currentWatchlist = $watchlist->id;
+        $this->Template->action           =
             System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
         
     }

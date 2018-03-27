@@ -1,0 +1,3 @@
+<div class="watchlist-empty-watchlist-container">
+    <button data-action="<?php echo $this->action; ?>" data-module-id="<?= $this->moduleId; ?>" data-watchlist-id="<?= $this->watchlistId ?>" class="watchlist-empty-watchlist btn btn-primary" title="<?php echo $this->emptyWatchlistTitle; ?>"><span><?php echo $this->emptyWatchlistLink; ?></span></button>
+</div>

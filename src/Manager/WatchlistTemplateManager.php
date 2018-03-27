@@ -14,11 +14,13 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\File;
+use Contao\FilesModel;
 use Contao\FrontendTemplate;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\Ajax\AjaxAction;
+use HeimrichHannot\Request\Request;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 
 class WatchlistTemplateManager
@@ -42,16 +44,87 @@ class WatchlistTemplateManager
      */
     public function getWatchlist($module, $items, $grouped = true)
     {
-        $template = new FrontendTemplate($grouped ? 'watchlist_grouped' : 'watchlist');
+        $template = new FrontendTemplate('watchlist');
         
         $preparedWatchlistItems = $this->prepareWatchlistItems($items, $module, $grouped);
         
-        $template->pids  = array_keys($preparedWatchlistItems['parents']);
-        $template->items = $preparedWatchlistItems['arrItems'];
-        $template->css   = $preparedWatchlistItems['isImage'] = true ? 'watchlist-item-image-list' : '';
+        if (!empty($preparedWatchlistItems['parents'])) {
+            $template->pids = array_keys($preparedWatchlistItems['parents']);
+        }
+        
+        if (!empty($preparedWatchlistItems['items'])) {
+            $template->items = $preparedWatchlistItems['items'];
+        }
+        
+        // get download link action
+        if ($module->useDownloadLink) {
+            $template->actions            = true;
+            $template->downloadLinkAction = $this->getDownloadLinkAction($module->downloadLink);
+        }
+        
+        // get delete watchlist action
+        if ($module->useMultipleWatchlist) {
+            $template->actions               = true;
+            $template->deleteWatchlistAction = $this->getDeleteWatchlistAction($items[0]->pid, $module->id);
+        }
+        // get empty watchlist action
+        else {
+            $template->actions              = true;
+            $template->emptyWatchlistAction = $this->getEmptyWatchlistAction($items[0]->pid, $module->id);
+        }
+        
+        // get download all action
+        if (count($preparedWatchlistItems) > 1) {
+            $template->actions           = true;
+            $template->downloadAllAction = $this->getDownloadAllAction($items[0]->pid, $module->id);
+        }
+        
+        $template->grouped = $grouped;
         
         return $template->parse();
     }
+    
+    /**
+     * @param $watchlistId
+     * @param $moduleId
+     *
+     * @return string
+     *
+     */
+    public function getDeleteWatchlistAction($watchlistId, $moduleId)
+    {
+        $template                       = new FrontendTemplate('watchlist_delete_watchlist_action');
+        $template->watchlistId          = $watchlistId;
+        $template->moduleId             = $moduleId;
+        $template->action               = System::getContainer()
+            ->get('huh.ajax.action')
+            ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_WATCHLIST_ACTION);
+        $template->deleteWatchlistLink  = $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistLink'];
+        $template->deleteWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistTitle'];
+        
+        return $template->parse();
+    }
+    
+    /**
+     * @param $watchlistId
+     * @param $moduleId
+     *
+     * @return string
+     */
+    public function getEmptyWatchlistAction($watchlistId, $moduleId)
+    {
+        $template                      = new FrontendTemplate('watchlist_empty_watchlist_action');
+        $template->watchlistId         = $watchlistId;
+        $template->moduleId            = $moduleId;
+        $template->action              = System::getContainer()
+            ->get('huh.ajax.action')
+            ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION);
+        $template->emptyWatchlistLink  = $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistLink'];
+        $template->emptyWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistTitle'];
+        
+        return $template->parse();
+    }
+    
     
     /**
      * @param         $items
@@ -62,43 +135,28 @@ class WatchlistTemplateManager
      */
     public function prepareWatchlistItems($items, $module, $grouped)
     {
+        $totalCount = $items->count();
+        
         $parsedItems = [];
         $parents     = [];
-        $i           = 0;
-        $isImage     = false;
-        $totalCount  = $items->countAll();
         
-        while ($items->next()) {
-            ++$i;
+        foreach ($items as $key => $item) {
             
-            $cssClass = trim(($i == 1 ? 'first ' : '') . ($i == $totalCount ? 'last ' : '') . ($i % 2 == 0 ? 'odd ' : 'even '));
+            $cssClass = trim(($key == 0 ? 'first ' : '') . ($key == $totalCount ? 'last ' : '') . (($key + 1) % 2 == 0 ? 'odd ' : 'even '));
             
-            if (!isset($parents[$item->pageID])) {
-                
-                $parentTemplate          = new FrontendTemplate('watchlist_parents');
-                $parentTemplate->items   = $this->getParentList($items->pageID, $module);
-                $parents[$items->pageID] = $parentTemplate->parse();
-            }
-            
-            $itemTemplate           = new FrontendTemplate('watchlist_item');
-            $itemTemplate->cssClass = $cssClass;
-            $result                 = $this->parseItem($items, $module);
-            $itemTemplate->item     = $result['item'];
-            $isImage                = $result['isImage'];
-            $itemTemplate->id       = $this->framework->getAdapter(StringUtil::class)->binToUuid($items->uuid);
-            
+            $parsedItem = $this->parseItem($item, $module, $cssClass);
             
             if ($grouped) {
-                $parsedItems[$items->pageID]['page']              = $parents[$items->pageID];
-                $parsedItems[$items->pageID]['items'][$items->id] = $itemTemplate->parse();
+                $parsedItems[$item->pageID]['page']             = $this->framework->getAdapter(PageModel::class)->findByPk($item->pageID)->title;
+                $parsedItems[$item->pageID]['items'][$item->id] = $parsedItem;
                 
             } else {
-                $arrPids[$items->pageID] = $parents[$items->pageID];
-                $parsedItems[$items->id] = $itemTemplate->parse();
+                $arrPids[$item->pageID] = $parents[$item->pageID];
+                $parsedItems[$item->id] = $parsedItem;
             }
         }
         
-        return ['arrItems' => $parsedItems, 'parents' => $parents, 'isImage' => $isImage];
+        return ['items' => $parsedItems, 'parents' => $parents];
     }
     
     /**
@@ -222,121 +280,79 @@ class WatchlistTemplateManager
     }
     
     /**
+     * @param $watchlistId
+     * @param $moduleId
+     *
      * @return string
      */
-    public function getDeleteWatchlistAction()
+    public function getDownloadAllAction($watchlistId, $moduleId)
     {
-        $template = new \FrontendTemplate('watchlist_delete_watchlist_action');
+        $downloadAllTemplate                   = new FrontendTemplate('watchlist_download_all_action');
+        $downloadAllTemplate->action           =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION);
+        $downloadAllTemplate->downloadAllLink  = $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllLink'];
+        $downloadAllTemplate->downloadAllTitle = $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllTitle'];
+        $downloadAllTemplate->watchlistId      = $watchlistId;
+        $downloadAllTemplate->moduleId         = $moduleId;
         
-        $template->delAllHref  = AjaxAction::generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_ALL_ACTION);
-        $template->delAllLink  = $GLOBALS['TL_LANG']['WATCHLIST']['delAllLink'];
-        $template->delAllTitle = $GLOBALS['TL_LANG']['WATCHLIST']['delAllTitle'];
+        return $downloadAllTemplate->parse();
+    }
+    
+    /**
+     * @param WatchlistItemModel $item
+     * @param                    $module
+     * @param                    $cssClass
+     *
+     * @return string
+     */
+    protected function parseItem(WatchlistItemModel $item, $module, $cssClass)
+    {
+        $template           = new FrontendTemplate('watchlist_item');
+        $template->cssClass = $cssClass;
+        $template->id       = $item->id;
+        $template->title    = $item->title;
+        $template->type     = $item->type;
+        $template->download = $item->download ? true : false;
+        
+        if ($item->uuid && null !== ($file = $this->framework->getAdapter(FilesModel::class)->findByUuid($item->uuid))) {
+            $template->image = $file;
+            
+            $image = [
+                'singleSRC' => $file->path
+            ];
+            
+            if ($module->imgSize) {
+                $image['size'] = $module->imgSize;
+            }
+            
+            $this->framework->getAdapter(Controller::class)->addImageToTemplate($template, $image);
+        }
+        
+        $template->actions = $this->getEditActions($item, $file, $module);
         
         return $template->parse();
     }
     
-    
     /**
      * @param WatchlistItemModel $item
-     * @param ModuleModel        $module
-     *
-     * @return array
-     */
-    protected function parseItem(WatchlistItemModel $item, $module)
-    {
-        /** @var $objPage \Contao\PageModel */
-        global $objPage;
-        
-        $isImage  = false;
-        $basePath = $objPage->getFrontendUrl();
-        
-        
-        if (\Input::get('auto_item')) {
-            $basePath .= '/' . \Input::get('auto_item');
-        }
-        
-        $objFileModel = \FilesModel::findById($item->uuid);
-        
-        if ($objFileModel === null) {
-            return ['isImage' => $isImage, 'item' => ''];
-        }
-        
-        $objFile = new File($objFileModel->path, true);
-        
-        
-        $objContent = $this->framework->getAdapter(ContentModel::class)->findByPk($item->cid);
-        
-        $objT = new FrontendTemplate('watchlist_view_download');
-        $objT->setData($objFileModel->row());
-        
-        $linkTitle = specialchars($objFile->name);
-        
-        // use generate for download & downloads as well
-        if ($objContent->type == 'download' && $objContent->linkTitle != '') {
-            $linkTitle = $objContent->linkTitle;
-        }
-        
-        $arrMeta = deserialize($objFileModel->meta);
-        
-        // Language support
-        if (($arrLang = $arrMeta[$GLOBALS['TL_LANGUAGE']]) != '') {
-            $linkTitle = $arrLang['title'] ? $arrLang['title'] : $linkTitle;
-        }
-        
-        $objT->icon    = TL_ASSETS_URL . 'assets/contao/images/' . $objFile->icon;
-        $objT->isImage = $objFile->isImage;
-        if ($objFile->isImage) {
-            $isImage     = true;
-            $objT->image = $objFile->path;
-            
-            // resize image if set
-            if ($module->imgSize != '') {
-                $image = [];
-                
-                $size = deserialize($module->imgSize);
-                
-                if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
-                    $image['size'] = $module->imgSize;
-                }
-                
-                if ($objFileModel->path) {
-                    $image['singleSRC'] = $objFileModel->path;
-                    $this->framework->getAdapter(Controller::class)->addImageToTemplate($objT, $image);
-                }
-            }
-        }
-        
-        $objT->link      = ($itemTemplateitle = $item->title) ? $itemTemplateitle : $linkTitle;
-        $objT->download  = $item->type == WatchlistItemModel::WATCHLIST_ITEM_TYPE_DOWNLOAD ? true : false;
-        $objT->href      = $basePath . '?file=' . $objFile->path;
-        $objT->filesize  = $this->framework->getAdapter(System::class)->getReadableSize($objFile->filesize, 1);
-        $objT->mime      = $objFile->mime;
-        $objT->extension = $objFile->extension;
-        $objT->path      = $objFile->dirname;
-        $objT->id        = $this->framework->getAdapter(StringUtil::class)->binToUuid($item->uuid);
-        
-        $objT->actions = $this->getEditActions($item);
-        
-        return ['item' => $objT->parse(), 'isImage' => $isImage];
-    }
-    
-    /**
-     * @param WatchlistItemModel $objItem
+     * @param FilesModel         $file
      *
      * @return string
      */
-    public function getEditActions(WatchlistItemModel $objItem)
+    public function getEditActions(WatchlistItemModel $item, FilesModel $file, $module)
     {
-        if (null === ($page = $this->framework->getAdapter(PageModel::class)->findByPk($objItem->pageID))) {
-            return '';
-        }
+        $template               = new FrontendTemplate('watchlist_edit_actions');
+        $template->id           = $item->id;
+        $template->deleteAction =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_ITEM_ACTION);
+        $template->delTitle     = $GLOBALS['TL_LANG']['WATCHLIST']['delTitle'];
+        $template->delLink      = $GLOBALS['TL_LANG']['WATCHLIST']['delLink'];
+        $template->moduleId     = $module->id;
         
-        $template           = new FrontendTemplate('watchlist_edit_actions');
-        $template->delHref  = AjaxAction::generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_ACTION,
-            ['id' => $this->framework->getAdapter(StringUtil::class)->binToUuid($objItem->uuid)]);
-        $template->delTitle = $GLOBALS['TL_LANG']['WATCHLIST']['delTitle'];
-        $template->delLink  = $GLOBALS['TL_LANG']['WATCHLIST']['delLink'];
-        $template->id       = $this->framework->getAdapter(StringUtil::class)->binToUuid($objItem->uuid);
+        if ($item->download && null !== $file) {
+            $template->downloadAction = Environment::get('base') . "?file=" . $file->path;
+            $template->downloadTitle  = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle'], $item->title);
+        }
         
         return $template->parse();
     }
@@ -363,7 +379,7 @@ class WatchlistTemplateManager
         if (System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($file)) {
             $template->added = true;
         }
-    
+        
         $template->id            = $data['id'];
         $template->moduleId      = $watchlistConfig;
         $template->dataContainer = $dataContainer;
@@ -374,4 +390,5 @@ class WatchlistTemplateManager
         
         return $template->parse();
     }
+    
 }

@@ -2,10 +2,52 @@
     <?php if ($this->empty): ?>
         <p><?php echo $this->empty; ?></p>
     <?php else: ?>
+        <?php if($this->actions): ?>
+            <div class="watchlist-actions">
+                <?php if (!empty($this->multiple)): ?>
+                    <div class="watchlist-select-container">
+                        <div class="form-group">
+                            <select id="watchlist-selector" data-watchlist-select-action="<?= $this->action ?>">
+                                <?php foreach ($this->select as $key => $value): ?>
+                                    <?php if ($key === intval($this->selected)): ?>
+                                        <option value="<?= $key ?>" selected> <?= $value ?></option>
+                                    <?php else: ?>
+                                        <option value="<?= $key ?>"> <?= $value ?></option>
+                                    <?php endif ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                <?php endif ?>
+                <div class="watchlist-global-actions">
+                        <?php if(!empty($this->multiple)): ?>
+                            <?= $this->deleteWatchlistAction; ?>
+                        <?php else: ?>
+                            <?= $this->emptyWatchlistAction; ?>
+                        <?php endif; ?>
+                        <?php if($this->downloadAllAction):?>
+                            <?= $this->downloadAllAction; ?>
+                        <?php endif ;?>
+                </div>
+            </div>
+        <?php endif; ?>
         <div class="watchlist-item-list <?= $this->css ?>">
-            <?php foreach ($this->items as $id => $item): ?>
-                <?php echo $item; ?>
-            <?php endforeach; ?>
+            <?php if($this->grouped): ?>
+                <?php foreach ($this->items as $group => $childrens): ?>
+                    <div class="group">
+                        <h5><?php echo $childrens['page']; ?></h5>
+                        <div class="children <?= $this->css ?>">
+                            <?php foreach ($childrens['items'] as $id => $item): ?>
+                                <?php echo $item; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <?php foreach($this->items as $item): ?>
+                    <?php echo $item; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
         <?php if (!empty($this->downloadLinkAction)) : ?>
             <div class="watchlist-download-link-container">

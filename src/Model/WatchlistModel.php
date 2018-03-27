@@ -79,4 +79,14 @@ class WatchlistModel extends Model
             $options
         );
     }
+    
+    public function findOnePublishedBySessionId($sessionId, array $options = [])
+    {
+        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
+            static::$strTable,
+            [static::$strTable . '.sessionID=?', static::$strTable . '.published=?'],
+            [$sessionId, 1],
+            $options
+        );
+    }
 }
