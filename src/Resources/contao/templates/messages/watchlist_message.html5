@@ -1,1 +1,1 @@
-<div class="watchlist-message <?= $this->cssClass ?>"><?php echo $this->message; ?> <br/></div>
+<div class="watchlist-message <?= $this->cssClass ?>"><span class="message"><?= $this->message; ?></span></div>

@@ -9,7 +9,7 @@
     "symfony/framework-bundle": "^3.4",
     "heimrichhannot/contao-ajax-bundle": "^1.0",
     "heimrichhannot/contao-modal": "^1.4",
-    "heimrichhannot/contao-list-bundle": "dev-master"
+    "heimrichhannot/contao-list-bundle": "^1.0.0-beta"
   },
   "require-dev": {
     "contao/test-case": "^1.1",

@@ -74,11 +74,8 @@ class ModuleWatchlist extends Module
             return $objTemplate->parse();
         }
         
-        if ($this->protected) {
-            $groups = deserialize(FrontendUser::getInstance()->groups);
-            if (!array_intersect(deserialize($this->groups), $groups)) {
-                return;
-            }
+        if (!$this->watchlistManager->checkPermission($this)) {
+            return;
         }
         
         if (Request::getGet('file')) {
@@ -100,7 +97,7 @@ class ModuleWatchlist extends Module
             $count = 0;
         }
         
-        if (null !== ($watchlistItems = $this->watchlistItemManager->getItemsFromWatchlist($watchlist->id))) {
+        if (null !== $watchlist && null !== ($watchlistItems = $this->watchlistItemManager->getItemsFromWatchlist($watchlist->id))) {
             $count = $watchlistItems->count();
         }
         

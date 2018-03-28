@@ -18,6 +18,7 @@ $GLOBALS['TL_LANG']['WATCHLIST']['selectOption']           = 'Wählen Sie eine O
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle']          = '%s herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistLink']     = 'Merkliste leeren';
 $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistTitle']    = 'Alle Elemente aus der Merkliste entfernen';
+$GLOBALS['TL_LANG']['WATCHLIST']['watchlist'] = 'Merkliste';
 /**
  * Links
  */
@@ -60,6 +61,7 @@ $GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item']                        =
 $GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all']                         = "Die Merkliste wurde gelöscht.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist']                       =
     "Die gewählte Datei ist bereits in der Merkliste: <span class=\"title\">%s</span>.";
+$GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist_general']               = 'Die gewählte Datei ist bereits in der Merkliste vorhanden.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item_error']                  = "Es ist ein Fehler beim löschen aufgetreten.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all_error']                   = "Es ist ein Fehler beim löschen der Merkliste aufgetreten.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_add_watchlist_error']                = "' <span class=\"title\">%s</span> ' konnte nicht erstellt werden.";
@@ -74,3 +76,6 @@ $GLOBALS['TL_LANG']['WATCHLIST']['message_invalid_file']                       =
     'Die gewählte Datei ist fehlerhaft und kann nicht hinzugefügt werden';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_no_watchlist_found']                 = 'Die gewählte Merkliste konnte nicht gefunden werden.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_no_data']                            = 'Es wurden keine Daten für das hinzuzufügende Item übertragen.';
+
+
+$GLOBALS['TL_LANG']['WATCHLIST']['message_empty_watchlist'] = 'Die Merkliste wurde erfolgreich geleert.';

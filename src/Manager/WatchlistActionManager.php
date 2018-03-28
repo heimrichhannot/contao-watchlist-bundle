@@ -29,8 +29,8 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
 class WatchlistActionManager
 {
-    const MESSAGE_STATUS_ERROR   = 'watchlist-notify-error';
-    const MESSAGE_STATUS_SUCCESS = 'watchlist-notify-success';
+    const MESSAGE_STATUS_ERROR   = 'watchlist-message-error';
+    const MESSAGE_STATUS_SUCCESS = 'watchlist-message-success';
     
     /**
      * for tracking iterations
@@ -106,7 +106,7 @@ class WatchlistActionManager
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
         }
         
-        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_all_items_from_watchlist'], $watchlist->name);
+        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all_items_from_watchlist'], $watchlist->name);
         
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
     }
@@ -115,7 +115,7 @@ class WatchlistActionManager
     public function emptyWatchlist(int $watchlistId)
     {
         if (null === ($watchlistItems = $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_all_error']);
+            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all_error']);
         
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
@@ -125,118 +125,76 @@ class WatchlistActionManager
             $item->delete();
         }
     
-        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_empty_watchlist']);
+        $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_empty_watchlist'];
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
     }
     
     /**
-     * delete complete watchlist
+     * delete watchlist and its watchlistItems
+     *
+     * @param int $watchlistId
      *
      * @return string
      */
     public function deleteWatchlist(int $watchlistId)
     {
         if (null === ($watchlistItems = $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_all_error']);
+            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all_error']);
             
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
         
-        $this->deleteItems($watchlistItems);
-        
+        // delete all items from watchlist
+        foreach($watchlistItems as $item)
+        {
+            $item->delete();
+        }
         
         if (null === ($watchlist = $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedById($watchlistId))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_all_error']);
+            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all_error']);
             
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
         
+        // delete the watchlist
         $watchlist->delete();
         
         Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, null);
         
-        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_all']);
+        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all']);
         
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
     }
     
     
-    public function generateDownloadLink(WatchlistModel $watchlist, int $moduleId)
+    public function generateDownloadLink(int $watchlistId, int $moduleId)
     {
         if (null === ($module = $this->framework->getAdapter(ModuleModel::class)->findByPk($moduleId))) {
             $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_download_link_error'];
             
-            return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
+            return [false,$this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR)];
         }
         
         if (null === ($page = $this->framework->getAdapter(PageModel::class)->findByPk($module->downloadLink))) {
             $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_download_link_page_error'];
             
-            return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
+            return [false,$this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR)];
+        }
+        
+        if(null === ($watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null,$watchlistId)))
+        {
+            $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_no_watchlist_found'];
+    
+            return [false,$this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR)];
         }
         
         // start lifecylce of download link when it is generated
         $watchlist->startedShare = strtotime('today');
         $watchlist->save();
         
-        return $page->getAbsoluteUrl('?watchlist=' . $watchlist->uuid);
+        return [urldecode($page->getAbsoluteUrl('?watchlist=' . $watchlist->uuid)),false];
     }
     
-    
-    /**
-     * @param WatchlistModel $watchlist
-     *
-     * @return string|boolean
-     */
-    public function downloadAll(WatchlistModel $watchlist)
-    {
-        /** @var $objPage \Contao\PageModel */
-        global $objPage;
-        
-        if (null === ($items = $this->framework->getAdapter(WatchlistItemModel::class)->findPublishedByPid($watchlist->id))) {
-            return false;
-        }
-        
-        $basePath = $objPage->getFrontendUrl();
-        $path     = 'files/tmp/download_' . $watchlist->hash . '.zip';
-        
-        $zipWriter = new ZipWriter($path);
-        
-        
-        while ($items->next()) {
-            if (WatchlistItemModel::WATCHLIST_ITEM_TYPE_DOWNLOAD != $items->type) {
-                continue;
-            }
-            
-            $zipWriter = $this->generateArchiveOutput($items, $zipWriter);
-        }
-        
-        $zipWriter->close();
-        
-        // Open the "save as …" dialogue
-        $file = new File($path, true);
-        
-        return $basePath . '?file=' . $path;
-    }
-    
-    /**
-     * adds file to zip
-     *
-     * @param WatchlistItemModel $item
-     * @param ZipWriter          $zipWriter
-     *
-     * @return ZipWriter
-     */
-    protected function generateArchiveOutput(WatchlistItemModel $item, ZipWriter $zipWriter)
-    {
-        if (null === ($file = $this->framework->getAdapter(FilesModel::class)->findById($item->uuid))) {
-            return $zipWriter;
-        }
-        
-        $zipWriter->addFile($file->path, $file->name);
-        
-        return $zipWriter;
-    }
     
     
     /**
@@ -356,6 +314,7 @@ class WatchlistActionManager
         $item->ptableId = $itemData->ptableId ? $itemData->ptableId : '';
         
         $item->save();
+    
         
         $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_add_item'], $item->title);
         
@@ -380,8 +339,15 @@ class WatchlistActionManager
         
         if (false !== ($watchlistItem =
                 System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid))) {
+    
             
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist'], $watchlist->name);
+            if(WatchlistManager::WATCHLIST_SESSION_BE == $watchlist->name || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name)
+            {
+                $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist_general'];
+            }
+            else {
+                $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist'], $watchlist->name);
+            }
             
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
@@ -412,10 +378,4 @@ class WatchlistActionManager
     }
     
     
-    protected function deleteItems($items)
-    {
-        while ($items->next()) {
-            $items->delete();
-        }
-    }
 }

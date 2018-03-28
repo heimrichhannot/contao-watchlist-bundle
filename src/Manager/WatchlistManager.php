@@ -17,6 +17,8 @@ use Contao\FrontendUser;
 use Contao\MemberModel;
 use Contao\ModuleModel;
 use Contao\Session;
+use Contao\StringUtil;
+use Contao\System;
 use HeimrichHannot\Ajax\AjaxAction;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use Model\Collection;
@@ -80,9 +82,8 @@ class WatchlistManager
             $watchlist = $this->getWatchlistByUser();
         }
         
-        
         if (null === $watchlist) {
-            return null;
+            $watchlist = $this->actionManger->createWatchlist($GLOBALS['TL_LANG']['WATCHLIST']['watchlist']);
         }
         
         Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
@@ -234,8 +235,8 @@ class WatchlistManager
     public function getAllWatchlistByUserGroups($groups)
     {
         $watchlist       = [];
-        $userGroups      = deserialize(\FrontendUser::getInstance()->groups, true);
-        $groups          = deserialize($groups, true);
+        $userGroups      = StringUtil::deserialize(\FrontendUser::getInstance()->groups, true);
+        $groups          = StringUtil::deserialize($groups, true);
         $watchlistGroups = array_intersect($userGroups, $groups);
         
         if (!$watchlistGroups) {
@@ -351,38 +352,57 @@ class WatchlistManager
     {
         $watchlistArray = [];
         if (FE_USER_LOGGED_IN === true) {
+            $user = FrontendUser::getInstance();
+            
             if ($groups) {
-                $watchlist = $this->getAllWatchlistByUserGroups($groups);
+                $watchlist =  $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids(deserialize($user->groups,true));
             } else {
-                $watchlist = $this->getAllWatchlistByCurrentUserGroups();
+                $watchlist =  $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids([$user->id]);
             }
         } else {
-            $watchlist = static::findBy('sessionID', session_id());
+            $watchlist = $this->getMultipleWatchlistModelBySession();
         }
         
-        if ($watchlist == null) {
+        if (null === $watchlist) {
             return $watchlistArray;
         }
+        
         foreach ($watchlist as $value) {
-            if ($showDurability) {
-                if ($value->start <= 0 || $value->stop <= 0) {
+            if($showDurability)
+            {
+                if($value->start <= 0 || $value->stop <= 0)
+                {
                     $watchlistArray[$value->id] = $value->name . ' ( ' . $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal'] . ' )';
                     continue;
                 }
+    
                 $durability = date('d.m.Y', $value->stop);
                 if ($durability > date('d.m.Y', time())) {
                     static::unsetWatchlist($value->id);
                     continue;
                 }
                 $watchlistArray[$value->id] = $value->name . ' ( ' . $durability . ' )';
-            } else {
-                $watchlistArray[$value->id] = $value->name;
+                continue;
             }
+    
+            $watchlistArray[$value->id] = $value->name;
+            
         }
         
         return $watchlistArray;
     }
     
+    
+    protected function getAllWatchlistByCurrentUser($id)
+    {
+        if(null === ($watchlists = $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids([$id])))
+        {
+            return null;
+        }
+        
+        
+        
+    }
     
     /**
      * returns an array of watchlist models where the members (pid) are in the same group as the current user
@@ -401,13 +421,38 @@ class WatchlistManager
             if ($memberModel === null) {
                 continue;
             }
-            $watchlistGroups = deserialize($memberModel->groups, true);
-            $groups          = deserialize(\FrontendUser::getInstance()->groups, true);
+            $watchlistGroups = StringUtil::deserialize($memberModel->groups, true);
+            $groups          = StringUtil::deserialize(\FrontendUser::getInstance()->groups, true);
             if (array_intersect($watchlistGroups, $groups)) {
                 $watchlist[] = $watchlistModel;
             }
         }
         
         return $watchlist;
+    }
+    
+    /**
+     * @param $module
+     *
+     * @return bool
+     */
+    public function checkPermission($module)
+    {
+        if(!$module->protected)
+        {
+            return true;
+        }
+    
+        if(null === ($user = FrontendUser::getInstance()))
+        {
+            return false;
+        }
+    
+        if (!array_intersect(StringUtil::deserialize($module->groups,true), StringUtil::deserialize($user->groups,true)))
+        {
+            return false;
+        }
+    
+        return true;
     }
 }

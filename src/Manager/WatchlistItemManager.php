@@ -16,6 +16,7 @@ use Contao\FilesModel;
 use Contao\FrontendTemplate;
 use Contao\PageModel;
 use Contao\System;
+use Contao\StringUtil;
 use HeimrichHannot\Request\Request;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 
@@ -108,7 +109,7 @@ class WatchlistItemManager
      */
     protected function getCopyRight($file)
     {
-        $copyrights = deserialize($file, true);
+        $copyrights = StringUtil::deserialize($file, true);
         
         if (empty($copyrights)) {
             return '';
@@ -135,7 +136,7 @@ class WatchlistItemManager
         if ($this->module->imgSize != '') {
             $image = [];
             
-            $size = deserialize($this->module->imgSize);
+            $size = StringUtil::deserialize($this->module->imgSize,true);
             
             if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
                 $image['size'] = $this->module->imgSize;

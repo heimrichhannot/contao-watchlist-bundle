@@ -50,7 +50,7 @@ class AjaxManager
     const XHR_WATCHLIST_UPDATE_ACTION                 = 'watchlistUpdateAction';
     const XHR_WATCHLIST_SELECT_ACTION                 = 'watchlistSelectAction';
     const XHR_WATCHLIST_UPDATE_MODAL_ADD_ACTION       = 'watchlistUpdateModalAddAction';
-    const XHR_WATCHLIST_DOWNLOAD_LINK_ACTION          = 'watchlistDownloadLinkAction';
+    const XHR_WATCHLIST_DOWNLOAD_LINK_ACTION          = 'watchlistGenerateDownloadLinkAction';
     const XHR_WATCHLIST_DOWNLOAD_ALL_ACTION           = 'watchlistDownloadAllAction';
     const XHR_WATCHLIST_MULTIPLE_ADD_ACTION           = 'watchlistMultipleAddAction';
     const XHR_WATCHLIST_MULTIPLE_SELECT_ADD_ACTION    = 'watchlistMultipleSelectAddAction';
@@ -148,7 +148,8 @@ class AjaxManager
                 ],
                 static::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION    => [
                     'arguments' => [
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
+                        static::XHR_PARAMETER_MODULE_ID,
+                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
                     ],
                     'optional'  => [],
                 ],
@@ -174,6 +175,7 @@ class AjaxManager
                 ],
                 static::XHR_WATCHLIST_DELETE_WATCHLIST_ACTION => [
                     'arguments' => [
+                        static::XHR_PARAMETER_MODULE_ID,
                         static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID
                     ],
                     'optional'  => [],
@@ -218,7 +220,7 @@ class AjaxManager
      */
     public function watchlistAddAction($moduleId, $type, $options = null, $itemData = null)
     {
-        if (null !== $options && '' != $options) {
+        if (null !== $options && count($options) > 1) {
             return $this->getWatchlistItemOptionsModal($moduleId, $type, $options);
         }
         
@@ -227,7 +229,7 @@ class AjaxManager
         }
         
         if (FE_USER_LOGGED_IN) {
-            return $this->watchlistShowModalAddAction($itemData, $moduleId);
+            return $this->watchlistShowModalAddAction($moduleId, $itemData);
         }
         
         return $this->addItemToWatchlist(Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT), $type, $itemData);
@@ -283,10 +285,15 @@ class AjaxManager
      *
      * @return ResponseSuccess
      */
-    public function watchlistDeleteWatchlistAction(int $watchlistId)
+    public function watchlistDeleteWatchlistAction(int $moduleId, int $watchlistId)
     {
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('', ['response' => $this->actionManager->deleteWatchlist($watchlistId)]));
+        
+        $message = $this->actionManager->deleteWatchlist($watchlistId);
+        $user    = FrontendUser::getInstance();
+        list($updatedWatchlist, $count) = $this->getUpdatedWatchlist($moduleId, $user->id);
+        
+        $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'count' => $count]));
         
         return $response;
     }
@@ -300,10 +307,11 @@ class AjaxManager
         $watchlistName = static::XHR_GROUP;
         
         if (null !== ($watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null, $watchlistId))) {
-            $watchlistName = (WatchlistManager::WATCHLIST_SESSION_BE == $watchlist->name || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name) ? $watchlistName : $watchlist->name;
+            $watchlistName = (WatchlistManager::WATCHLIST_SESSION_BE == $watchlist->name
+                              || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name) ? $watchlistName : $watchlist->name;
         }
         
-        $fileName = ' files/tmp/download_' . $watchlistName . '.zip';
+        $fileName = 'files/tmp/download_' . $watchlistName . '.zip';
         
         $zipWriter = new ZipWriter($fileName);
         
@@ -324,7 +332,7 @@ class AjaxManager
         
         
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('',['file'=>$fileName]));
+        $response->setResult(new ResponseData('', ['file' => $fileName]));
         
         // Open the "save as …" dialogue
         return $response;
@@ -432,11 +440,11 @@ class AjaxManager
         
         $options = [];
         
-        foreach (deserialize($module->fileFieldEntity, true) as $field) {
+        foreach (StringUtil::deserialize($module->fileFieldEntity, true) as $field) {
             $options[] = $this->checkEntityField($item, $dataContainer, $field);
         }
         
-        foreach (deserialize($module->fileFieldChildEntity, true) as $field) {
+        foreach (StringUtil::deserialize($module->fileFieldChildEntity, true) as $field) {
             $options[] = $this->checkEntityField($item, $dataContainer, $field);
         }
         
@@ -459,7 +467,7 @@ class AjaxManager
     protected function checkEntityField($item, $dataContainer, $field)
     {
         if (isset($item->{$field})) {
-            if (null !== ($items = $this->framework->getAdapter(FilesModel::class)->findMultipleByUuids(deserialize($item->{$field})))) {
+            if (null !== ($items = $this->framework->getAdapter(FilesModel::class)->findMultipleByUuids(StringUtil::deserialize($item->{$field})))) {
                 return $items;
             }
         }
@@ -476,22 +484,22 @@ class AjaxManager
     /**
      * show the add action modal
      *
-     * @param int $itemId
      * @param int $moduleId
+     * @param     $itemData
      *
      * @return ResponseSuccess
      */
     //int $id, int $cid, $type, int $pageID, string $title
-    public function watchlistShowModalAddAction(int $itemId, int $moduleId)
+    public function watchlistShowModalAddAction(int $moduleId, $itemData)
     {
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('', ['response' => $this->getWatchlistAddModal($itemId, $moduleId), 'id' => $itemId]));
+        $response->setResult(new ResponseData('', ['response' => $this->getWatchlistAddModal($moduleId, $itemData)]));
         
         return $response;
     }
     
     
-    public function watchlistGenerateDownloadLinkAction(int $watchlistId, int $moduleId)
+    public function watchlistGenerateDownloadLinkAction(int $moduleId, int $watchlistId = null)
     {
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData(false));
@@ -500,15 +508,13 @@ class AjaxManager
             $watchlistId = Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT);
         }
         
-        
         if (null === ($watchlist = $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedById($watchlistId))) {
             return $response;
         }
         
-        $response->setResult(new ResponseData([
-            'id'           => $watchlistId,
-            'notification' => $this->actionManager->generateDownloadLink($watchlistId, $moduleId)
-        ]));
+        list($link, $message) = $this->actionManager->generateDownloadLink($watchlistId, $moduleId);
+        
+        $response->setResult(new ResponseData('', ['link' => $link, 'message' => $message]));
         
         return $response;
     }
@@ -532,7 +538,7 @@ class AjaxManager
         
         $watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel($moduleId, $watchlistId);
         
-        if (null === $watchlist && $module->useMultipleWatchlist) {
+        if (null === $watchlist && $module->useMultipleWatchlist && FE_USER_LOGGED_IN) {
             $template->multiple         = true;
             $template->actions          = true;
             $template->watchlistOptions = $this->getWatchlistOptions($module);
@@ -567,18 +573,11 @@ class AjaxManager
             $watchlist = $this->watchlistManager->getAllWatchlistsByCurrentUser();
         }
         
-        if (null === ($watchlist)) {
+        if (empty($watchlist)) {
             return [];
         }
         
-        $options = [];
-        while ($watchlist->next()) {
-            $options[$watchlist->id] = $watchlist->name;
-        }
-        
-        asort($options);
-        
-        return $options;
+        return $watchlist;
     }
     
     /**
@@ -616,7 +615,7 @@ class AjaxManager
         return $watchlistItems;
     }
     
-    protected function getWatchlistAddModal(int $itemId, int $moduleId)
+    protected function getWatchlistAddModal(int $moduleId, $itemData)
     {
         if (null === ($module = $this->framework->getAdapter(ModuleModel::class)->findByPk($moduleId))) {
             return null;
@@ -624,16 +623,18 @@ class AjaxManager
         
         // if multiple watchlists are not allowed add the item to the watchlist and return the message
         if (!$module->useMultipleWatchlist) {
-            $user = FrontendUser::getInstance();
+            if (null === ($watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel($moduleId))) {
+                return new ResponseError();
+            }
             
-            return $this->addItemToWatchlist($itemId, $user->id);
+            return $this->addItemToWatchlist($watchlist->id, 'file', $itemData);
         }
         
         $wrapperTemplate = new FrontendTemplate('watchlist_modal_wrapper');
         $template        = new FrontendTemplate('watchlist_add_modal');
         
         if (!empty($options = $this->getWatchlistOptions($module))) {
-            $template->watchlistOptions = $this->getSelectAction($itemId);
+            $template->watchlistOptions = $options;
         }
         
         $template->newWatchlist = $GLOBALS['TL_LANG']['WATCHLIST']['newWatchlist'];
@@ -697,12 +698,27 @@ class AjaxManager
     {
         $response = new ResponseSuccess();
         
+        if (is_array($itemData)) {
+            $tmp             = $itemData;
+            $itemData        = new \stdClass();
+            $itemData->title = $tmp['title'];
+            $itemData->uuid  = $tmp['uuid'];
+        } else {
+            $itemData = json_decode($itemData);
+        }
+        
         if (null === ($responseData =
-                System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlistId, $type, json_decode($itemData)))) {
+                System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlistId, $type, $itemData))) {
             return new ResponseError();
         }
         
-        $response->setResult(new ResponseData('', ['response' => $responseData]));
+        $count = 0;
+        if (null !== ($watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_item_manager')->getItemsFromWatchlist($watchlistId))) {
+            $count = $watchlistItems->count();
+        }
+        
+        
+        $response->setResult(new ResponseData('', ['message' => $responseData, 'count' => $count]));
         
         return $response;
     }

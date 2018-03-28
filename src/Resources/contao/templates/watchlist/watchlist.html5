@@ -20,7 +20,7 @@
                     </div>
                 <?php endif ?>
                 <div class="watchlist-global-actions">
-                        <?php if(!empty($this->multiple)): ?>
+                        <?php if($this->deleteWatchlistAction): ?>
                             <?= $this->deleteWatchlistAction; ?>
                         <?php else: ?>
                             <?= $this->emptyWatchlistAction; ?>

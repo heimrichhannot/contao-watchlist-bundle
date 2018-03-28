@@ -5,14 +5,6 @@ var jQuery = require('jquery');
     window.Watchlist = {
         onReady: function () {
             this.registerEvents();
-            // this.registerAdd();
-            // this.registerMultipleAdd();
-            // this.registerDelete();
-            // this.registerDeleteAll();
-            // this.registerWatchlistModal();
-            // this.registerWatchlistSelect();
-            // this.registerDownloadLink();
-            // this.registerMultipleSelectAdd();
         },
         registerEvents: function () {
             // show the watchlist modal
@@ -48,6 +40,14 @@ var jQuery = require('jquery');
             $(document).on('click','.watchlist-download-all',function(){
                 Watchlist.downloadWatchlist($(this));
             });
+
+            $(document).on('click', '.watchlist-download-link',function(){
+                Watchlist.generateDownloadLink($(this));
+            });
+
+            $(document).on('click', '.watchlist-delete-watchlist', function(){
+                Watchlist.deleteWatchlist($(this));
+            });
         },
         showModal: function (elem) {
             var url = elem.data('action'),
@@ -68,7 +68,7 @@ var jQuery = require('jquery');
                     'uuid': uuid ? uuid : null
                 };
 
-            Watchlist.doAjaxCall(url, data, true);
+            Watchlist.doAjaxCallWithUpdate(url, data);
 
         },
         deleteItem: function (elem) {
@@ -89,6 +89,15 @@ var jQuery = require('jquery');
 
             Watchlist.doAjaxCallWithUpdate(url,data);
         },
+        deleteWatchlist: function(elem){
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId'),
+                    'watchlistId': elem.data('watchlistId')
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
         downloadWatchlist: function(elem) {
             var url = elem.data('action'),
                 data = {
@@ -101,9 +110,7 @@ var jQuery = require('jquery');
                 method: 'POST',
                 data: data,
                 success: function(data) {
-                    console.log(data);
-
-                    // window.location.href = data.result.data.file;
+                    window.location.href = window.location.href + '?file=' + data.result.data.file;
                 },
                 error: function(xhr, status, error) {
                     console.log(xhr);
@@ -122,6 +129,32 @@ var jQuery = require('jquery');
                 };
 
             Watchlist.doAjaxCall(url, data, true);
+        },
+        generateDownloadLink: function(elem) {
+            var url = elem.data('action'),
+                data = {
+                  'moduleId': elem.data('moduleId') ? elem.data('moduleId') : null,
+                  'watchlistId': elem.data('watchlistId'),
+                };
+
+            $.ajax({
+                url:url,
+                dataType:'JSON',
+                method:'POST',
+                data:data,
+                success: function(data){
+                    if(data.result.data.link)
+                    {
+                        $(document).find('.watchlist-download-link-href').text(data.result.data.link);
+                        $(document).find('.watchlist-download-link-href').attr('href',data.result.data.link);
+                    }
+
+                    if(data.result.data.message) {
+                        $('body').append(data.result.data.message);
+                        Watchlist.ajaxCompleteCallback();
+                    }
+                }
+            });
         },
         doAjaxCall: function (url, data, closeOnSucces) {
             $.ajax({
@@ -148,10 +181,17 @@ var jQuery = require('jquery');
                 data: data,
                 success: function (data, textStatus, jqXHR) {
                     $('body').append(data.result.data.message);
-                    $(document).find('.watchlist-item-list').replaceWith(data.result.data.watchlist);
+
+                    if(data.result.data.watchlist) {
+                        $(document).find('.watchlist-item-list').replaceWith(data.result.data.watchlist);
+                    }
 
                     if (data.result.data.count > 0) {
-                        $(document).find('.watchlist-show-modal .watchlist-badge').text(data.result.data.count);
+                        if($(document).find('#watchlist-badge').length) {
+                            $(document).find('#watchlist-badge').text(data.result.data.count);
+                        } else {
+                            $(document).find('.watchlist-show-modal').append('<span id="watchlist-badge" class="badge pull-right">'+data.result.data.count+'</span>');
+                        }
                     }
                     else {
                         $(document).find('.watchlist-show-modal .watchlist-badge').remove();

@@ -1,3 +1,3 @@
-<div class="watchlist-delete-all">
-    <button data-action="<?php echo $this->action; ?>" class="watchlist-delete-all-button btn btn-primary" title="<?php echo $this->delAllTitle; ?>"><span><?php echo $this->delAllLink; ?></span></button>
+<div class="watchlist-delete-watchlist-container">
+    <button data-action="<?php echo $this->action; ?>" data-watchlist-id="<?= $this->watchlistId?>" data-module-id="<?= $this->moduleId ?>" class="watchlist-delete-watchlist btn btn-primary" title="<?php echo $this->deleteWatchlistTitle; ?>"><span><?php echo $this->deleteWatchlistLink; ?></span></button>
 </div>

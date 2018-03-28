@@ -1,10 +1,10 @@
 <div class="watchlist-add-item">
     <ul class="nav nav-tabs" role="tablist">
         <?php if (isset($this->watchlistOptions) && !empty($this->watchlistOptions)): ?>
+            <li id="newWatchlist-<?= $this->id ?>" class="active"><a data-toggle="tab" href="#menu1-<?= $this->id ?>"><?= $this->newWatchlist ?></a></li>
+        <?php else: ?>
             <li id="selectWatchlist-<?= $this->id ?>" class="active"><a data-toggle="tab" href="#menu2-<?= $this->id ?>"><?= $this->watchlistOptions ?></a></li>
             <li id="newWatchlist-<?= $this->id ?>"><a data-toggle="tab" href="#menu1-<?= $this->id ?>"><?= $this->newWatchlist ?></a></li>
-        <?php else: ?>
-            <li id="newWatchlist-<?= $this->id ?>" class="active"><a data-toggle="tab" href="#menu1-<?= $this->id ?>"><?= $this->newWatchlist ?></a></li>
         <?php endif; ?>
     </ul>
     <div class="tab-content">
@@ -27,7 +27,7 @@
                         </select>
                     </div>
                 <?php endif ?>
-                <div class="modal-buttons">
+                <div class="watchlist-actions">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><?= $this->abort; ?></button>
                     <button class="btn btn-primary watchlist-multiple-add<?php if ($this->active): ?> active<?php endif; ?>" id="watchlist-multiple-add-<?= $this->id ?>" data-id="<?= $this->id; ?>" data-watchlist-add-action="<?= $this->addHref; ?>"
                             title="<?= $this->addTitle; ?>">
@@ -42,8 +42,8 @@
                     <div class="watchlist-select-action-<?= $this->id ?>">
                         <?= $this->select ?>
                     </div>
-                    <div class="modal-buttons">
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><?= $this->abort; ?></button>
+                    <div class="watchlist-actions">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"><?= $this->abort; ?></button>
                         <button class="btn btn-primary watchlist-multiple-select-add<?php if ($this->active): ?> active<?php endif; ?>" id="watchlist-multiple-select-add-<?= $this->id ?>" data-id="<?= $this->id; ?>" data-watchlist-add-action="<?= $this->selectAddHref; ?>"
                                 title="<?= $this->addTitle; ?>">
                             <span><?= $this->addLink; ?></span></button>

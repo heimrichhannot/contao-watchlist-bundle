@@ -59,15 +59,14 @@ class WatchlistTemplateManager
         // get download link action
         if ($module->useDownloadLink) {
             $template->actions            = true;
-            $template->downloadLinkAction = $this->getDownloadLinkAction($module->downloadLink);
+            $template->downloadLinkAction = $this->getDownloadLinkAction($module->id, $items[0]->pid);
         }
         
         // get delete watchlist action
         if ($module->useMultipleWatchlist) {
             $template->actions               = true;
             $template->deleteWatchlistAction = $this->getDeleteWatchlistAction($items[0]->pid, $module->id);
-        }
-        // get empty watchlist action
+        } // get empty watchlist action
         else {
             $template->actions              = true;
             $template->emptyWatchlistAction = $this->getEmptyWatchlistAction($items[0]->pid, $module->id);
@@ -267,13 +266,15 @@ class WatchlistTemplateManager
      *
      * @return string
      */
-    public function getDownloadLinkAction($downloadLink)
+    public function getDownloadLinkAction($moduleId, $watchlistId)
     {
         $template = new FrontendTemplate('watchlist_downloadLink_action');
         
-        $template->useDownloadLink   = true;
-        $template->downloadLinkHref  =
-            AjaxAction::generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION, ['id' => $downloadLink]);
+        $template->moduleId          = $moduleId;
+        $template->watchlistId       = $watchlistId;
+        $template->action            =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION);
+        $template->downloadLinkTitle = $GLOBALS['TL_LANG']['WATCHLIST']['downloadLinkTitle'];
         $template->downloadLinkTitle = $GLOBALS['TL_LANG']['WATCHLIST']['downloadLinkTitle'];
         
         return $template->parse();
@@ -372,7 +373,7 @@ class WatchlistTemplateManager
         $template        = new FrontendTemplate('watchlist_add_action');
         $template->added = false;
         
-        if (null === ($file = deserialize($data['uploadedFiles'])[0])) {
+        if (null === ($file = StringUtil::deserialize($data['uploadedFiles'],true)[0])) {
             return '';
         }
         

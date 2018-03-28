@@ -1,6 +1,6 @@
-<div class="watchlist-download-link">
+<div class="watchlist-download-link-container">
     <div class="watchlist-download-link-button-action">
-        <button data-action="<?php echo $this->action; ?>" class="watchlist-download-link btn btn-primary" title="<?php echo $this->downloadLinkTitle; ?>"><span><?php echo $this->downloadLinkTitle; ?></span></button>
+        <button data-action="<?= $this->action; ?>" class="watchlist-download-link btn btn-primary" data-watchlist-id="<?= $this->watchlistId?>" data-module-id="<?= $this->moduleId ?>" title="<?= $this->downloadLinkTitle; ?>"><span><?= $this->downloadLinkTitle; ?></span></button>
     </div>
     <div class="watchlist-download-link-text"><a class="watchlist-download-link-href">&nbsp;</a></div>
 </div>
