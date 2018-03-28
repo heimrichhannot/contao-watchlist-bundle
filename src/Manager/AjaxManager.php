@@ -567,17 +567,19 @@ class AjaxManager
      */
     protected function getWatchlistOptions($module)
     {
-        if ($module->useGroupWatchlist) {
-            $watchlist = $this->watchlistManager->getAllWatchlistsByUserGroups($module->groupWatchlist);
-        } else {
-            $watchlist = $this->watchlistManager->getAllWatchlistsByCurrentUser();
-        }
+        return $this->watchlistManager->getWatchlistModel($module->id);
         
-        if (empty($watchlist)) {
-            return [];
-        }
-        
-        return $watchlist;
+//        if ($module->useGroupWatchlist) {
+//            $watchlist = $this->watchlistManager->getWatchlistByGroups($module);
+//        } else {
+//            $watchlist = $this->watchlistManager->getWatchlistByCurrentUser();
+//        }
+//
+//        if (empty($watchlist)) {
+//            return [];
+//        }
+//
+//        return $watchlist;
     }
     
     /**
@@ -657,31 +659,6 @@ class AjaxManager
         $wrapperTemplate->content = $template->parse();
         
         return $wrapperTemplate->parse();
-    }
-    
-    
-    /**
-     * @param integer $id
-     * @param mixed   $groups
-     *
-     * @return string
-     */
-    public function getSelectAction($id, $groups = false)
-    {
-        $select   = $this->watchlistManager->getAllWatchlistsByCurrentUser(true, $groups);
-        $selected = Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT);
-        
-        if (empty($selected)) {
-            $selected = 0;
-        }
-        
-        $template                  = new FrontendTemplate('watchlist_select_actions');
-        $template->select          = $select;
-        $template->id              = $id;
-        $template->selected        = $selected;
-        $template->selectWatchlist = $GLOBALS['TL_LANG']['WATCHLIST']['selectWatchlist'];
-        
-        return $template->parse();
     }
     
     /**
