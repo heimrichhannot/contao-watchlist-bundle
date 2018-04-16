@@ -24,5 +24,27 @@ services:
     class: HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager
     arguments:
       - "@contao.framework"
-
-
+  huh.watchlist.download_item_file:
+    class: HeimrichHannot\WatchlistBundle\Item\DownloadItemFile
+  huh.watchlist.download_item_entity:
+    class: HeimrichHannot\WatchlistBundle\Item\DownloadItemEntity
+  huh.watchlist.watchlist_item_file:
+      class: HeimrichHannot\WatchlistBundle\Item\WatchlistItemFile
+  huh.watchlist.watchlist_item_entity:
+    class: HeimrichHannot\WatchlistBundle\Item\WatchlistItemEntity
+  huh.watchlist.choice.download_file:
+    class: HeimrichHannot\WatchlistBundle\Choice\DownloadItemFileChoice
+    arguments:
+      - "@contao.framework"
+  huh.watchlist.choice.download_entity:
+    class: HeimrichHannot\WatchlistBundle\Choice\DownloadItemEntityChoice
+    arguments:
+      - "@contao.framework"
+  huh.watchlist.choice.watchlist_file:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistItemFileChoice
+    arguments:
+      - "@contao.framework"
+  huh.watchlist.choice.watchlist_entity:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistItemEntityChoice
+    arguments:
+      - "@contao.framework"

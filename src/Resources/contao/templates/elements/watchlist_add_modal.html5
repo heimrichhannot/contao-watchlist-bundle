@@ -1,54 +1,58 @@
 <div class="watchlist-add-item">
     <ul class="nav nav-tabs" role="tablist">
-        <?php if (isset($this->watchlistOptions) && !empty($this->watchlistOptions)): ?>
-            <li id="newWatchlist-<?= $this->id ?>" class="active"><a data-toggle="tab" href="#menu1-<?= $this->id ?>"><?= $this->newWatchlist ?></a></li>
+        <?php if ($this->watchlistOptions): ?>
+            <li class="active"><a data-toggle="tab" href="#selectWatchlist"><?= $this->selectWatchlistTitle ?></a></li>
+            <li><a data-toggle="tab" href="#newWatchlist"><?= $this->newWatchlistTitle ?></a></li>
         <?php else: ?>
-            <li id="selectWatchlist-<?= $this->id ?>" class="active"><a data-toggle="tab" href="#menu2-<?= $this->id ?>"><?= $this->watchlistOptions ?></a></li>
-            <li id="newWatchlist-<?= $this->id ?>"><a data-toggle="tab" href="#menu1-<?= $this->id ?>"><?= $this->newWatchlist ?></a></li>
+            <li class="active"><?= $this->newWatchlistTitle ?></li>
         <?php endif; ?>
     </ul>
     <div class="tab-content">
-        <?php if (!empty($this->select)): ?>
-        <div id="menu1-<?= $this->id ?>" class="tab-pane fade">
-            <?php else: ?>
-            <div id="menu1-<?= $this->id ?>" class="tab-pane fade in active">
-                <?php endif; ?>
-                <div class="form-group">
-                    <label class="required" for="watchlist-input-<?= $this->id ?>"><?= $this->newWatchlist ?></label>
-                    <input class="form-control" id="watchlist-input-<?= $this->id ?>">
-                </div>
-                <?php if ($this->durability): ?>
-                    <div class="form-group">
-                        <label for="watchlist-select-durability-<?= $this->id ?>"><?= $this->durabilityLabel ?></label>
-                        <select id="watchlist-select-durability-<?= $this->id ?>">
-                            <?php foreach ($this->durability as $value): ?>
-                                <option value="<?= $value ?>"> <?= $value ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                <?php endif ?>
-                <div class="watchlist-actions">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><?= $this->abort; ?></button>
-                    <button class="btn btn-primary watchlist-multiple-add<?php if ($this->active): ?> active<?php endif; ?>" id="watchlist-multiple-add-<?= $this->id ?>" data-id="<?= $this->id; ?>" data-watchlist-add-action="<?= $this->addHref; ?>"
-                            title="<?= $this->addTitle; ?>">
-                        <span><?= $this->addLink; ?></span></button>
-                </div>
+        <?php if ($this->watchlistOptions): ?>
+        <div id="selectWatchlist" class="tab-pane fade in active show">
+            <div class="watchlist-select-action-container">
+                <?= $this->watchlistOptions ?>
             </div>
-            <?php if (!empty($this->select)): ?>
-            <div id="menu2-<?= $this->id ?>" class="tab-pane fade in active">
-                <?php else: ?>
-                <div id="menu2-<?= $this->id ?>" class="tab-pane fade">
-                    <?php endif; ?>
-                    <div class="watchlist-select-action-<?= $this->id ?>">
-                        <?= $this->select ?>
-                    </div>
-                    <div class="watchlist-actions">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal"><?= $this->abort; ?></button>
-                        <button class="btn btn-primary watchlist-multiple-select-add<?php if ($this->active): ?> active<?php endif; ?>" id="watchlist-multiple-select-add-<?= $this->id ?>" data-id="<?= $this->id; ?>" data-watchlist-add-action="<?= $this->selectAddHref; ?>"
-                                title="<?= $this->addTitle; ?>">
-                            <span><?= $this->addLink; ?></span></button>
-                    </div>
-                </div>
+            <?php if($this->itemOptions):?>
+                <?= $this->itemOptions; ?>
+            <?php endif; ?>
+            <div class="watchlist-actions">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <span><?= $this->abort; ?></span>
+                </button>
+                <button class="btn btn-primary watchlist-select-add <?php if ($this->active): ?>active<?php endif; ?>" <?php if(!$this->itemOptions):?>data-uuid="<?= $this->uuid ?>"<?php endif; ?> <?php if(!$this->watchlistOptions):?>data-watchlist-id="<?= $this->watchlistId ?>"<?php endif; ?> data-type="<?= $this->type ?>" data-action="<?= $this->addItemToSelectedWatchlistAction; ?>"
+                        title="<?= $this->addTitle; ?>">
+                    <span><?= $this->addLink; ?></span>
+                </button>
+            </div>
+        </div>
+        <?php endif; ?>
+        <div id="newWatchlist" class="tab-pane fade <?php if (!$this->watchlistOptions): ?>in active show<?php endif; ?>">
+            <div class="form-group">
+                <label class="required" for="watchlist-name"><?= $GLOBALS['TL_LANG']['WATCHLIST']['watchlist_name'] ?></label>
+                <input class="form-control" id="watchlist-name" type="text" value="">
+            </div>
+            <?php if ($this->useWatchlistDurability): ?>
+            <div class="form-group">
+                <label for="watchlist-durability"><?= $this->durabilityLabel ?></label>
+                <select id="watchlist-durability">
+                    <?php foreach ($this->durability as $value): ?>
+                        <option value="<?= $value ?>"> <?= $value ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif ?>
+            <?php if($this->itemOptions):?>
+                <?= $this->itemOptions; ?>
+            <?php endif; ?>
+            <div class="watchlist-actions">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <span><?= $this->abort; ?></span>
+                </button>
+                <button class="btn btn-primary watchlist-new-and-add" data-uuid="<?= $this->uuid ?>" data-item-title="<?= $this->itemTitle ?>" data-module-id="<?= $this->moduleId; ?>" data-action="<?= $this->newWatchlistAction; ?>"
+                        title="<?= $this->addTitle; ?>">
+                    <span><?= $this->addLink; ?></span>
+                </button>
             </div>
         </div>
     </div>

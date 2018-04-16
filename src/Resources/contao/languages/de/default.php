@@ -14,11 +14,18 @@ $GLOBALS['TL_LANG']['WATCHLIST']['downloadAll']            = 'alles herunterlade
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllTitle']       = 'Alle Elemente der Merkliste als ZIP Archiv herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllSecondTitle'] = 'Alle Elemente als ZIP Archiv herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadLinkTitle']      = 'Versandlink generieren';
-$GLOBALS['TL_LANG']['WATCHLIST']['selectOption']           = 'Wählen Sie eine Option';
+$GLOBALS['TL_LANG']['WATCHLIST']['selectOption']           = [
+    'Wählen Sie eine Option',
+    \HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager::WATCHLIST_SELECT_ITEM_OPTIONS => 'Wählen Sie eine Option',
+    \HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager::WATCHLIST_SELECT_WATCHLIST_OPTIONS => 'Wählen Sie eine Merkliste'
+];
+
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle']          = '%s herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistLink']     = 'Merkliste leeren';
 $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistTitle']    = 'Alle Elemente aus der Merkliste entfernen';
-$GLOBALS['TL_LANG']['WATCHLIST']['watchlist'] = 'Merkliste';
+$GLOBALS['TL_LANG']['WATCHLIST']['watchlist']              = 'Merkliste';
+$GLOBALS['TL_LANG']['WATCHLIST']['watchlist_name']         = 'Name';
+
 /**
  * Links
  */
@@ -40,7 +47,8 @@ $GLOBALS['TL_LANG']['WATCHLIST']['download']             = 'Download';
 $GLOBALS['TL_LANG']['WATCHLIST']['noDownload']           =
     'Diese Datei ist nicht zum Download freigegeben. Wenden Sie sich bitte an den Urheber der Datei.';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadListHeadline'] = 'Beispieltitel';
-
+$GLOBALS['TL_LANG']['WATCHLIST']['addToWatchlist']       = 'Einer Merkliste hinzufügen';
+$GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline']             = 'Merkliste: %s';
 
 /**
  * durability of a watchlist
@@ -76,6 +84,5 @@ $GLOBALS['TL_LANG']['WATCHLIST']['message_invalid_file']                       =
     'Die gewählte Datei ist fehlerhaft und kann nicht hinzugefügt werden';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_no_watchlist_found']                 = 'Die gewählte Merkliste konnte nicht gefunden werden.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_no_data']                            = 'Es wurden keine Daten für das hinzuzufügende Item übertragen.';
-
-
 $GLOBALS['TL_LANG']['WATCHLIST']['message_empty_watchlist'] = 'Die Merkliste wurde erfolgreich geleert.';
+$GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_already_exists'] = 'Es existiert bereits eine Merkliste mit dem Namen "%s".';

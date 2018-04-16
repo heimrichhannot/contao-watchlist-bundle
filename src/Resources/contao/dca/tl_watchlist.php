@@ -58,7 +58,7 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
         'uuid'         => [
             'sql' => "varchar(36) NOT NULL default ''",
         ],
-        'startedShare' => [
+        'startShare' => [
             'sql' => "varchar(10) NOT NULL default ''",
         ],
     ],

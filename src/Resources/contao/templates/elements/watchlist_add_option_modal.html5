@@ -2,7 +2,7 @@
     <?= $this->options ?>
     <div class="modal-buttons">
     <button type="button" class="btn btn-default" data-dismiss="modal"><?= $this->abort; ?></button>
-    <button class="btn btn-primary watchlist-add-option" id="watchlist-add-option-<?= $this->id ?>" data-module-id="<?= $this->moduleId ?>" data-type="<?= $this->type ?>" data-action="<?= $this->action; ?>"
+    <button class="btn btn-primary watchlist-add-option" id="watchlist-add-option-<?= $this->id ?>" data-module-id="<?= $this->moduleId ?>" <?php if($this->watchlistId):?>data-watchlist-id="<?= $this->watchlistId ?>"<?php endif; ?>data-type="<?= $this->type ?>" data-action="<?= $this->action; ?>"
             title="<?= $this->addTitle; ?>">
         <span><?= $this->addLink; ?></span></button>
     </div>

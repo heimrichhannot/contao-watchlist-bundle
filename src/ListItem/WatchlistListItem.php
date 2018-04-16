@@ -6,14 +6,12 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\WatchlistBundle\Item;
+namespace HeimrichHannot\WatchlistBundle\ListItem;
 
-use Contao\FrontendTemplate;
 use Contao\System;
-use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
-use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
+use HeimrichHannot\ListBundle\Item\DefaultItem;
 
-class DefaultListItem extends \HeimrichHannot\ListBundle\Item\DefaultItem
+class WatchlistListItem extends DefaultItem
 {
     /**
      * add the add-to-watchlist button to the template.
@@ -23,7 +21,7 @@ class DefaultListItem extends \HeimrichHannot\ListBundle\Item\DefaultItem
     public function getAddToWatchlistButton()
     {
         $module = $this->getModule();
-        
+
         if (null !== ($listConfig = System::getContainer()->get('huh.list.list-config-registry')->findByPk($module['listConfig']))) {
             return System::getContainer()
                 ->get('huh.watchlist.template_manager')

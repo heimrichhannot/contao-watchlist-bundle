@@ -8,32 +8,20 @@ var jQuery = require('jquery');
         },
         registerEvents: function () {
             // show the watchlist modal
-            $(document).on('click', '.watchlist-show-modal', function () {
-                $('#watchlistModal').remove();
+            $(document).on('click', 'button.watchlist-show-modal', function () {
                 Watchlist.showModal($(this));
             });
 
             // add a item to a watchlist or display the add item modal
-            $(document).on('click', '.watchlist-add-item', function () {
-                $('#watchlistModal').remove();
-
-                if (undefined !== $(this).data('options')) {
-                    Watchlist.showOptionModal($(this));
-                }
-                else {
-                    Watchlist.addItem($(this));
-                }
-            });
-
-            $(document).on('click', '.watchlist-add-option', function () {
+            $(document).on('click', 'button.watchlist-add-item, button.watchlist-add-option', function () {
                 Watchlist.addItem($(this));
             });
 
-            $(document).on('click', '.watchlist-delete-item', function () {
+            $(document).on('click', 'button.watchlist-delete-item', function () {
                 Watchlist.deleteItem($(this));
             });
 
-            $(document).on('click', '.watchlist-empty-watchlist', function () {
+            $(document).on('click', 'button.watchlist-empty-watchlist', function () {
                 Watchlist.emptyWatchlist($(this));
             });
 
@@ -41,35 +29,68 @@ var jQuery = require('jquery');
                 Watchlist.downloadWatchlist($(this));
             });
 
-            $(document).on('click', '.watchlist-download-link',function(){
+            $(document).on('click', 'button.watchlist-download-link',function(){
                 Watchlist.generateDownloadLink($(this));
             });
 
-            $(document).on('click', '.watchlist-delete-watchlist', function(){
+            $(document).on('click', 'button.watchlist-delete-watchlist', function(){
                 Watchlist.deleteWatchlist($(this));
+            });
+
+            $(document).on('click', 'button.watchlist-new-and-add', function(){
+                Watchlist.newAndAdd($(this));
+            });
+
+            $(document).on('click','.watchlist-select-add', function(){
+                Watchlist.addItemToSelectedWatchlist($(this));
+            });
+
+            $(document).on('change','.watchlist-options select', function(){
+                Watchlist.updateWatchlist($(this));
+            });
+
+            $(document).on('hide.bs.modal','#watchlistModal', function(){
+                setTimeout(function(){
+                    $(document).find('#watchlistModal').remove();
+                },500);
             });
         },
         showModal: function (elem) {
             var url = elem.data('action'),
                 data = {
-                    'moduleId': elem.data('module') ? elem.data('module') : null,
-                    'watchlistId': elem.data('watchlist') ? elem.data('watchlist') : null
+                    moduleId: '' !== elem.data('module') ? elem.data('module') : null,
+                    watchlistId: '' !== elem.data('watchlist')  ? elem.data('watchlist') : null
                 };
 
             Watchlist.doAjaxCall(url, data, true);
         },
         addItem: function (elem) {
-            var uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('#watchlist-select-input select option:selected').val(),
+            var uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
                 url = elem.data('action'),
                 data = {
                     'moduleId': elem.data('moduleId'),
                     'type': elem.data('type'),
-                    'options': elem.data('options') ? elem.data('options') : null,
-                    'uuid': uuid ? uuid : null
+                    'itemData': {
+                        'options':elem.data('options') ? elem.data('options') : null,
+                        'uuid': uuid ? uuid : null,
+                    }
                 };
 
             Watchlist.doAjaxCallWithUpdate(url, data);
+        },
+        addItemToSelectedWatchlist: function(elem) {
+            var url = elem.data('action'),
+                uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
+                watchlist = elem.data('watchlistId') ? elem.data('watchlistId') : $(document).find('.watchlist-options option:selected').val(),
+                data = {
+                    'watchlistId': watchlist,
+                    'type': elem.data('type'),
+                    'itemData': {
+                        'uuid': uuid
+                    }
+                };
 
+            Watchlist.doAjaxCallWithUpdate(url,data);
         },
         deleteItem: function (elem) {
             var url = elem.data('action'),
@@ -101,8 +122,11 @@ var jQuery = require('jquery');
         downloadWatchlist: function(elem) {
             var url = elem.data('action'),
                 data = {
-                    'watchlistId': elem.data('watchlist')
+                    'watchlistId': elem.data('watchlist'),
+                    'moduleId': elem.data('moduleId')
                 };
+
+            console.log(data);
 
             $.ajax({
                 url: url,
@@ -111,11 +135,6 @@ var jQuery = require('jquery');
                 data: data,
                 success: function(data) {
                     window.location.href = window.location.href + '?file=' + data.result.data.file;
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr);
-                    console.log(status);
-                    console.log(error);
                 }
             });
         },
@@ -156,6 +175,31 @@ var jQuery = require('jquery');
                 }
             });
         },
+        newAndAdd: function(elem) {
+            var url = elem.data('action'),
+                selected = $(document).find('.item-options').length ? $(document).find('.item-options option:selected').val() : null,
+                uuid = elem.data('uuid') ? elem.data('uuid') : null,
+                title = elem.data('title') ? elem.data('title') : null,
+                singleItem= {'uuid':uuid,'title':title},
+                data = {
+                    'moduleId': elem.data('moduleId'),
+                    'itemData': selected ? selected : singleItem,
+                    'watchlist': $(document).find('#watchlist-name').val(),
+                    'type': 'file',
+                    'durability': $(document).find('#watchlist-durability').length ? $(document).find('#watchlist-durability option:selected').val() : null
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
+        updateWatchlist: function(elem) {
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId') ? elem.data('moduleId') : null,
+                    'watchlistId': elem.find('option:selected').val()
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
         doAjaxCall: function (url, data, closeOnSucces) {
             $.ajax({
                 url: url,
@@ -180,10 +224,22 @@ var jQuery = require('jquery');
                 method: 'POST',
                 data: data,
                 success: function (data, textStatus, jqXHR) {
-                    $('body').append(data.result.data.message);
+                    if(undefined !== data.result.data.message) {
+                        $('body').append(data.result.data.message);
+                        $('#watchlistModal').modal('toggle');
+                    }
 
-                    if(data.result.data.watchlist) {
-                        $(document).find('.watchlist-item-list').replaceWith(data.result.data.watchlist);
+                    if(undefined !== data.result.data.watchlist) {
+                        $(document).find('.watchlist-body').replaceWith(data.result.data.watchlist);
+                    }
+
+                    if(undefined !== data.result.data.modal) {
+                        $('body').append(data.result.data.modal);
+                        $('#watchlistModal').modal('toggle');
+                    }
+
+                    if(undefined !== data.result.data.modalTitle) {
+                        $(document).find('#watchlist-modalTitle').text(data.result.data.modalTitle);
                     }
 
                     if (data.result.data.count > 0) {
@@ -206,7 +262,7 @@ var jQuery = require('jquery');
             $('.watchlist-loader').remove();
 
             // remove messages with a delay
-            $(document).find('.watchlist-message').delay(2000).fadeOut(300, function () {
+            $(document).find('.watchlist-message').delay(2500).fadeOut(300, function () {
                 $(this).remove();
             });
         }

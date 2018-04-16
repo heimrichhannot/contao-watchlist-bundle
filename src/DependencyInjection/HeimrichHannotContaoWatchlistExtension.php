@@ -1,26 +1,36 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mkunitzsch
- * Date: 19.03.18
- * Time: 10:46
+
+/*
+ * Copyright (c) 2018 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\WatchlistBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class HeimrichHannotContaoWatchlistExtension extends Extension
 {
+    public function getAlias()
+    {
+        return 'huh_watchlist';
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function load(array $mergedConfig, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $configuration = new Configuration(true);
+        $processedConfig = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('huh.watchlist', $processedConfig);
+
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }
 }

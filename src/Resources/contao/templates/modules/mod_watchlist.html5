@@ -7,8 +7,8 @@
 
 <button class="watchlist-show-modal" data-module="<?= $this->moduleId; ?>" data-watchlist="<?= $this->currentWatchlist ?>" data-action="<?= $this->action; ?>">
     <?php if($this->count > 0):?>
-    <span id="watchlist-badge" class="badge pull-right"><?= $this->count; ?></span>
+    <span class="watchlist-badge"><?= $this->count; ?></span>
     <?php endif; ?>
-    <?= $this->toggleLink; ?>
+    <span class="watchlist-label"><?= $this->toggleLink; ?></span>
 </button>
 <?php $this->endblock(); ?>

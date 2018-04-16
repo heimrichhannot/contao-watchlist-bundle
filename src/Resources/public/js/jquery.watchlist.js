@@ -1,165 +1,275 @@
-(function($) {
+var jQuery = require('jquery');
 
-    var Watchlist = {
-        onReady: function() {
-            this.registerAdd();
-            this.registerMultipleAdd();
-            this.registerDelete();
-            this.registerDeleteAll();
-            this.registerWatchlistModal();
-            this.registerWatchlistSelect();
-            this.registerDownloadLink();
-            this.registerMultipleSelectAdd();
+(function ($) {
+
+    window.Watchlist = {
+        onReady: function () {
+            this.registerEvents();
         },
-        registerMultipleAdd: function() {
-            $(document).on('click', '.watchlist-multiple-add', function() {
-                var btn = $(this);
-                var input = $('#watchlist-input-' + btn.data('id'));
-                var durability = $('#watchlist-select-durability-' + btn.data('id')).find(':selected').val();
-                if (durability === 'undefined') {
-                    durability = 0;
-                }
-                if (!input.val()) {
-                    input.addClass('watchlist-empty-input');
-                    return;
-                }
-                $.ajax({
-                    url: $('#watchlist-multiple-add-' + btn.data('id')).data('watchlistAddAction') + '&watchlist=' + input.val() + '&durability=' + durability,
-                    success: function(data, textStatus, jqXHR) {
-                        Watchlist.showNotification(data.result.html.notification);
-                        $('#watchlistModal-' + data.result.html.id).modal('hide');
-                    },
-                });
-            });
-        },
-        registerMultipleSelectAdd: function() {
-            $(document).on('click', '.watchlist-multiple-select-add', function() {
-                var btn = $(this);
-                var select = $('#watchlist-select-input-' + btn.data('id'));
-                if (select.find(':selected').val() <= 0) {
-                    select.children('div').addClass('watchlist-empty-input');
-                    return;
-                }
-                $.ajax({
-                    url: $('#watchlist-multiple-select-add-' + btn.data('id')).data('watchlistAddAction') + '&watchlist=' + select.find(':selected').val(),
-                    success: function(data, textStatus, jqXHR) {
-                        Watchlist.showNotification(data.result.html.notification);
-                        $('#watchlistModal-' + data.result.html.id).modal('hide');
-                    },
-                });
-            });
-        },
-        showNotification: function(notification) {
-            $('.watchlist-notification').replaceWith(notification);
-            $('#watchlist-notify').fadeIn(600);
-            setTimeout(function() {
-                $('#watchlist-notify').fadeOut();
-            }, 3000);
-        },
-        registerAdd: function() {
-            $(document).on('click', '.watchlist-add', function() {
-                var btn = $(this);
-                $.ajax({
-                    url: $('#watchlist-add-' + btn.data('id')).data('watchlistAddAction'),
-                    success: function(data, textStatus, jqXHR) {
-                        $('#watchlist-add-' + data.result.html.id).removeClass('watchlist-add');
-                        $('#watchlist-add-' + data.result.html.id).addClass('watchlist-delete-item watchlist-added');
-                        Watchlist.showNotification(data.result.html.notification);
-                    },
-                });
-            });
-        },
-        registerWatchlistModal: function() {
-            $(document).on('click', '.watchlist-add-modal', function() {
-                var btn = $(this);
-                $('#watchlistModal-' + btn.data('id')).remove();
-                $.ajax({
-                    url: $('#watchlist-add-modal-' + btn.data('id')).data('watchlistShowModalAddAction'),
-                    success: function(data, textStatus, jqXHR) {
-                        $('body').append(data.result.html.modal);
-                        $('#watchlistModal-' + data.result.html.id).modal('toggle');
-                    },
-                });
+        registerEvents: function () {
+            // show the watchlist modal
+            $(document).on('click', 'button.watchlist-show-modal', function () {
+                Watchlist.showModal($(this));
             });
 
-            $(document).on('click', '.watchlist-show-modal', function() {
-                $('#watchlistModal').remove();
-                $.ajax({
-                    url: $('.watchlist-show-modal').data('watchlistShowModalAction'),
-                    success: function(data, textStatus, jqXHR) {
-                        $('body').append(data.result.html);
-                        $('#watchlistModal').modal('toggle');
-                    },
-                });
+            // add a item to a watchlist or display the add item modal
+            $(document).on('click', 'button.watchlist-add-item, button.watchlist-add-option', function () {
+                Watchlist.addItem($(this));
+            });
+
+            $(document).on('click', 'button.watchlist-delete-item', function () {
+                Watchlist.deleteItem($(this));
+            });
+
+            $(document).on('click', 'button.watchlist-empty-watchlist', function () {
+                Watchlist.emptyWatchlist($(this));
+            });
+
+            $(document).on('click','button.watchlist-download-all',function(){
+                Watchlist.downloadWatchlist($(this));
+            });
+
+            $(document).on('click', 'button.watchlist-download-link',function(){
+                Watchlist.generateDownloadLink($(this));
+            });
+
+            $(document).on('click', 'button.watchlist-delete-watchlist', function(){
+                Watchlist.deleteWatchlist($(this));
+            });
+
+            $(document).on('click', 'button.watchlist-new-and-add', function(){
+                Watchlist.newAndAdd($(this));
+            });
+
+            $(document).on('click','.watchlist-select-add', function(){
+                Watchlist.addItemToSelectedWatchlist($(this));
+            });
+
+            $(document).on('change','.watchlist-options select', function(){
+                Watchlist.updateWatchlist($(this));
+            });
+
+            $(document).on('hide.bs.modal','#watchlistModal', function(){
+                console.log('modal hide');
+                setTimeout(function(){
+                    $(document).find('#watchlistModal').remove();
+                },500);
             });
         },
-        registerDelete: function() {
-            $(document).on('click', '.watchlist-delete-item', function() {
-                var btn = $(this);
-                $.ajax({
-                    url: $('#watchlist-delete-item-' + btn.data('id')).data('watchlistDeleteAction'),
-                    success: function(data, textStatus, jqXHR) {
-                        $('#watchlist-add-' + data.result.html.id).removeClass('watchlist-delete-item watchlist-added');
-                        $('#watchlist-add-' + data.result.html.id).addClass('watchlist-add');
-                        Watchlist.showNotification(data.result.html.notification);
-                        Watchlist.watchlistUpdate();
-                    },
-                });
-            });
+        showModal: function (elem) {
+            var url = elem.data('action'),
+                data = {
+                    moduleId: '' !== elem.data('module') ? elem.data('module') : null,
+                    watchlistId: '' !== elem.data('watchlist')  ? elem.data('watchlist') : null
+                };
+
+            console.log(data);
+            Watchlist.doAjaxCall(url, data, true);
         },
-        registerDeleteAll: function() {
-            $(document).on('click', '.watchlist-delete-all-button', function() {
-                $.ajax({
-                    url: $('.watchlist-delete-all-button').data('watchlistDeleteAllAction'),
-                    success: function(data, textStatus, jqXHR) {
-                        $('.watchlist-added').addClass('watchlist-add');
-                        $('.watchlist-added').removeClass('watchlist-delete-item watchlist-added');
-                        Watchlist.showNotification(data.result.html.notification);
-                        Watchlist.watchlistUpdate();
-                    },
-                });
-            });
+        addItem: function (elem) {
+            var uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
+                url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId'),
+                    'type': elem.data('type'),
+                    'itemData': {
+                        'options':elem.data('options') ? elem.data('options') : null,
+                        'uuid': uuid ? uuid : null,
+                    }
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url, data);
         },
-        watchlistUpdate: function() {
-            $('.watchlist-loader').show();
+        addItemToSelectedWatchlist: function(elem) {
+            var url = elem.data('action'),
+                uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
+                watchlist = elem.data('watchlistId') ? elem.data('watchlistId') : $(document).find('.watchlist-options option:selected').val(),
+                data = {
+                    'watchlistId': watchlist,
+                    'type': elem.data('type'),
+                    'itemData': {
+                        'uuid': uuid
+                    }
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
+        deleteItem: function (elem) {
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId'),
+                    'itemId': elem.data('id')
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
+        emptyWatchlist: function (elem) {
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId'),
+                    'watchlistId': elem.data('watchlistId')
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
+        deleteWatchlist: function(elem){
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId'),
+                    'watchlistId': elem.data('watchlistId')
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
+        downloadWatchlist: function(elem) {
+            var url = elem.data('action'),
+                data = {
+                    'watchlistId': elem.data('watchlist')
+                };
+
             $.ajax({
-                url: $('.watchlist-show-modal').data('watchlistUpdateAction'),
-                success: function(data, textStatus, jqXHR) {
-                    $('.watchlist-body').replaceWith(data.result.html);
-                    $('.watchlist-download-link-href').html('&nbsp;');
-                    $('.watchlist-download-link-text').removeClass('active');
-                    $('.watchlist-loader').hide();
-                },
+                url: url,
+                dataTyoe: 'JSON',
+                method: 'POST',
+                data: data,
+                success: function(data) {
+                    window.location.href = window.location.href + '?file=' + data.result.data.file;
+                }
             });
         },
-        registerWatchlistSelect: function() {
-            $(document).on('change', '#watchlist-selector', function() {
-                $.ajax({
-                    url: $('#watchlist-selector').data('watchlistSelectAction') + '&id=' + $('#watchlist-selector').find(':selected').val(),
-                    success: function(data, textStatus, jqXHR) {
-                        Watchlist.watchlistUpdate();
-                    },
-                });
+        showOptionModal: function (elem) {
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('module-id'),
+                    'type': elem.data('type'),
+                    'options': elem.data('options') ? elem.data('options') : null,
+                    'uuid': elem.data('uuid') ? elem.data('uuid') : null
+                };
+
+            Watchlist.doAjaxCall(url, data, true);
+        },
+        generateDownloadLink: function(elem) {
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId') ? elem.data('moduleId') : null,
+                    'watchlistId': elem.data('watchlistId'),
+                };
+
+            $.ajax({
+                url:url,
+                dataType:'JSON',
+                method:'POST',
+                data:data,
+                success: function(data){
+                    if(data.result.data.link)
+                    {
+                        $(document).find('.watchlist-download-link-href').text(data.result.data.link);
+                        $(document).find('.watchlist-download-link-href').attr('href',data.result.data.link);
+                    }
+
+                    if(data.result.data.message) {
+                        $('body').append(data.result.data.message);
+                        Watchlist.ajaxCompleteCallback();
+                    }
+                }
             });
         },
-        registerDownloadLink: function() {
-            $(document).on('click', '.watchlist-download-link-button', function() {
-                $.ajax({
-                    url: $('.watchlist-download-link-button').data('watchlistDownloadLinkAction'),
-                    success: function(data, textStatus, jqXHR) {
-                        if (data.result.html !== false) {
-                            $('.watchlist-download-link-href').attr('href', data.result.html);
-                            $('.watchlist-download-link-href').html(data.result.html);
-                            $('.watchlist-download-link-text').addClass('active');
+        newAndAdd: function(elem) {
+            var url = elem.data('action'),
+                selected = $(document).find('.item-options').length ? $(document).find('.item-options option:selected').val() : null,
+                uuid = elem.data('uuid') ? elem.data('uuid') : null,
+                title = elem.data('title') ? elem.data('title') : null,
+                singleItem= {'uuid':uuid,'title':title},
+                data = {
+                    'moduleId': elem.data('moduleId'),
+                    'itemData': selected ? selected : singleItem,
+                    'watchlist': $(document).find('#watchlist-name').val(),
+                    'type': 'file',
+                    'durability': $(document).find('#watchlist-durability').length ? $(document).find('#watchlist-durability option:selected').val() : null
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
+        updateWatchlist: function(elem) {
+            var url = elem.data('action'),
+                data = {
+                    'moduleId': elem.data('moduleId') ? elem.data('moduleId') : null,
+                    'watchlistId': elem.find('option:selected').val()
+                };
+
+            Watchlist.doAjaxCallWithUpdate(url,data);
+        },
+        doAjaxCall: function (url, data, closeOnSucces) {
+            $.ajax({
+                url: url,
+                dataTyoe: 'JSON',
+                method: 'POST',
+                data: data,
+                success: function (data, textStatus, jqXHR) {
+                    $('body').append(data.result.data.response);
+
+                    if (closeOnSucces) {
+                        $('#watchlistModal').modal('toggle');
+                    }
+
+                    Watchlist.ajaxCompleteCallback();
+                }
+            });
+        },
+        doAjaxCallWithUpdate: function(url,data) {
+            $.ajax({
+                url: url,
+                dataTyoe: 'JSON',
+                method: 'POST',
+                data: data,
+                success: function (data, textStatus, jqXHR) {
+                    if(undefined !== data.result.data.message) {
+                        $('body').append(data.result.data.message);
+                        $('#watchlistModal').modal('toggle');
+                    }
+
+                    if(undefined !== data.result.data.watchlist) {
+                        $(document).find('.watchlist-body').replaceWith(data.result.data.watchlist);
+                    }
+
+                    if(undefined !== data.result.data.modal) {
+                        $('body').append(data.result.data.modal);
+                        $('#watchlistModal').modal('toggle');
+                    }
+
+                    if(undefined !== data.result.data.modalTitle) {
+                        $(document).find('#watchlist-modalTitle').text(data.result.data.modalTitle);
+                    }
+
+                    if (data.result.data.count > 0) {
+                        if($(document).find('#watchlist-badge').length) {
+                            $(document).find('#watchlist-badge').text(data.result.data.count);
+                        } else {
+                            $(document).find('.watchlist-show-modal').append('<span id="watchlist-badge" class="badge pull-right">'+data.result.data.count+'</span>');
                         }
-                    },
-                });
+                    }
+                    else {
+                        $(document).find('.watchlist-show-modal .watchlist-badge').remove();
+                    }
+
+                    Watchlist.ajaxCompleteCallback();
+                }
             });
         },
+        ajaxCompleteCallback: function () {
+            // remove the loading animation
+            $('.watchlist-loader').remove();
+
+            // remove messages with a delay
+            $(document).find('.watchlist-message').delay(2500).fadeOut(300, function () {
+                $(this).remove();
+            });
+        }
     };
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         Watchlist.onReady();
     });
+
 
 })(jQuery);

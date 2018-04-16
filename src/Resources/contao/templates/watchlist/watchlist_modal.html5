@@ -1,9 +1,0 @@
-<div class="watchlist-body">
-    <div class="watchlist-container">
-        <?php if ($this->empty): ?>
-            <p><?php echo $this->empty; ?></p>
-        <?php else: ?>
-            <?= $this->watchlist ?>
-        <?php endif; ?>
-    </div>
-</div>

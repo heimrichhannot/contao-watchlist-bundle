@@ -1,7 +1,7 @@
 huh:
     list:
         items:
-          - { name: watchlist-default, class: HeimrichHannot\WatchlistBundle\Item\DefaultListItem }
+          - { name: watchlist-default, class: HeimrichHannot\WatchlistBundle\ListItem\WatchlistListItem }
         templates:
             item:
-                - { name: watchlist-list-item, template: "@HeimrichHannotContaoWatchlist/list_item_watchlist.html.twig" }
+              - { name: watchlist-list-item, template: "@HeimrichHannotContaoWatchlist/list_item_watchlist.html.twig" }

@@ -35,9 +35,6 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
         'pageID' => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'cid'    => [
-            'sql' => "int(10) unsigned NOT NULL default '0'",
-        ],
         'tstamp' => [
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],

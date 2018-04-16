@@ -9,7 +9,7 @@
     "symfony/framework-bundle": "^3.4",
     "heimrichhannot/contao-ajax-bundle": "^1.0",
     "heimrichhannot/contao-modal": "^1.4",
-    "heimrichhannot/contao-list-bundle": "^1.0.0-beta"
+    "heimrichhannot/contao-list-bundle": "@beta"
   },
   "require-dev": {
     "contao/test-case": "^1.1",
@@ -23,6 +23,7 @@
     "satooshi/php-coveralls": "^2.0",
     "symfony/phpunit-bridge": "^3.2"
   },
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
       "HeimrichHannot\\WatchlistBundle\\": "src/"
