@@ -70,7 +70,7 @@ class WatchlistModel extends Model
     {
         return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
             static::$strTable,
-            [static::$strTable.'.uuid=UNHEX(?)', static::$strTable.'.published=?'],
+            [static::$strTable.'.uuid=?', static::$strTable.'.published=?'],
             [$uuid, 1],
             $options
         );

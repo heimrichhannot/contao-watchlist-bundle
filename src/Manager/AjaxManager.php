@@ -83,7 +83,6 @@ class AjaxManager
 
     public function ajaxActions()
     {
-        $this->addAjaxActions();
         System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_SHOW_MODAL_ACTION, $this);
         System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_ADD_ACTION, $this);
         System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION, $this);
@@ -426,110 +425,6 @@ class AjaxManager
         $response->setResult(new ResponseData('', ['message' => $responseData, 'count' => $count]));
 
         return $response;
-    }
-
-    protected function addAjaxActions()
-    {
-        $GLOBALS['AJAX'][static::XHR_GROUP] = [
-            'actions' => [
-                static::XHR_WATCHLIST_SHOW_MODAL_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_ADD_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_DATA,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_DATA,
-                        static::XHR_PARAMETER_WATCHLIST_NAME,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
-                        static::XHR_PARAMETER_WATCHLIST_DURABILITY,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_PAGE,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_TITLE,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_UPDATE_MODAL_ADD_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
-                        static::XHR_PARAMETER_MODULE_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_DELETE_ITEM_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_DELETE_WATCHLIST_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_SELECT_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_MODULE_ID,
-                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
-                    ],
-                    'optional' => [],
-                ],
-                static::XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST => [
-                    'arguments' => [
-                        static::XHR_PARAMETER_WATCHLIST_WATCHLIST_ID,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_TYPE,
-                        static::XHR_PARAMETER_WATCHLIST_ITEM_DATA,
-                    ],
-                    'optional' => [],
-                ],
-            ],
-        ];
     }
 
     /**

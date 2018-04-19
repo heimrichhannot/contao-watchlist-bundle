@@ -8,20 +8,20 @@ var jQuery = require('jquery');
         },
         registerEvents: function () {
             // show the watchlist modal
-            $(document).on('click', 'button.watchlist-show-modal', function () {
+            $(document).on('click', '.watchlist-show-modal', function () {
                 Watchlist.showModal($(this));
             });
 
             // add a item to a watchlist or display the add item modal
-            $(document).on('click', 'button.watchlist-add-item, button.watchlist-add-option', function () {
+            $(document).on('click', '.watchlist-add-item, .watchlist-add-option', function () {
                 Watchlist.addItem($(this));
             });
 
-            $(document).on('click', 'button.watchlist-delete-item', function () {
+            $(document).on('click', '.watchlist-delete-item', function () {
                 Watchlist.deleteItem($(this));
             });
 
-            $(document).on('click', 'button.watchlist-empty-watchlist', function () {
+            $(document).on('click', '.watchlist-empty-watchlist', function () {
                 Watchlist.emptyWatchlist($(this));
             });
 
@@ -33,11 +33,11 @@ var jQuery = require('jquery');
                 Watchlist.generateDownloadLink($(this));
             });
 
-            $(document).on('click', 'button.watchlist-delete-watchlist', function(){
+            $(document).on('click', '.watchlist-delete-watchlist', function(){
                 Watchlist.deleteWatchlist($(this));
             });
 
-            $(document).on('click', 'button.watchlist-new-and-add', function(){
+            $(document).on('click', '.watchlist-new-and-add', function(){
                 Watchlist.newAndAdd($(this));
             });
 
@@ -66,6 +66,7 @@ var jQuery = require('jquery');
         },
         addItem: function (elem) {
             var uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
+                title = elem.data('title') ? elem.data('title') : $(document).find('.item-options option:selected').text(),
                 url = elem.data('action'),
                 data = {
                     'moduleId': elem.data('moduleId'),
@@ -73,6 +74,7 @@ var jQuery = require('jquery');
                     'itemData': {
                         'options':elem.data('options') ? elem.data('options') : null,
                         'uuid': uuid ? uuid : null,
+                        'title': title ? title : null,
                     }
                 };
 
@@ -224,9 +226,10 @@ var jQuery = require('jquery');
                 method: 'POST',
                 data: data,
                 success: function (data, textStatus, jqXHR) {
+                    console.log(data);
+
                     if(undefined !== data.result.data.message) {
                         $('body').append(data.result.data.message);
-                        $('#watchlistModal').modal('toggle');
                     }
 
                     if(undefined !== data.result.data.watchlist) {
@@ -240,6 +243,10 @@ var jQuery = require('jquery');
 
                     if(undefined !== data.result.data.modalTitle) {
                         $(document).find('#watchlist-modalTitle').text(data.result.data.modalTitle);
+                    }
+
+                    if(undefined !== data.result.data.message && undefined === data.result.data.watchlist) {
+                        $('#watchlistModal').modal('toggle');
                     }
 
                     if (data.result.data.count > 0) {
@@ -267,6 +274,8 @@ var jQuery = require('jquery');
             });
         }
     };
+
+    module.exports = Watchlist;
 
     $(document).ready(function () {
         Watchlist.onReady();

@@ -1,12 +1,10 @@
 <a class="watchlist-delete-item" id="watchlist-delete-item-<?= $this->id ?>" data-id="<?= $this->id; ?>" data-module-id="<?= $this->moduleId?>"
         data-action="<?php echo $this->deleteAction; ?>" title="<?php echo $this->delTitle; ?>">
-    <i class="fas fa-trash-alt"></i>
     <span><?php echo $this->delLink; ?></span>
 </a>
 <?php if ($this->downloadAction): ?>
 <a class="watchlist-download-item" id="watchlist-download-item-<?= $this->id ?>"
-   href="<?= $this->downloadAction ?>">
-    <i class="fas fa-download"></i>
+   href="<?= $this->downloadAction ?>" title="<?= $this->downloadTitle ?>">
     <span><?= $this->downloadTitle ?></span>
 </a>
 <?php endif; ?>

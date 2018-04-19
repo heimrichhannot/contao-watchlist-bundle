@@ -49,6 +49,7 @@ $GLOBALS['TL_LANG']['WATCHLIST']['noDownload']           =
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadListHeadline'] = 'Beispieltitel';
 $GLOBALS['TL_LANG']['WATCHLIST']['addToWatchlist']       = 'Einer Merkliste hinzufügen';
 $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline']             = 'Merkliste: %s';
+$GLOBALS['TL_LANG']['WATCHLIST']['validityExpired']                = 'Diese Merkliste ist nicht mehr einsehbar.';
 
 /**
  * durability of a watchlist

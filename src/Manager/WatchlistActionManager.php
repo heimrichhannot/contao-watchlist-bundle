@@ -25,6 +25,7 @@ use Contao\ZipWriter;
 use HeimrichHannot\Ajax\Response\ResponseError;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use Model\Collection;
 
 class WatchlistActionManager
 {
@@ -69,12 +70,12 @@ class WatchlistActionManager
     public function deleteWatchlistItem(int $id)
     {
         if (null === ($watchlistItem = $this->framework->getAdapter(WatchlistItemModel::class)->findInstanceByPk($id))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_item_error']);
+            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item_error']);
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
-        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_item'], $watchlistItem->title);
+        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item'], $watchlistItem->title);
         $watchlistItem->delete();
 
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
@@ -90,7 +91,7 @@ class WatchlistActionManager
     public function deleteWatchlistItemFromWatchlist(int $watchlistId)
     {
         if (null === ($watchlistItems = $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_delete_item_error']);
+            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item_error']);
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
@@ -298,7 +299,7 @@ class WatchlistActionManager
         $item->type = $type;
         $item->tstamp = time();
 
-        $item->title = $itemData['title'] ? $itemData['title'] : '';
+        $item->title = $itemData['title'] ? html_entity_decode($itemData['title']) : '';
         $item->uuid = $itemData['uuid'] ? StringUtil::uuidToBin(is_array($itemData['uuid']) ? $itemData['uuid']['uuid'] : $itemData['uuid']) : null;
         $item->ptable = $itemData['ptable'] ? $itemData['ptable'] : '';
         $item->ptableId = $itemData['ptableId'] ? $itemData['ptableId'] : '';
@@ -335,15 +336,20 @@ class WatchlistActionManager
                               || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name) ? $watchlistName : $watchlist->name;
         }
 
+        if (1 == count($items)) {
+            return System::getContainer()->get('huh.utils.file')->getPathFromUuid($items[0]->uuid);
+        }
+
+        return $this->createDownloadZipFile($items, $module, $watchlistName);
+    }
+
+    protected function createDownloadZipFile(Collection $items, ModuleModel $module, string $watchlistName)
+    {
         $fileName = 'files/tmp/download_'.$watchlistName.'.zip';
 
         $zipWriter = new ZipWriter($fileName);
 
         foreach ($items as $item) {
-            if (!$item->download) {
-                continue;
-            }
-
             if (!$item->uuid && !$item->parentTable && !$item->parentTableId) {
                 continue;
             }
@@ -375,18 +381,6 @@ class WatchlistActionManager
         $zipWriter->close();
 
         return $fileName;
-    }
-
-    /**
-     * save the active watchlist to the session.
-     */
-    protected function setNewActiveWatchlist()
-    {
-        if (null === ($watchlist = $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedByPid(FrontendUser::getInstance()->id))) {
-            Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, null);
-        }
-
-        Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
     }
 
     /**

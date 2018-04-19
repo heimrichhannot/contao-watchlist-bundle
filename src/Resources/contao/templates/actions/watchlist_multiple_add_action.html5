@@ -1,3 +1,0 @@
-<button class="watchlist-add-modal" id="watchlist-add-modal-<?= $this->id ?>" data-id="<?= $this->id ?>" title="<?= $this->addTitle; ?>" data-watchlist-show-modal-add-action="<?= $this->showModalHref ?>">
-    <span><?= $this->addLink; ?></span>
-</button>

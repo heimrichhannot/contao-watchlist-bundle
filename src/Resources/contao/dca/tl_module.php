@@ -18,7 +18,7 @@ $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_W
     '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},useMultipleWatchlist,useDownloadLink,useGroupWatchlist,useWatchlistDurability,watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
 
 $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] =
-    '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},usePublicLinkDurability;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
+    '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},listConfig,usePublicLinkDurability;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
 
 /**
  * Subpalettes
