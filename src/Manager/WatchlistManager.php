@@ -103,7 +103,7 @@ class WatchlistManager
         $groups = StringUtil::deserialize($module->groups, true);
 
         if (!$module->protected) {
-            return $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids($groups);
+            return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($groups);
         }
 
         if (null === ($user = FrontendUser::getInstance())) {
@@ -114,7 +114,7 @@ class WatchlistManager
             return null;
         }
 
-        return $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids($intersect);
+        return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($intersect);
     }
 
     /**

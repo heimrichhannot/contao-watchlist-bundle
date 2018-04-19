@@ -97,7 +97,6 @@ class ModuleWatchlist extends Module
         $this->Template->toggleLink = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
         $this->Template->moduleId = $this->id;
         $this->Template->currentWatchlist = $watchlist->id;
-        $this->Template->action =
-            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
+        $this->Template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
     }
 }
