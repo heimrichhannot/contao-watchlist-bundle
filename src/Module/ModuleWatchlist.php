@@ -93,6 +93,8 @@ class ModuleWatchlist extends Module
             $count = $watchlistItems->count();
         }
 
+        $this->Template->downloadAllAction = System::getContainer()->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist->id, $this->id);
+
         $this->Template->count = $count;
         $this->Template->toggleLink = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
         $this->Template->moduleId = $this->id;
