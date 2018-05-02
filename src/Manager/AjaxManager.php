@@ -135,7 +135,7 @@ class AjaxManager
             return $this->getModalResponse($responseContent);
         }
 
-        if (!isset($itemData->uuid)) {
+        if (!isset($itemData['uuid'])) {
             return new ResponseError();
         }
 

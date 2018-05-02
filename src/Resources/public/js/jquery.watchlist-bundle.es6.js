@@ -128,8 +128,6 @@ var jQuery = require('jquery');
                     'moduleId': elem.data('moduleId')
                 };
 
-            console.log(data);
-
             $.ajax({
                 url: url,
                 dataTyoe: 'JSON',
@@ -226,7 +224,6 @@ var jQuery = require('jquery');
                 method: 'POST',
                 data: data,
                 success: function (data, textStatus, jqXHR) {
-                    console.log(data);
 
                     if(undefined !== data.result.data.message) {
                         $('body').append(data.result.data.message);
@@ -253,7 +250,7 @@ var jQuery = require('jquery');
                         if($(document).find('#watchlist-badge').length) {
                             $(document).find('#watchlist-badge').text(data.result.data.count);
                         } else {
-                            $(document).find('.watchlist-show-modal').append('<span id="watchlist-badge" class="badge pull-right">'+data.result.data.count+'</span>');
+                            $(document).find('.watchlist-show-modal').prepend('<span class="watchlist-badge">'+data.result.data.count+'</span>');
                         }
                     }
                     else {

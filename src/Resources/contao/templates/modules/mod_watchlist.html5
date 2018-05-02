@@ -18,4 +18,5 @@
     <?= $this->downloadAllAction; ?>
 <?php endif ;?>
 </div>
+
 <?php $this->endblock(); ?>

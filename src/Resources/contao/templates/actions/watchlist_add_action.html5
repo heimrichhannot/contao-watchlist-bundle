@@ -9,6 +9,7 @@
         data-module-id="<?= $this->moduleId ?>"
         data-type="<?= $this->type ?>"
         data-action="<?= $this->action; ?>"
+        data-title="<?= $this->itemTitle ?>"
         title="<?= $this->title; ?>">
     <span><?= $this->link; ?></span>
 </button>
