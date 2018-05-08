@@ -1,0 +1,7 @@
+<button class="watchlist-show-modal btn btn-primary" data-module="<?= $this->moduleId; ?>" data-watchlist="<?= $this->watchlistId ?>" data-action="<?= $this->action; ?>">
+    <?php if($this->count > 0):?>
+        <span class="watchlist-badge"><?= $this->count; ?></span>
+    <?php endif; ?>
+    
+    <span class="watchlist-label"><?= $this->toggleLink; ?></span>
+</button>

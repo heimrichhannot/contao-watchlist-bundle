@@ -14,11 +14,6 @@ use Contao\Module;
 use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\Request\Request;
-use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
-use HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager;
-use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
-use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
-use Symfony\Component\Translation\Translator;
 
 class ModuleWatchlist extends Module
 {
@@ -30,27 +25,9 @@ class ModuleWatchlist extends Module
      */
     protected $framework;
 
-    /**
-     * @var Translator
-     */
-    protected $translator;
-
-    /**
-     * @var WatchlistManager
-     */
-    protected $watchlistManager;
-
-    /**
-     * @var WatchlistItemManager
-     */
-    protected $watchlistItemManager;
-
     public function __construct(ModuleModel $objModule)
     {
         $this->framework = System::getContainer()->get('contao.framework');
-        $this->translator = System::getContainer()->get('translator');
-        $this->watchlistManager = System::getContainer()->get('huh.watchlist.watchlist_manager');
-        $this->watchlistItemManager = System::getContainer()->get('huh.watchlist.watchlist_item_manager');
 
         parent::__construct($objModule);
     }
@@ -68,7 +45,7 @@ class ModuleWatchlist extends Module
             return $objTemplate->parse();
         }
 
-        if (!$this->watchlistManager->checkPermission($this)) {
+        if (!System::getContainer()->get('huh.watchlist.watchlist_manager')->checkPermission($this)) {
             return;
         }
 
@@ -81,24 +58,12 @@ class ModuleWatchlist extends Module
 
     protected function compile()
     {
-        $count = 0;
-        $this->Template->watchlist = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
+        $toggler = System::getContainer()->get('huh.watchlist.template_manager')->getWatchlistToggler($this->id);
 
-        /* @var $watchlist WatchlistModel */
-        if (null === ($watchlist = $this->watchlistManager->getWatchlistModel($this->id))) {
-            $count = 0;
+        $this->Template->toggler = $toggler->parse();
+
+        if ($this->useGlobalDownloadAllAction) {
+            $this->Template->downloadAllAction = System::getContainer()->get('huh.watchlist.template_manager')->getDownloadAllAction($toggler->watchlistId, $this->id);
         }
-
-        if (null !== $watchlist && null !== ($watchlistItems = $this->watchlistManager->getItemsFromWatchlist($watchlist->id))) {
-            $count = $watchlistItems->count();
-        }
-
-        $this->Template->downloadAllAction = System::getContainer()->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist->id, $this->id);
-
-        $this->Template->count = $count;
-        $this->Template->toggleLink = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
-        $this->Template->moduleId = $this->id;
-        $this->Template->currentWatchlist = $watchlist->id;
-        $this->Template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
     }
 }

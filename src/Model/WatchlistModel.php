@@ -68,22 +68,22 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findPublishedByUuid($uuid, array $options = [])
-    {
-        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
-            static::$strTable,
-            [static::$strTable.'.uuid=?', static::$strTable.'.published=?'],
-            [$uuid, 1],
-            $options
-        );
-    }
-
     public function findOnePublishedBySessionId($sessionId, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
             static::$strTable,
             [static::$strTable.'.sessionID=?', static::$strTable.'.published=?'],
             [$sessionId, 1],
+            $options
+        );
+    }
+
+    public function findPublishedByUuid($uuid, array $options = [])
+    {
+        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
+            static::$strTable,
+            [static::$strTable.'.uuid=?', static::$strTable.'.published=?'],
+            [$uuid, 1],
             $options
         );
     }

@@ -456,6 +456,33 @@ class WatchlistTemplateManager
     }
 
     /**
+     * return unparsed toggler template
+     * -> do not parse it yet since we want to access some properties in `WatchlistModule`.
+     *
+     * @param int $moduleId
+     *
+     * @return FrontendTemplate
+     */
+    public function getWatchlistToggler(int $moduleId)
+    {
+        $watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel($moduleId);
+
+        $template = new FrontendTemplate('watchlist_toggler');
+
+        if (null !== ($watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlist->id))) {
+            $template->count = $watchlistItems->count;
+        }
+
+        $template->toggleLink = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
+        $template->moduleId = $moduleId;
+        $template->watchlistId = $watchlist->id;
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
+
+        return $template;
+    }
+
+    /**
      * @param int $pageId
      * @param     $module
      *
