@@ -10,6 +10,7 @@ namespace HeimrichHannot\WatchlistBundle\Manager;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendUser;
+use Contao\Model\Collection;
 use Contao\Session;
 use Contao\StringUtil;
 use Contao\System;
@@ -70,7 +71,7 @@ class WatchlistManager
      *
      * @param int $moduleId
      *
-     * @return WatchlistModel|null
+     * @return WatchlistModel|Collection|null
      */
     public function getWatchlistByUserOrGroups(int $moduleId)
     {
@@ -207,7 +208,7 @@ class WatchlistManager
 
                 $durability = date('d.m.Y', $value->stop);
                 if ($durability > date('d.m.Y', time())) {
-                    static::unsetWatchlist($value->id);
+                    $this->unsetWatchlist($value->id);
                     continue;
                 }
                 $watchlistArray[$value->id] = $value->name.' ( '.$durability.' )';
@@ -261,7 +262,7 @@ class WatchlistManager
         }
 
         if ($module->useGroupWatchlist) {
-            $watchlist = $this->getWatchlistByModuleConfig($module);
+            $watchlist = $this->getWatchlistByGroups($module);
         } else {
             $watchlist = $this->getWatchlistByUser();
         }
@@ -286,11 +287,7 @@ class WatchlistManager
      */
     public function getWatchlistOptions($module)
     {
-        if ($module->useGroupWatchlist) {
-            $watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistByGroups($module);
-        } else {
-            $watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistByCurrentUser();
-        }
+        $watchlist = $this->getWatchlistByUserOrGroups($module->id);
 
         if (empty($watchlist)) {
             return [];
@@ -305,13 +302,13 @@ class WatchlistManager
                     continue;
                 }
 
-                $options[] = $model;
+                $options[$model->watchlistDurability] = $model->name;
             }
 
-            $watchlist = $options;
+            return $options;
         }
 
-        return $watchlist;
+        return $watchlist->fetchEach('name');
     }
 
     /**

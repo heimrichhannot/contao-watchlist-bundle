@@ -108,6 +108,6 @@ class WatchlistModel extends Model
 
         $pids = System::getContainer()->get('huh.utils.database')->computeCondition('pid', DatabaseUtil::OPERATOR_IN, implode(',', $user->fetchEach('id')));
 
-        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(static::$strTable, [$pids[0], 'published=1'], [], $options);
+        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(static::$strTable, [$pids[0], 'published=1'], [], $options);
     }
 }

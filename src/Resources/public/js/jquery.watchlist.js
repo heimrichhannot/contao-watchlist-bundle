@@ -68,6 +68,7 @@ var jQuery = require('jquery');
             var uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
                 title = elem.data('title') ? elem.data('title') : $(document).find('.item-options option:selected').text(),
                 url = elem.data('action'),
+                downloadable = elem.data('downloadable'),
                 data = {
                     'moduleId': elem.data('moduleId'),
                     'type': elem.data('type'),
@@ -75,6 +76,7 @@ var jQuery = require('jquery');
                         'options':elem.data('options') ? elem.data('options') : null,
                         'uuid': uuid ? uuid : null,
                         'title': title ? title : null,
+                        'downloadable' : downloadable
                     }
                 };
 
@@ -132,7 +134,7 @@ var jQuery = require('jquery');
 
             $.ajax({
                 url: url,
-                dataTyoe: 'JSON',
+                dataType: 'JSON',
                 method: 'POST',
                 data: data,
                 success: function(data) {
@@ -205,7 +207,7 @@ var jQuery = require('jquery');
         doAjaxCall: function (url, data, closeOnSucces) {
             $.ajax({
                 url: url,
-                dataTyoe: 'JSON',
+                dataType: 'JSON',
                 method: 'POST',
                 data: data,
                 success: function (data, textStatus, jqXHR) {
@@ -222,7 +224,7 @@ var jQuery = require('jquery');
         doAjaxCallWithUpdate: function(url,data) {
             $.ajax({
                 url: url,
-                dataTyoe: 'JSON',
+                dataType: 'JSON',
                 method: 'POST',
                 data: data,
                 success: function (data, textStatus, jqXHR) {

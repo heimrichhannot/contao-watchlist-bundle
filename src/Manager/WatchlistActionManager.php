@@ -238,10 +238,8 @@ class WatchlistActionManager
         $watchlist->pid = $userId;
         $watchlist->name = $name;
 
-        $watchlist->uuid =
-            $this->framework->getAdapter(StringUtil::class)->binToUuid($this->framework->getAdapter(Database::class)->getInstance()->getUuid());
-        $watchlist->ip =
-            (!$this->framework->getAdapter(Config::class)->get('disableIpCheck') ? $this->framework->getAdapter(Environment::class)->get('ip') : '');
+        $watchlist->uuid = $this->framework->getAdapter(StringUtil::class)->binToUuid($this->framework->getAdapter(Database::class)->getInstance()->getUuid());
+        $watchlist->ip = (!$this->framework->getAdapter(Config::class)->get('disableIpCheck') ? $this->framework->getAdapter(Environment::class)->get('ip') : '');
         $watchlist->sessionID = session_id();
         $watchlist->tstamp = time();
         $watchlist->published = 1;
@@ -303,6 +301,7 @@ class WatchlistActionManager
         $item->uuid = $itemData['uuid'] ? StringUtil::uuidToBin(is_array($itemData['uuid']) ? $itemData['uuid']['uuid'] : $itemData['uuid']) : null;
         $item->ptable = $itemData['ptable'] ? $itemData['ptable'] : '';
         $item->ptableId = $itemData['ptableId'] ? $itemData['ptableId'] : '';
+        $item->downloadable = $itemData['downloadable'];
 
         $item->save();
 
@@ -403,8 +402,7 @@ class WatchlistActionManager
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
-        if (false !== ($watchlistItem =
-                System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid))) {
+        if (false !== ($watchlistItem = System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid))) {
             if (WatchlistManager::WATCHLIST_SESSION_BE == $watchlist->name || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name) {
                 $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist_general'];
             } else {
@@ -428,8 +426,7 @@ class WatchlistActionManager
      */
     protected function checkEntity($watchlist, $ptable, $ptableId)
     {
-        if (null !== ($watchlistItem =
-                System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId))) {
+        if (null !== ($watchlistItem = System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId))) {
             $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_in_watchlist'], $watchlistItem->title, $watchlist->name);
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);

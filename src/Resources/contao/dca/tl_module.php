@@ -17,8 +17,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
 $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST] =
     '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},useMultipleWatchlist,useDownloadLink,useGroupWatchlist,useWatchlistDurability,watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
 
-$dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] =
-    '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},listConfig,usePublicLinkDurability;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
+$dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},listConfig,usePublicLinkDurability;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
 
 /**
  * Subpalettes
@@ -28,9 +27,9 @@ $dca['palettes']['__selector__'][] = 'useGroupWatchlist';
 $dca['palettes']['__selector__'][] = 'useWatchlistDurability';
 $dca['palettes']['__selector__'][] = 'usePublicLinkDurability';
 
-$dca['subpalettes']['useDownloadLink']        = 'downloadLink';
-$dca['subpalettes']['useGroupWatchlist']      = 'groupWatchlist';
-$dca['subpalettes']['useWatchlistDurability'] = 'watchlistDurability';
+$dca['subpalettes']['useDownloadLink']         = 'downloadLink';
+$dca['subpalettes']['useGroupWatchlist']       = 'groupWatchlist';
+$dca['subpalettes']['useWatchlistDurability']  = 'watchlistDurability';
 $dca['subpalettes']['usePublicLinkDurability'] = 'publicLinkDurability';
 
 /**
@@ -101,7 +100,7 @@ $arrFields = [
         'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
         'sql'       => "varchar(8) NOT NULL default ''",
     ],
-    'watchlistItemFile' => [
+    'watchlistItemFile'       => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['watchlistItemFile'],
         'options_callback' => ['huh.watchlist.choice.watchlist_file', 'getChoices'],
@@ -110,12 +109,12 @@ $arrFields = [
             'includeBlankOption' => true,
             'mandatory'          => true,
             'tl_class'           => 'w50 clr',
-            'notOverridable'     => true
+            'notOverridable'     => true,
         ],
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
     ],
-    'watchlistItemEntity' => [
+    'watchlistItemEntity'     => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['watchlistItemEntity'],
         'options_callback' => ['huh.watchlist.choice.watchlist_entity', 'getChoices'],
@@ -124,12 +123,12 @@ $arrFields = [
             'includeBlankOption' => true,
             'mandatory'          => true,
             'tl_class'           => 'w50',
-            'notOverridable'     => true
+            'notOverridable'     => true,
         ],
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
     ],
-    'downloadItemFile' => [
+    'downloadItemFile'        => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['downloadItemFile'],
         'options_callback' => ['huh.watchlist.choice.download_file', 'getChoices'],
@@ -138,12 +137,12 @@ $arrFields = [
             'includeBlankOption' => true,
             'mandatory'          => true,
             'tl_class'           => 'w50 clr',
-            'notOverridable'     => true
+            'notOverridable'     => true,
         ],
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
     ],
-    'downloadItemEntity' => [
+    'downloadItemEntity'      => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['downloadItemEntity'],
         'options_callback' => ['huh.watchlist.choice.download_entity', 'getChoices'],
@@ -152,11 +151,11 @@ $arrFields = [
             'includeBlankOption' => true,
             'mandatory'          => true,
             'tl_class'           => 'w50',
-            'notOverridable'     => true
+            'notOverridable'     => true,
         ],
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
-    ]
+    ],
 ];
 
 $dc['fields'] = array_merge($dc['fields'], $arrFields);
