@@ -86,11 +86,13 @@ var jQuery = require('jquery');
             var url = elem.data('action'),
                 uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
                 watchlist = elem.data('watchlistId') ? elem.data('watchlistId') : $(document).find('.watchlist-options option:selected').val(),
+                downloadable = elem.data('downloadable'),
                 data = {
                     'watchlistId': watchlist,
                     'type': elem.data('type'),
                     'itemData': {
                         'uuid': uuid,
+                        'downloadable': downloadable,
                     },
                 };
 
@@ -182,12 +184,14 @@ var jQuery = require('jquery');
                 uuid = elem.data('uuid') ? elem.data('uuid') : null,
                 title = elem.data('title') ? elem.data('title') : null,
                 singleItem = {'uuid': uuid, 'title': title},
+                downloadable = elem.data('downloadable'),
                 data = {
                     'moduleId': elem.data('moduleId'),
                     'itemData': selected ? selected : singleItem,
                     'watchlist': $(document).find('#watchlist-name').val(),
                     'type': 'file',
                     'durability': $(document).find('#watchlist-durability').length ? $(document).find('#watchlist-durability option:selected').val() : null,
+                    'downloadable': downloadable,
                 };
 
             Watchlist.doAjaxCallWithUpdate(url, data);
@@ -219,8 +223,6 @@ var jQuery = require('jquery');
             });
         },
         doAjaxCallWithUpdate: function(url, data) {
-            console.log(data);
-            console.log(url);
             $.ajax({
                 url: url,
                 dataType: 'JSON',

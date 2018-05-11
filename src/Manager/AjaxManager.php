@@ -178,8 +178,7 @@ class AjaxManager
 
         if (null !== $this->watchlistManager->getWatchlistByName($name)) {
             $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_already_exists'], $name);
-            $response->setResult(new ResponseData('',
-                ['message' => $this->actionManager->getStatusMessage($message, WatchlistActionManager::MESSAGE_STATUS_ERROR), null, 0]));
+            $response->setResult(new ResponseData('', ['message' => $this->actionManager->getStatusMessage($message, WatchlistActionManager::MESSAGE_STATUS_ERROR), null, 0]));
 
             return $response;
         }
@@ -236,8 +235,7 @@ class AjaxManager
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $watchlistId);
 
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+        $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -256,8 +254,7 @@ class AjaxManager
         $message = $this->actionManager->emptyWatchlist($watchlistId);
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $watchlistId);
 
-        $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+        $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -277,8 +274,7 @@ class AjaxManager
         $user = FrontendUser::getInstance();
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $user->id);
 
-        $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+        $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -412,8 +408,7 @@ class AjaxManager
     {
         $response = new ResponseSuccess();
 
-        if (null === ($responseData =
-                System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlistId, $type, $itemData))) {
+        if (null === ($responseData = System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlistId, $type, $itemData))) {
             return new ResponseError();
         }
 

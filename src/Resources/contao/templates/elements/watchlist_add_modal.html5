@@ -21,6 +21,7 @@
                         <span><?= $this->abort; ?></span>
                     </button>
                     <button class="btn btn-primary watchlist-select-add <?php if ($this->active): ?>active<?php endif; ?>" <?php if (!$this->itemOptions): ?>data-uuid="<?= $this->uuid ?>"<?php endif; ?> <?php if (!$this->watchlistOptions): ?>data-watchlist-id="<?= $this->watchlistId ?>"<?php endif; ?> data-type="<?= $this->type ?>" data-action="<?= $this->addItemToSelectedWatchlistAction; ?>"
+                            data-downloadable="<?= $this->downloadable ?>"
                             title="<?= $this->addTitle; ?>">
                         <span><?= $this->addLink; ?></span>
                     </button>
@@ -49,7 +50,7 @@
                 <button type="button" class="btn btn-primary" data-dismiss="modal">
                     <span><?= $this->abort; ?></span>
                 </button>
-                <button class="btn btn-primary watchlist-new-and-add" data-uuid="<?= $this->uuid ?>" data-item-title="<?= $this->itemTitle ?>" data-module-id="<?= $this->moduleId; ?>" data-action="<?= $this->newWatchlistAction; ?>"
+                <button class="btn btn-primary watchlist-new-and-add" data-uuid="<?= $this->uuid ?>" data-item-title="<?= $this->itemTitle ?>" data-module-id="<?= $this->moduleId; ?>" data-action="<?= $this->newWatchlistAction; ?>" data-downloadable="<?= $this->downloadable ?>"
                         title="<?= $this->addTitle; ?>">
                     <span><?= $this->addLink; ?></span>
                 </button>

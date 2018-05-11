@@ -72,4 +72,8 @@ class AjaxManagerTest extends ContaoTestCase
         $response3 = $ajaxManager->watchlistShowModalAction(1, 1);
         $this->assertInstanceOf(ResponseSuccess::class, $response3);
     }
+
+    public function testWatchlistAddAction()
+    {
+    }
 }

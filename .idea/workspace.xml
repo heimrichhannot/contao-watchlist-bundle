@@ -2,72 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ced453ec-ea65-4e5d-ac9f-6e8419a86652" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/php.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/.php_cs" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/.travis.yml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/phpunit.xml.dist" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Choice/DownloadItemEntityChoice.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Choice/DownloadItemFileChoice.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Choice/WatchlistItemEntityChoice.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Choice/WatchlistItemFileChoice.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/DependencyInjection/Configuration.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/DownloadItem.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/DownloadItemEntity.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/DownloadItemFile.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/DownloadItemInterface.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/WatchlistItem.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/WatchlistItemEntity.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/WatchlistItemFile.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Item/WatchlistItemInterface.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/Resources/config/config.yml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Choice/DownloadEntityItemChoiceTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Choice/DownloadFilteItemChoiceTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Choice/WatchlistItemEntityChoiceTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Choice/WatchlistItemFileChoiceTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/ContaoManager/PluginTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/DependencyInjection/ConfigurationTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/DependencyInjection/HeimrichHannotContaoWatchlistExtensionTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/HeimrichHannotContaoWatchlistBundleTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Item/DownloadItemFileTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Item/DownloadItemTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Item/WatchlistItemFileTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Item/WatchlistItemTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/ListItem/WatchlistListItemTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/Manager/AjaxManagerTest.php" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/tests/bootstrap.php" />
-      <change beforePath="$PROJECT_DIR$/.idea/contao-watchlist-bundle.iml" afterPath="$PROJECT_DIR$/.idea/contao-watchlist-bundle.iml" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterPath="" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/actions/watchlist_toggler.html5" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/composer.json" afterPath="$PROJECT_DIR$/composer.json" />
-      <change beforePath="$PROJECT_DIR$/src/ContaoManager/Plugin.php" afterPath="$PROJECT_DIR$/src/ContaoManager/Plugin.php" />
-      <change beforePath="$PROJECT_DIR$/src/DependencyInjection/HeimrichHannotContaoWatchlistExtension.php" afterPath="$PROJECT_DIR$/src/DependencyInjection/HeimrichHannotContaoWatchlistExtension.php" />
-      <change beforePath="$PROJECT_DIR$/src/Item/DefaultListItem.php" afterPath="$PROJECT_DIR$/src/ListItem/WatchlistListItem.php" />
-      <change beforePath="$PROJECT_DIR$/src/Manager/AjaxManager.php" afterPath="$PROJECT_DIR$/src/Manager/AjaxManager.php" />
-      <change beforePath="$PROJECT_DIR$/src/Manager/WatchlistActionManager.php" afterPath="$PROJECT_DIR$/src/Manager/WatchlistActionManager.php" />
-      <change beforePath="$PROJECT_DIR$/src/Manager/WatchlistItemManager.php" afterPath="$PROJECT_DIR$/src/Manager/WatchlistItemManager.php" />
+      <change beforePath="$PROJECT_DIR$/src/Item/WatchlistItemFile.php" afterPath="$PROJECT_DIR$/src/Item/WatchlistItemFile.php" />
       <change beforePath="$PROJECT_DIR$/src/Manager/WatchlistManager.php" afterPath="$PROJECT_DIR$/src/Manager/WatchlistManager.php" />
       <change beforePath="$PROJECT_DIR$/src/Manager/WatchlistTemplateManager.php" afterPath="$PROJECT_DIR$/src/Manager/WatchlistTemplateManager.php" />
       <change beforePath="$PROJECT_DIR$/src/Model/WatchlistModel.php" afterPath="$PROJECT_DIR$/src/Model/WatchlistModel.php" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/config/config_list.yml" afterPath="$PROJECT_DIR$/src/Resources/config/config_list.yml" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/config/services.yml" afterPath="$PROJECT_DIR$/src/Resources/config/services.yml" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/config/config.php" afterPath="$PROJECT_DIR$/src/Resources/contao/config/config.php" />
+      <change beforePath="$PROJECT_DIR$/src/Model/WatchlistModel.php.orig" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/src/Module/ModuleWatchlist.php" afterPath="$PROJECT_DIR$/src/Module/ModuleWatchlist.php" />
+      <change beforePath="$PROJECT_DIR$/src/Module/ModuleWatchlistDownloadList.php" afterPath="$PROJECT_DIR$/src/Module/ModuleWatchlistDownloadList.php" />
       <change beforePath="$PROJECT_DIR$/src/Resources/contao/dca/tl_module.php" afterPath="$PROJECT_DIR$/src/Resources/contao/dca/tl_module.php" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/dca/tl_watchlist_item.php" afterPath="$PROJECT_DIR$/src/Resources/contao/dca/tl_watchlist_item.php" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/languages/de/default.php" afterPath="$PROJECT_DIR$/src/Resources/contao/languages/de/default.php" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/languages/de/modules.php" afterPath="$PROJECT_DIR$/src/Resources/contao/languages/de/modules.php" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/actions/watchlist_download_all_action.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/actions/watchlist_download_all_action.html5" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/actions/watchlist_select_actions.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/actions/watchlist_select_actions.html5" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/elements/watchlist_add_modal.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/elements/watchlist_add_modal.html5" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/elements/watchlist_add_option_modal.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/elements/watchlist_add_option_modal.html5" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/elements/watchlist_modal.html5" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/elements/watchlist_modal_wrapper.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/elements/watchlist_modal_wrapper.html5" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/items/watchlist_item.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/items/watchlist_item.html5" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/watchlist/watchlist.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/watchlist/watchlist.html5" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/watchlist/watchlist_modal.html5" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/public/js/jquery.watchlist-bundle.es6.js" afterPath="$PROJECT_DIR$/src/Resources/public/js/jquery.watchlist-bundle.es6.js" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/public/js/jquery.watchlist.js" afterPath="$PROJECT_DIR$/src/Resources/public/js/jquery.watchlist.js" />
+      <change beforePath="$PROJECT_DIR$/src/Resources/contao/languages/de/tl_modules.php" afterPath="$PROJECT_DIR$/src/Resources/contao/languages/de/tl_module.php" />
+      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/modules/mod_watchlist.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/modules/mod_watchlist.html5" />
+      <change beforePath="$PROJECT_DIR$/src/Resources/contao/templates/modules/mod_watchlist_download_list.html5" afterPath="$PROJECT_DIR$/src/Resources/contao/templates/modules/mod_watchlist_download_list.html5" />
+      <change beforePath="$PROJECT_DIR$/tests/Item/WatchlistItemTest.php" afterPath="$PROJECT_DIR$/tests/Item/WatchlistItemTest.php" />
+      <change beforePath="$PROJECT_DIR$/tests/Manager/AjaxManagerTest.php" afterPath="$PROJECT_DIR$/tests/Manager/AjaxManagerTest.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -82,43 +31,87 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/contao_watchlist_bundle$phpunit_xml_dist.coverage" NAME="phpunit.xml.dist Coverage Results" MODIFIED="1523289640994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="PhpCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
-  <component name="DockManager">
-    <window id="7">
-      <content type="file-editors">
-        <state>
-          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file leaf-file-name="AjaxManager.php" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/src/Manager/AjaxManager.php">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="18">
-                    <caret line="17" column="49" lean-forward="false" selection-start-line="17" selection-start-column="49" selection-end-line="17" selection-end-column="49" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="WatchlistItemEntityChoiceTest.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/tests/Choice/WatchlistItemEntityChoiceTest.php">
+      <file leaf-file-name="AjaxManagerTest.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/Manager/AjaxManagerTest.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="509">
-              <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+            <state relative-caret-position="468">
+              <caret line="30" column="27" lean-forward="true" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
+              <folding>
+                <element signature="e#149#167#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WatchlistTemplateManager.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Manager/WatchlistTemplateManager.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="496">
+              <caret line="246" column="43" lean-forward="false" selection-start-line="246" selection-start-column="20" selection-end-line="246" selection-end-column="43" />
+              <folding>
+                <element signature="e#142#164#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WatchlistActionManager.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Manager/WatchlistActionManager.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-864">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="System.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vendor/contao/core-bundle/src/Resources/contao/library/Contao/System.php">
+      <file leaf-file-name="ModuleWatchlist.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Module/ModuleWatchlist.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3906">
-              <caret line="231" column="0" lean-forward="false" selection-start-line="231" selection-start-column="0" selection-end-line="231" selection-end-column="0" />
+            <state relative-caret-position="-361">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WatchlistItemTest.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/Item/WatchlistItemTest.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1224">
+              <caret line="74" column="1" lean-forward="false" selection-start-line="74" selection-start-column="1" selection-end-line="74" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WatchlistItem.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Item/WatchlistItem.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1170">
+              <caret line="73" column="33" lean-forward="false" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WatchlistItemFileTest.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tests/Item/WatchlistItemFileTest.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="504">
+              <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WatchlistItemFile.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Item/WatchlistItemFile.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="17" column="67" lean-forward="false" selection-start-line="17" selection-start-column="67" selection-end-line="17" selection-end-column="67" />
               <folding />
             </state>
           </provider>
@@ -132,7 +125,12 @@
       <find>huh.list.list-config-registry</find>
       <find>getModule</find>
       <find>setData</find>
+      <find>getAddToWatchlistButton</find>
+      <find>addToWatchlist</find>
     </findStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/src/Manager</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -163,13 +161,14 @@
         <option value="$PROJECT_DIR$/tests/Item/DownloadItemTest.php" />
         <option value="$PROJECT_DIR$/tests/Item/DownloadItemFileTest.php" />
         <option value="$PROJECT_DIR$/src/Item/WatchlistItem.php" />
-        <option value="$PROJECT_DIR$/tests/Item/WatchlistItemTest.php" />
-        <option value="$PROJECT_DIR$/src/Item/WatchlistItemFile.php" />
         <option value="$PROJECT_DIR$/tests/Item/WatchlistItemFileTest.php" />
         <option value="$PROJECT_DIR$/phpunit.xml.dist" />
         <option value="$PROJECT_DIR$/tests/Model/WatchlistModelTest.php" />
         <option value="$PROJECT_DIR$/src/Manager/AjaxManager.php" />
+        <option value="$PROJECT_DIR$/src/Item/WatchlistItemFile.php" />
+        <option value="$PROJECT_DIR$/tests/Item/WatchlistItemTest.php" />
         <option value="$PROJECT_DIR$/tests/Manager/AjaxManagerTest.php" />
+        <option value="$PROJECT_DIR$/src/Manager/WatchlistTemplateManager.php" />
       </list>
     </option>
   </component>
@@ -423,20 +422,7 @@
               <item name="contao-watchlist-bundle" type="b2602c69:ProjectViewProjectNode" />
               <item name="contao-watchlist-bundle" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Model" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="contao-watchlist-bundle" type="b2602c69:ProjectViewProjectNode" />
-              <item name="contao-watchlist-bundle" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Resources" type="2a2b976b:PhpTreeStructureProvider$1" />
-            </path>
-            <path>
-              <item name="contao-watchlist-bundle" type="b2602c69:ProjectViewProjectNode" />
-              <item name="contao-watchlist-bundle" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="src" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="Resources" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="config" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="Module" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
             <path>
               <item name="contao-watchlist-bundle" type="b2602c69:ProjectViewProjectNode" />
@@ -447,14 +433,20 @@
               <item name="contao-watchlist-bundle" type="b2602c69:ProjectViewProjectNode" />
               <item name="contao-watchlist-bundle" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
-              <item name="DependencyInjection" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="Item" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
+            <path>
+              <item name="contao-watchlist-bundle" type="b2602c69:ProjectViewProjectNode" />
+              <item name="contao-watchlist-bundle" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="tests" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="Manager" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -512,22 +504,12 @@
       <workItem from="1522924255154" duration="14710000" />
       <workItem from="1523280800740" duration="8110000" />
       <workItem from="1523289641113" duration="16000" />
+      <workItem from="1525441432453" duration="1154000" />
+      <workItem from="1525676018249" duration="2483000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="phpunit_xml_dist - 2018.04.09 at 17h 54m 30s.xml">
-      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="phpunit_xml_dist - 2018.04.09 at 17h 56m 19s.xml">
-      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="phpunit_xml_dist - 2018.04.09 at 17h 56m 22s.xml">
-      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="phpunit_xml_dist - 2018.04.09 at 17h 56m 41s.xml">
-      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
     <history-entry file="phpunit_xml_dist - 2018.04.09 at 17h 57m 47s.xml">
       <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
     </history-entry>
@@ -546,32 +528,44 @@
     <history-entry file="phpunit_xml_dist - 2018.04.09 at 18h 00m 47s.xml">
       <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
     </history-entry>
+    <history-entry file="phpunit_xml_dist - 2018.05.04 at 15h 47m 13s.xml">
+      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="phpunit_xml_dist - 2018.05.04 at 15h 50m 17s.xml">
+      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="phpunit_xml_dist - 2018.05.04 at 15h 50m 25s.xml">
+      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
+    <history-entry file="phpunit_xml_dist - 2018.05.04 at 15h 50m 28s.xml">
+      <configuration name="phpunit.xml.dist" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23567000" />
+    <option name="totallyTimeSpent" value="27204000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="45" y="116" width="1875" height="1084" extended-state="6" />
+    <frame x="44" y="109" width="1877" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2580645" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26353198" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3696335" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32968834" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3696335" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Coverage" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32968834" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -585,12 +579,12 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/tests/Choice/WatchlistItemEntityChoiceTest.php</url>
-          <line>60</line>
-          <option name="timeStamp" value="17" />
+          <url>file://$PROJECT_DIR$/tests/Item/WatchlistItemFileTest.php</url>
+          <line>33</line>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="19" />
+      <option name="time" value="20" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PHPUnitRunConfigurationType">
@@ -628,21 +622,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/DependencyInjection/Configuration.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-176">
-          <caret line="14" column="44" lean-forward="false" selection-start-line="14" selection-start-column="44" selection-end-line="14" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/ContaoManager/PluginTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/DependencyInjection/ConfigurationTest.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="342">
@@ -713,7 +692,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-60">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -721,7 +699,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="54">
           <caret line="3" column="95" lean-forward="false" selection-start-line="3" selection-start-column="95" selection-end-line="3" selection-end-column="95" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -771,9 +748,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="877">
           <caret line="63" column="44" lean-forward="false" selection-start-line="63" selection-start-column="44" selection-end-line="63" selection-end-column="44" />
-          <folding>
-            <element signature="e#148#165#0#PHP" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -797,7 +771,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="183">
           <caret line="76" column="0" lean-forward="false" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -812,9 +785,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="481">
           <caret line="58" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding>
-            <element signature="e#148#165#0#PHP" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -822,7 +792,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="72">
           <caret line="4" column="19" lean-forward="false" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -830,7 +799,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="468">
           <caret line="46" column="2" lean-forward="false" selection-start-line="46" selection-start-column="2" selection-end-line="46" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -849,47 +817,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Item/WatchlistItem.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="587">
-          <caret line="73" column="33" lean-forward="true" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Item/WatchlistItemEntity.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/Item/DownloadItemFileTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="18" column="4" lean-forward="false" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
-          <folding>
-            <element signature="e#146#164#0#PHP" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/Item/WatchlistItemTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="84" column="5" lean-forward="true" selection-start-line="84" selection-start-column="5" selection-end-line="84" selection-end-column="5" />
-          <folding>
-            <element signature="e#146#181#0#PHP" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/Item/WatchlistItemFileTest.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="54" column="1" lean-forward="true" selection-start-line="54" selection-start-column="1" selection-end-line="54" selection-end-column="1" />
-          <folding>
-            <element signature="e#146#174#0#PHP" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -904,24 +835,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="552">
           <caret line="59" column="1" lean-forward="true" selection-start-line="59" selection-start-column="1" selection-end-line="59" selection-end-column="1" />
-          <folding>
-            <element signature="e#146#181#0#PHP" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Manager/WatchlistTemplateManager.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-10824">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Item/WatchlistItemFile.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="36" column="1" lean-forward="true" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -955,14 +868,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/contao/core-bundle/src/Resources/contao/library/Contao/System.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3906">
-          <caret line="231" column="0" lean-forward="false" selection-start-line="231" selection-start-column="0" selection-end-line="231" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/contao/core-bundle/src/Resources/contao/library/Contao/Model.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="124">
@@ -976,10 +881,65 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tests/Model/WatchlistModelTest.php" />
+    <entry file="file://$PROJECT_DIR$/tests/Item/DownloadItemFileTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-321">
+          <caret line="18" column="4" lean-forward="false" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/contao/core-bundle/src/Resources/contao/library/Contao/System.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="867">
+          <caret line="231" column="0" lean-forward="false" selection-start-line="231" selection-start-column="0" selection-end-line="231" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/Choice/WatchlistItemEntityChoiceTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Item/WatchlistItemFile.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="17" column="67" lean-forward="false" selection-start-line="17" selection-start-column="67" selection-end-line="17" selection-end-column="67" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/Item/WatchlistItemFileTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="35" column="0" lean-forward="false" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Item/WatchlistItem.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1170">
+          <caret line="73" column="33" lean-forward="false" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/Item/WatchlistItemTest.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1224">
+          <caret line="74" column="1" lean-forward="false" selection-start-line="74" selection-start-column="1" selection-end-line="74" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tests/Manager/AjaxManagerTest.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1332">
-          <caret line="79" column="4" lean-forward="true" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="4" />
+        <state relative-caret-position="468">
+          <caret line="30" column="27" lean-forward="true" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
           <folding>
             <element signature="e#149#167#0#PHP" expanded="true" />
           </folding>
@@ -988,16 +948,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Manager/AjaxManager.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
+        <state relative-caret-position="-1494">
           <caret line="17" column="49" lean-forward="false" selection-start-line="17" selection-start-column="49" selection-end-line="17" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/Choice/WatchlistItemEntityChoiceTest.php">
+    <entry file="file://$PROJECT_DIR$/src/Manager/WatchlistTemplateManager.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+        <state relative-caret-position="496">
+          <caret line="246" column="43" lean-forward="false" selection-start-line="246" selection-start-column="20" selection-end-line="246" selection-end-column="43" />
+          <folding>
+            <element signature="e#142#164#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Manager/WatchlistActionManager.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-864">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Module/ModuleWatchlist.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-361">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>

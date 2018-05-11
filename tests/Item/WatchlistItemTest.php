@@ -9,7 +9,6 @@
 namespace HeimrichHannot\WatchlistBundle\Test\Item;
 
 use Contao\TestCase\ContaoTestCase;
-use HeimrichHannot\Ajax\AjaxAction;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItem;
 
 class WatchlistItemTest extends ContaoTestCase
@@ -70,15 +69,5 @@ class WatchlistItemTest extends ContaoTestCase
 
         $item->setTitle('title');
         $this->assertSame('title', $item->getTitle());
-    }
-
-    public function testGetEditActions()
-    {
-        $this->markTestSkipped();
-
-        $container = $this->mockContainer();
-
-        $ajaxAction = $this->createMock(AjaxAction::class);
-        $ajaxAction->method('generateUrl')->willReturn('ajaxAction');
     }
 }

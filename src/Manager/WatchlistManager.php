@@ -221,6 +221,11 @@ class WatchlistManager
         return $watchlistArray;
     }
 
+    public function getWatchlistByUuid(string $uuid)
+    {
+        return $this->framework->getAdapter(WatchlistModel::class)->findPublishedByUuid($uuid);
+    }
+
     /**
      * @param $module
      *
@@ -346,5 +351,30 @@ class WatchlistManager
     public function getItemsFromWatchlist($watchlist)
     {
         return $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlist);
+    }
+
+    /**
+     * @param WatchlistModel $watchlist
+     *
+     * @return bool
+     */
+    public function checkWatchlistValidity($watchlist)
+    {
+        if (!$this->usePublicLinkDurability) {
+            return true;
+        }
+
+        if (!$watchlist->startShare) {
+            return false;
+        }
+
+        // publicLinkDurability is set in days at module
+        $validityLimit = $watchlist->startShare + $this->publicLinkDurability * 60 * 60 * 24;
+
+        if (time() < $validityLimit) {
+            return true;
+        }
+
+        return false;
     }
 }

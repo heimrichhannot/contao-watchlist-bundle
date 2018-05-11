@@ -248,6 +248,8 @@ class WatchlistTemplateManager
         $template->moduleId = $watchlistConfig;
         $template->dataContainer = $dataContainer;
         $template->downloadable = $downloadable;
+        $template->itemTitle = $data['title'];
+        $template->uuid = $data['uuid'];
         $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
         $template->title = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['addTitle'], $data['title']);
         $template->link = $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
@@ -286,6 +288,7 @@ class WatchlistTemplateManager
         $template->newWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['newWatchlist'];
         $template->selectWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['selectWatchlist'];
         $template->addItemToSelectedWatchlistAction = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST);
+        $template->downloadable = $itemData['downloadable'];
 
         $template->moduleId = $moduleId;
 
@@ -305,8 +308,8 @@ class WatchlistTemplateManager
         }
 
         if ($itemData['uuid']) {
-            $template->uuid = $itemData['uuid']['uuid'];
-            $template->itemTitle = $itemData['uuid']['title'];
+            $template->uuid = $itemData['uuid'];
+            $template->itemTitle = $itemData['title'];
         }
 
         $config = [
@@ -434,6 +437,32 @@ class WatchlistTemplateManager
             $image['singleSRC'] = $path;
             Controller::addImageToTemplate($template, $image);
         }
+    }
+
+    /**
+     * return unparsed toggler template
+     * -> do not parse it yet since we want to access some properties in `WatchlistModule`.
+     *
+     * @param int $moduleId
+     *
+     * @return FrontendTemplate
+     */
+    public function getWatchlistToggler(int $moduleId)
+    {
+        $watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel($moduleId);
+
+        $template = new FrontendTemplate('watchlist_toggler');
+
+        if (null !== ($watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlist->id))) {
+            $template->count = $watchlistItems->count;
+        }
+
+        $template->toggleLink = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
+        $template->moduleId = $moduleId;
+        $template->watchlistId = $watchlist->id;
+        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
+
+        return $template;
     }
 
     /**

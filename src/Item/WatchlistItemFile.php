@@ -15,7 +15,7 @@ class WatchlistItemFile extends WatchlistItem
     public function __construct(array $data = [])
     {
         parent::__construct($data);
-        $this->setTitle($data['title']);
+        $this->setTitle(isset($data['title']) ? $data['title'] : '');
         $this->setFile();
     }
 
