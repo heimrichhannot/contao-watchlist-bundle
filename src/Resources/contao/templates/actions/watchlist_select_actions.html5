@@ -1,13 +1,12 @@
 <?php if (!empty($this->select)): ?>
-    <div class="form-group <?= $this->class?>" >
+    <div class="form-group <?= $this->class ?>">
         <label for="watchlist-select"><?= $this->label ?></label>
-        <select id="watchlist-select" <?php if($this->action):?>data-action="<?= $this->action; ?>"<?php endif; ?> <?php if($this->moduleId): ?>data-module-id="<?= $this->moduleId; ?>"<?php endif; ?>>
-            <option value="" selected>-</option>
+        <select id="watchlist-select" <?php if ($this->action): ?>data-action="<?= $this->action; ?>"<?php endif; ?> <?php if ($this->moduleId): ?>data-module-id="<?= $this->moduleId; ?>"<?php endif; ?>>
             <?php foreach ($this->select as $key => $value): ?>
-                <?php if(is_array($value)): ?>
-                <option value='<?= $value['uuid'] ?>' <?php if($key == $this->currentOption || $value == $this->currentOption):?>selected<?php endif; ?>><?= $value['title'] ?></option>
+                <?php if (is_array($value)): ?>
+                    <option value='<?= $value['uuid'] ?>' <?php if ($key == $this->currentOption || $value == $this->currentOption): ?>selected<?php endif; ?>><?= $value['title'] ?></option>
                 <?php else: ?>
-                <option value='<?= $key ?>' <?php if($key == $this->currentOption || $value == $this->currentOption):?>selected<?php endif; ?>><?= $value ?></option>
+                    <option value='<?= $key ?>' <?php if ($key == $this->currentOption || $value == $this->currentOption): ?>selected<?php endif; ?>><?= $value ?></option>
                 <?php endif; ?>
             <?php endforeach; ?>
         </select>

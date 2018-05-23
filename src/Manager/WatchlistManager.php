@@ -85,11 +85,15 @@ class WatchlistManager
             $watchlist = $this->getWatchlistByUser();
         }
 
-        if (null === $watchlist) {
+        if (null === $watchlist && !$module->useMultipleWatchlist) {
             $watchlist = $this->actionManger->createWatchlist($GLOBALS['TL_LANG']['WATCHLIST']['watchlist']);
         }
 
-        Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
+        if (null === $watchlist) {
+            Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, null);
+        } else {
+            Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
+        }
 
         return $watchlist;
     }

@@ -61,25 +61,25 @@ class WatchlistTemplateManager
         // get download link action
         if (!empty($items) && $module->useDownloadLink) {
             $template->actions = true;
-            $template->downloadLinkAction = $this->getDownloadLinkAction($module->id, $items[0]->pid);
+            $template->downloadLinkAction = $this->getDownloadLinkAction($module->id, $watchlistId);
         }
 
         // get delete watchlist action
         if ($module->useMultipleWatchlist) {
             $template->actions = true;
-            $template->deleteWatchlistAction = $this->getDeleteWatchlistAction($items[0]->pid, $module->id);
+            $template->deleteWatchlistAction = $this->getDeleteWatchlistAction($watchlistId, $module->id);
 
             $template->selectWatchlist = $this->getOptionsSelectTemplate(System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistOptions($module), static::WATCHLIST_SELECT_WATCHLIST_OPTIONS, $watchlistId, $module->id, System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION));
         } // get empty watchlist action
         elseif (!empty($items)) {
             $template->actions = true;
-            $template->emptyWatchlistAction = $this->getEmptyWatchlistAction($items[0]->pid, $module->id);
+            $template->emptyWatchlistAction = $this->getEmptyWatchlistAction($watchlistId, $module->id);
         }
 
         // get download all action
         if (count($preparedWatchlistItems) > 1) {
             $template->actions = true;
-            $template->downloadAllAction = $this->getDownloadAllAction($items[0]->pid, $module->id);
+            $template->downloadAllAction = $this->getDownloadAllAction($watchlistId, $module->id);
         }
 
         if (empty($items)) {
@@ -280,7 +280,7 @@ class WatchlistTemplateManager
 
         $template = new FrontendTemplate('watchlist_add_modal');
 
-        $template->addTitle = $GLOBALS['TL_LANG']['WATCHLIST']['addTitle'];
+        $template->addTitle = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['addTitle'], $itemData['title']);
         $template->addLink = $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
         $template->abort = $GLOBALS['TL_LANG']['WATCHLIST']['abort'];
         $template->type = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
@@ -312,9 +312,7 @@ class WatchlistTemplateManager
             $template->itemTitle = $itemData['title'];
         }
 
-        $config = [
-            'headline' => $GLOBALS['TL_LANG']['WATCHLIST']['addToWatchlist'],
-        ];
+        $config = ['headline' => sprintf($GLOBALS['TL_LANG']['WATCHLIST']['addTitle'], $itemData['title'])];
 
         return [null, $this->getModal($template->parse(), $config), null];
     }
@@ -372,16 +370,16 @@ class WatchlistTemplateManager
     {
         if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
             $template = new FrontendTemplate('watchlist');
-            $template->empty = $GLOBALS['TL_LANG']['WATCHLIST_ITEMS']['empty'];
+            $template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
 
-            return [$template->parse(), 0];
+            return [$template->parse(), '', 0];
         }
 
         if (null === ($watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null, $watchlistId))) {
             $template = new FrontendTemplate('watchlist');
-            $template->empty = $GLOBALS['TL_LANG']['WATCHLIST_ITEMS']['empty'];
+            $template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
 
-            return [$template->parse(), 0];
+            return [$template->parse(), '', 0];
         }
 
         $watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_manager')->getCurrentWatchlistItems($moduleId, $watchlistId);
@@ -401,7 +399,7 @@ class WatchlistTemplateManager
         $template = new FrontendTemplate('watchlist_modal_wrapper');
         $template->content = $content;
 
-        $template->headline = $config['headline'] ? sprintf($GLOBALS['TL_LANG']['WATCHLIST']['modalHeadlineConfig'], $config['headline']) : $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'];
+        $template->headline = $config['headline'] ? $config['headline'] : $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'];
 
         if ($config['class']) {
             $template->class = $config['class'];
