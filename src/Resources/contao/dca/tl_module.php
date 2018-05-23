@@ -36,34 +36,34 @@ $dca['subpalettes']['usePublicLinkDurability'] = 'publicLinkDurability';
  * Fields
  */
 $arrFields = [
-    'useMultipleWatchlist'    => [
+    'useMultipleWatchlist'       => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['useMultipleWatchlist'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'sql'       => "char(1) NOT NULL default ''",
     ],
-    'useDownloadLink'         => [
+    'useDownloadLink'            => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['useDownloadLink'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
         'sql'       => "char(1) NOT NULL default ''",
     ],
-    'downloadLink'            => [
+    'downloadLink'               => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['downloadLink'],
         'exclude'   => true,
         'inputType' => 'pageTree',
         'eval'      => ['fieldType' => 'radio', 'tl_class' => 'clr'],
         'sql'       => "blob NULL",
     ],
-    'useGroupWatchlist'       => [
+    'useGroupWatchlist'          => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['useGroupWatchlist'],
         'exclude'   => true,
         'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
         'inputType' => 'checkbox',
         'sql'       => "char(1) NOT NULL default ''",
     ],
-    'groupWatchlist'          => [
+    'groupWatchlist'             => [
         'label'      => &$GLOBALS['TL_LANG']['tl_module']['groupWatchlist'],
         'exclude'    => true,
         'inputType'  => 'checkbox',
@@ -72,21 +72,21 @@ $arrFields = [
         'sql'        => "blob NULL",
         'relation'   => ['type' => 'hasMany', 'load' => 'lazy'],
     ],
-    'useWatchlistDurability'  => [
+    'useWatchlistDurability'     => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['useWatchlistDurability'],
         'exclude'   => true,
         'inputType' => 'checkbox',
         'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
         'sql'       => "char(1) NOT NULL default ''",
     ],
-    'watchlistDurability'     => [
+    'watchlistDurability'        => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['watchlistDurability'],
         'exclude'   => true,
         'inputType' => 'text',
         'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
         'sql'       => "varchar(8) NOT NULL default ''",
     ],
-    'usePublicLinkDurability' => [
+    'usePublicLinkDurability'    => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['usePublicLinkDurability'],
         'exclude'   => true,
         'inputType' => 'checkbox',
@@ -100,14 +100,14 @@ $arrFields = [
         'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
         'sql'       => "char(1) NOT NULL default ''",
     ],
-    'publicLinkDurability'    => [
+    'publicLinkDurability'       => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['publicLinkDurability'],
         'exclude'   => true,
         'inputType' => 'text',
         'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
         'sql'       => "varchar(8) NOT NULL default ''",
     ],
-    'watchlistItemFile'       => [
+    'watchlistItemFile'          => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['watchlistItemFile'],
         'options_callback' => ['huh.watchlist.choice.watchlist_file', 'getChoices'],
@@ -121,7 +121,7 @@ $arrFields = [
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
     ],
-    'watchlistItemEntity'     => [
+    'watchlistItemEntity'        => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['watchlistItemEntity'],
         'options_callback' => ['huh.watchlist.choice.watchlist_entity', 'getChoices'],
@@ -135,7 +135,7 @@ $arrFields = [
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
     ],
-    'downloadItemFile'        => [
+    'downloadItemFile'           => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['downloadItemFile'],
         'options_callback' => ['huh.watchlist.choice.download_file', 'getChoices'],
@@ -149,7 +149,7 @@ $arrFields = [
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
     ],
-    'downloadItemEntity'      => [
+    'downloadItemEntity'         => [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['downloadItemEntity'],
         'options_callback' => ['huh.watchlist.choice.download_entity', 'getChoices'],

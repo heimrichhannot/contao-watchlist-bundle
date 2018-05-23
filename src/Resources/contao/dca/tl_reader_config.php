@@ -3,7 +3,7 @@
 \Contao\Controller::loadDataContainer('tl_module');
 \Contao\System::loadLanguageFile('tl_module');
 
-$dca = &$GLOBALS['TL_DCA']['tl_list_config'];
+$dca = &$GLOBALS['TL_DCA']['tl_reader_config'];
 
 $dca['fields']['watchlist_config'] = [
     'label'            => &$GLOBALS['TL_LANG']['tl_list_config']['watchlist_config'],
@@ -27,4 +27,4 @@ $dca['fields']['watchlist_config'] = [
     'sql'              => "varchar(255) NOT NULL default ''",
 ];
 
-$dca['palettes']['default'] = str_replace('addShare;', 'addShare;{watchlist_legend},watchlist_config;', $dca['palettes']['default']);
+$dca['palettes']['default'] = str_replace('headTags;', 'headTags;{watchlist_legend},watchlist_config;', $dca['palettes']['default']);
