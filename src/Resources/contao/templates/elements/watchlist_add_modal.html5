@@ -1,7 +1,7 @@
 <div class="watchlist-add-item">
     <ul class="nav nav-tabs" role="tablist">
         <?php if ($this->watchlistOptions): ?>
-            <li class="active"><a data-toggle="tab" href="#selectWatchlist"><?= $this->selectWatchlistTitle ?></a></li>
+            <li class="active"><a data-toggle="tab" href="#selectWatchlist" class="active show"><?= $this->selectWatchlistTitle ?></a></li>
             <li><a data-toggle="tab" href="#newWatchlist"><?= $this->newWatchlistTitle ?></a></li>
         <?php else: ?>
             <li class="active"><?= $this->newWatchlistTitle ?></li>
@@ -21,7 +21,7 @@
                         <span><?= $this->abort; ?></span>
                     </button>
                     <button class="btn btn-primary watchlist-select-add <?php if ($this->active): ?>active<?php endif; ?>" <?php if (!$this->itemOptions): ?>data-uuid="<?= $this->uuid ?>"<?php endif; ?> <?php if (!$this->watchlistOptions): ?>data-watchlist-id="<?= $this->watchlistId ?>"<?php endif; ?> data-type="<?= $this->type ?>" data-action="<?= $this->addItemToSelectedWatchlistAction; ?>"
-                            data-downloadable="<?= $this->downloadable ?>"
+                            data-downloadable="<?= $this->downloadable ?>" data-title="<?= $this->itemTitle; ?>"
                             title="<?= $this->addTitle; ?>">
                         <span><?= $this->addLink; ?></span>
                     </button>

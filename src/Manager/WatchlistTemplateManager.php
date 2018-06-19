@@ -244,7 +244,9 @@ class WatchlistTemplateManager
             $template->added = true;
         }
 
+        $template->type = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
         $template->id = $data['id'];
+        $template->options = $data['options'];
         $template->moduleId = $watchlistConfig;
         $template->dataContainer = $dataContainer;
         $template->downloadable = $downloadable;

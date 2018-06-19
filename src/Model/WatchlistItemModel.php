@@ -26,12 +26,7 @@ class WatchlistItemModel extends Model
             $uuid = StringUtil::uuidToBin($uuid);
         }
 
-        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
-            static::$strTable,
-            [static::$strTable.'.pid=?', static::$strTable.'.uuid=?'],
-            [$pid, $uuid],
-            $options
-        );
+        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(static::$strTable, [static::$strTable.'.pid=?', static::$strTable.'.uuid=?'], [$pid, $uuid], $options);
     }
 
     public function findByUuid($uuid, array $options = [])
@@ -40,41 +35,26 @@ class WatchlistItemModel extends Model
             $uuid = StringUtil::uuidToBin($uuid);
         }
 
-        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(
-            static::$strTable,
-            [static::$strTable.'.uuid=UNHEX(?)'],
-            [$uuid],
-            $options
-        );
+        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(static::$strTable, [static::$strTable.'.uuid=UNHEX(?)'], [$uuid], $options);
     }
 
     public function findByPid($pid, array $options = [])
     {
-        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
-            static::$strTable,
-            [static::$strTable.'.pid=?'],
-            [$pid],
-            $options
-        );
+        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(static::$strTable, [static::$strTable.'.pid=?'], [$pid], $options);
     }
 
     public function findByPidAndPtableAndPtableId($pid, $ptable, $ptableId, array $options = [])
     {
-        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
-            static::$strTable,
-            [static::$strTable.'.pid=?', static::$strTable.'.ptable=?', static::$strTable.'.ptableId=?'],
-            [$pid, $ptable, $ptableId],
-            $options
-        );
+        return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(static::$strTable, [static::$strTable.'.pid=?', static::$strTable.'.ptable=?', static::$strTable.'.ptableId=?'], [$pid, $ptable, $ptableId], $options);
     }
 
     public function findInstanceByPk($pk, array $options = [])
     {
-        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(
-            static::$strTable,
-            [static::$strTable.'.id=?'],
-            [$pk],
-            $options
-        );
+        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(static::$strTable, [static::$strTable.'.id=?'], [$pk], $options);
+    }
+
+    public function countByPid($pid)
+    {
+        return System::getContainer()->get('contao.framework')->getAdapter(self::class)->countBy('pid', $pid);
     }
 }

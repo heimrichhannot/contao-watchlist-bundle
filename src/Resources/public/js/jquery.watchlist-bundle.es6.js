@@ -87,11 +87,14 @@ var jQuery = require('jquery');
                 uuid = elem.data('uuid') ? elem.data('uuid') : $(document).find('.item-options option:selected').val(),
                 watchlist = elem.data('watchlistId') ? elem.data('watchlistId') : $(document).find('.watchlist-options option:selected').val(),
                 downloadable = elem.data('downloadable'),
+                title = elem.data('title') ? elem.data('title') : $(document).find('.item-options option:selected').text(),
                 data = {
                     'watchlistId': watchlist,
                     'type': elem.data('type'),
                     'itemData': {
-                        'uuid': uuid,
+                        'options': elem.data('options') ? elem.data('options') : null,
+                        'uuid': uuid ? uuid : null,
+                        'title': title ? title : null,
                         'downloadable': downloadable,
                     },
                 };
@@ -138,7 +141,7 @@ var jQuery = require('jquery');
                 method: 'POST',
                 data: data,
                 success: function(data) {
-                    window.location.href = window.location.href + '?file=' + data.result.data.file;
+                    window.location.href = window.location.href + '&file=' + data.result.data.file;
                 },
             });
         },

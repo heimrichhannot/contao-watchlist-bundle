@@ -4,6 +4,7 @@ huh:
           - { name: watchlist_downloadlist, class: HeimrichHannot\WatchlistBundle\Lists\WatchlistDownloadList }
         items:
           - { name: watchlist-default, class: HeimrichHannot\WatchlistBundle\ListItem\WatchlistListItem }
+          - { name: watchlist-download, class: HeimrichHannot\WatchlistBundle\ListItem\WatchlistDownloadListItem }
         templates:
             item:
               - { name: watchlist-list-item, template: "@HeimrichHannotContaoWatchlist/list_item_watchlist.html.twig" }

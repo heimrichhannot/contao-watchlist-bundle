@@ -1,5 +1,10 @@
 <?php $this->extend('block_searchable'); ?>
 <?php $this->block('content'); ?>
-<?= $this->list; ?>
-<?= $this->downloadAllAction; ?>
+
+<?php if ($this->empty): ?>
+    <?= $this->empty; ?>
+<?php else: ?>
+    <?= $this->list; ?>
+    <?= $this->downloadAllAction; ?>
+<?php endif; ?>
 <?php $this->endblock(); ?>

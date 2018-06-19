@@ -6,11 +6,11 @@
     <?php if ($this->uuid): ?>
         data-uuid='<?= $this->uuid ?>'
     <?php endif; ?>
+        data-title="<?= $this->itemTitle ?>"
         data-downloadable="<?= $this->downloadable ?>"
         data-module-id="<?= $this->moduleId ?>"
         data-type="<?= $this->type ?>"
         data-action="<?= $this->action ?>"
-        data-title="<?= $this->itemTitle ?>"
         title="<?= $this->title; ?>">
     <span><?= $this->link; ?></span>
 </button>
