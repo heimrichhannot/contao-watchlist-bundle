@@ -52,7 +52,9 @@ class WatchlistManager
     public function getWatchlistModel($moduleId = null, $watchlistId = null)
     {
         if ($watchlistId) {
-            return $this->framework->getAdapter(WatchlistModel::class)->findModelInstanceByPk($watchlistId);
+            if (null !== ($watchlist = $this->framework->getAdapter(WatchlistModel::class)->findModelInstanceByPk($watchlistId))) {
+                return $watchlist;
+            }
         }
 
         if (!$moduleId) {

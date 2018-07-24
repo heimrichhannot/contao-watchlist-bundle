@@ -140,15 +140,11 @@ class WatchlistActionManager
      */
     public function deleteWatchlist(int $watchlistId)
     {
-        if (null === ($watchlistItems = $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all_error']);
-
-            return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
-        }
-
-        // delete all items from watchlist
-        foreach ($watchlistItems as $item) {
-            $item->delete();
+        if (null !== ($watchlistItems = $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId))) {
+            // delete all items from watchlist
+            foreach ($watchlistItems as $item) {
+                $item->delete();
+            }
         }
 
         if (null === ($watchlist = $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedById($watchlistId))) {

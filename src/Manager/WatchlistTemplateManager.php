@@ -107,6 +107,8 @@ class WatchlistTemplateManager
             return $this->getModal($GLOBALS['TL_LANG']['WATCHLIST']['empty']);
         }
 
+        // if no watchlistId is given overwrite by found watchlist
+        $watchlistId = $watchlist->id;
         $watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_manager')->getCurrentWatchlistItems($module, $watchlist->id);
 
         $config = [
@@ -324,7 +326,7 @@ class WatchlistTemplateManager
      *
      * @return string
      */
-    public function getOptionsSelectTemplate(array $options, string $class, int $currentOption = null, int $moduleId = null, string $action = null)
+    public function getOptionsSelectTemplate(array $options, string $class, $currentOption = null, int $moduleId = null, string $action = null)
     {
         $template = new FrontendTemplate('watchlist_select_actions');
 

@@ -262,6 +262,7 @@ class AjaxManager
     /**
      * delete specific watchlist.
      *
+     * @param int $moduleId
      * @param int $watchlistId
      *
      * @return ResponseSuccess

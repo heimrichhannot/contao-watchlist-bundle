@@ -2,14 +2,17 @@
 
 <?php $this->block('content'); ?>
 <div id="watchlist-notify">
-    <div class="watchlist-notification"></div>
+</div>
+
+<div class="watchlist-loader" id="watchlist-loader">
+    <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
 </div>
 
 <div class="watchlist-action">
-<?= $this->toggler; ?>
-<?php if($this->downloadAllAction):?>
-    <?= $this->downloadAllAction; ?>
-<?php endif ;?>
+    <?= $this->toggler; ?>
+    <?php if ($this->downloadAllAction): ?>
+        <?= $this->downloadAllAction; ?>
+    <?php endif; ?>
 </div>
 
 <?php $this->endblock(); ?>
