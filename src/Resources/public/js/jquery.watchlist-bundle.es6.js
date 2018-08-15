@@ -13,11 +13,9 @@ var jQuery = require('jquery');
             });
 
             // add a item to a watchlist or display the add item modal
-            $(document).
-                on('click', '.watchlist-add-item, .watchlist-add-option',
-                    function() {
-                        Watchlist.addItem($(this));
-                    });
+            $(document).on('click', '.watchlist-add-item, .watchlist-add-option', function() {
+                Watchlist.addItem($(this));
+            });
 
             $(document).on('click', '.watchlist-delete-item', function() {
                 Watchlist.deleteItem($(this));

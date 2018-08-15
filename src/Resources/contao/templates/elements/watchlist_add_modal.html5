@@ -1,4 +1,4 @@
-<div class="watchlist-add-item">
+<div class="watchlist-add-item-modal">
     <ul class="nav nav-tabs" role="tablist">
         <?php if ($this->watchlistOptions): ?>
             <li class="active"><a data-toggle="tab" href="#selectWatchlist" class="active show"><?= $this->selectWatchlistTitle ?></a></li>
@@ -36,7 +36,7 @@
             <?php if ($this->useWatchlistDurability): ?>
                 <div class="form-group">
                     <label for="watchlist-durability"><?= $this->durabilityLabel ?></label>
-                    <select id="watchlist-durability">
+                    <select class="form-control" id="watchlist-durability">
                         <?php foreach ($this->durability as $value): ?>
                             <option value="<?= $value ?>"> <?= $value ?></option>
                         <?php endforeach; ?>

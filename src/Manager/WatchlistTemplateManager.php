@@ -299,8 +299,9 @@ class WatchlistTemplateManager
         $template->newWatchlistAction = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION);
 
         if ($module->useWatchlistDurability) {
+            $template->useWatchlistDurability = $module->useWatchlistDurability;
             $template->durabilityLabel = $GLOBALS['TL_LANG']['WATCHLIST']['durability']['label'];
-            $template->durability = [$module->watchlistDurability, $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal']];
+            $template->durability = [$module->watchlistDurability.$GLOBALS['TL_LANG']['WATCHLIST']['durability']['days'], $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal']];
         }
 
         if (!empty($options = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistOptions($module))) {

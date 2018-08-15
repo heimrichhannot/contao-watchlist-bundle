@@ -308,12 +308,12 @@ class WatchlistManager
             $options = [];
 
             foreach ($watchlist as $model) {
-                $durability = $model->watchlistDurability * 86400;
+                $durability = $module->watchlistDurability * 86400;
                 if (($model->tstamp + $durability) < time()) {
                     continue;
                 }
 
-                $options[$model->watchlistDurability] = $model->name;
+                $options[$model->id] = $model->name;
             }
 
             return $options;
