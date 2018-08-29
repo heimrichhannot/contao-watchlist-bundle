@@ -8,11 +8,6 @@
 
 namespace HeimrichHannot\WatchlistBundle\Test\DependencyInjection;
 
-use Contao\TestCase\ContaoTestCase;
-use HeimrichHannot\WatchlistBundle\DependencyInjection\HeimrichHannotContaoWatchlistExtension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-
 class HeimrichHannotContaoWatchlistExtensionTest extends ContaoTestCase
 {
     public function setUp()

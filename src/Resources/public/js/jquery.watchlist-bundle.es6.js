@@ -91,6 +91,7 @@ var jQuery = require('jquery');
                     },
                 };
 
+
             Watchlist.doAjaxCallWithUpdate(url, data);
         },
         addItemToSelectedWatchlist: function(elem) {
@@ -237,6 +238,8 @@ var jQuery = require('jquery');
                         null,
                     'downloadable': downloadable,
                 };
+
+            console.log(data);
 
             Watchlist.doAjaxCallWithUpdate(url, data);
         },

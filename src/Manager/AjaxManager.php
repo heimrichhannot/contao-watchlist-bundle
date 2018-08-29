@@ -186,7 +186,7 @@ class AjaxManager
         $watchlist = System::getContainer()->get('huh.watchlist.action_manager')->createWatchlist($name);
 
         if (!is_array($itemData)) {
-            $data = json_decode($itemData);
+            $data = null !== json_decode($itemData) ? json_decode($itemData) : $itemData;
             $itemData = [
                 'uuid' => $data->uuid,
                 'title' => $data->title,
@@ -272,8 +272,8 @@ class AjaxManager
         $response = new ResponseSuccess();
 
         $message = $this->actionManager->deleteWatchlist($watchlistId);
-        $user = FrontendUser::getInstance();
-        list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $user->id);
+//        $user = FrontendUser::getInstance();
+        list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId);
 
         $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
 

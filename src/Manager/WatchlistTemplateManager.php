@@ -69,7 +69,11 @@ class WatchlistTemplateManager
             $template->actions = true;
             $template->deleteWatchlistAction = $this->getDeleteWatchlistAction($watchlistId, $module->id);
 
-            $template->selectWatchlist = $this->getOptionsSelectTemplate(System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistOptions($module), static::WATCHLIST_SELECT_WATCHLIST_OPTIONS, $watchlistId, $module->id, System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION));
+            $template->selectWatchlist =
+                $this->getOptionsSelectTemplate(System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistOptions($module),
+                    static::WATCHLIST_SELECT_WATCHLIST_OPTIONS, $watchlistId, $module->id, System::getContainer()
+                        ->get('huh.ajax.action')
+                        ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION));
         } // get empty watchlist action
         elseif (!empty($items)) {
             $template->actions = true;
@@ -130,7 +134,8 @@ class WatchlistTemplateManager
         $template = new FrontendTemplate('watchlist_delete_watchlist_action');
         $template->watchlistId = $watchlistId;
         $template->moduleId = $moduleId;
-        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_WATCHLIST_ACTION);
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_WATCHLIST_ACTION);
         $template->deleteWatchlistLink = $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistLink'];
         $template->deleteWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistTitle'];
 
@@ -148,7 +153,8 @@ class WatchlistTemplateManager
         $template = new FrontendTemplate('watchlist_empty_watchlist_action');
         $template->watchlistId = $watchlistId;
         $template->moduleId = $moduleId;
-        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION);
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION);
         $template->emptyWatchlistLink = $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistLink'];
         $template->emptyWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistTitle'];
 
@@ -198,7 +204,8 @@ class WatchlistTemplateManager
 
         $template->moduleId = $moduleId;
         $template->watchlistId = $watchlistId;
-        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION);
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION);
         $template->downloadLinkTitle = $GLOBALS['TL_LANG']['WATCHLIST']['downloadLinkTitle'];
         $template->downloadLinkTitle = $GLOBALS['TL_LANG']['WATCHLIST']['downloadLinkTitle'];
 
@@ -214,7 +221,8 @@ class WatchlistTemplateManager
     public function getDownloadAllAction($watchlistId, $moduleId)
     {
         $downloadAllTemplate = new FrontendTemplate('watchlist_download_all_action');
-        $downloadAllTemplate->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION);
+        $downloadAllTemplate->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION);
         $downloadAllTemplate->downloadAllLink = $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllLink'];
         $downloadAllTemplate->downloadAllTitle = $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllTitle'];
         $downloadAllTemplate->watchlistId = $watchlistId;
@@ -254,7 +262,8 @@ class WatchlistTemplateManager
         $template->downloadable = $downloadable;
         $template->itemTitle = $data['title'];
         $template->uuid = $data['uuid'];
-        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
         $template->title = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['addTitle'], $data['title']);
         $template->link = $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
 
@@ -291,17 +300,24 @@ class WatchlistTemplateManager
 
         $template->newWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['newWatchlist'];
         $template->selectWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['selectWatchlist'];
-        $template->addItemToSelectedWatchlistAction = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST);
+        $template->addItemToSelectedWatchlistAction = System::getContainer()
+            ->get('huh.ajax.action')
+            ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST);
         $template->downloadable = $itemData['downloadable'];
 
         $template->moduleId = $moduleId;
 
-        $template->newWatchlistAction = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION);
+        $template->newWatchlistAction = System::getContainer()
+            ->get('huh.ajax.action')
+            ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION);
 
         if ($module->useWatchlistDurability) {
             $template->useWatchlistDurability = $module->useWatchlistDurability;
             $template->durabilityLabel = $GLOBALS['TL_LANG']['WATCHLIST']['durability']['label'];
-            $template->durability = [$module->watchlistDurability.$GLOBALS['TL_LANG']['WATCHLIST']['durability']['days'], $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal']];
+            $template->durability = [
+                $module->watchlistDurability.$GLOBALS['TL_LANG']['WATCHLIST']['durability']['days'],
+                $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal'],
+            ];
         }
 
         if (!empty($options = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistOptions($module))) {
@@ -360,7 +376,8 @@ class WatchlistTemplateManager
         $template->addLink = $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
         $template->moduleId = $moduleId;
         $template->type = $type;
-        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
 
         return $template->parse();
     }
@@ -371,13 +388,17 @@ class WatchlistTemplateManager
      *
      * @return array
      */
-    public function getUpdatedWatchlist(int $moduleId, int $watchlistId)
+    public function getUpdatedWatchlist(int $moduleId, int $watchlistId = null)
     {
         if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
             $template = new FrontendTemplate('watchlist');
             $template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
 
             return [$template->parse(), '', 0];
+        }
+
+        if (!$watchlistId) {
+            $watchlistId = $this->getRandomWatchlist($module);
         }
 
         if (null === ($watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null, $watchlistId))) {
@@ -463,9 +484,33 @@ class WatchlistTemplateManager
         $template->toggleLink = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
         $template->moduleId = $moduleId;
         $template->watchlistId = $watchlist->id;
-        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
 
         return $template;
+    }
+
+    /**
+     * return a random watchlist id from either the user groups set at module
+     * or from user id.
+     *
+     * @param $module
+     *
+     * @return int
+     */
+    protected function getRandomWatchlist($module)
+    {
+        $watchlists = $module->useGroupWatchlist
+            ? System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistByGroups($module)
+            : System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistByCurrentUser();
+
+        if (null === $watchlists) {
+            return 0;
+        }
+
+        $ids = $watchlists->fetchEach('id');
+
+        return $ids[array_rand($ids)];
     }
 
     /**
@@ -500,7 +545,8 @@ class WatchlistTemplateManager
             $items[] = [
                 'isRoot' => true,
                 'isActive' => false,
-                'href' => ((null !== $firstPage) ? $this->framework->getAdapter(Controller::class)->generateFrontendUrl($firstPage->row()) : Environment::get('base')),
+                'href' => ((null !== $firstPage) ? $this->framework->getAdapter(Controller::class)
+                    ->generateFrontendUrl($firstPage->row()) : Environment::get('base')),
                 'title' => specialchars($pages->pageTitle ?: $pages->title, true),
                 'link' => $pages->title,
                 'data' => $firstPage->row(),
@@ -582,10 +628,14 @@ class WatchlistTemplateManager
         $class = '';
         switch ($item->type) {
             case WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE:
-                $class = System::getContainer()->get('huh.watchlist.watchlist_manager')->getClassByName($module->watchlistItemFile, WatchlistManager::WATCHLIST_ITEM_FILE_GROUP);
+                $class = System::getContainer()
+                    ->get('huh.watchlist.watchlist_manager')
+                    ->getClassByName($module->watchlistItemFile, WatchlistManager::WATCHLIST_ITEM_FILE_GROUP);
                 break;
             case WatchlistItemModel::WATCHLIST_ITEM_TYPE_ENTITY:
-                $class = System::getContainer()->get('huh.watchlist.watchlist_manager')->getClassByName($module->watchlistItemEntity, WatchlistManager::WATCHLIST_ITEM_ENTITY_GROUP);
+                $class = System::getContainer()
+                    ->get('huh.watchlist.watchlist_manager')
+                    ->getClassByName($module->watchlistItemEntity, WatchlistManager::WATCHLIST_ITEM_ENTITY_GROUP);
         }
 
         if ('' == $class) {
@@ -635,7 +685,8 @@ class WatchlistTemplateManager
         $template = new FrontendTemplate('watchlist_add_option_modal');
 
         $template->options = $this->getOptionsSelectTemplate($itemData['options'], static::WATCHLIST_SELECT_ITEM_OPTIONS);
-        $template->action = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
+        $template->action =
+            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
         $template->moduleId = $moduleId;
         $template->type = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
         $template->watchlistId = $watchlist->id;
