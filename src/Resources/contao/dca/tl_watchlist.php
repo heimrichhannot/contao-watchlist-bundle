@@ -61,5 +61,8 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
         'startShare' => [
             'sql' => "varchar(10) NOT NULL default ''",
         ],
+        'activation' => [
+            'sql' => "varchar(64) NOT NULL default ''",
+        ]
     ],
 ];

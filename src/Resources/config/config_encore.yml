@@ -1,4 +1,4 @@
 huh:
     encore:
         entries:
-            - { name: contao-watchlist-bundle, file: "vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/public/js/jquery.watchlist-bundle.es6.js" }
+            - { name: contao-watchlist-bundle, file: "vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/assets/js/contao-watchlist-bundle.js" }

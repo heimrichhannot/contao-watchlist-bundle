@@ -1,6 +1,16 @@
 <div class="watchlist-download-link-container">
     <div class="watchlist-download-link-button-action">
-        <button data-action="<?= $this->action; ?>" class="watchlist-download-link btn btn-primary" data-watchlist-id="<?= $this->watchlistId?>" data-module-id="<?= $this->moduleId ?>" title="<?= $this->downloadLinkTitle; ?>"><span><?= $this->downloadLinkTitle; ?></span></button>
+        <form id="watchlist-download-link" action="<?= $this->action ?>" method="POST">
+            <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+            <input type="hidden" name="watchlistId" value="<?= $this->watchlistId?>">
+            <input type="hidden" name="moduleId" value="<?= $this->moduleId ?>">
+            <button type="submit" class="btn btn-primary" title="<?= $this->downloadLinkTitle; ?>">
+                <span><?= $this->downloadLinkTitle; ?></span>
+            </button>
+        </form>
+        
     </div>
     <div class="watchlist-download-link-text"><a class="watchlist-download-link-href">&nbsp;</a></div>
 </div>
+
+

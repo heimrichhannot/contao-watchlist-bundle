@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -24,6 +24,7 @@ class AjaxManager
 {
     const XHR_GROUP = 'watchlist';
 
+    const XHR_PARAMETER_DATA = 'data';
     const XHR_PARAMETER_MODULE_ID = 'moduleId';
     const XHR_PARAMETER_WATCHLIST_ITEM_ID = 'itemId';
     const XHR_PARAMETER_WATCHLIST_ITEM_UUID = 'uuid';
@@ -49,6 +50,10 @@ class AjaxManager
     const XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION = 'watchlistShowModalAddAction';
     const XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION = 'watchlistUpdateWatchlistAction';
     const XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST = 'watchlistAddItemToSelectedWatchlistAction';
+    const XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION = 'watchlistSendDownloadLinkNotification';
+    const XHR_WATCHLIST_SEND_DOWNLOAD_LINK_AS_NOTIFICATION = 'watchlistSendDownloadLinkAsNotification';
+    const XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM = 'watchlistLoadDownloadLinkForm';
+
     /**
      * @var ContaoFrameworkInterface
      */
@@ -94,16 +99,22 @@ class AjaxManager
         System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION, $this);
         System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION, $this);
         System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST, $this);
+        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION, $this);
+        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_AS_NOTIFICATION, $this);
+        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, $this);
     }
 
     /**
-     * @param $moduleId
-     * @param $watchlistId
+     * @param string $data
      *
      * @return ResponseError|ResponseSuccess
      */
-    public function watchlistShowModalAction($moduleId, $watchlistId = null)
+    public function watchlistShowModalAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $watchlistId = $data->watchlistId;
+
         if (!$moduleId && !$watchlistId) {
             return new ResponseError();
         }
@@ -117,25 +128,28 @@ class AjaxManager
     /**
      * clicked on the add to watchlist button.
      *
-     * @param      $moduleId
-     * @param      $type
-     * @param null $itemData
+     * @param string $data
      *
      * @return ResponseError|ResponseSuccess
      */
-    public function watchlistAddAction($moduleId, $type, $itemData = null)
+    public function watchlistAddAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $type = $data->type;
+        $itemData = $data->itemData;
+
         if (FE_USER_LOGGED_IN) {
             return $this->watchlistShowModalAddAction($moduleId, $type, $itemData);
         }
 
-        if (isset($itemData['options']) && count($itemData['options']) > 1) {
-            $responseContent = $this->watchlistTemplate->getWatchlistItemOptions($moduleId, $type, $itemData['options']);
+        if (isset($itemData->options) && count($itemData->options) > 1) {
+            $responseContent = $this->watchlistTemplate->getWatchlistItemOptions($moduleId, $type, $itemData->options);
 
             return $this->getModalResponse($responseContent);
         }
 
-        if (!isset($itemData['uuid'])) {
+        if (!isset($itemData->uuid)) {
             return new ResponseError();
         }
 
@@ -145,14 +159,17 @@ class AjaxManager
     /**
      * add item to watchlist that has been selected by user.
      *
-     * @param int    $watchlistId
-     * @param string $type
-     * @param        $item
+     * @param string $data
      *
      * @return ResponseSuccess
      */
-    public function watchlistAddItemToSelectedWatchlistAction(int $watchlistId, $type, $item)
+    public function watchlistAddItemToSelectedWatchlistAction(string $data)
     {
+        $data = json_decode($data);
+        $watchlistId = $data->watchlistId;
+        $type = $data->type;
+        $item = $data->item;
+
         $message = $this->actionManager->addItemToWatchlist($watchlistId, $type, $item);
 
         $response = new ResponseSuccess();
@@ -164,21 +181,25 @@ class AjaxManager
     /**
      * create new watchlist and add item to it.
      *
-     * @param int    $moduleId
-     * @param        $itemData
-     * @param string $name
-     * @param string $type
-     * @param null   $durability
+     * @param string $data
      *
      * @return ResponseSuccess
      */
-    public function watchlistNewWatchlistAddAction(int $moduleId, $itemData, string $name, string $type, $durability = null)
+    public function watchlistNewWatchlistAddAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $itemData = $data->itemData;
+        $name = $data->name;
+        $type = $data->type;
+        $durability = $data->durability ? $data->durability : null;
+
         $response = new ResponseSuccess();
 
         if (null !== $this->watchlistManager->getWatchlistByName($name)) {
             $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_already_exists'], $name);
-            $response->setResult(new ResponseData('', ['message' => $this->actionManager->getStatusMessage($message, WatchlistActionManager::MESSAGE_STATUS_ERROR), null, 0]));
+            $response->setResult(new ResponseData('',
+                ['message' => $this->actionManager->getStatusMessage($message, WatchlistActionManager::MESSAGE_STATUS_ERROR), null, 0]));
 
             return $response;
         }
@@ -203,13 +224,16 @@ class AjaxManager
     /**
      * update watchlist.
      *
-     * @param int $moduleId
-     * @param int $watchlistId
+     * @param string $data
      *
      * @return ResponseSuccess
      */
-    public function watchlistUpdateWatchlistAction(int $moduleId, int $watchlistId)
+    public function watchlistUpdateWatchlistAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $watchlistId = $data->watchlistId;
+
         list($watchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $watchlistId);
 
         $response = new ResponseSuccess();
@@ -221,12 +245,16 @@ class AjaxManager
     /**
      * delete specific item from watchlist and update the watchlist.
      *
-     * @param int $itemId
+     * @param string $data
      *
      * @return ResponseError|ResponseSuccess
      */
-    public function watchlistDeleteItemAction($moduleId, int $itemId)
+    public function watchlistDeleteItemAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $itemId = $data->itemId;
+
         if (null === ($watchlistId = System::getContainer()->get('huh.watchlist.watchlist_item_manager')->getWatchlistIdFromItem($itemId))) {
             return new ResponseError();
         }
@@ -235,7 +263,8 @@ class AjaxManager
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $watchlistId);
 
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+        $response->setResult(new ResponseData('',
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -243,18 +272,23 @@ class AjaxManager
     /**
      * delete all items from specific watchlist.
      *
-     * @param int $watchlistId
+     * @param string $data
      *
      * @return ResponseSuccess
      */
-    public function watchlistEmptyWatchlistAction(int $moduleId, int $watchlistId)
+    public function watchlistEmptyWatchlistAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $watchlistId = $data->watchlistId;
+
         $response = new ResponseSuccess();
 
         $message = $this->actionManager->emptyWatchlist($watchlistId);
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $watchlistId);
 
-        $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+        $response->setResult(new ResponseData('',
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -262,20 +296,24 @@ class AjaxManager
     /**
      * delete specific watchlist.
      *
-     * @param int $moduleId
-     * @param int $watchlistId
+     * @param string $data
      *
      * @return ResponseSuccess
      */
-    public function watchlistDeleteWatchlistAction(int $moduleId, int $watchlistId)
+    public function watchlistDeleteWatchlistAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $watchlistId = $data->watchlistId;
+
         $response = new ResponseSuccess();
 
         $message = $this->actionManager->deleteWatchlist($watchlistId);
 //        $user = FrontendUser::getInstance();
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId);
 
-        $response->setResult(new ResponseData('', ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+        $response->setResult(new ResponseData('',
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -283,15 +321,44 @@ class AjaxManager
     /**
      * download all elements of current watchlist as zip file.
      *
-     * @param $watchlistId
-     * @param $moduleId
+     * @param string $data
+     *
+     * @throws \Exception
      *
      * @return ResponseSuccess
      */
-    public function watchlistDownloadAllAction($watchlistId, $moduleId)
+    public function watchlistDownloadAllAction(string $data)
     {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $watchlistId = $data->watchlistId;
+
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('', ['file' => $this->actionManager->getDownloadZip($watchlistId, $moduleId)]));
+        $response->setResult(new ResponseData('', ['file' => $this->actionManager->getDownloadZip($moduleId, $watchlistId)]));
+
+        return $response;
+    }
+
+    public function watchlistSendDownloadLinkNotification(string $data)
+    {
+        $data = json_decode($data);
+
+        $response = new ResponseSuccess();
+        $message = $this->actionManager->sendDownloadLinkNotification($data);
+        $response->setResult(new ResponseData('', ['message' => $message]));
+
+        return $response;
+    }
+
+    public function watchlistLoadDownloadLinkForm(string $data)
+    {
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $watchlistId = $data->watchlistId;
+
+        $response = new ResponseSuccess();
+        $form = $this->actionManager->watchlistLoadDownloadLinkForm($moduleId, $watchlistId);
+        $response->setResult(new ResponseData('', ['form' => $form]));
 
         return $response;
     }
@@ -389,7 +456,7 @@ class AjaxManager
             return $response;
         }
 
-        list($link, $message) = $this->actionManager->generateDownloadLink($watchlistId, $moduleId);
+        list($link, $message) = $this->actionManager->generateDownloadLink($moduleId, $watchlistId);
 
         $response->setResult(new ResponseData('', ['link' => $link, 'message' => $message]));
 
@@ -409,7 +476,8 @@ class AjaxManager
     {
         $response = new ResponseSuccess();
 
-        if (null === ($responseData = System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlistId, $type, $itemData))) {
+        if (null === ($responseData =
+                System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlistId, $type, $itemData))) {
             return new ResponseError();
         }
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -16,6 +16,9 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 class ModuleWatchlistDownloadList extends ModuleList
 {
     const MODULE_WATCHLIST_DOWNLOAD_LIST = 'huhwatchlist_downloadlist';
+    const MODULE_WATCHLIST_DOWNLOAD_ACTIVATION = 'activation';
+    const MODULE_WATCHLIST_DOWNLOAD_ACTIVATION_ACTIVATED = 'ACTIVATED';
+
     protected $strTemplate = 'mod_watchlist_download_list';
 
     public function __construct(ModuleModel $objModule, string $strColumn = 'main')
@@ -43,6 +46,10 @@ class ModuleWatchlistDownloadList extends ModuleList
             $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
         }
 
+        if (!$this->activateWatchlist($watchlist)) {
+            $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['invalidActivation'];
+        }
+
         if (!$this->container->get('huh.watchlist.watchlist_manager')->checkWatchlistValidity($watchlist)) {
             $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['validityExpired'];
         }
@@ -54,5 +61,29 @@ class ModuleWatchlistDownloadList extends ModuleList
         $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist->id, $this->id);
 
         parent::compile();
+    }
+
+    protected function activateWatchlist($watchlist)
+    {
+        if (!$watchlist->activation) {
+            return true;
+        }
+
+        if (false !== strpos($watchlist->activation, static::MODULE_WATCHLIST_DOWNLOAD_ACTIVATION_ACTIVATED)) {
+            return true;
+        }
+
+        if ('' == ($activation = $this->container->get('huh.request')->getGet(static::MODULE_WATCHLIST_DOWNLOAD_ACTIVATION))) {
+            return false;
+        }
+
+        if ($watchlist->activation != $activation) {
+            return false;
+        }
+
+        $watchlist->activation = static::MODULE_WATCHLIST_DOWNLOAD_ACTIVATION_ACTIVATED.':'.$watchlist->activation;
+        $watchlist->save();
+
+        return true;
     }
 }

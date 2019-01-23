@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -58,12 +58,12 @@ class ModuleWatchlist extends Module
 
     protected function compile()
     {
-        $toggler = System::getContainer()->get('huh.watchlist.template_manager')->getWatchlistToggler($this->id);
+        list($watchlist, $toggler) = System::getContainer()->get('huh.watchlist.template_manager')->getWatchlistToggler($this->id);
 
-        $this->Template->toggler = $toggler->parse();
+        $this->Template->toggler = $toggler;
 
         if ($this->useGlobalDownloadAllAction) {
-            $this->Template->downloadAllAction = System::getContainer()->get('huh.watchlist.template_manager')->getDownloadAllAction($toggler->watchlistId, $this->id);
+            $this->Template->downloadAllAction = System::getContainer()->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist, $this->id);
         }
     }
 }

@@ -1,10 +1,15 @@
-<a class="watchlist-delete-item" id="watchlist-delete-item-<?= $this->id ?>" data-id="<?= $this->id; ?>" data-module-id="<?= $this->moduleId?>"
-        data-action="<?php echo $this->deleteAction; ?>" title="<?php echo $this->delTitle; ?>">
-    <span><?php echo $this->delLink; ?></span>
-</a>
-<?php if ($this->downloadAction): ?>
-<a class="watchlist-download-item" id="watchlist-download-item-<?= $this->id ?>"
-   href="<?= $this->downloadAction ?>" title="<?= $this->downloadTitle ?>">
-    <span><?= $this->downloadTitle ?></span>
-</a>
+<?php if($this->deleteAction): ?>
+<form id="watchlist-delete-item-<?= $this->id ?>" action="<?= $this->deleteAction ?>">
+    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+    <input type="hidden" name="moduleId" value="<?= $this->moduleId?>">
+    <input type="hidden" name="itemId" value="<?= $this->id?>">
+    <button type="submit" class="border-0 p-0 bg-transparent text-muted" title="<?= $this->delTitle; ?>">
+        <span><?= $this->delLink; ?></span></button>
+</form>
 <?php endif; ?>
+
+<?php if ($this->downloadAction): ?>
+<form id="watchlist-download-item-<?= $this->id ?>" action="<?= $this->downloadAction ?>">
+    <button type="submit" class="btn bg-secondary text-white" title="<?= $this->downloadTitle ?>"><?= $this->downloadTitle ?></button>
+</form>
+<?php endif;?>

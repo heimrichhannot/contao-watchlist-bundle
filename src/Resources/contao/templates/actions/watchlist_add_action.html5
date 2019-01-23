@@ -1,16 +1,18 @@
-<button class="watchlist-add-item btn btn-primary<?php if ($this->added): ?>added<?php endif; ?>"
-        id="watchlist-add-<?= $this->id ?>"
-    <?php if ($this->options): ?>
-        data-options='<?= $this->options; ?>'
+<form id="watchlist-add-item-<?= $this->id ?>" class="watchlist-add-item<?php if ($this->added): ?> added<?php endif; ?>" action="<?= $this->action ?>" method="POST">
+    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+    <?php if($this->uuid): ?>
+    <input type="hidden" name="uuid" value="<?= $this->uuid ?>">
     <?php endif; ?>
-    <?php if ($this->uuid): ?>
-        data-uuid='<?= $this->uuid ?>'
+    <?php if($this->options): ?>
+        <input type="hidden" name="options" value='<?= $this->options; ?>'>
     <?php endif; ?>
-        data-title="<?= $this->itemTitle ?>"
-        data-downloadable="<?= $this->downloadable ?>"
-        data-module-id="<?= $this->moduleId ?>"
-        data-type="<?= $this->type ?>"
-        data-action="<?= $this->action ?>"
-        title="<?= $this->title; ?>">
-    <span><?= $this->link; ?></span>
-</button>
+    <input type="hidden" name="downloadable" value="<?= $this->downloadable ?>">
+    <input type="hidden" name="title" value="<?= $this->itemTitle ?>">
+    <input type="hidden" name="moduleId" value="<?= $this->moduleId ?>">
+    <input type="hidden" name="type" value="<?= $this->type ?>">
+    <button type="submit" class="btn btn-primary" id="watchlist-add-<?= $this->id ?>" title="<?= $this->title; ?>">
+        <span><?= $this->link; ?></span>
+    </button>
+</form>
+
+

@@ -1,3 +1,8 @@
-<div class="watchlist-empty-watchlist-container">
-    <button data-action="<?php echo $this->action; ?>" data-module-id="<?= $this->moduleId; ?>" data-watchlist-id="<?= $this->watchlistId ?>" class="watchlist-empty-watchlist btn btn-primary" title="<?php echo $this->emptyWatchlistTitle; ?>"><span><?php echo $this->emptyWatchlistLink; ?></span></button>
-</div>
+<form id="watchlist-empty-watchlist" action="<?= $this->action; ?>">
+    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+    <input type="hidden" name="moduleId" value="<?= $this->moduleId; ?>">
+    <input type="hidden" name="watchlistId" value="<?= $this->watchlistId; ?>">
+    <button type="submit" class="btn btn-primary" title="<?= $this->emptyWatchlistTitle; ?>">
+        <span><?= $this->emptyWatchlistLink; ?></span>
+    </button>
+</form>

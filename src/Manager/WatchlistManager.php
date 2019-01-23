@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2018 Heimrich & Hannot GmbH
+ * Copyright (c) 2019 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -11,11 +11,13 @@ namespace HeimrichHannot\WatchlistBundle\Manager;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
+use Contao\ModuleModel;
 use Contao\Session;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
 
 class WatchlistManager
 {
@@ -382,5 +384,20 @@ class WatchlistManager
         }
 
         return false;
+    }
+
+    /**
+     * @param ModuleModel $module
+     * @param             $watchlist
+     *
+     * @return string
+     */
+    public function getWatchlistName(ModuleModel $module, $watchlist)
+    {
+        if ($module->overrideWatchlistTitle) {
+            return $module->watchlistTitle;
+        }
+
+        return WatchlistTemplateManager::WATCHLIST_NAME_SUBMISSION == $watchlist->name ? $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'] : $watchlist->name;
     }
 }
