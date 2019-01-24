@@ -39,21 +39,21 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface
             'huh_watchlist',
             $extensionName,
             $extensionConfigs,
-            $container->getParameter('kernel.project_dir').'/vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/config/config.yml'
+            __DIR__.'/../Resources/config/config.yml'
         );
 
         $extensionConfigs = ContainerUtil::mergeConfigFile(
             'huh_list',
             $extensionName,
             $extensionConfigs,
-            $container->getParameter('kernel.project_dir').'/vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/config/config_list.yml'
+            __DIR__.'/../Resources/config/config_list.yml'
         );
 
         return ContainerUtil::mergeConfigFile(
             'huh_encore',
             $extensionName,
             $extensionConfigs,
-            $container->getParameter('kernel.project_dir').'/vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/config/config_encore.yml'
+            __DIR__.'/../Resources/config/config_encore.yml'
         );
     }
 }

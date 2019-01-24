@@ -10,7 +10,6 @@ namespace HeimrichHannot\WatchlistBundle\Model;
 
 use Contao\Model;
 use Contao\System;
-use HeimrichHannot\Haste\Dca\Member;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 
 class WatchlistModel extends Model
