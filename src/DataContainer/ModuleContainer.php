@@ -8,12 +8,18 @@
 
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
+use Contao\DataContainer;
 use Contao\System;
 use HeimrichHannot\Submissions\Creator\SubmissionCreator;
 
 class ModuleContainer
 {
-    public function getFromConfigModules()
+    /**
+     * @param DataContainer $dc
+     *
+     * @return array
+     */
+    public function getFormConfigModules(DataContainer $dc)
     {
         $options = [];
 

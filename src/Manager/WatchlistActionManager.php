@@ -361,7 +361,7 @@ class WatchlistActionManager
 
         $submissionData = $this->getSubmissionData($data);
 
-        if (!$module->downloadLinkUseForm) {
+        if (!$module->downloadLinkFormConfigModule) {
             if (null === ($user = FrontendUser::getInstance())) {
                 return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_no_user'], static::MESSAGE_STATUS_ERROR);
             }

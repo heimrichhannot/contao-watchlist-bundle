@@ -33,7 +33,6 @@ $dca['palettes']['__selector__'][] = 'useDownloadLink';
 $dca['palettes']['__selector__'][] = 'useGroupWatchlist';
 $dca['palettes']['__selector__'][] = 'useWatchlistDurability';
 $dca['palettes']['__selector__'][] = 'usePublicLinkDurability';
-$dca['palettes']['__selector__'][] = 'downloadLinkUseForm';
 $dca['palettes']['__selector__'][] = 'downloadLinkUseNotification';
 $dca['palettes']['__selector__'][] = 'downloadLinkSendConfirmationNotification';
 $dca['palettes']['__selector__'][] = 'overrideWatchlistTitle';
@@ -44,8 +43,7 @@ $dca['subpalettes']['useDownloadLink']                          = 'downloadLink'
 $dca['subpalettes']['useGroupWatchlist']                        = 'groupWatchlist';
 $dca['subpalettes']['useWatchlistDurability']                   = 'watchlistDurability';
 $dca['subpalettes']['usePublicLinkDurability']                  = 'publicLinkDurability';
-$dca['subpalettes']['downloadLinkUseNotification']              = 'downloadLinkNotification,downloadLinkUseConfirmationNotification,downloadLinkUseForm';
-$dca['subpalettes']['downloadLinkUseForm']                      = 'downloadLinkFormConfigModule';
+$dca['subpalettes']['downloadLinkUseNotification']              = 'downloadLinkNotification,downloadLinkUseConfirmationNotification,downloadLinkFormConfigModule';
 $dca['subpalettes']['overrideWatchlistTitle']                    = 'watchlistTitle';
 $dca['subpalettes']['overrideTogglerTitle']                     = 'togglerTitle';
 
@@ -90,19 +88,12 @@ $arrFields = [
         'sql'       => "char(1) NOT NULL default ''",
     ],
     'downloadLinkNotification'                 => $dca['fields']['formHybridConfirmationNotification'],
-    'downloadLinkUseForm'                      => [
-        'label'     => &$GLOBALS['TL_LANG']['tl_module']['downloadLinkProtected'],
-        'exclude'   => true,
-        'inputType' => 'checkbox',
-        'eval'      => ['submitOnChange' => true, 'tl_class' => 'clr'],
-        'sql'       => "char(1) NOT NULL default ''",
-    ],
     'downloadLinkFormConfigModule'             => [
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['downloadLinkFormConfigModule'],
         'exclude'          => true,
         'inputType'        => 'select',
-        'options_callback' => ['huh.watchlist.data_container.module_container', 'getFromConfigModules'],
-        'eval'             => ['mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'clr w50'],
+        'options_callback' => ['huh.watchlist.data_container.module_container', 'getFormConfigModules'],
+        'eval'             => ['includeBlankOption' => true, 'tl_class' => 'clr w50'],
         'sql'              => "varchar(64) NOT NULL default ''",
     ],
     'useGroupWatchlist'                        => [

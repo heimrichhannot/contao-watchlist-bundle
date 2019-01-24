@@ -223,7 +223,7 @@ class WatchlistTemplateManager
                 ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION);
         }
 
-        if ($module->downloadLinkUseForm) {
+        if ($module->downloadLinkFormConfigModule) {
             $action = System::getContainer()
                 ->get('huh.ajax.action')
                 ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM);

@@ -43,7 +43,6 @@ $lang['publicLinkDurability']     = ['Verfallzeit', 'Tragen Sie hier die Zeit in
 
 $lang['downloadLinkUseNotification'] = ['Downloadlink per Email versenden', 'Wählen Sie diese Option, wenn Sie den Downloadlink per Benachrichtigung versenden möchten.'];
 $lang['downloadLinkNotification'] = ['Downloadlink-Benachrichtigung', 'Wählen Sie hier die Nachricht aus, über die der Downloadlink verschickt werden soll'];
-$lang['downloadLinkSendConfirmationNotification'] = ['Bestätigungsbenachrichtigung verwenden', 'Wählen Sie diese Option, wenn der Nutzer vor erhalt des Downloadlinks eine Bestätigungsemail erhalten soll.'];
 
 $lang['disableDownloadAll'] = ['"Merkliste herunterladen" deaktivieren ', 'Wählen Sie diese Option, wenn der "Merkliste herunterladen"-Button im Merklisten-Modal nicht dargestellt werden soll.'];
 
@@ -52,6 +51,11 @@ $lang['watchlistTitle'] = ['Merklistenname', 'Tragen Sie hier den Namen der Merk
 
 $lang['overrideTogglerTitle'] = ['Titel des Merklisten-Button vorgeben', 'Wählen Sie diese Option, wenn der Titel des Merklisten-Button vorgegeben werden soll.'];
 $lang['togglerTitle'] = ['Titel des Merklisten-Button', 'Tragen Sie hier den Titel des Merklisten-Button ein.'];
+
+$lang['downloadLinkUseConfirmationNotification'] = ['Bestätigungsbenachrichtigung versenden', 'Wählen Sie diese Option, wenn der Nutzer vor erhalt des Downloadlinks eine Bestätigungsemail erhalten soll.'];
+
+$lang['downloadLinkFormConfigModule'] = ['Formular-Konfiguration', 'Wählen Sie hier das Module aus, welches die Konfiguration für das Formular vorgibt. ACHTUNG: Wird hier keine Konfiguration ausgewählt, wird versucht die Nutzerdaten für den Versandt des Downloadlinks vom Frontend-Nutzer zu beziehen.'];
+
 
 /**
  * Legends
