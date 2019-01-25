@@ -78,12 +78,12 @@ window.Watchlist = {
 
         Watchlist.doAjaxCall(url, data, true);
     },
-    addItem: function (elem) {
+    addItem: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
             return
         }
 
-        let url = elem.action,
+        let url = form.action,
             uuid = formData['uuid'] ? formData['uuid'] : document.querySelector('.item-options option:selected').value,
             title = formData['title'] ? formData['title'] : document.querySelector('.item-options option:selected').textContent,
             downloadable = formData['downloadable'],
