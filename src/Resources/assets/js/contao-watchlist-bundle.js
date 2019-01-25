@@ -64,8 +64,11 @@ window.Watchlist = {
         });
     },
     showModal: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = '' !== formData['moduleId'] ? formData['moduleId'] : null,
             watchlistId = '' !== formData['watchlistId'] ? formData['watchlistId'] : null,
             data = {
@@ -76,8 +79,11 @@ window.Watchlist = {
         Watchlist.doAjaxCall(url, data, true);
     },
     addItem: function (elem) {
-        let formData = Watchlist.serialize(elem),
-            url = elem.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = elem.action,
             uuid = formData['uuid'] ? formData['uuid'] : document.querySelector('.item-options option:selected').value,
             title = formData['title'] ? formData['title'] : document.querySelector('.item-options option:selected').textContent,
             downloadable = formData['downloadable'],
@@ -100,8 +106,11 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     deleteItem: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = formData['moduleId'],
             itemId = formData['itemId'],
             request_token = formData['REQUEST_TOKEN'],
@@ -114,8 +123,11 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     emptyWatchlist: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = formData['moduleId'],
             watchlistId = formData['watchlistId'],
             request_token = formData['REQUEST_TOKEN'],
@@ -128,8 +140,11 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     downloadWatchlist: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = formData['moduleId'],
             watchlistId = formData['watchlistId'],
             data = {
@@ -140,8 +155,11 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     generateDownloadLink: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = formData['moduleId'],
             watchlistId = formData['watchlistId'],
             request_token = formData['REQUEST_TOKEN'],
@@ -177,8 +195,11 @@ window.Watchlist = {
         });
     },
     deleteWatchlist: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = formData['moduleId'],
             watchlistId = formData['watchlistId'],
             request_token = formData['REQUEST_TOKEN'],
@@ -191,8 +212,11 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     newAndAdd: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = formData['moduleId'],
             watchlistId = formData['watchlistId'],
             selected = document.querySelector('.item-options').length ? document.querySelector('.item-options option:selected').value : null,
@@ -215,8 +239,11 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     addItemToSelectedWatchlist: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             uuid = formData['uuid'] ? formData['uuid'] : document.querySelector('.item-options option:selected').value,
             watchlistId = formData['watchlistId'] ? formData['watchlistId'] : document.querySelector('.watchlist-options option:selected').value,
             downloadable = formData['downloadable'],
@@ -237,8 +264,11 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     updateWatchlist: function (form) {
-        let formData = Watchlist.serialize(form),
-            url = form.action,
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
+        let url = form.action,
             moduleId = formData['moduleId'] ? formData['moduleId'] : null,
             watchlistId = formData['watchlistId'] ? formData['watchlistId'] : null,
             data = {
@@ -249,11 +279,12 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     sendDownloadNotification: function (form) {
+        if(!(formData = Watchlist.serialize(form))) {
+            return
+        }
+
         let url = form.action,
-            formData = Watchlist.serialize(form),
-            data = {
-                'sendNotification': true
-            };
+            data = {};
 
         for (const [key, value] of Object.entries(formData)) {
             data[key] = value;
@@ -295,7 +326,7 @@ window.Watchlist = {
                     Watchlist.setMessage(response.message);
                 }
 
-                if(undefined !== response.file) {
+                if (undefined !== response.file) {
                     window.location = response.file;
                 }
 
@@ -326,13 +357,17 @@ window.Watchlist = {
 
                         document.querySelector('.watchlist-show-modal .btn-primary').prepend(badge);
                     }
-                } else if(document.getElementById('watchlist-badge')) {
+                } else if (document.getElementById('watchlist-badge')) {
                     document.getElementById('watchlist-badge').remove();
                 }
 
-                if(closeOnSuccess && document.getElementById('watchlistModal')) {
+                if (closeOnSuccess && document.getElementById('watchlistModal')) {
                     document.getElementById('watchlistModal').remove();
-                    document.querySelector('.modal-backdrop').remove();
+
+                    if (document.querySelector('.modal-backdrop')) {
+                        document.querySelector('.modal-backdrop').remove();
+                    }
+
                     document.querySelector('body').classList.remove('modal-open')
                 }
 
@@ -345,7 +380,7 @@ window.Watchlist = {
             }
         });
     },
-    setMessage: function(message) {
+    setMessage: function (message) {
         let messageElement = document.createElement('div'),
             notifyer = document.getElementById('watchlist-notify');
 
@@ -455,20 +490,20 @@ window.Watchlist = {
     ajaxCompleteCallback: function () {
         // remove messages with a delay
         setTimeout(function () {
-            if(document.getElementById('watchlist-loader')) {
+            if (document.getElementById('watchlist-loader')) {
                 document.getElementById('watchlist-loader').remove();
             }
         }, 3500);
     },
-    addLoader: function() {
+    addLoader: function () {
         let loader = document.createElement('div');
         loader.setAttribute('id', 'watchlist-loader');
         loader.innerHTML = '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>';
 
         document.body.appendChild(loader);
     },
-    removeLoader: function() {
-      document.getElementById('watchlist-loader').remove();
+    removeLoader: function () {
+        document.getElementById('watchlist-loader').remove();
     },
     getWatchlistWrapper: function () {
         let wrapper = document.createElement('div');
@@ -485,17 +520,38 @@ window.Watchlist = {
     },
     serialize: function (form) {
         let field,
-            formData = [];
+            formData = [],
+            hasError = false;
 
         if (typeof form === 'object' && "FORM" === form.nodeName) {
-            let len = form.elements.length;
-
-            for (let i = 0; i < len; i++) {
+            for (let i = 0; i < form.elements.length; i++) {
                 field = form.elements[i];
 
-                formData[encodeURIComponent(field.name)] = encodeURIComponent(field.value);
+                let name = field.name,
+                    value = field.value;
+
+                if ('checkbox' === field.type || 'radio' === field.type) {
+                    value = field.checked;
+                }
+
+                if(field.required && !value) {
+                    let error = document.createElement('span');
+                    error.setAttribute('class', 'pt-1 d-block text-danger');
+                    error.textContent = 'Bitte füllen Sie dieses Feld aus!';
+
+                    let node = ('checkbox' === field.type || 'radio' === field.type) ?  field.parentNode.parentNode : field.parentNode;
+                    node.appendChild(error);
+                    hasError = true;
+                }
+
+                formData[name] = value;
             }
         }
+
+        if(hasError) {
+            return false;
+        }
+
         return formData;
     }
 };
