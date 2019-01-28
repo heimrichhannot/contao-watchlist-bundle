@@ -582,6 +582,8 @@ class WatchlistActionManager
 
         $zipWriter->close();
 
+        chmod($fileName, '644');
+
         return $fileName;
     }
 

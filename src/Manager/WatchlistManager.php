@@ -366,9 +366,9 @@ class WatchlistManager
      *
      * @return bool
      */
-    public function checkWatchlistValidity($watchlist)
+    public function checkWatchlistValidity($watchlist, $module)
     {
-        if (!$this->usePublicLinkDurability) {
+        if (!$module->usePublicLinkDurability) {
             return true;
         }
 
@@ -377,7 +377,7 @@ class WatchlistManager
         }
 
         // publicLinkDurability is set in days at module
-        $validityLimit = $watchlist->startShare + $this->publicLinkDurability * 60 * 60 * 24;
+        $validityLimit = $watchlist->startShare + $module->publicLinkDurability;
 
         if (time() < $validityLimit) {
             return true;

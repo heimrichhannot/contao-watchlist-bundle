@@ -50,7 +50,7 @@ class ModuleWatchlistDownloadList extends ModuleList
             $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['invalidActivation'];
         }
 
-        if (!$this->container->get('huh.watchlist.watchlist_manager')->checkWatchlistValidity($watchlist)) {
+        if (!$this->container->get('huh.watchlist.watchlist_manager')->checkWatchlistValidity($watchlist, $this)) {
             $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['validityExpired'];
         }
 
