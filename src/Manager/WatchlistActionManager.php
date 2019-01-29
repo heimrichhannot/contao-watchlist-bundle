@@ -196,7 +196,7 @@ class WatchlistActionManager
         }
 
         // start lifecylce of download link when it is generated
-        $watchlist->startShare = strtotime('today');
+        $watchlist->startShare = time();
         $watchlist->save();
 
         return [urldecode($page->getAbsoluteUrl('?watchlist='.$watchlist->uuid)), false];

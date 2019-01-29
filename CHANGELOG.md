@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2019-01-29
+
+### Changed
+- starting time of durability of download link is now time()
+
 ## [1.0.3] - 2019-01-28
 
 ### Fixed
