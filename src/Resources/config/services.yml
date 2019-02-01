@@ -50,5 +50,7 @@ services:
       - "@contao.framework"
   huh.watchlist.data_container.module_container:
       class: HeimrichHannot\WatchlistBundle\DataContainer\ModuleContainer
+  huh.watchlist.data_container.callback_container:
+      class: HeimrichHannot\WatchlistBundle\DataContainer\CallbackContainer
   huh.watchlist.event_listener.watchlist_download_listener:
     class: HeimrichHannot\VmdBundle\EventListener\WatchlistEventListener

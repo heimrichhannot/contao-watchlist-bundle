@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+## [1.0.5] - 2019-02-01
+
+### Changed
+- use notification instead of message for sending downloadLink
+
 ## [1.0.4] - 2019-01-29
 
 ### Changed

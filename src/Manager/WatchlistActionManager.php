@@ -408,11 +408,12 @@ class WatchlistActionManager
     {
         if (null === ($notification = System::getContainer()
                 ->get('huh.utils.model')
-                ->findModelInstanceByPk('tl_nc_message', $module->downloadLinkNotification))) {
+                ->findModelInstanceByPk('tl_nc_notification', $module->downloadLinkNotification))) {
             return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_notofication_error'], static::MESSAGE_STATUS_ERROR);
         }
 
         $token = $this->getTokens($submissionData);
+
         $notification->send($token, $GLOBALS['TL_LANGUAGE']);
 
         return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_downloadLink_send'], static::MESSAGE_STATUS_SUCCESS);
@@ -482,6 +483,8 @@ class WatchlistActionManager
 
     /**
      * @param FrontendUser $user
+     *
+     * @return null|array
      */
     protected function getSubmissionDataFromFrontendUser(FrontendUser $user)
     {

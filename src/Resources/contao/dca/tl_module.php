@@ -11,6 +11,8 @@
 
 $dc = &$GLOBALS['TL_DCA']['tl_module'];
 
+\Contao\System::loadLanguageFile('tl_submission_archive');
+\Contao\Controller::loadDataContainer('tl_submission_archive');
 /**
  * Palettes
  */
@@ -87,7 +89,7 @@ $arrFields = [
         'eval'      => ['tl_class' => 'clr'],
         'sql'       => "char(1) NOT NULL default ''",
     ],
-    'downloadLinkNotification'                 => $dca['fields']['formHybridConfirmationNotification'],
+    'downloadLinkNotification'                 => $GLOBALS['TL_DCA']['tl_submission_archive']['fields']['nc_submission'],
     'downloadLinkFormConfigModule'             => [
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['downloadLinkFormConfigModule'],
         'exclude'          => true,
