@@ -47,11 +47,11 @@ class ModuleWatchlistDownloadList extends ModuleList
         }
 
         if (!$this->activateWatchlist($watchlist)) {
-            $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['invalidActivation'];
+            $this->Template->empty = System::getContainer()->get('translator')->trans('huh.watchlist.downloadlist.invalid_activation');
         }
 
         if (!$this->container->get('huh.watchlist.watchlist_manager')->checkWatchlistValidity($watchlist, $this)) {
-            $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST']['validityExpired'];
+            $this->Template->empty = System::getContainer()->get('translator')->trans('huh.watchlist.downloadlist.validity_expired');
         }
 
         if (0 === $this->container->get('contao.framework')->getAdapter(WatchlistItemModel::class)->countByPid($watchlist->id)) {

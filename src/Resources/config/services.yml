@@ -11,6 +11,7 @@ services:
     arguments:
       - "@contao.framework"
       - "@huh.watchlist.action_manager"
+      - "@translator"
   huh.watchlist.watchlist_item_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager
     arguments:
@@ -20,10 +21,12 @@ services:
       class: HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager
       arguments:
         - "@contao.framework"
+        - "@translator"
   huh.watchlist.template_manager:
     class: HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager
     arguments:
       - "@contao.framework"
+      - "@translator"
   huh.watchlist.download_item_file:
     class: HeimrichHannot\WatchlistBundle\Item\DownloadItemFile
   huh.watchlist.download_item_entity:
@@ -46,6 +49,10 @@ services:
       - "@contao.framework"
   huh.watchlist.choice.watchlist_entity:
     class: HeimrichHannot\WatchlistBundle\Choice\WatchlistItemEntityChoice
+    arguments:
+      - "@contao.framework"
+  huh.watchlist.choice.watchlist_label:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistLabelChoice
     arguments:
       - "@contao.framework"
   huh.watchlist.data_container.module_container:

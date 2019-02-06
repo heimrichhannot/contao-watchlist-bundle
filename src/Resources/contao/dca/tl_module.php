@@ -222,9 +222,12 @@ $arrFields = [
     'watchlistTitle' => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['watchlistTitle'],
         'exclude'   => true,
-        'inputType' => 'text',
-        'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
-        'sql'       => "varchar(32) NOT NULL default ''",
+        'inputType' => 'select',
+        'options_callback' => function (\DataContainer $dc) {
+            return \Contao\System::getContainer()->get('huh.watchlist.choice.watchlist_label')->getCachedChoices('huh.watchlist.watchlist_label');
+        },
+        'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
+        'sql'       => "varchar(64) NOT NULL default ''",
     ],
     'overrideTogglerTitle' => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['overrideTogglerTitle'],
@@ -236,9 +239,12 @@ $arrFields = [
     'togglerTitle' => [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['togglerTitle'],
         'exclude'   => true,
-        'inputType' => 'text',
-        'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
-        'sql'       => "varchar(32) NOT NULL default ''",
+        'inputType' => 'select',
+        'options_callback' => function (\DataContainer $dc) {
+            return \Contao\System::getContainer()->get('huh.watchlist.choice.watchlist_label')->getCachedChoices('huh.watchlist.watchlist_label');
+        },
+        'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'includeBlankOption' => true],
+        'sql'       => "varchar(64) NOT NULL default ''",
     ]
 ];
 

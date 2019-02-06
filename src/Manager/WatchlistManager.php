@@ -18,15 +18,16 @@ use Contao\System;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class WatchlistManager
 {
     const WATCHLIST_SESSION_FE = 'WATCHLIST_SESSION_FE';
     const WATCHLIST_SESSION_BE = 'WATCHLIST_SESSION_BE';
 
-    const WATCHLIST_ITEM_FILE_GROUP = 'watchlistFileItems';
-    const WATCHLIST_ITEM_ENTITY_GROUP = 'watchlistFileItems';
-    const WATCHLIST_DOWNLOAD_FILE_GROUP = 'downloadFileItems';
+    const WATCHLIST_ITEM_FILE_GROUP       = 'watchlistFileItems';
+    const WATCHLIST_ITEM_ENTITY_GROUP     = 'watchlistFileItems';
+    const WATCHLIST_DOWNLOAD_FILE_GROUP   = 'downloadFileItems';
     const WATCHLIST_DOWNLOAD_ENTITY_GROUP = 'downloadFileItems';
 
     /**
@@ -39,10 +40,19 @@ class WatchlistManager
      */
     protected $actionManger;
 
-    public function __construct(ContaoFrameworkInterface $framework, WatchlistActionManager $actionManager)
-    {
-        $this->framework = $framework;
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    public function __construct(
+        ContaoFrameworkInterface $framework,
+        WatchlistActionManager $actionManager,
+        TranslatorInterface $translator
+    ) {
+        $this->framework    = $framework;
         $this->actionManger = $actionManager;
+        $this->translator   = $translator;
     }
 
     /**
@@ -79,7 +89,8 @@ class WatchlistManager
      */
     public function getWatchlistByUserOrGroups(int $moduleId)
     {
-        if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
+        if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module',
+                $moduleId))) {
             return null;
         }
 
@@ -149,9 +160,9 @@ class WatchlistManager
      */
     public function getWatchlistBySession()
     {
-        $ip = (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '');
-        $name = FE_USER_LOGGED_IN ? static::WATCHLIST_SESSION_FE : static::WATCHLIST_SESSION_BE;
-        $hash = sha1(session_id().$ip.$name);
+        $ip          = (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '');
+        $name        = FE_USER_LOGGED_IN ? static::WATCHLIST_SESSION_FE : static::WATCHLIST_SESSION_BE;
+        $hash        = sha1(session_id() . $ip . $name);
         $watchlistId = Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT);
 
         if (null === $watchlistId) {
@@ -195,7 +206,8 @@ class WatchlistManager
             $user = FrontendUser::getInstance();
 
             if ($groups) {
-                $watchlist = $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids(deserialize($user->groups, true));
+                $watchlist = $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids(deserialize($user->groups,
+                    true));
             } else {
                 $watchlist = $this->framework->getAdapter(WatchlistModel::class)->findPublishedByPids([$user->id]);
             }
@@ -210,7 +222,7 @@ class WatchlistManager
         foreach ($watchlist as $value) {
             if ($showDurability) {
                 if ($value->start <= 0 || $value->stop <= 0) {
-                    $watchlistArray[$value->id] = $value->name.' ( '.$GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal'].' )';
+                    $watchlistArray[$value->id] = $value->name . ' ( ' . $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal'] . ' )';
                     continue;
                 }
 
@@ -219,7 +231,7 @@ class WatchlistManager
                     $this->unsetWatchlist($value->id);
                     continue;
                 }
-                $watchlistArray[$value->id] = $value->name.' ( '.$durability.' )';
+                $watchlistArray[$value->id] = $value->name . ' ( ' . $durability . ' )';
                 continue;
             }
 
@@ -249,7 +261,8 @@ class WatchlistManager
             return false;
         }
 
-        if (!array_intersect(StringUtil::deserialize($module->groups, true), StringUtil::deserialize($user->groups, true))) {
+        if (!array_intersect(StringUtil::deserialize($module->groups, true),
+            StringUtil::deserialize($user->groups, true))) {
             return false;
         }
 
@@ -395,7 +408,7 @@ class WatchlistManager
     public function getWatchlistName(ModuleModel $module, $watchlist)
     {
         if ($module->overrideWatchlistTitle) {
-            return $module->watchlistTitle;
+            return $this->translator->trans($module->watchlistTitle);
         }
 
         return WatchlistTemplateManager::WATCHLIST_NAME_SUBMISSION == $watchlist->name ? $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'] : $watchlist->name;

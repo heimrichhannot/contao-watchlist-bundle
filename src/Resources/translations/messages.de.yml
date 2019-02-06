@@ -1,0 +1,26 @@
+# label
+huh:
+  watchlist:
+    watchlist_label:
+      default: Merkliste
+      download: Downloadliste
+    empty_watchlist: Liste leeren
+    remove_all_from_list: Alle Elemente aus der Liste entfernen
+    item:
+      add:
+        success: '%item% wurde der Liste hinzugefügt.'
+        link: Zur Liste hinzufügen
+        title: '%item% zur Liste hinzufügen'
+      delete:
+        label: Element von der Liste entfernen
+        link: Löschen
+        error: Es ist ein Fehler beim löschen aufgetreten.
+        success: '%item% wurde aus der Merkliste entfernt.'
+      already_in_watchlist: Die gewählte Datei ist bereits in der Merkliste vorhanden.
+    download_link:
+      title: Downloadlink erstellen
+      success: Der Downloadlink wurde Ihnen per Mail zugesandt.
+    empty_list: Keine Elemente vorhanden
+    downloadlist:
+      validity_expired: Diese Merkliste ist nicht mehr einsehbar.
+      invalid_activation: Ihnen fehlt die Berechtigung diese Merkliste einzusehen.

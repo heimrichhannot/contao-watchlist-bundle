@@ -3,17 +3,12 @@
 /**
  * Actions
  */
-$GLOBALS['TL_LANG']['WATCHLIST']['addLink']                = 'Zur Liste hinzufügen';
-$GLOBALS['TL_LANG']['WATCHLIST']['addTitle']               = '%s zur Liste hinzufügen';
-$GLOBALS['TL_LANG']['WATCHLIST']['delLink']                = 'Löschen';
-$GLOBALS['TL_LANG']['WATCHLIST']['delTitle']               = 'Element von der Liste entfernen';
 $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistLink']       = 'Liste löschen';
 $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistTitle']      = 'Alle Elemente von der Merkliste entfernen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllLink']        = 'Liste herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAll']            = 'alles herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllTitle']       = 'Alle Elemente der Liste als ZIP Archiv herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllSecondTitle'] = 'Alle Elemente als ZIP Archiv herunterladen';
-$GLOBALS['TL_LANG']['WATCHLIST']['downloadLinkTitle']      = 'Downloadlink erstellen';
 $GLOBALS['TL_LANG']['WATCHLIST']['selectOption']           = [
     'Wählen Sie eine Option',
     \HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager::WATCHLIST_SELECT_ITEM_OPTIONS      => 'Wählen Sie eine Option',
@@ -21,8 +16,6 @@ $GLOBALS['TL_LANG']['WATCHLIST']['selectOption']           = [
 ];
 
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle']       = '%s herunterladen';
-$GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistLink']  = 'Liste leeren';
-$GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistTitle'] = 'Alle Elemente aus der Liste entfernen';
 $GLOBALS['TL_LANG']['WATCHLIST']['watchlist']           = 'Merkliste';
 $GLOBALS['TL_LANG']['WATCHLIST']['watchlist_name']      = 'Name';
 
@@ -65,13 +58,8 @@ $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal'] = 'Unendlich';
 /**
  * Notifications
  */
-$GLOBALS['TL_LANG']['WATCHLIST']['message_add_item']                           = "<span class=\"title\">%s</span> wurde der Merkliste hinzugefügt.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_update_item']                        = "<span class=\"title\">%s</span> wurde in der Merkliste aktualisiert.";
-$GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item']                        = "<span class=\"title\">%s</span> wurde aus der Merkliste entfernt.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all']                         = "Die Merkliste wurde gelöscht.";
-$GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist']                       = "Die gewählte Datei ist bereits in der Merkliste: <span class=\"title\">%s</span>.";
-$GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist_general']               = 'Die gewählte Datei ist bereits in der Merkliste vorhanden.';
-$GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item_error']                  = "Es ist ein Fehler beim löschen aufgetreten.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all_error']                   = "Es ist ein Fehler beim löschen der Merkliste aufgetreten.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_add_watchlist_error']                = "' <span class=\"title\">%s</span> ' konnte nicht erstellt werden.";
 $GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_exists_error']             = "Die Merkliste ' <span class=\"title\">%s</span> ' existiert bereits.";
@@ -87,5 +75,4 @@ $GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_already_exists']           =
 $GLOBALS['TL_LANG']['WATCHLIST']['message_no_module']                          = 'Es wurde keine Konfiguration gefunden.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_config_error']                       = 'Die Konfiguration ist fehlerhaft.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_no_user']                            = 'Es wurden keine Nutzerdaten gefunden.';
-$GLOBALS['TL_LANG']['WATCHLIST']['message_downloadLink_send']                  = 'Der Downloadlink wurde Ihnen per Mail zugesandt.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_notofication_error']                 = 'Es wurde keine Benachrichtigungs-Konfiguration gefunden.';

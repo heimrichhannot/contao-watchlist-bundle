@@ -69,16 +69,19 @@ class WatchlistItem implements WatchlistItemInterface
 
     public function getEditActions(ModuleModel $module)
     {
-        $template = new FrontendTemplate('watchlist_edit_actions');
-        $template->id = $this->_raw['id'];
-        $template->deleteAction = System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_ITEM_ACTION);
-        $template->delTitle = $GLOBALS['TL_LANG']['WATCHLIST']['delTitle'];
-        $template->delLink = $GLOBALS['TL_LANG']['WATCHLIST']['delLink'];
-        $template->moduleId = $module->id;
+        $container              = System::getContainer();
+        $translator             = $container->get('translator');
+        $template               = new FrontendTemplate('watchlist_edit_actions');
+        $template->id           = $this->_raw['id'];
+        $template->deleteAction = $container->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP,
+            AjaxManager::XHR_WATCHLIST_DELETE_ITEM_ACTION);
+        $template->delTitle     = $translator->trans('huh.watchlist.item.delete.label');
+        $template->delLink      = $translator->trans('huh.watchlist.item.delete.link');
+        $template->moduleId     = $module->id;
 
         if ($this->_raw['download'] && null !== ($file = $this->getFile())) {
-            $template->downloadAction = System::getContainer()->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]).'?file='.$file;
-            $template->downloadTitle = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle'], $this->getTitle());
+            $template->downloadAction = $container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]) . '?file=' . $file;
+            $template->downloadTitle  = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle'], $this->getTitle());
         }
 
         return $template->parse();

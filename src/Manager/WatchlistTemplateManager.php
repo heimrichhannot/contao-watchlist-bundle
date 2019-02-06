@@ -16,10 +16,10 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
-use HeimrichHannot\Ajax\Ajax;
 use HeimrichHannot\Ajax\Response\ResponseError;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class WatchlistTemplateManager
 {
@@ -32,9 +32,15 @@ class WatchlistTemplateManager
      */
     protected $framework;
 
-    public function __construct(ContaoFrameworkInterface $framework)
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    public function __construct(ContaoFrameworkInterface $framework, TranslatorInterface $translator)
     {
         $this->framework = $framework;
+        $this->translator = $translator;
     }
 
     /**
@@ -89,7 +95,7 @@ class WatchlistTemplateManager
         }
 
         if (empty($items)) {
-            $template->empty = $GLOBALS['TL_LANG']['WATCHLIST_ITEMS']['empty'];
+            $template->empty = $this->translator->trans('huh.watchlist.empty_list');
         }
 
         $template->grouped = $grouped;
@@ -161,8 +167,8 @@ class WatchlistTemplateManager
         $template->moduleId = $moduleId;
         $template->action =
             System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION);
-        $template->emptyWatchlistLink = $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistLink'];
-        $template->emptyWatchlistTitle = $GLOBALS['TL_LANG']['WATCHLIST']['emptyWatchlistTitle'];
+        $template->emptyWatchlistLink = $this->translator->trans('huh.watchlist.empty_watchlist');
+        $template->emptyWatchlistTitle = $this->translator->trans('huh.watchlist.remove_all_from_list');
 
         return $template->parse();
     }
@@ -211,7 +217,7 @@ class WatchlistTemplateManager
 
         $template->moduleId = $module->id;
         $template->watchlistId = $watchlistId;
-        $template->downloadLinkTitle = $GLOBALS['TL_LANG']['WATCHLIST']['downloadLinkTitle'];
+        $template->downloadLinkTitle = $this->translator->trans('huh.watchlist.download_link.title');
 
         if (!$module->downloadLinkUseNotification) {
             $action = System::getContainer()
@@ -292,8 +298,8 @@ class WatchlistTemplateManager
         $template->uuid = bin2hex($file);
         $template->action =
             System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
-        $template->title = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['addTitle'], $data['title']);
-        $template->link = $data['linkTitle'] ?: $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
+        $template->title = $this->translator->trans('huh.watchlist.item.add.title', ['%item%' => $data['title']]);
+        $template->link = $data['linkTitle'] ?: $this->translator->trans('huh.watchlist.item.add.link');
 
         return $template->parse();
     }
@@ -747,6 +753,6 @@ class WatchlistTemplateManager
             return $title;
         }
 
-        return $module->togglerTitle;
+        return $this->translator->trans($module->togglerTitle);
     }
 }

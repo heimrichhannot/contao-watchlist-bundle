@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2019-02-06
+
+### Added
+- langugage support for en,cs,pl,ru
 
 ## [1.0.5] - 2019-02-01
 

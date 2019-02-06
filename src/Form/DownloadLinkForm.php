@@ -32,6 +32,7 @@ class DownloadLinkForm extends Form
             'inputType' => 'hidden',
             'load_callback' => [['huh.watchlist.data_container.module_container', 'getWatchlistId']],
         ], true);
+
     }
 
     /**

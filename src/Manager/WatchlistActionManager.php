@@ -26,6 +26,7 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Module\DownloadLinkSubmission;
 use Model\Collection;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class WatchlistActionManager
 {
@@ -44,9 +45,15 @@ class WatchlistActionManager
      */
     protected $framework;
 
-    public function __construct(ContaoFrameworkInterface $framework)
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    public function __construct(ContaoFrameworkInterface $framework, TranslatorInterface $translator)
     {
         $this->framework = $framework;
+        $this->translator = $translator;
     }
 
     /**
@@ -70,12 +77,12 @@ class WatchlistActionManager
     public function deleteWatchlistItem(int $id)
     {
         if (null === ($watchlistItem = $this->framework->getAdapter(WatchlistItemModel::class)->findInstanceByPk($id))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item_error']);
+            $message = $this->translator->trans('huh.watchlist.item.delete.error');
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
-        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item'], $watchlistItem->title);
+        $message = $this->translator->trans('huh.watchlist.item.delete.success', ['%item%' => $watchlistItem->title]);
         $watchlistItem->delete();
 
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
@@ -91,7 +98,7 @@ class WatchlistActionManager
     public function deleteWatchlistItemFromWatchlist(int $watchlistId)
     {
         if (null === ($watchlistItems = $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_item_error']);
+            $message = $this->translator->trans('huh.watchlist.item.delete.error');
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
@@ -307,7 +314,7 @@ class WatchlistActionManager
 
         $item->save();
 
-        $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_add_item'], $item->title);
+        $message = $this->translator->trans('huh.watchlist.item.add.success',['%item%' => $item->title]);
 
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
     }
@@ -416,7 +423,7 @@ class WatchlistActionManager
 
         $notification->send($token, $GLOBALS['TL_LANGUAGE']);
 
-        return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_downloadLink_send'], static::MESSAGE_STATUS_SUCCESS);
+        return $this->getStatusMessage($this->translator->trans('huh.watchlist.download_link.success'), static::MESSAGE_STATUS_SUCCESS);
     }
 
     /**
@@ -614,11 +621,8 @@ class WatchlistActionManager
 
         if (false !== ($watchlistItem =
                 System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid))) {
-            if (WatchlistManager::WATCHLIST_SESSION_BE == $watchlist->name || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name) {
-                $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist_general'];
-            } else {
-                $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_in_watchlist'], $watchlist->name);
-            }
+            $message = $this->translator->trans('huh.watchlist.item.already_in_watchlist');
+
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
