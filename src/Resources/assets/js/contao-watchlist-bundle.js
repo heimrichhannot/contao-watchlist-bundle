@@ -1,4 +1,4 @@
-let bsn = require('bootstrap.native/dist/bootstrap-native-v4.min');
+let bsn = require('bootstrap.native/dist/bootstrap-native-v4');
 
 window.Watchlist = {
     init: function () {
