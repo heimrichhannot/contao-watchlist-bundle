@@ -445,7 +445,7 @@ class WatchlistActionManager
 
         $form = new DownloadLinkSubmission($configModule);
 
-        $this->beforeFormGeneration($form, $moduleId, $watchlistId);
+//        $this->beforeFormGeneration($form, $moduleId, $watchlistId);
         $watchlistTemplateManager = System::getContainer()->get('huh.watchlist.template_manager');
         $watchlistManager = System::getContainer()->get('huh.watchlist.watchlist_manager');
 
