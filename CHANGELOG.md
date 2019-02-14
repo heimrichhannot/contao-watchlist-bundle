@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2019-02-14
+
+### Changed
+- added config fields `moduleId` and `watchlistId` to default submission palette
+
 ## [1.0.8] - 2019-02-14
 
 ### Fixed
