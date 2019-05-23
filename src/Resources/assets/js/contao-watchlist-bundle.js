@@ -2,21 +2,65 @@
 
 require('../scss/style.scss');
 
+
+// class WatchlistSubmitListener
+// {
+//     constructor(element)
+//     {
+//         this.element = element;
+//     }
+//
+//     onSubmitEvent(event)
+//     {
+//         event.preventDefault();
+//     }
+//
+//     showWatchlistWindow (element, form)
+//     {
+//         let formData = MyWatchlist.serialize(form);
+//         if (null === formData)
+//         {
+//             return;
+//         }
+//
+//         let url = form.action,
+//             moduleId = '' !== formData.moduleId ? formData.moduleId : null,
+//             watchlistId = '' !== formData.watchlistId ? formData.watchlistId : null,
+//             data = {
+//                 moduleId: moduleId,
+//                 watchlistId: watchlistId
+//             };
+//
+//         this.doAjaxCall(element, url, data, true);
+//     }
+// }
+//
+// class WatchListOpenWindowListener extends WatchlistSubmitListener
+// {
+//
+// }
+
 class MyWatchlist {
     init()
     {
         document.querySelectorAll('.mod_huhwatchlist').forEach((element, number, parent) => {
             element.addEventListener('submit', (event) => {
+                // let watchlistElement = null;
+
                 // e.target.classList.contains('watchlist-show-modal')
                 if (event.target && 'watchlist-show-modal' === event.target.id) {
                     event.preventDefault();
+                    // watchlistElement = new WatchListOpenWindowListener(element);
                     this.showWatchlistWindow(element, event.target);
                 }
+
+                // if (null !== watchlistElement) {
+                //     watchlistElement.onSubmitEvent(event);
+                // }
+
             });
         });
     }
-
-
 
     showWatchlistWindow (element, form)
     {
@@ -38,7 +82,6 @@ class MyWatchlist {
     }
 
     doAjaxCall (element, url, data, closeOnSuccess) {
-        this.addLoader();
         element.dispatchEvent(new CustomEvent('watchlist_content_ajax_before', {
             bubbles: true
         }));
@@ -55,14 +98,12 @@ class MyWatchlist {
                 element.dispatchEvent(new CustomEvent('watchlist_content_ajax_success', {
                     bubbles: true
                 }));
-                this.ajaxCompleteCallback();
             },
 
             error: (data, textStatus, jqXHR) => {
                 element.dispatchEvent(new CustomEvent('watchlist_content_ajax_error', {
                     bubbles: true
                 }));
-                this.ajaxCompleteCallback();
             }
         });
     }
@@ -70,32 +111,6 @@ class MyWatchlist {
     initModal (element, content) {
         let contentElement = element.querySelector('.watchlist-content');
         contentElement.innerHTML = content;
-    }
-
-    ajaxCompleteCallback () {
-        // remove messages with a delay
-        setTimeout(function () {
-            if (document.getElementById('watchlist-loader')) {
-                document.getElementById('watchlist-loader').remove();
-            }
-        }, 3500);
-    }
-
-    addLoader ()
-    {
-        /**
-         * @todo make plattform agnostic
-         */
-        let loader = document.createElement('div');
-        loader.setAttribute('id', 'watchlist-loader');
-        loader.innerHTML = '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>';
-
-        document.body.appendChild(loader);
-    }
-
-    removeLoader ()
-    {
-        document.getElementById('watchlist-loader').remove();
     }
 
     static serialize (form)

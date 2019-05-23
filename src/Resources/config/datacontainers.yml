@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    autowire: true
+    public: true
+
+  huh.watchlist.data_container.module_container:
+    class: HeimrichHannot\WatchlistBundle\DataContainer\ModuleContainer

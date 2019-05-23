@@ -8,7 +8,9 @@
 
 namespace HeimrichHannot\WatchlistBundle\Manager;
 
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Environment;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
@@ -160,7 +162,7 @@ class WatchlistManager
      */
     public function getWatchlistBySession()
     {
-        $ip          = (!\Config::get('disableIpCheck') ? \Environment::get('ip') : '');
+        $ip          = (!Config::get('disableIpCheck') ? Environment::get('ip') : '');
         $name        = FE_USER_LOGGED_IN ? static::WATCHLIST_SESSION_FE : static::WATCHLIST_SESSION_BE;
         $hash        = sha1(session_id() . $ip . $name);
         $watchlistId = Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT);

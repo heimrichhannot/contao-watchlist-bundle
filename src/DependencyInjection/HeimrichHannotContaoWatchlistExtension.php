@@ -29,9 +29,6 @@ class HeimrichHannotContaoWatchlistExtension extends Extension
         $processedConfig = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('huh_watchlist', $processedConfig);
-
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)

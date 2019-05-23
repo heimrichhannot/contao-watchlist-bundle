@@ -1,18 +1,14 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-<div id="watchlist-notify">
-</div>
+    <div id="watchlist-notify"></div>
 
-<div class="watchlist-action">
-    <?= $this->toggler; ?>
-    <?php if ($this->downloadAllAction): ?>
-        <?= $this->downloadAllAction; ?>
-    <?php endif; ?>
-</div>
+    <div class="watchlist-action">
+        <?= $this->toggler; ?>
+        <?php if ($this->downloadAllAction): ?>
+            <?= $this->downloadAllAction; ?>
+        <?php endif; ?>
+    </div>
 
-<div class="watchlist-content">
-    <div class="watchlist-content-body"></div>
-</div>
-
+    <div class="watchlist-content"></div>
 <?php $this->endblock(); ?>

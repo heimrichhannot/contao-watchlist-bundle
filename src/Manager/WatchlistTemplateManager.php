@@ -299,7 +299,7 @@ class WatchlistTemplateManager
             return '';
         }
 
-        if (System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlistConfig, $data[$fileField])) {
+        if ($this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlistConfig, $data[$fileField])) {
             $template->added = true;
         }
 
@@ -311,13 +311,38 @@ class WatchlistTemplateManager
         $template->downloadable = $downloadable;
         $template->itemTitle = $data['title'];
         $template->uuid = bin2hex($file);
-        $template->action =
-            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
+        $template->action = $this->container->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
         $template->title = $this->translator->trans('huh.watchlist.item.add.title', ['%item%' => $data['title']]);
         $template->link = $data['linkTitle'] ?: $this->translator->trans('huh.watchlist.item.add.link');
 
         return $template->parse();
     }
+
+
+    public function generateAddToWatchlistButtonForContentElement(array $data, ?string $uuid = null)
+    {
+        return $this->generateAddToWatchlistButtonForTemplate($data, 'tl_content', $uuid);
+    }
+
+    /**
+     *  Returns an add to watchlist button for the given entity.
+     *
+     * @param array $data
+     * @param string $dataContainer
+     * @param string|null $uuid
+     * @return string
+     */
+    public function generateAddToWatchlistButtonForTemplate(array $data, string $dataContainer, ?string $uuid = null)
+    {
+        if ($data['addAddToWatchlistButton']) {
+            if ($uuid)
+            {
+                $data['uuid'] = $uuid;
+            }
+            return $this->getAddToWatchlistButton($data, $dataContainer, $data['watchlistConfiguration']);
+        }
+    }
+
 
     /**
      * get add modal.

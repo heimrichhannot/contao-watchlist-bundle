@@ -69,9 +69,5 @@ class ModuleWatchlist extends Module
         if ($this->useGlobalDownloadAllAction) {
             $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist, $this->id);
         }
-
-//        $this->Template->watchlistContent = $this->container->get('twig')->render('@HeimrichHannotContaoWatchlist/watchlist/watchlist_default.html.twig', [
-//            'contentClass' => 'watchlist-content-body'
-//        ]);
     }
 }

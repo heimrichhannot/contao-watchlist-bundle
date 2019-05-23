@@ -9,11 +9,22 @@
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 use Contao\DataContainer;
-use Contao\System;
 use HeimrichHannot\Submissions\Creator\SubmissionCreator;
+use HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ModuleContainer
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @param DataContainer $dc
      *
@@ -23,7 +34,7 @@ class ModuleContainer
     {
         $options = [];
 
-        if (null === ($modules = System::getContainer()->get('huh.utils.model')->findModelInstancesBy('tl_module', ['tl_module.type=?'], [SubmissionCreator::MODULE_SUBMISSION_READER]))) {
+        if (null === ($modules = $this->container->get('huh.utils.model')->findModelInstancesBy('tl_module', ['tl_module.type=?'], [SubmissionCreator::MODULE_SUBMISSION_READER]))) {
             return $options;
         }
 
@@ -59,10 +70,27 @@ class ModuleContainer
     {
         $data = null;
 
-        if (null === ($post = System::getContainer()->get('huh.request')->getPost('data'))) {
+        if (null === ($post = $this->container->get('huh.request')->getPost('data'))) {
             return $data;
         }
 
         return json_decode($post);
+    }
+
+    public function getWatchlistModules()
+    {
+
+        if (null === ($modules = $this->container->get('huh.utils.model')->findModelInstancesBy(
+            'tl_module', ['tl_module.type=?'], [ModuleWatchlist::MODULE_WATCHLIST]
+        ))) {
+            return [];
+        }
+
+        $options = [];
+        while ($modules->next()) {
+            $options[$modules->id] = $modules->name;
+        }
+
+        return $options;
     }
 }
