@@ -8,10 +8,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\Module;
 
-use Contao\StringUtil;
-use Contao\System;
 use HeimrichHannot\FrontendEdit\ModuleReader;
-use HeimrichHannot\Haste\Util\Url;
 use HeimrichHannot\Submissions\Creator\ModuleSubmissionReader;
 
 class DownloadLinkSubmission extends ModuleSubmissionReader

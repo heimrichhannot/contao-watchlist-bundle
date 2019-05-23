@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.0-DEV] - 2019-05-22
+
+### Added
+- readme
+
+### Changed
+- configuration (changed huh:watchlist to huh_watchlist)
+
+### Fixed 
+- ModuleWatchlist now working
+- encore bundle legacy support
+
 ## [1.0.9] - 2019-02-14
 
 ### Changed

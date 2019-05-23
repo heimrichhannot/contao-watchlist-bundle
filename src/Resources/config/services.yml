@@ -1,4 +1,7 @@
 services:
+  _defaults:
+    public: true
+
   huh.watchlist.ajax_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\AjaxManager
     arguments:
@@ -6,12 +9,14 @@ services:
       - "@huh.watchlist.template_manager"
       - "@huh.watchlist.action_manager"
       - "@huh.watchlist.watchlist_manager"
+
   huh.watchlist.watchlist_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\WatchlistManager
     arguments:
       - "@contao.framework"
       - "@huh.watchlist.action_manager"
       - "@translator"
+
   huh.watchlist.watchlist_item_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager
     arguments:
@@ -25,7 +30,7 @@ services:
   huh.watchlist.template_manager:
     class: HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager
     arguments:
-      - "@contao.framework"
+      - "@service_container"
       - "@translator"
   huh.watchlist.download_item_file:
     class: HeimrichHannot\WatchlistBundle\Item\DownloadItemFile
@@ -35,29 +40,27 @@ services:
       class: HeimrichHannot\WatchlistBundle\Item\WatchlistItemFile
   huh.watchlist.watchlist_item_entity:
     class: HeimrichHannot\WatchlistBundle\Item\WatchlistItemEntity
+
   huh.watchlist.choice.download_file:
     class: HeimrichHannot\WatchlistBundle\Choice\DownloadItemFileChoice
-    arguments:
-      - "@contao.framework"
+    autowire: true
   huh.watchlist.choice.download_entity:
     class: HeimrichHannot\WatchlistBundle\Choice\DownloadItemEntityChoice
-    arguments:
-      - "@contao.framework"
+    autowire: true
   huh.watchlist.choice.watchlist_file:
     class: HeimrichHannot\WatchlistBundle\Choice\WatchlistItemFileChoice
-    arguments:
-      - "@contao.framework"
+    autowire: true
   huh.watchlist.choice.watchlist_entity:
     class: HeimrichHannot\WatchlistBundle\Choice\WatchlistItemEntityChoice
-    arguments:
-      - "@contao.framework"
+    autowire: true
   huh.watchlist.choice.watchlist_label:
     class: HeimrichHannot\WatchlistBundle\Choice\WatchlistLabelChoice
-    arguments:
-      - "@contao.framework"
+    autowire: true
+  huh.watchlist.choice.watchlist_window_template:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistWindowTemplateChoice
+    autowire: true
+
   huh.watchlist.data_container.module_container:
       class: HeimrichHannot\WatchlistBundle\DataContainer\ModuleContainer
   huh.watchlist.data_container.callback_container:
       class: HeimrichHannot\WatchlistBundle\DataContainer\CallbackContainer
-  huh.watchlist.event_listener.watchlist_download_listener:
-    class: HeimrichHannot\VmdBundle\EventListener\WatchlistEventListener

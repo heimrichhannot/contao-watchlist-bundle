@@ -11,4 +11,8 @@
     <?php endif; ?>
 </div>
 
+<div class="watchlist-content">
+    <div class="watchlist-content-body"></div>
+</div>
+
 <?php $this->endblock(); ?>

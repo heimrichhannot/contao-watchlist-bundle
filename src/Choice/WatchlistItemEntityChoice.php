@@ -8,22 +8,33 @@
 
 namespace HeimrichHannot\WatchlistBundle\Choice;
 
-use Contao\System;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class WatchlistItemEntityChoice extends AbstractChoice
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container->get('contao.framework'));
+        $this->container = $container;
+    }
+
     public function collect()
     {
         $choices = [];
 
-        $config = System::getContainer()->getParameter('huh.watchlist');
+        $config = $this->container->getParameter('huh_watchlist');
 
-        if (!isset($config['watchlist']['watchlistEntityItems'])) {
+        if (!isset($config['watchlistEntityItems'])) {
             return $choices;
         }
 
-        foreach ($config['watchlist']['watchlistEntityItems'] as $manager) {
+        foreach ($config['watchlistEntityItems'] as $manager) {
             $choices[$manager['name']] = $manager['class'];
         }
 

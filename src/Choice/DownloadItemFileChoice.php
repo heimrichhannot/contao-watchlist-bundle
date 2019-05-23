@@ -17,13 +17,13 @@ class DownloadItemFileChoice extends AbstractChoice
     {
         $choices = [];
 
-        $config = System::getContainer()->getParameter('huh.watchlist');
+        $config = System::getContainer()->getParameter('huh_watchlist');
 
-        if (!isset($config['watchlist']['downloadFileItems'])) {
+        if (!isset($config['downloadFileItems'])) {
             return $choices;
         }
 
-        foreach ($config['watchlist']['downloadFileItems'] as $manager) {
+        foreach ($config['downloadFileItems'] as $manager) {
             $choices[$manager['name']] = $manager['class'];
         }
 

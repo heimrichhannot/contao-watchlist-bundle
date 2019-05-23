@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\Module;
 
+use Contao\Controller;
 use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\ListBundle\Module\ModuleList;
@@ -30,7 +31,7 @@ class ModuleWatchlistDownloadList extends ModuleList
     public function generate()
     {
         if ($this->container->get('huh.request')->hasGet('file')) {
-            $this->container->get('contao.framework')->getAdapter(\Contao\Controller::class)->sendFileToBrowser($this->container->get('huh.request')->getGet('file'));
+            $this->container->get('contao.framework')->getAdapter(Controller::class)->sendFileToBrowser($this->container->get('huh.request')->getGet('file'));
         }
 
         return parent::generate();

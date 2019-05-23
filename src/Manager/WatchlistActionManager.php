@@ -453,7 +453,7 @@ class WatchlistActionManager
             'headline' => $watchlistManager->getWatchlistName($module, $watchlistManager->getWatchlistModel(null, $watchlistId)),
         ];
 
-        return $watchlistTemplateManager->getModal($form->generate(), $config);
+        return $watchlistTemplateManager->generateWatchlistWindow($form->generate(), $config);
     }
 
     /**

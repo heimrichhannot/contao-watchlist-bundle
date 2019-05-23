@@ -17,13 +17,13 @@ class DownloadItemEntityChoice extends AbstractChoice
     {
         $choices = [];
 
-        $config = System::getContainer()->getParameter('huh.watchlist');
+        $config = System::getContainer()->getParameter('huh_watchlist');
 
-        if (!isset($config['watchlist']['downloadEntityItems'])) {
+        if (!isset($config['downloadEntityItems'])) {
             return $choices;
         }
 
-        foreach ($config['watchlist']['downloadEntityItems'] as $manager) {
+        foreach ($config['downloadEntityItems'] as $manager) {
             $choices[$manager['name']] = $manager['class'];
         }
 

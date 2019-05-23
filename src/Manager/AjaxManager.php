@@ -135,7 +135,7 @@ class AjaxManager
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['response' => $this->watchlistTemplate->getWatchlistModal($moduleId, $watchlistId)]));
+            ['response' => $this->watchlistTemplate->getWatchlistWindow($moduleId, $watchlistId)]));
 
         return $response;
     }
@@ -399,7 +399,7 @@ class AjaxManager
     public function getModalResponse($content)
     {
         $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('', ['response' => $this->watchlistTemplate->getModal($content)]));
+        $response->setResult(new ResponseData('', ['response' => $this->watchlistTemplate->generateWatchlistWindow($content)]));
 
         return $response;
     }

@@ -17,13 +17,13 @@ class WatchlistItemFileChoice extends AbstractChoice
     {
         $choices = [];
 
-        $config = System::getContainer()->getParameter('huh.watchlist');
+        $config = System::getContainer()->getParameter('huh_watchlist');
 
-        if (!isset($config['watchlist']['watchlistFileItems'])) {
+        if (!isset($config['watchlistFileItems'])) {
             return $choices;
         }
 
-        foreach ($config['watchlist']['watchlistFileItems'] as $manager) {
+        foreach ($config['watchlistFileItems'] as $manager) {
             $choices[$manager['name']] = $manager['class'];
         }
 

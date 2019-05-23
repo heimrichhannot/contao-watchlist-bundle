@@ -5,8 +5,8 @@
  */
 array_insert($GLOBALS['FE_MOD'], 2, [
     'miscellaneous' => [
-        HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST                           => 'HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist',
-        HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST => 'HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList',
+        HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST                           => \HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::class,
+        HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST => \HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::class,
     ],
 ]);
 
@@ -16,7 +16,7 @@ $GLOBALS['TL_HOOKS']['getPageLayout'][] = ['huh.watchlist.ajax_manager', 'ajaxAc
  * JavaScipt
  */
 
-if(\Contao\System::getContainer()->get('huh.utils.container')->isFrontend() && !class_exists(\HeimrichHannot\EncoreBundle\DependencyInjection\EncoreExtension::class))
+if(\Contao\System::getContainer()->get('huh.utils.container')->isFrontend())
 {
     $GLOBALS['TL_JAVASCRIPT']['contao-watchlist-bundle'] = 'bundles/heimrichhannotcontaowatchlist/js/jquery.watchlist.min.js|static';
 }
@@ -24,8 +24,8 @@ if(\Contao\System::getContainer()->get('huh.utils.container')->isFrontend() && !
 /**
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_watchlist']      = 'HeimrichHannot\WatchlistBundle\Model\WatchlistModel';
-$GLOBALS['TL_MODELS']['tl_watchlist_item'] = 'HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel';
+$GLOBALS['TL_MODELS']['tl_watchlist']      = \HeimrichHannot\WatchlistBundle\Model\WatchlistModel::class;
+$GLOBALS['TL_MODELS']['tl_watchlist_item'] = \HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel::class;
 
 $GLOBALS['AJAX'][\HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_GROUP] = [
     'actions' => [

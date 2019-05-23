@@ -8,26 +8,30 @@
 
 namespace HeimrichHannot\WatchlistBundle\Module;
 
+use Contao\BackendTemplate;
 use Contao\Controller;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Module;
 use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\Request\Request;
+use Patchwork\Utf8;
+use Psr\Container\ContainerInterface;
 
 class ModuleWatchlist extends Module
 {
     const MODULE_WATCHLIST = 'huhwatchlist';
+
     protected $strTemplate = 'mod_watchlist';
 
     /**
-     * @var ContaoFramework
+     * @var ContainerInterface
      */
-    protected $framework;
+    protected $container;
 
     public function __construct(ModuleModel $objModule)
     {
-        $this->framework = System::getContainer()->get('contao.framework');
+
+        $this->container = System::getContainer();
 
         parent::__construct($objModule);
     }
@@ -35,17 +39,17 @@ class ModuleWatchlist extends Module
     public function generate()
     {
         if (TL_MODE == 'BE') {
-            $objTemplate = new \BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### '.utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['watchlist'][0]).' ###';
+            $objTemplate = new BackendTemplate('be_wildcard');
+            $objTemplate->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['watchlist'][0]).' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
-            $objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+            $objTemplate->href = 'contao?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $objTemplate->parse();
         }
 
-        if (!System::getContainer()->get('huh.watchlist.watchlist_manager')->checkPermission($this)) {
+        if (!$this->container->get('huh.watchlist.watchlist_manager')->checkPermission($this)) {
             return;
         }
 
@@ -58,12 +62,16 @@ class ModuleWatchlist extends Module
 
     protected function compile()
     {
-        list($watchlist, $toggler) = System::getContainer()->get('huh.watchlist.template_manager')->getWatchlistToggler($this->id);
+        list($watchlist, $toggler) = $this->container->get('huh.watchlist.template_manager')->getWatchlistToggler($this->id);
 
         $this->Template->toggler = $toggler;
 
         if ($this->useGlobalDownloadAllAction) {
-            $this->Template->downloadAllAction = System::getContainer()->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist, $this->id);
+            $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist, $this->id);
         }
+
+//        $this->Template->watchlistContent = $this->container->get('twig')->render('@HeimrichHannotContaoWatchlist/watchlist/watchlist_default.html.twig', [
+//            'contentClass' => 'watchlist-content-body'
+//        ]);
     }
 }

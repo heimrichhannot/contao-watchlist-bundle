@@ -19,7 +19,10 @@ use Contao\System;
 use HeimrichHannot\Ajax\Response\ResponseError;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
+use Psr\Cache\InvalidArgumentException;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Error\LoaderError;
 
 class WatchlistTemplateManager
 {
@@ -36,11 +39,16 @@ class WatchlistTemplateManager
      * @var TranslatorInterface
      */
     protected $translator;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    public function __construct(ContaoFrameworkInterface $framework, TranslatorInterface $translator)
+    public function __construct(ContainerInterface $container, TranslatorInterface $translator)
     {
-        $this->framework = $framework;
+        $this->framework = $container->get('contao.framework');
         $this->translator = $translator;
+        $this->container = $container;
     }
 
     /**
@@ -54,6 +62,7 @@ class WatchlistTemplateManager
     {
         $template = new FrontendTemplate('watchlist');
 
+        $preparedWatchlistItems = [];
         if (!empty($items)) {
             $preparedWatchlistItems = $this->prepareWatchlistItems($items, $module, $grouped);
         }
@@ -108,17 +117,25 @@ class WatchlistTemplateManager
      * @param null $watchlistId
      *
      * @return string
+     * @throws InvalidArgumentException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
-    public function getWatchlistModal($moduleId, $watchlistId = null)
+    public function getWatchlistWindow($moduleId, $watchlistId = null)
     {
-        if (null === ($module = $this->framework->getAdapter(ModuleModel::class)->findByPk($moduleId))) {
-            return $this->getModal($GLOBALS['TL_LANG']['WATCHLIST']['empty']);
+        $module = $this->framework->getAdapter(ModuleModel::class)->findByPk($moduleId);
+        $config = ['template' => $module->watchlistWindowTemplate];
+
+
+        if (null === $module) {
+            return $this->generateWatchlistWindow($GLOBALS['TL_LANG']['WATCHLIST']['empty'], $config);
         }
 
-        $watchlistManager = System::getContainer()->get('huh.watchlist.watchlist_manager');
+        $watchlistManager = $this->container->get('huh.watchlist.watchlist_manager');
 
         if (null === ($watchlist = $watchlistManager->getWatchlistModel($moduleId, $watchlistId))) {
-            return $this->getModal($GLOBALS['TL_LANG']['WATCHLIST']['empty']);
+            return $this->generateWatchlistWindow($GLOBALS['TL_LANG']['WATCHLIST']['empty'], $config);
         }
 
         // if no watchlistId is given overwrite by found watchlist
@@ -127,12 +144,10 @@ class WatchlistTemplateManager
 
         $watchlistName = $watchlistManager->getWatchlistName($module, $watchlist);
 
-        $config = [
-            'headline' => $watchlistName,
-            'class' => 'large',
-        ];
+        $config['headline'] = $watchlistName;
+        $config['class'] = 'large';
 
-        return $this->getModal($this->getWatchlist($module, $watchlistItems, $watchlistId), $config);
+        return $this->generateWatchlistWindow($this->getWatchlist($module, $watchlistItems, $watchlistId), $config);
     }
 
     /**
@@ -369,7 +384,7 @@ class WatchlistTemplateManager
 
         $config = ['headline' => sprintf($GLOBALS['TL_LANG']['WATCHLIST']['addTitle'], $itemData['title'])];
 
-        return [null, $this->getModal($template->parse(), $config), null];
+        return [null, $this->generateWatchlistWindow($template->parse(), $config), null];
     }
 
     /**
@@ -453,22 +468,41 @@ class WatchlistTemplateManager
     /**
      * add content to the modal wrapper.
      *
-     * @param $content
+     * @param string $content
      *
+     * @param array $config
      * @return string
+     * @throws InvalidArgumentException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
-    public function getModal(string $content, array $config = [])
+    public function generateWatchlistWindow(string $content, array $config = [])
     {
-        $template = new FrontendTemplate('watchlist_modal_wrapper');
-        $template->content = $content;
-
-        $template->headline = $config['headline'] ? $config['headline'] : $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'];
-
-        if ($config['class']) {
-            $template->class = $config['class'];
+        $template = 'watchlist_window_default';
+        if ($config['template']) {
+            $template = $config['template'];
         }
 
-        return $template->parse();
+        $context = [
+            'content' => $content,
+            'headline' => isset($config['headline']) ? $config['headline'] : $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'],
+            'class' => isset($config['class']) ? $config['class'] : '',
+        ];
+
+        return $this->container->get('huh.utils.template')->renderTwigTemplate($template, $context);
+
+
+//        $template = new FrontendTemplate('watchlist_modal_wrapper');
+//        $template->content = $content;
+//
+//        $template->headline = $config['headline'] ? $config['headline'] : $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'];
+//
+//        if ($config['class']) {
+//            $template->class = $config['class'];
+//        }
+//
+//        return $template->parse();
     }
 
     /**
@@ -733,7 +767,7 @@ class WatchlistTemplateManager
         $template->addLink = $GLOBALS['TL_LANG']['WATCHLIST']['addLink'];
         $template->abort = $GLOBALS['TL_LANG']['WATCHLIST']['abort'];
 
-        return [null, $this->getModal($template->parse()), null];
+        return [null, $this->generateWatchlistWindow($template->parse()), null];
     }
 
     /**

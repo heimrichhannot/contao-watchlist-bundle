@@ -347,13 +347,13 @@ class WatchlistManager
      */
     public function getClassByName(string $name, string $context): ?string
     {
-        $config = System::getContainer()->getParameter('huh.watchlist');
+        $config = System::getContainer()->getParameter('huh_watchlist');
 
-        if (!isset($config['watchlist'][$context])) {
+        if (!isset($config[$context])) {
             return null;
         }
 
-        $items = $config['watchlist'][$context];
+        $items = $config[$context];
 
         foreach ($items as $item) {
             if ($item['name'] == $name) {

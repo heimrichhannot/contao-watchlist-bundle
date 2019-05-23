@@ -18,7 +18,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
  */
 $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST] =
     '{title_legend},name,headline,type;
-    {template_legend:hide},customTpl;
+    {template_legend:hide},watchlistWindowTemplate,customTpl;
     {additionalSettingsLegend},useMultipleWatchlist,useGroupWatchlist,useWatchlistDurability,useGlobalDownloadAllAction,watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity,disableDownloadAll,overrideWatchlistTitle,overrideTogglerTitle;
     {download_legend},useDownloadLink, downloadLinkUseNotification;
     {protected_legend:hide},protected;
@@ -195,6 +195,20 @@ $arrFields = [
         'inputType'        => 'select',
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['downloadItemEntity'],
         'options_callback' => ['huh.watchlist.choice.download_entity', 'getChoices'],
+        'eval'             => [
+            'chosen'             => true,
+            'includeBlankOption' => true,
+            'mandatory'          => true,
+            'tl_class'           => 'w50',
+            'notOverridable'     => true,
+        ],
+        'exclude'          => true,
+        'sql'              => "varchar(128) NOT NULL default 'default'",
+    ],
+    'watchlistWindowTemplate'                       => [
+        'inputType'        => 'select',
+        'label'            => &$GLOBALS['TL_LANG']['tl_module']['watchlistWindowTemplate'],
+        'options_callback' => ['huh.watchlist.choice.watchlist_window_template', 'getCachedChoices'],
         'eval'             => [
             'chosen'             => true,
             'includeBlankOption' => true,

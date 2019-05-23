@@ -1,4 +1,141 @@
-let bsn = require('bootstrap.native/dist/bootstrap-native-v4');
+// let bsn = require('bootstrap.native/dist/bootstrap-native-v4');
+
+require('../scss/style.scss');
+
+class MyWatchlist {
+    init()
+    {
+        document.querySelectorAll('.mod_huhwatchlist').forEach((element, number, parent) => {
+            element.addEventListener('submit', (event) => {
+                // e.target.classList.contains('watchlist-show-modal')
+                if (event.target && 'watchlist-show-modal' === event.target.id) {
+                    event.preventDefault();
+                    this.showWatchlistWindow(element, event.target);
+                }
+            });
+        });
+    }
+
+
+
+    showWatchlistWindow (element, form)
+    {
+        let formData = MyWatchlist.serialize(form);
+        if (null === formData)
+        {
+            return;
+        }
+
+        let url = form.action,
+            moduleId = '' !== formData.moduleId ? formData.moduleId : null,
+            watchlistId = '' !== formData.watchlistId ? formData.watchlistId : null,
+            data = {
+                moduleId: moduleId,
+                watchlistId: watchlistId
+            };
+
+        this.doAjaxCall(element, url, data, true);
+    }
+
+    doAjaxCall (element, url, data, closeOnSuccess) {
+        this.addLoader();
+        element.dispatchEvent(new CustomEvent('watchlist_content_ajax_before', {
+            bubbles: true
+        }));
+
+        Watchlist.ajax({
+            url: url,
+            dataType: 'JSON',
+            type: 'POST',
+            data: data,
+            success: (data, textStatus, jqXHR) => {
+                let response = JSON.parse(data.responseText);
+
+                this.initModal(element, response.result.data.response);
+                element.dispatchEvent(new CustomEvent('watchlist_content_ajax_success', {
+                    bubbles: true
+                }));
+                this.ajaxCompleteCallback();
+            },
+
+            error: (data, textStatus, jqXHR) => {
+                element.dispatchEvent(new CustomEvent('watchlist_content_ajax_error', {
+                    bubbles: true
+                }));
+                this.ajaxCompleteCallback();
+            }
+        });
+    }
+
+    initModal (element, content) {
+        let contentElement = element.querySelector('.watchlist-content');
+        contentElement.innerHTML = content;
+    }
+
+    ajaxCompleteCallback () {
+        // remove messages with a delay
+        setTimeout(function () {
+            if (document.getElementById('watchlist-loader')) {
+                document.getElementById('watchlist-loader').remove();
+            }
+        }, 3500);
+    }
+
+    addLoader ()
+    {
+        /**
+         * @todo make plattform agnostic
+         */
+        let loader = document.createElement('div');
+        loader.setAttribute('id', 'watchlist-loader');
+        loader.innerHTML = '<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>';
+
+        document.body.appendChild(loader);
+    }
+
+    removeLoader ()
+    {
+        document.getElementById('watchlist-loader').remove();
+    }
+
+    static serialize (form)
+    {
+        let field,
+            formData = [],
+            hasError = false;
+
+        if (typeof form === 'object' && "FORM" === form.nodeName) {
+            for (let i = 0; i < form.elements.length; i++) {
+                field = form.elements[i];
+
+                let name = field.name,
+                    value = field.value;
+
+                if ('checkbox' === field.type || 'radio' === field.type) {
+                    value = field.checked;
+                }
+
+                if(field.required && !value) {
+                    let error = document.createElement('span');
+                    error.setAttribute('class', 'pt-1 d-block text-danger');
+                    error.textContent = 'Bitte füllen Sie dieses Feld aus!';
+
+                    let node = ('checkbox' === field.type || 'radio' === field.type) ?  field.parentNode.parentNode : field.parentNode;
+                    node.appendChild(error);
+                    hasError = true;
+                }
+
+                formData[name] = value;
+            }
+        }
+
+        if(hasError) {
+            return null;
+        }
+
+        return formData;
+    }
+}
 
 window.Watchlist = {
     init: function () {
@@ -9,11 +146,6 @@ window.Watchlist = {
             if (e.target && 'watchlist-download-link' === e.target.id) {
                 e.preventDefault();
                 Watchlist.generateDownloadLink(document.getElementById(e.target.id));
-            }
-
-            if (e.target && 'watchlist-show-modal' === e.target.id) {
-                e.preventDefault();
-                Watchlist.showModal(document.getElementById(e.target.id));
             }
 
             if (e.target && e.target.id.includes('watchlist-add-item')) {
@@ -63,24 +195,9 @@ window.Watchlist = {
 
         });
     },
-    showModal: function (form) {
-        if(!(formData = Watchlist.serialize(form))) {
-            return
-        }
-
-        let url = form.action,
-            moduleId = '' !== formData['moduleId'] ? formData['moduleId'] : null,
-            watchlistId = '' !== formData['watchlistId'] ? formData['watchlistId'] : null,
-            data = {
-                moduleId: moduleId,
-                watchlistId: watchlistId
-            };
-
-        Watchlist.doAjaxCall(url, data, true);
-    },
     addItem: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
-            return
+            return;
         }
 
         let url = form.action,
@@ -107,7 +224,7 @@ window.Watchlist = {
     },
     deleteItem: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
-            return
+            return;
         }
 
         let url = form.action,
@@ -124,7 +241,7 @@ window.Watchlist = {
     },
     emptyWatchlist: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
-            return
+            return;
         }
 
         let url = form.action,
@@ -141,7 +258,7 @@ window.Watchlist = {
     },
     downloadWatchlist: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
-            return
+            return;
         }
 
         let url = form.action,
@@ -156,7 +273,7 @@ window.Watchlist = {
     },
     generateDownloadLink: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
-            return
+            return;
         }
 
         let url = form.action,
@@ -393,12 +510,15 @@ window.Watchlist = {
         }, 3500);
     },
     initModal: function (content) {
-        let modalElement = Watchlist.getWatchlistWrapper();
-        let modal = new bsn.Modal(modalElement, {
-            content: content
-        });
+        let element = document.querySelector('.watchlist-content');
 
-        modal.show();
+
+        // let modalElement = Watchlist.getWatchlistWrapper();
+        // let modal = new bsn.Modal(modalElement, {
+        //     content: content
+        // });
+        //
+        // modal.show();
     },
     ajax: function (config) { // $.ajax(...) without jquery.
 
@@ -502,22 +622,6 @@ window.Watchlist = {
 
         document.body.appendChild(loader);
     },
-    removeLoader: function () {
-        document.getElementById('watchlist-loader').remove();
-    },
-    getWatchlistWrapper: function () {
-        let wrapper = document.createElement('div');
-        wrapper.innerHTML = '' +
-            '<div class="modal fade" id="watchlistModal" tabindex="-1">\n' +
-            '    <div class="modal-dialog modal-xl" role="dialog">\n' +
-            '        <div class="modal-content"></div>\n' +
-            '    </div>\n' +
-            '</div>';
-
-        document.getElementsByTagName('body')[0].appendChild(wrapper);
-
-        return document.getElementById('watchlistModal');
-    },
     serialize: function (form) {
         let field,
             formData = [],
@@ -573,6 +677,9 @@ document.addEventListener('DOMContentLoaded', function () {
             Watchlist.init();
         });
     }
+
+    let watchlist = new MyWatchlist();
+    watchlist.init();
 
 });
 
