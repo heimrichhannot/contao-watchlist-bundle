@@ -1,154 +1,38 @@
 // let bsn = require('bootstrap.native/dist/bootstrap-native-v4');
+import { WatchlistOpenWindowListener, WatchlistAddItemListener } from './watchlist-submit-listener';
 
 require('../scss/style.scss');
-
-
-// class WatchlistSubmitListener
-// {
-//     constructor(element)
-//     {
-//         this.element = element;
-//     }
-//
-//     onSubmitEvent(event)
-//     {
-//         event.preventDefault();
-//     }
-//
-//     showWatchlistWindow (element, form)
-//     {
-//         let formData = MyWatchlist.serialize(form);
-//         if (null === formData)
-//         {
-//             return;
-//         }
-//
-//         let url = form.action,
-//             moduleId = '' !== formData.moduleId ? formData.moduleId : null,
-//             watchlistId = '' !== formData.watchlistId ? formData.watchlistId : null,
-//             data = {
-//                 moduleId: moduleId,
-//                 watchlistId: watchlistId
-//             };
-//
-//         this.doAjaxCall(element, url, data, true);
-//     }
-// }
-//
-// class WatchListOpenWindowListener extends WatchlistSubmitListener
-// {
-//
-// }
 
 class MyWatchlist {
     init()
     {
         document.querySelectorAll('.mod_huhwatchlist').forEach((element, number, parent) => {
             element.addEventListener('submit', (event) => {
-                // let watchlistElement = null;
+                let watchlistElement = null;
 
                 // e.target.classList.contains('watchlist-show-modal')
                 if (event.target && 'watchlist-show-modal' === event.target.id) {
-                    event.preventDefault();
-                    // watchlistElement = new WatchListOpenWindowListener(element);
-                    this.showWatchlistWindow(element, event.target);
+                    watchlistElement = new WatchlistOpenWindowListener(element);
                 }
 
-                // if (null !== watchlistElement) {
-                //     watchlistElement.onSubmitEvent(event);
-                // }
+                if (null !== watchlistElement) {
+                    watchlistElement.onSubmitEvent(event);
+                }
 
             });
         });
-    }
 
-    showWatchlistWindow (element, form)
-    {
-        let formData = MyWatchlist.serialize(form);
-        if (null === formData)
-        {
-            return;
-        }
+        document.addEventListener('submit', (event) => {
+            let watchlistElement = null;
 
-        let url = form.action,
-            moduleId = '' !== formData.moduleId ? formData.moduleId : null,
-            watchlistId = '' !== formData.watchlistId ? formData.watchlistId : null,
-            data = {
-                moduleId: moduleId,
-                watchlistId: watchlistId
-            };
+            if (event.target && event.target.id.includes('watchlist-add-item')) {
+                watchlistElement = new WatchlistAddItemListener(null);
+            }
 
-        this.doAjaxCall(element, url, data, true);
-    }
-
-    doAjaxCall (element, url, data, closeOnSuccess) {
-        element.dispatchEvent(new CustomEvent('watchlist_content_ajax_before', {
-            bubbles: true
-        }));
-
-        Watchlist.ajax({
-            url: url,
-            dataType: 'JSON',
-            type: 'POST',
-            data: data,
-            success: (data, textStatus, jqXHR) => {
-                let response = JSON.parse(data.responseText);
-
-                this.initModal(element, response.result.data.response);
-                element.dispatchEvent(new CustomEvent('watchlist_content_ajax_success', {
-                    bubbles: true
-                }));
-            },
-
-            error: (data, textStatus, jqXHR) => {
-                element.dispatchEvent(new CustomEvent('watchlist_content_ajax_error', {
-                    bubbles: true
-                }));
+            if (null !== watchlistElement) {
+                watchlistElement.onSubmitEvent(event);
             }
         });
-    }
-
-    initModal (element, content) {
-        let contentElement = element.querySelector('.watchlist-content');
-        contentElement.innerHTML = content;
-    }
-
-    static serialize (form)
-    {
-        let field,
-            formData = [],
-            hasError = false;
-
-        if (typeof form === 'object' && "FORM" === form.nodeName) {
-            for (let i = 0; i < form.elements.length; i++) {
-                field = form.elements[i];
-
-                let name = field.name,
-                    value = field.value;
-
-                if ('checkbox' === field.type || 'radio' === field.type) {
-                    value = field.checked;
-                }
-
-                if(field.required && !value) {
-                    let error = document.createElement('span');
-                    error.setAttribute('class', 'pt-1 d-block text-danger');
-                    error.textContent = 'Bitte füllen Sie dieses Feld aus!';
-
-                    let node = ('checkbox' === field.type || 'radio' === field.type) ?  field.parentNode.parentNode : field.parentNode;
-                    node.appendChild(error);
-                    hasError = true;
-                }
-
-                formData[name] = value;
-            }
-        }
-
-        if(hasError) {
-            return null;
-        }
-
-        return formData;
     }
 }
 
@@ -163,10 +47,10 @@ window.Watchlist = {
                 Watchlist.generateDownloadLink(document.getElementById(e.target.id));
             }
 
-            if (e.target && e.target.id.includes('watchlist-add-item')) {
-                e.preventDefault();
-                Watchlist.addItem(document.getElementById(e.target.id));
-            }
+            // if (e.target && e.target.id.includes('watchlist-add-item')) {
+            //     e.preventDefault();
+            //     Watchlist.addItem(document.getElementById(e.target.id));
+            // }
 
             if (e.target && 'watchlist-downloadLink-form' === e.target.id) {
                 e.preventDefault();

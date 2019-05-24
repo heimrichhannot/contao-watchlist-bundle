@@ -318,7 +318,6 @@ class WatchlistTemplateManager
         return $template->parse();
     }
 
-
     public function generateAddToWatchlistButtonForContentElement(array $data, ?string $uuid = null)
     {
         return $this->generateAddToWatchlistButtonForTemplate($data, 'tl_content', $uuid);

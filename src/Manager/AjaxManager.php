@@ -158,7 +158,7 @@ class AjaxManager
             return $this->watchlistShowModalAddAction($moduleId, $type, $itemData);
         }
 
-        if (isset($itemData->options) && count($itemData->options) > 1) {
+        if (isset($itemData->options) && is_array($itemData->options) && count($itemData->options) > 1) {
             $responseContent = $this->watchlistTemplate->getWatchlistItemOptions($moduleId, $type, $itemData->options);
 
             return $this->getModalResponse($responseContent);
