@@ -6,8 +6,13 @@
 
 <a href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?>"><?php echo $this->link; ?> <span class="size">(<?php echo $this->filesize; ?>)</span></a>
 <?php
-//    \Contao\System::getContainer()->get('huh.watchlist.template_manager')->getAddToWatchlistButton($this->getData(), );
-//    echo \HeimrichHannot\Watchlist\Watchlist::getInstance()->generateAddActions($this->getData(), $this->uuid);
-    ?>
+    $fileModel = \Contao\FilesModel::findByPath($this->singleSRC);
+    if ($fileModel)
+    {
+        echo \Contao\System::getContainer()->get('huh.watchlist.template_manager')
+            ->generateAddToWatchlistButtonForContentElement($this->getData(), $fileModel->uuid);
+    }
+?>
 
 <?php $this->endblock(); ?>
+

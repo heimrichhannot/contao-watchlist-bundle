@@ -10,6 +10,8 @@ A contao watchlist for download elements.
 * define durability of the watchlist
 * users of the same group can use same watchlist
 * download watchlist items and watchlist
+* Easily add watchlist support to your entity/modules/contentelement
+    * download and downloads content element supported out of the box
 * [List Bundle](https://github.com/heimrichhannot/contao-list-bundle) support
 * [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle) support
 * [Notification Center](https://github.com/terminal42/contao-notification_center) support
@@ -83,19 +85,30 @@ watchlist_content_ajax_before |
 watchlist_content_ajax_success |
 watchlist_content_ajax_error |
 
-### Add Item Button
+### Add watchlist support to your entity
 
-```
-$template->addWatchlist = Watchlist::getAddAction($array, $uuid, $multiple);
-```
+1. Add required field to your dca. To help you with this, we have created a helper class, see example for the download elements:
 
-```
-$array = [
-	'name' => 'name of the item',
-	'type' => 'type of the item (e.g. download)',
-	'id' => 'id of the item'
-];
-```
-
-* $uuid is the uuid of the \Contao\FileModel
-* $multiple is true or false for the usage of the single or multiple watchlist
+    ```php
+    // src/Resources/contao/dca/tl_content.php
+    
+    // Adds the fields to the dca and add the field to the download palette before the template section. 
+    $dca = \HeimrichHannot\WatchlistBundle\Helper\DcaHelper::addDcaFields('tl_content, '{template_legend', 'download');
+    // Add fields to the downloads palette before the template section
+    \HeimrichHannot\WatchlistBundle\Helper\DcaHelper::addDcaMapping($dca, '{template_legend', 'downloads');
+    ```
+    
+2. Output the buttons in your template:
+    
+    ```php 
+    //src/Resources/contao/templates/elements/ce_downloads.html5
+    
+    // ...
+    <?php foreach ($this->files as $file): ?>
+        // ...
+        <?php echo \Contao\System::getContainer()->get('huh.watchlist.template_manager')
+            ->generateAddToWatchlistButtonForContentElement($this->getData(), $file['uuid']); ?>
+    <?php endforeach; ?>
+    ```
+    
+    For more advanced options use `generateAddToWatchlistButtonForTemplate()` or `getAddToWatchlistButton()` methods.

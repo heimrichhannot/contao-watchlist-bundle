@@ -20,15 +20,20 @@ class DcaHelper
      * Add all necessary fields to the dca.
      *
      * @param string $table Dca table
-     * @param string $insertAfter A dca palette string (for example a field) to add watchlist field after. Leave empty, if you want to add the field by yourself (addAddToWatchlistButton).
+     * @param string $palettePosition A dca  string (for example a field or legend) to add watchlist field before.
+     *                              Leave empty, if you want to add the field by yourself (addAddToWatchlistButton).
+     *                              If a $legendName is set, the dca field will be added completly with legend.
+     *                              If $legendName is empty, the dca field will be just added as field with trailing comma.
      * @param string $palette The palette where to add watchlist fields. By default the default palette is used.
+     * @param string $legendName
+     * @return array Returns a reference to the dca array
      */
-    public static function addDcaFields(string $table, string $insertAfter = '', string $palette = 'default'): void
+    public static function addDcaFields(string $table, string $palettePosition = '', string $palette = 'default', string $legendName = 'watchlist_legend'): array
     {
         Controller::loadDataContainer($table);
         if (!isset($GLOBALS['TL_DCA'][$table]))
         {
-            return;
+            return [];
         }
         $dca = &$GLOBALS['TL_DCA'][$table];
         $dca['palettes']['__selector__'][] = 'addAddToWatchlistButton';
@@ -53,9 +58,34 @@ class DcaHelper
             'sql'              => "int(10) unsigned NOT NULL default '0'",
         ];
 
-        if (!empty($insertAfter))
+        static::addDcaMapping($dca, $palettePosition, $palette, $legendName);
+
+        return $dca;
+    }
+
+    /**
+     * Add an additional palette mapping for field from DcaHelper::addDcaFields()
+     *
+     * @param array $dca
+     * @param string $palettePosition
+     * @param string $palette
+     * @param string $legendName
+     */
+    public static function addDcaMapping(array &$dca, string $palettePosition = '', string $palette = 'default', string $legendName = 'watchlist_legend')
+    {
+        if (!empty($palettePosition))
         {
-            $dca['palettes'][$palette] = str_replace($insertAfter, $insertAfter.',addAddToWatchlistButton', $dca['palettes'][$palette]);
+            $insert = 'addAddToWatchlistButton,';
+            if (!empty($legendName)) {
+                $insert = '{'.$legendName.'},addAddToWatchlistButton;';
+            }
+            if (!$palette) {
+                $palette = 'default';
+            }
+            if (isset($dca['palettes'][$palette]))
+            {
+                $dca['palettes'][$palette] = str_replace($palettePosition, $insert.$palettePosition, $dca['palettes'][$palette]);
+            }
         }
     }
 

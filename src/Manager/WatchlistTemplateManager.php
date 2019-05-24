@@ -288,7 +288,7 @@ class WatchlistTemplateManager
         array $data,
         string $dataContainer,
         int $watchlistConfig,
-        $downloadable = true,
+        bool $downloadable = true,
         string $fileField = 'uuid',
         string $template = 'watchlist_add_action'
     ) {
@@ -342,7 +342,6 @@ class WatchlistTemplateManager
             return $this->getAddToWatchlistButton($data, $dataContainer, $data['watchlistConfiguration']);
         }
     }
-
 
     /**
      * get add modal.
