@@ -17,15 +17,13 @@ use Contao\ContentModel;
 
 class HookListener
 {
-    //$GLOBALS['TL_HOOKS']['getContentElement']
-
     /**
      * @param $model
      * @param string $buffer
      * @param $objElement
      * @return string
      */
-    public function onGetContentElement(ContentModel $model, string $buffer, ContentElement $objElement)
+    public function onGetContentElement($model, $buffer, $objElement)
     {
 //        if ($objElement->type === 'downloads')
 //        {

@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed 
 - ModuleWatchlist now working
 - encore bundle legacy support
+- hook issue
 
 ## [1.0.9] - 2019-02-14
 
