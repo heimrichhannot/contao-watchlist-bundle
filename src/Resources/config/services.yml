@@ -5,7 +5,7 @@ services:
   huh.watchlist.ajax_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\AjaxManager
     arguments:
-      - "@contao.framework"
+      - "@service_container"
       - "@huh.watchlist.template_manager"
       - "@huh.watchlist.action_manager"
       - "@huh.watchlist.watchlist_manager"

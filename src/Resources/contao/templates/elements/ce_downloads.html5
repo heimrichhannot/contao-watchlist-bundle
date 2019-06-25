@@ -1,22 +1,5 @@
 <?php
-
-$this->extend('block_searchable'); ?>
-
-<?php $this->block('content'); ?>
-
-<?php echo $this->v2warning; ?>
-
-<ul>
-	<?php foreach ($this->files as $file): ?>
-		<li>
-			<img src="<?php echo $file['icon']; ?>" width="18" height="18" alt="" class="mime_icon"> <a href="<?php echo $file['href']; ?>" title="<?php echo $file['title']; ?>"><?php echo $file['link']; ?> <span class="size">(<?php echo $file['filesize']; ?>)</span></a>
-			<?php
-                $entryDate = $this->getData();
-                $entryDate['title'] = isset($file['link']) ? $file['link'] : (isset($file['title']) ?  $file['title'] : $file['name']);
-            echo \Contao\System::getContainer()->get('huh.watchlist.template_manager')
-                ->generateAddToWatchlistButtonForContentElement($entryDate, $file['uuid']); ?>
-		</li>
-	<?php endforeach; ?>
-</ul>
-
-<?php $this->endblock(); ?>
+$this->extend('block_searchable');
+$this->block('content');
+    echo \Contao\System::getContainer()->get('twig')->loadTemplate('@HeimrichHannotContaoWatchlist/elements/ce_downloads.html.twig')->renderBlock('content', $this->row());
+$this->endblock();

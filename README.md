@@ -98,17 +98,8 @@ watchlist_content_ajax_error |
     \HeimrichHannot\WatchlistBundle\Helper\DcaHelper::addDcaMapping($dca, '{template_legend', 'downloads');
     ```
     
-2. Output the buttons in your template:
-    
-    ```php 
-    //src/Resources/contao/templates/elements/ce_downloads.html5
-    
-    // ...
-    <?php foreach ($this->files as $file): ?>
-        // ...
-        <?php echo \Contao\System::getContainer()->get('huh.watchlist.template_manager')
-            ->generateAddToWatchlistButtonForContentElement($this->getData(), $file['uuid']); ?>
-    <?php endforeach; ?>
-    ```
-    
-    For more advanced options use `generateAddToWatchlistButtonForTemplate()` or `getAddToWatchlistButton()` methods.
+2. Output the buttons in your template
+    * Download Element: `<?= $this->addToWatchlistButton['html'] ?>`
+    * Downloads Element: `<?= $this->files[$index]['addToWatchlistButton']['html'] ?>`
+       
+    For other content elements we recommend to use the `parseTemplate` Hook to add the corresponding template variables. Use `$this->container->get('huh.watchlist.template_manager')->generateAddToWatchlistButtonForContentElement($entryData, $file['uuid'])`.

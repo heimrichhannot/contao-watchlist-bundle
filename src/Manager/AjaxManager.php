@@ -8,17 +8,15 @@
 
 namespace HeimrichHannot\WatchlistBundle\Manager;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FilesModel;
-use Contao\FrontendUser;
-use Contao\Session;
 use Contao\StringUtil;
-use Contao\System;
 use HeimrichHannot\AjaxBundle\Response\ResponseData;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
 use HeimrichHannot\AjaxBundle\Response\ResponseSuccess;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class AjaxManager
 {
@@ -55,7 +53,7 @@ class AjaxManager
     const XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM            = 'watchlistLoadDownloadLinkForm';
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     protected $framework;
 
@@ -73,48 +71,53 @@ class AjaxManager
      * @var WatchlistTemplateManager
      */
     protected $watchlistTemplate;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     public function __construct(
-        ContaoFrameworkInterface $framework,
+        ContainerInterface $container,
         WatchlistTemplateManager $watchlistTemplate,
         WatchlistActionManager $actionManager,
         WatchlistManager $watchlistManager
     ) {
-        $this->framework         = $framework;
+        $this->framework         = $container->get('contao.framework');
         $this->watchlistTemplate = $watchlistTemplate;
         $this->actionManager     = $actionManager;
         $this->watchlistManager  = $watchlistManager;
+        $this->container = $container;
     }
 
     public function ajaxActions()
     {
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_SHOW_MODAL_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_ADD_ACTION,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_ADD_ACTION,
             $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_DELETE_ITEM_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_DELETE_WATCHLIST_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_AS_NOTIFICATION, $this);
-        System::getContainer()->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, $this);
     }
 
@@ -168,7 +171,7 @@ class AjaxManager
             return new ResponseError();
         }
 
-        return $this->addItemToWatchlist(Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT), $type,
+        return $this->addItemToWatchlist($this->container->get('session')->get(WatchlistModel::WATCHLIST_SELECT), $type,
             $itemData);
     }
 
@@ -225,7 +228,7 @@ class AjaxManager
             return $response;
         }
 
-        $watchlist = System::getContainer()->get('huh.watchlist.action_manager')->createWatchlist($name);
+        $watchlist = $this->actionManager->createWatchlist($name);
 
         if (!is_array($itemData)) {
             $data     = null !== json_decode($itemData) ? json_decode($itemData) : $itemData;
@@ -235,7 +238,7 @@ class AjaxManager
             ];
         }
 
-        $message = System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlist->id,
+        $message = $this->actionManager->addItemToWatchlist($watchlist->id,
             $type, $itemData);
 
         $response->setResult(new ResponseData('', ['message' => $message, null, 1]));
@@ -278,7 +281,7 @@ class AjaxManager
         $moduleId = $data->moduleId;
         $itemId   = $data->itemId;
 
-        if (null === ($watchlistId = System::getContainer()->get('huh.watchlist.watchlist_item_manager')->getWatchlistIdFromItem($itemId))) {
+        if (null === ($watchlistId = $this->container->get('huh.watchlist.watchlist_item_manager')->getWatchlistIdFromItem($itemId))) {
             return new ResponseError();
         }
 
@@ -415,12 +418,12 @@ class AjaxManager
      */
     public function checkForOptions(int $id, int $moduleId, string $dataContainer)
     {
-        if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module',
+        if (null === ($module = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_module',
                 $moduleId))) {
             return false;
         }
 
-        if (null === ($item = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dataContainer,
+        if (null === ($item = $this->container->get('huh.utils.model')->findModelInstanceByPk($dataContainer,
                 $id))) {
             return false;
         }
@@ -477,7 +480,7 @@ class AjaxManager
         $response->setResult(new ResponseData(false));
 
         if (!isset($watchlistId)) {
-            $watchlistId = Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT);
+            $watchlistId = $this->container->get('session')->get(WatchlistModel::WATCHLIST_SELECT);
         }
 
         if (null === ($watchlist = $this->framework->getAdapter(WatchlistModel::class)->findOnePublishedById($watchlistId))) {
@@ -504,13 +507,13 @@ class AjaxManager
     {
         $response = new ResponseSuccess();
 
-        if (null === ($responseData = System::getContainer()->get('huh.watchlist.action_manager')->addItemToWatchlist($watchlistId,
+        if (null === ($responseData = $this->actionManager->addItemToWatchlist($watchlistId,
                 $type, $itemData))) {
             return new ResponseError();
         }
 
         $count = 0;
-        if (null !== ($watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlistId))) {
+        if (null !== ($watchlistItems = $this->watchlistManager->getItemsFromWatchlist($watchlistId))) {
             $count = $watchlistItems->count();
         }
 
@@ -537,7 +540,7 @@ class AjaxManager
         }
 
         if (isset($GLOBALS['TL_DCA'][$dataContainer]['config']['ctable'])) {
-            if (null !== ($cItems = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($dataContainer,
+            if (null !== ($cItems = $this->container->get('huh.utils.model')->findModelInstanceByPk($dataContainer,
                     $item->id))) {
                 return $cItems;
             }

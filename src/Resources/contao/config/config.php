@@ -10,8 +10,11 @@ array_insert($GLOBALS['FE_MOD'], 2, [
     ],
 ]);
 
-$GLOBALS['TL_HOOKS']['getPageLayout'][] = ['huh.watchlist.ajax_manager', 'ajaxActions'];
-$GLOBALS['TL_HOOKS']['getContentElement']['huh.watchlist'] = ['huh.watchlist.listeners.hooks', 'onGetContentElement'];
+/**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['getPageLayout']['huh.watchlist']     = ['huh.watchlist.listeners.hooks', 'onGetPageLayout'];
+$GLOBALS['TL_HOOKS']['parseTemplate']['huh.watchlist']     = ['huh.watchlist.listeners.hooks', 'onParseTemplate'];
 
 /**
  * JavaScipt

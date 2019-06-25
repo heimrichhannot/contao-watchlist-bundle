@@ -31,6 +31,7 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, ConfigP
                 'notification_center',
                 'submissions',
                 'formhybrid',
+                'HeimrichHannot\TwigTemplatesBundle\ContaoTwigTemplatesBundle',
             ]),
         ];
     }
