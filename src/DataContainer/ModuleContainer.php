@@ -93,4 +93,15 @@ class ModuleContainer
 
         return $options;
     }
+
+    /**
+     * Get frontend framework types as selection
+     *
+     * @return array
+     */
+    public function getWatchlistFrontendFrameworks()
+    {
+        $frameworks = $this->container->get('huh.watchlist.manager.frontend_frameworks')->getAllFrameworks();
+        return array_keys($frameworks);
+    }
 }

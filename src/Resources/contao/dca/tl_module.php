@@ -18,7 +18,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
  */
 $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST] =
     '{title_legend},name,headline,type;
-    {template_legend:hide},watchlistWindowTemplate,customTpl;
+    {template_legend:hide},watchlistFrontendFramework,customTpl;
     {additionalSettingsLegend},useMultipleWatchlist,useGroupWatchlist,useWatchlistDurability,useGlobalDownloadAllAction,watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity,disableDownloadAll,overrideWatchlistTitle,overrideTogglerTitle;
     {download_legend},useDownloadLink, downloadLinkUseNotification;
     {protected_legend:hide},protected;
@@ -218,6 +218,17 @@ $arrFields = [
         ],
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
+    ],
+    'watchlistFrontendFramework'                       => [
+        'inputType'        => 'select',
+        'label'            => &$GLOBALS['TL_LANG']['tl_module']['watchlistFrontendFramework'],
+        'options_callback' => ['huh.watchlist.data_container.module_container', 'getWatchlistFrontendFrameworks'],
+        'eval'             => [
+            'mandatory' => true,
+            'tl_class'           => 'w50',
+        ],
+        'exclude'          => true,
+        'sql'              => "varchar(32) NOT NULL default ''",
     ],
     'disableDownloadAll' =>  [
         'label'     => &$GLOBALS['TL_LANG']['tl_module']['disableDownloadAll'],

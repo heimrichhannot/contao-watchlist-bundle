@@ -8,7 +8,9 @@
 
 namespace HeimrichHannot\WatchlistBundle;
 
+use HeimrichHannot\WatchlistBundle\DependencyInjection\Compiler\WatchlistPass;
 use HeimrichHannot\WatchlistBundle\DependencyInjection\HeimrichHannotContaoWatchlistExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class HeimrichHannotContaoWatchlistBundle extends Bundle
@@ -20,4 +22,11 @@ class HeimrichHannotContaoWatchlistBundle extends Bundle
     {
         return new HeimrichHannotContaoWatchlistExtension();
     }
+
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new WatchlistPass());
+    }
+
+
 }

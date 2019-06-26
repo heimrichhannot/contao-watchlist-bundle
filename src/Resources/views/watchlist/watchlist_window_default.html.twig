@@ -1,4 +1,5 @@
 <div class="{{ class|default('') }}">
     {% if headlines is defined %}<h4>{{ headline }}</h4>{% endif %}
     {{ content|default|raw }}
+    <button class="close" onclick="this.parentNode.style.display='none';">{% trans %}Close{% endtrans %}</button>
 </div>

@@ -16,22 +16,30 @@ services:
       - "@contao.framework"
       - "@huh.watchlist.action_manager"
       - "@translator"
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistManager: '@huh.watchlist.watchlist_manager'
 
   huh.watchlist.watchlist_item_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager
     arguments:
       - "@contao.framework"
       - "@huh.utils.model"
+
   huh.watchlist.action_manager:
       class: HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager
       arguments:
         - "@contao.framework"
         - "@translator"
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager: '@huh.watchlist.action_manager'
+
   huh.watchlist.template_manager:
     class: HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager
-    arguments:
-      - "@service_container"
-      - "@translator"
+    autowire: true
+  HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager: '@huh.watchlist.template_manager'
+
+  huh.watchlist.manager.frontend_frameworks:
+    class: HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager
+    autowire: true
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager: '@huh.watchlist.manager.frontend_frameworks'
 
   huh.watchlist.choice.download_file:
     class: HeimrichHannot\WatchlistBundle\Choice\DownloadItemFileChoice
@@ -52,5 +60,7 @@ services:
     class: HeimrichHannot\WatchlistBundle\Choice\WatchlistWindowTemplateChoice
     autowire: true
 
-  huh.watchlist.data_container.callback_container:
-      class: HeimrichHannot\WatchlistBundle\DataContainer\CallbackContainer
+  HeimrichHannot\WatchlistBundle\WatchlistFramework\BaseWatchlistFramework:
+    autowire: true
+    public: false
+    tags: ['huh.watchlist.framework']

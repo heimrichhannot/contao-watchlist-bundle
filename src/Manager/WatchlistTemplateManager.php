@@ -18,7 +18,9 @@ use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\Ajax\Response\ResponseError;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
+use HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
+use HeimrichHannot\WatchlistBundle\WatchlistFramework\WatchlistFrameworkInterface;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -43,12 +45,45 @@ class WatchlistTemplateManager
      * @var ContainerInterface
      */
     private $container;
+    /**
+     * @var WatchlistFrontendFrameworksManager
+     */
+    private $watchlistFrameworkManager;
+    /**
+     * @var WatchlistManager
+     */
+    private $watchlistManager;
 
-    public function __construct(ContainerInterface $container, TranslatorInterface $translator)
+    public function __construct(ContainerInterface $container, TranslatorInterface $translator, WatchlistFrontendFrameworksManager $watchlistFrameworkManager, WatchlistManager $watchlistManager)
     {
         $this->framework = $container->get('contao.framework');
         $this->translator = $translator;
         $this->container = $container;
+        $this->watchlistFrameworkManager = $watchlistFrameworkManager;
+        $this->watchlistManager = $watchlistManager;
+    }
+
+    public function compileWatchlistWindow(ModuleModel $watchlistModule, int $watchlistId): string
+    {
+        $framework = $this->watchlistFrameworkManager->getFrameworkByType('base');
+        if (!$framework)
+        {
+            throw new \Exception("No frontend framework for watchlist found.");
+        }
+        $context = [];
+        $watchlistModel = $this->watchlistManager->getWatchlistModel($watchlistModule->id, $watchlistId);
+        if (!$watchlistModel)
+        {
+            $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
+        }
+        else {
+            $watchlistItems = $this->watchlistManager->getCurrentWatchlistItems($watchlistModule, $watchlistModel->id);
+            $context['content'] = $this->getWatchlist($watchlistModule, $watchlistItems, $watchlistModel->id);
+        }
+
+        $context['headline'] = $this->watchlistManager->getWatchlistName($watchlistModule, $watchlistModel);
+        $context = $framework->compile($context);
+        return $this->container->get('twig')->render($framework->getTemplate(), $context);
     }
 
     /**

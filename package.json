@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "bootstrap.native": "^2.0.24"
+  },
+  "jshintConfig": {
+    "esversion": 6
   }
 }

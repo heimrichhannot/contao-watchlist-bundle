@@ -10,6 +10,7 @@ namespace HeimrichHannot\WatchlistBundle\Manager;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FilesModel;
+use Contao\ModuleModel;
 use Contao\StringUtil;
 use HeimrichHannot\AjaxBundle\Response\ResponseData;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
@@ -136,10 +137,22 @@ class AjaxManager
             return new ResponseError();
         }
 
+        if (!$watchlistModule = ModuleModel::findByPk($moduleId))
+        {
+            return new ResponseError("No module found for given id ".$moduleId. "!");
+        }
+
+        try
+        {
+            $responceData = $this->watchlistTemplate->compileWatchlistWindow($watchlistModule, $watchlistId);
+        } catch (\Exception $e)
+        {
+            return new ResponseError($e->getMessage());
+        }
+
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['response' => $this->watchlistTemplate->getWatchlistWindow($moduleId, $watchlistId)]));
-
+            ['response' => $responceData]));
         return $response;
     }
 
