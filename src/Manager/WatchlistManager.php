@@ -14,12 +14,13 @@ use Contao\Environment;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
-use Contao\Session;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class WatchlistManager
@@ -43,18 +44,20 @@ class WatchlistManager
     protected $actionManger;
 
     /**
-     * @var TranslatorInterface
+     * @var ContainerInterface
      */
-    protected $translator;
+    private $container;
+    /**
+     * @var Session
+     */
+    private $session;
 
-    public function __construct(
-        ContaoFrameworkInterface $framework,
-        WatchlistActionManager $actionManager,
-        TranslatorInterface $translator
-    ) {
+    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, WatchlistActionManager $actionManager, Session $session)
+    {
         $this->framework    = $framework;
         $this->actionManger = $actionManager;
-        $this->translator   = $translator;
+        $this->container    = $container;
+        $this->session      = $session;
     }
 
     /**
@@ -107,9 +110,9 @@ class WatchlistManager
         }
 
         if (null === $watchlist) {
-            Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, null);
+            $this->session->set(WatchlistModel::WATCHLIST_SELECT, null);
         } else {
-            Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
+            $this->session->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
         }
 
         return $watchlist;
@@ -165,7 +168,7 @@ class WatchlistManager
         $ip          = (!Config::get('disableIpCheck') ? Environment::get('ip') : '');
         $name        = FE_USER_LOGGED_IN ? static::WATCHLIST_SESSION_FE : static::WATCHLIST_SESSION_BE;
         $hash        = sha1(session_id() . $ip . $name);
-        $watchlistId = Session::getInstance()->get(WatchlistModel::WATCHLIST_SELECT);
+        $watchlistId = $this->session->get(WatchlistModel::WATCHLIST_SELECT);
 
         if (null === $watchlistId) {
             $watchlist = $this->framework->getAdapter(WatchlistModel::class)->findByHashAndName($hash, $name);
@@ -177,7 +180,7 @@ class WatchlistManager
             $watchlist = $this->actionManger->createWatchlist($name);
         }
 
-        Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
+        $this->session->set(WatchlistModel::WATCHLIST_SELECT, $watchlist->id);
 
         return $watchlist;
     }
@@ -410,7 +413,7 @@ class WatchlistManager
     public function getWatchlistName(ModuleModel $module, $watchlist)
     {
         if ($module->overrideWatchlistTitle) {
-            return $this->translator->trans($module->watchlistTitle);
+            return $this->container->get('translator')->trans($module->watchlistTitle);
         }
 
         return WatchlistTemplateManager::WATCHLIST_NAME_SUBMISSION == $watchlist->name ? $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'] : $watchlist->name;

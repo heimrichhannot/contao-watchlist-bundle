@@ -1,16 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.1.0-DEV] - 2019-05-22
+## [2.0.0-DEV] - 2019-05-22
 
 ### Added
 - readme
 
+
 ### Changed
-- configuration (changed huh:watchlist to huh_watchlist)
+- Watchlist configuration now lives in own entity
+- made submissions an optional dependency
+- configuration root key changed from huh:watchlist to huh_watchlist)
 
 ### Fixed 
 - ModuleWatchlist now working
+- Ajax module classes used
 - encore bundle legacy support
 - hook issue
 

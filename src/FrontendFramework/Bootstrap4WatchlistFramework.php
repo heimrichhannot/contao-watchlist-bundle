@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\WatchlistBundle\WatchlistFramework;
+namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 
 class Bootstrap4WatchlistFramework implements WatchlistFrameworkInterface

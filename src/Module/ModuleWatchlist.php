@@ -62,6 +62,9 @@ class ModuleWatchlist extends Module
 
     protected function compile()
     {
+
+
+
         list($watchlist, $toggler) = $this->container->get('huh.watchlist.template_manager')->getWatchlistToggler($this->id);
 
         $this->Template->toggler = $toggler;

@@ -1,12 +1,6 @@
-<form id="watchlist-show-modal" class="watchlist-show-modal<?php if ($this->added): ?> added<?php endif; ?>" action="<?= $this->action ?>" method="POST">
-    <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-    <input type="hidden" name="moduleId" value="<?= $this->moduleId; ?>">
-    <input type="hidden" name="watchlistId" value="<?= $this->watchlistId ?>">
-
-    <button type="submit" class="btn btn-primary">
-        <?php if ($this->itemCount > 0): ?>
-            <span id="watchlist-badge"><?= $this->itemCount; ?></span>
-        <?php endif; ?>
-        <span class="watchlist-label"><?= $this->toggleLink; ?></span>
-    </button>
-</form>
+<button id="watchlist-modal-button" class="btn btn-primary huh_watchlist_element" data-action="watchlist-show-modal" data-ajax-url="<?= $this->action ?>" data-request-token="{{request_token}}" data-module-id="<?= $this->moduleId; ?>" data-watchlist-id="<?= $this->watchlistId ?>" data-frontend="base">
+    <?php if ($this->itemCount > 0): ?>
+        <span id="watchlist-badge"><?= $this->itemCount; ?></span>
+    <?php endif; ?>
+    <span class="watchlist-label"><?= $this->toggleLink; ?></span>
+</button>

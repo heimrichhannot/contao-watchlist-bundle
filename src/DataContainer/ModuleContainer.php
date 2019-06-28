@@ -104,4 +104,29 @@ class ModuleContainer
         $frameworks = $this->container->get('huh.watchlist.manager.frontend_frameworks')->getAllFrameworks();
         return array_keys($frameworks);
     }
+
+    /**
+     * Get frontend framework types as selection
+     *
+     * @param DataContainer $dc
+     * @return string
+     */
+    public function editWatchlistWizard(DataContainer $dc)
+    {
+        return '';
+//        return ($dc->value < 1)
+//            ? ''
+//            : ' <a href="contao?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $dc->value . '&amp;rt=' . REQUEST_TOKEN . '" title="'
+//            . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px">'
+//            . $this->generateImage('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
+    }
+
+//    public function editModule(\DataContainer $dc)
+//    {
+//        return ($dc->value < 1)
+//            ? ''
+//            : ' <a href="contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $dc->value . '&amp;rt=' . REQUEST_TOKEN . '" title="'
+//            . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px">'
+//            . $this->generateImage('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
+//    }
 }

@@ -2,6 +2,12 @@ services:
   _defaults:
     public: true
 
+  _instanceof:
+    HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface:
+      autowire: true
+      public: false
+      tags: ['huh.watchlist.framework']
+
   huh.watchlist.ajax_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\AjaxManager
     arguments:
@@ -12,10 +18,7 @@ services:
 
   huh.watchlist.watchlist_manager:
     class: HeimrichHannot\WatchlistBundle\Manager\WatchlistManager
-    arguments:
-      - "@contao.framework"
-      - "@huh.watchlist.action_manager"
-      - "@translator"
+    autowire: true
   HeimrichHannot\WatchlistBundle\Manager\WatchlistManager: '@huh.watchlist.watchlist_manager'
 
   huh.watchlist.watchlist_item_manager:
@@ -26,9 +29,7 @@ services:
 
   huh.watchlist.action_manager:
       class: HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager
-      arguments:
-        - "@contao.framework"
-        - "@translator"
+      autowire: true
   HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager: '@huh.watchlist.action_manager'
 
   huh.watchlist.template_manager:
@@ -60,7 +61,6 @@ services:
     class: HeimrichHannot\WatchlistBundle\Choice\WatchlistWindowTemplateChoice
     autowire: true
 
-  HeimrichHannot\WatchlistBundle\WatchlistFramework\BaseWatchlistFramework:
-    autowire: true
-    public: false
-    tags: ['huh.watchlist.framework']
+  # Frontend Frameworks
+  HeimrichHannot\WatchlistBundle\FrontendFramework\BaseWatchlistFramework: ~
+  HeimrichHannot\WatchlistBundle\FrontendFramework\Bootstrap4WatchlistFramework: ~

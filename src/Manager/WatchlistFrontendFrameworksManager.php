@@ -12,7 +12,7 @@
 namespace HeimrichHannot\WatchlistBundle\Manager;
 
 
-use HeimrichHannot\WatchlistBundle\WatchlistFramework\WatchlistFrameworkInterface;
+use HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface;
 
 class WatchlistFrontendFrameworksManager
 {

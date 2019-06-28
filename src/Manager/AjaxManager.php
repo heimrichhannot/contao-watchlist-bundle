@@ -93,6 +93,8 @@ class AjaxManager
     public function ajaxActions()
     {
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
+            'watchlistAjaxController', $this);
+        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_SHOW_MODAL_ACTION, $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_ADD_ACTION,
             $this);
@@ -120,6 +122,11 @@ class AjaxManager
             static::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_AS_NOTIFICATION, $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, $this);
+    }
+
+    public function watchlistAjaxController(string $data)
+    {
+        return new ResponseSuccess();
     }
 
     /**

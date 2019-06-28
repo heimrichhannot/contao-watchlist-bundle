@@ -9,7 +9,7 @@
  */
 
 
-namespace HeimrichHannot\WatchlistBundle\WatchlistFramework;
+namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 
 use Symfony\Component\DependencyInjection\ContainerInterface;

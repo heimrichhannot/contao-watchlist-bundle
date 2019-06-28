@@ -1,7 +1,7 @@
 <?php
 
 
-namespace HeimrichHannot\WatchlistBundle\WatchlistFramework;
+namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 
 interface WatchlistFrameworkInterface

@@ -16,11 +16,10 @@ use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
-use HeimrichHannot\Ajax\Response\ResponseError;
+use HeimrichHannot\AjaxBundle\Response\ResponseError;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
-use HeimrichHannot\WatchlistBundle\WatchlistFramework\WatchlistFrameworkInterface;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -380,11 +379,15 @@ class WatchlistTemplateManager
     /**
      * get add modal.
      *
-     * @param int    $moduleId
+     * @param int $moduleId
      * @param string $type
      * @param        $itemData
      *
      * @return array|ResponseError|null
+     * @throws InvalidArgumentException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function getWatchlistAddModal(int $moduleId, string $type, $itemData)
     {

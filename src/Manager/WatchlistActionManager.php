@@ -9,23 +9,22 @@
 namespace HeimrichHannot\WatchlistBundle\Manager;
 
 use Contao\Config;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\Environment;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
+use Contao\Model\Collection;
 use Contao\ModuleModel;
 use Contao\PageModel;
-use Contao\Session;
 use Contao\StringUtil;
-use Contao\System;
 use Contao\ZipWriter;
-use HeimrichHannot\Ajax\Response\ResponseError;
+use HeimrichHannot\AjaxBundle\Response\ResponseError;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistBeforeSendNotificationEvent;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Module\DownloadLinkSubmission;
-use Model\Collection;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class WatchlistActionManager
@@ -41,7 +40,7 @@ class WatchlistActionManager
     protected $position = 0;
 
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     protected $framework;
 
@@ -49,11 +48,16 @@ class WatchlistActionManager
      * @var TranslatorInterface
      */
     protected $translator;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    public function __construct(ContaoFrameworkInterface $framework, TranslatorInterface $translator)
+    public function __construct(ContainerInterface $container, ContaoFramework $framework, TranslatorInterface $translator)
     {
         $this->framework = $framework;
         $this->translator = $translator;
+        $this->container = $container;
     }
 
     /**
@@ -163,7 +167,7 @@ class WatchlistActionManager
         // delete the watchlist
         $watchlist->delete();
 
-        Session::getInstance()->set(WatchlistModel::WATCHLIST_SELECT, null);
+        $this->container->get('session')->set(WatchlistModel::WATCHLIST_SELECT, null);
 
         $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_delete_all']);
 
@@ -196,7 +200,7 @@ class WatchlistActionManager
             return [false, $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR)];
         }
 
-        if (null === ($watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null, $watchlistId))) {
+        if (null === ($watchlist = $this->container->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null, $watchlistId))) {
             $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_no_watchlist_found'];
 
             return [false, $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR)];
@@ -329,23 +333,23 @@ class WatchlistActionManager
      */
     public function getDownloadZip(int $moduleId, int $watchlistId)
     {
-        if (null === ($items = System::getContainer()->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlistId))) {
+        if (null === ($items = $this->container->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlistId))) {
             return new ResponseError();
         }
 
-        if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
+        if (null === ($module = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
             return new ResponseError();
         }
 
         $watchlistName = AjaxManager::XHR_GROUP;
 
-        if (null !== ($watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null, $watchlistId))) {
+        if (null !== ($watchlist = $this->container->get('huh.watchlist.watchlist_manager')->getWatchlistModel(null, $watchlistId))) {
             $watchlistName = (WatchlistManager::WATCHLIST_SESSION_BE == $watchlist->name
                               || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name) ? $watchlistName : $watchlist->name;
         }
 
         if (1 == count($items)) {
-            return System::getContainer()->get('huh.utils.file')->getPathFromUuid($items[0]->uuid);
+            return $this->container->get('huh.utils.file')->getPathFromUuid($items[0]->uuid);
         }
 
         return $this->createDownloadZipFile($items, $module, $watchlistName);
@@ -358,7 +362,7 @@ class WatchlistActionManager
      */
     public function sendDownloadLinkNotification($data)
     {
-        if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module', $data->moduleId))) {
+        if (null === ($module = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_module', $data->moduleId))) {
             return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_no_module'], static::MESSAGE_STATUS_ERROR);
         }
 
@@ -389,7 +393,7 @@ class WatchlistActionManager
 
         $submissionData['downloadLink'] = $downloadLink;
 
-        System::getContainer()->get('event_dispatcher')
+        $this->container->get('event_dispatcher')
             ->dispatch(WatchlistBeforeSendNotificationEvent::NAME, new WatchlistBeforeSendNotificationEvent($submissionData, $module));
 
         if ($module->downloadLinkUseConfirmationNotification) {
@@ -413,7 +417,7 @@ class WatchlistActionManager
      */
     public function sendDownloadLinkAsNotification(ModuleModel $module, array $submissionData)
     {
-        if (null === ($notification = System::getContainer()
+        if (null === ($notification = $this->container
                 ->get('huh.utils.model')
                 ->findModelInstanceByPk('tl_nc_notification', $module->downloadLinkNotification))) {
             return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_notofication_error'], static::MESSAGE_STATUS_ERROR);
@@ -434,20 +438,20 @@ class WatchlistActionManager
      */
     public function watchlistLoadDownloadLinkForm(int $moduleId, int $watchlistId)
     {
-        if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
+        if (null === ($module = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
             return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_no_module'], static::MESSAGE_STATUS_ERROR);
         }
 
         if (null === ($configModule =
-                System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module', $module->downloadLinkFormConfigModule))) {
+                $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_module', $module->downloadLinkFormConfigModule))) {
             return $this->getStatusMessage($GLOBALS['TL_LANG']['WATCHLIST']['message_config_error'], static::MESSAGE_STATUS_ERROR);
         }
 
         $form = new DownloadLinkSubmission($configModule);
 
 //        $this->beforeFormGeneration($form, $moduleId, $watchlistId);
-        $watchlistTemplateManager = System::getContainer()->get('huh.watchlist.template_manager');
-        $watchlistManager = System::getContainer()->get('huh.watchlist.watchlist_manager');
+        $watchlistTemplateManager = $this->container->get('huh.watchlist.template_manager');
+        $watchlistManager = $this->container->get('huh.watchlist.watchlist_manager');
 
         $config = [
             'headline' => $watchlistManager->getWatchlistName($module, $watchlistManager->getWatchlistModel(null, $watchlistId)),
@@ -496,7 +500,7 @@ class WatchlistActionManager
     protected function getSubmissionDataFromFrontendUser(FrontendUser $user)
     {
         $data = null;
-        if (null === ($member = System::getContainer()->get('huh.utils.member')->findByPk($user->id))) {
+        if (null === ($member = $this->container->get('huh.utils.member')->findByPk($user->id))) {
             return $data;
         }
 
@@ -565,12 +569,12 @@ class WatchlistActionManager
             $class = '';
             switch ($item->type) {
                 case WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE:
-                    $class = System::getContainer()
+                    $class = $this->container
                         ->get('huh.watchlist.watchlist_manager')
                         ->getClassByName($module->downloadItemFile, WatchlistManager::WATCHLIST_DOWNLOAD_FILE_GROUP);
                     break;
                 case WatchlistItemModel::WATCHLIST_ITEM_TYPE_ENTITY:
-                    $class = System::getContainer()
+                    $class = $this->container
                         ->get('huh.watchlist.watchlist_manager')
                         ->getClassByName($module->downloadItemEntity, WatchlistManager::WATCHLIST_DOWNLOAD_ENTITY_GROUP);
             }
@@ -613,14 +617,14 @@ class WatchlistActionManager
 
         $uuid = hex2bin($uuid);
 
-        if (null === System::getContainer()->get('huh.utils.file')->getFileFromUuid($uuid)) {
+        if (null === $this->container->get('huh.utils.file')->getFileFromUuid($uuid)) {
             $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_invalid_file'];
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
         if (false !== ($watchlistItem =
-                System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid))) {
+                $this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid))) {
             $message = $this->translator->trans('huh.watchlist.item.already_in_watchlist');
 
 
@@ -642,7 +646,7 @@ class WatchlistActionManager
     protected function checkEntity($watchlist, $ptable, $ptableId)
     {
         if (null !== ($watchlistItem =
-                System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId))) {
+                $this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId))) {
             $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_in_watchlist'], $watchlistItem->title, $watchlist->name);
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);

@@ -24,6 +24,9 @@
     "satooshi/php-coveralls": "^2.0",
     "symfony/phpunit-bridge": "^3.2"
   },
+  "suggest": {
+    "heimrichhannot/contao-submissions": "^1.5"
+  },
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {

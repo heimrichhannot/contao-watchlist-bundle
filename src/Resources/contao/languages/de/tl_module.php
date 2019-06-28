@@ -7,12 +7,6 @@ $lang = &$GLOBALS['TL_LANG']['tl_module'];
  * Fields
  */
 $lang['useMultipleWatchlist'] = ['Mehrere Merklisten benutzen', 'Mehrere Merklisten benutzen und verwalten'];
-$lang['useDownloadLink']      = [
-    'Downloadlink anzeigen',
-    'Erstellt einen Link zu einer Weiterleitungsseite, welche alle Elemente einer Merkliste zum Download zur Verfügung stellt.'
-];
-$lang['downloadLink']         =
-    ['Weiterleitungsseite für den Downloadlink', 'Weiterleitungsseite, welche alle Elemente einer Merkliste zum Download zur Verfügung stellt.'];
 $lang['useGroupWatchlist']    =
     ['Mitgliedergruppe zuweisen', 'Mehrere Mitglieder der gleichen Gruppe können die selben Merklisten sehen und verwalten.'];
 $lang['groupWatchlist']       = ['Erlaubte Mitgliedergruppe', 'Diese Gruppen können die Merkliste verwalten und sehen.'];
@@ -32,17 +26,12 @@ $lang['groupWatchlist']         = ['Nutzergruppen'];
 
 $lang['useGlobalDownloadAllAction'] = ['Globale Download-All Action', 'Wählen Sie diese Option, wenn der Download-All Button auch außerhalb des Merklisten-Modal dargestellt werden soll.'];
 
-$lang['watchlistItemFile']      = ['File-Item-Klasse'];
-$lang['watchlistItemEntity']    = ['Entity-Item-Klasse'];
 
-$lang['downloadItemFile']       = ['File-Download-Item-Klasse'];
-$lang['downloadItemEntity']     = ['Entity-Download-Item-Klasse'];
 
 $lang['usePublicLinkDurability']  = ['Verfallzeit hinzufügen', 'Wählen Sie diese Option, wenn der geteilte Link nur für eine eingeschränkte Zeit gültig sein soll.'];
 $lang['publicLinkDurability']     = ['Verfallzeit', 'Tragen Sie hier die Zeit in Sekunden ein für die der Link gültig ist.'];
 
-$lang['downloadLinkUseNotification'] = ['Downloadlink per Email versenden', 'Wählen Sie diese Option, wenn Sie den Downloadlink per Benachrichtigung versenden möchten.'];
-$lang['downloadLinkNotification'] = ['Downloadlink-Benachrichtigung', 'Wählen Sie hier die Nachricht aus, über die der Downloadlink verschickt werden soll'];
+
 
 $lang['disableDownloadAll'] = ['"Merkliste herunterladen" deaktivieren ', 'Wählen Sie diese Option, wenn der "Merkliste herunterladen"-Button im Merklisten-Modal nicht dargestellt werden soll.'];
 
@@ -51,10 +40,6 @@ $lang['watchlistTitle'] = ['Merklistenname', 'Tragen Sie hier den Namen der Merk
 
 $lang['overrideTogglerTitle'] = ['Titel des Merklisten-Button vorgeben', 'Wählen Sie diese Option, wenn der Titel des Merklisten-Button vorgegeben werden soll.'];
 $lang['togglerTitle'] = ['Titel des Merklisten-Button', 'Tragen Sie hier den Titel des Merklisten-Button ein.'];
-
-$lang['downloadLinkUseConfirmationNotification'] = ['Bestätigungsbenachrichtigung versenden', 'Wählen Sie diese Option, wenn der Nutzer vor erhalt des Downloadlinks eine Bestätigungsemail erhalten soll.'];
-
-$lang['downloadLinkFormConfigModule'] = ['Formular-Konfiguration', 'Wählen Sie hier das Module aus, welches die Konfiguration für das Formular vorgibt. ACHTUNG: Wird hier keine Konfiguration ausgewählt, wird versucht die Nutzerdaten für den Versandt des Downloadlinks vom Frontend-Nutzer zu beziehen.'];
 
 
 /**

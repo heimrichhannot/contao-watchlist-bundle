@@ -1,6 +1,20 @@
 <?php
 
 /**
+ * Backend modules
+ */
+$GLOBALS['BE_MOD']['system']['watchlist_config'] = [
+    'tables' => ['tl_watchlist_config'],
+];
+
+/**
+ * Permissions
+ */
+$GLOBALS['TL_PERMISSIONS'][] = 'watchlists';
+$GLOBALS['TL_PERMISSIONS'][] = 'watchlistp';
+
+
+/**
  * Front end modules
  */
 array_insert($GLOBALS['FE_MOD'], 2, [
@@ -31,8 +45,18 @@ if(\Contao\System::getContainer()->get('huh.utils.container')->isFrontend())
 $GLOBALS['TL_MODELS']['tl_watchlist']      = \HeimrichHannot\WatchlistBundle\Model\WatchlistModel::class;
 $GLOBALS['TL_MODELS']['tl_watchlist_item'] = \HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel::class;
 
+/**
+ * AJAX
+ */
+
 $GLOBALS['AJAX'][\HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_GROUP] = [
     'actions' => [
+        'watchlistAjaxController' => [
+            'arguments' => [
+                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA
+            ],
+            'optional' => [],
+        ],
         \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION => [
             'arguments' => [
                 \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA
@@ -134,6 +158,9 @@ $GLOBALS['AJAX'][\HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_GROUP]
     ],
 ];
 
+/**
+ * Notification Center
+ */
 
 foreach ($GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE'] as $strType => $arrTypes) {
     foreach ($arrTypes as $strConcreteType => &$arrType) {
