@@ -31,7 +31,7 @@ class Bootstrap4WatchlistFramework implements WatchlistFrameworkInterface
      *
      * @return string
      */
-    public function getTemplate(): string
+    public function getWindowTemplate(): string
     {
         return '@HeimrichHannotContaoWatchlist/watchlist/watchlist_window_model_bootstrap4.html.twig';
     }

@@ -20,8 +20,8 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
     ],
     'list'     => [
         'label' => [
-            'fields' => ['id'],
-            'format' => '%s'
+            'fields' => ['title', 'watchlistFrontendFramework'],
+            'format' => '%s <span style="color:#999;">(%s)</span>'
         ],
         'sorting'           => [
             'mode'                  => 1,

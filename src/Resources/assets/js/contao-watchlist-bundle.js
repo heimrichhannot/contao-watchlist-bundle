@@ -19,6 +19,9 @@ class ContaoWatchlistBundle {
         });
 
         document.addEventListener('huh_watchlist_click', this.onHuhWatchlistClickEvent.bind(this));
+
+        document.addEventListener('watchlist_window_open_base', this.onWatchlistWindowOpenBase.bind(this));
+
     }
 
     /**
@@ -26,8 +29,9 @@ class ContaoWatchlistBundle {
      */
     onWatchlistWindowOpenBase(event)
     {
-        let contentElement = this.element.querySelector('.watchlist-content');
-        contentElement.innerHTML = event.detail.content;
+
+        // let contentElement = this.element.querySelector('.watchlist-content');
+        event.detail.container.innerHTML = event.detail.content;
     }
 
     /**
@@ -37,44 +41,63 @@ class ContaoWatchlistBundle {
     onHuhWatchlistClickEvent(event)
     {
         let element = event.detail.element;
-        let action = element.dataset.action;
-        switch (action) {
-            case 'watchlist-show-modal':
-                this.watchlistShowModelAction(element, Object.assign({},element.dataset));
-                break;
-        }
+        this.watchlistShowModelAction(element, element.dataset);
+
+        // this.doAjaxCall(element, element.dataset.actionUrl, element.dataset);
+
+
+
+
+        // let action = element.dataset.action;
+
+        // switch (action) {
+        //     case 'watchlist-show-modal':
+        //         this.watchlistShowModelAction(element, Object.assign({},element.dataset));
+        //         break;
+        // }
     }
 
     watchlistShowModelAction(element, data)
     {
-        this.doAjaxCall(element, data.ajaxUrl, data, true);
+
+        let config = {
+            onSuccess: (response) => {
+                let watchlistContainer = document.querySelector('#' + data.watchlistContainer);
+                element.dispatchEvent(new CustomEvent('watchlist_window_open_' + data.frontend, {
+                    bubbles: true,
+                    detail: {
+                        container: watchlistContainer,
+                        content: response.response
+                    }
+                }));
+            }
+        };
+        this.doAjaxCall(element, element.dataset.actionUrl, element.dataset, config);
     }
 
-    doAjaxCall (element, url, data, closeOnSuccess) {
+    /**
+     *
+     * @param element
+     * @param url
+     * @param {DOMStringMap} data
+     * @param closeOnSuccess
+     */
+    doAjaxCall (element, url, data, config = {})
+    {
         let formData = new FormData();
-        formData.append('REQUEST_TOKEN', data.requestToken);
-        delete data.requestToken;
+        for (let property in data)
+        {
+            if (!data.hasOwnProperty(property)) {
+                continue;
+            }
+            formData.set(property, data[property]);
+        }
 
         element.dispatchEvent(new CustomEvent('watchlist_content_ajax_before', {
             bubbles: true
         }));
 
-
-        formData.append('data', JSON.stringify(data));
-
-        // Object.keys(data).forEach(field => {
-        //     formData.append(field, data[field]);
-        // });
-
-        AjaxUtil.post(url, formData, {
-            onSuccess: (response) => {
-                element.dispatchEvent(new CustomEvent('watchlist_window_open_' + data.frontend, {
-                    bubbles: true,
-                    detail: {content: response.result.data.response}
-
-                }));
-            }
-        });
+        AjaxUtil.post(url, data, config);
     }
 }
 

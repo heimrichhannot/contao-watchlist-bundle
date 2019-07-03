@@ -19,7 +19,7 @@ interface WatchlistFrameworkInterface
      *
      * @return string
      */
-    public function getTemplate(): string;
+    public function getWindowTemplate(): string;
 
     public function compile(array $context): array;
 

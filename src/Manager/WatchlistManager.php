@@ -16,6 +16,7 @@ use Contao\Model\Collection;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Contao\System;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
@@ -61,12 +62,12 @@ class WatchlistManager
     }
 
     /**
-     * @param null $moduleId
-     * @param null $watchlistId
+     * @param WatchlistConfigModel|null $configuration
+     * @param int|null $watchlistId
      *
      * @return WatchlistModel|null
      */
-    public function getWatchlistModel($moduleId = null, $watchlistId = null)
+    public function getWatchlistModel(?WatchlistConfigModel $configuration = null, ?int $watchlistId = null)
     {
         if ($watchlistId) {
             if (null !== ($watchlist = $this->framework->getAdapter(WatchlistModel::class)->findModelInstanceByPk($watchlistId))) {
@@ -74,12 +75,12 @@ class WatchlistManager
             }
         }
 
-        if (!$moduleId) {
+        if (!$configuration) {
             return null;
         }
 
         if (FE_USER_LOGGED_IN) {
-            return $this->getWatchlistByUserOrGroups($moduleId);
+            return $this->getWatchlistByUserOrGroups($configuration);
         }
 
         return $this->getWatchlistBySession();
@@ -88,24 +89,19 @@ class WatchlistManager
     /**
      * return.
      *
-     * @param int $moduleId
+     * @param int $configuration
      *
      * @return WatchlistModel|Collection|null
      */
-    public function getWatchlistByUserOrGroups(int $moduleId)
+    public function getWatchlistByUserOrGroups(WatchlistConfigModel $configuration)
     {
-        if (null === ($module = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk('tl_module',
-                $moduleId))) {
-            return null;
-        }
-
-        if ($module->useGroupWatchlist) {
-            $watchlist = $this->getWatchlistByGroups($module);
+        if ($configuration->useGroupWatchlist) {
+            $watchlist = $this->getWatchlistByGroups($configuration);
         } else {
             $watchlist = $this->getWatchlistByUser();
         }
 
-        if (null === $watchlist && !$module->useMultipleWatchlist) {
+        if (null === $watchlist && !$configuration->useMultipleWatchlist) {
             $watchlist = $this->actionManger->createWatchlist($GLOBALS['TL_LANG']['WATCHLIST']['watchlist']);
         }
 
@@ -119,27 +115,34 @@ class WatchlistManager
     }
 
     /**
-     * @param $module
+     * @param WatchlistConfigModel $configuration
      *
      * @return WatchlistModel|null
      */
-    public function getWatchlistByGroups($module)
+    public function getWatchlistByGroups(WatchlistConfigModel $configuration)
     {
-        $groups = StringUtil::deserialize($module->groups, true);
+        $groups = StringUtil::deserialize($configuration->groups, true);
+        return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($groups);
 
-        if (!$module->protected) {
-            return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($groups);
-        }
-
-        if (null === ($user = FrontendUser::getInstance())) {
-            return null;
-        }
-
-        if (!($intersect = array_intersect($groups, StringUtil::deserialize($user->groups, true)))) {
-            return null;
-        }
-
-        return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($intersect);
+        /**
+         * @todo revert module user group restriction?
+         */
+//
+//
+//
+//        if (!$configuration->protected) {
+//            return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($groups);
+//        }
+//
+//        if (null === ($user = FrontendUser::getInstance())) {
+//            return null;
+//        }
+//
+//        if (!($intersect = array_intersect($groups, StringUtil::deserialize($user->groups, true)))) {
+//            return null;
+//        }
+//
+//        return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($intersect);
     }
 
     /**
@@ -277,23 +280,19 @@ class WatchlistManager
     /**
      * get current watchlist.
      *
-     * @param $module
+     * @param WatchlistConfigModel $configuration
+     * @param int|null $watchlistId
      *
-     * @return string
+     * @return mixed|null
      */
-    public function getCurrentWatchlistItems($module, $watchlistId = null)
+    public function getCurrentWatchlistItems(WatchlistConfigModel $configuration, ?int $watchlistId = null)
     {
-        if (null === $module && null === $watchlistId) {
-            return null;
-        }
-
-        if ($watchlistId
-            && null !== ($items = $this->getItemsFromWatchlist($watchlistId))) {
+        if ($watchlistId && null !== ($items = $this->getItemsFromWatchlist($watchlistId))) {
             return $items;
         }
 
-        if ($module->useGroupWatchlist) {
-            $watchlist = $this->getWatchlistByGroups($module);
+        if ($configuration->useGroupWatchlist) {
+            $watchlist = $this->getWatchlistByGroups($configuration);
         } else {
             $watchlist = $this->getWatchlistByUser();
         }
@@ -370,13 +369,13 @@ class WatchlistManager
     }
 
     /**
-     * @param $watchlist
+     * @param $watchlistId
      *
      * @return mixed
      */
-    public function getItemsFromWatchlist($watchlist)
+    public function getItemsFromWatchlist($watchlistId)
     {
-        return $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlist);
+        return $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId);
     }
 
     /**
@@ -405,15 +404,15 @@ class WatchlistManager
     }
 
     /**
-     * @param ModuleModel $module
-     * @param             $watchlist
+     * @param WatchlistConfigModel $configuration
+     * @param WatchlistModel $watchlist
      *
      * @return string
      */
-    public function getWatchlistName(ModuleModel $module, $watchlist)
+    public function getWatchlistName(WatchlistConfigModel $configuration, WatchlistModel $watchlist)
     {
-        if ($module->overrideWatchlistTitle) {
-            return $this->container->get('translator')->trans($module->watchlistTitle);
+        if ($configuration->overrideWatchlistTitle) {
+            return $this->container->get('translator')->trans($configuration->watchlistTitle);
         }
 
         return WatchlistTemplateManager::WATCHLIST_NAME_SUBMISSION == $watchlist->name ? $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'] : $watchlist->name;

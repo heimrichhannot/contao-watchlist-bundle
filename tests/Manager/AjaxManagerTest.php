@@ -46,32 +46,32 @@ class AjaxManagerTest extends ContaoTestCase
         $this->assertInstanceOf(AjaxManager::class, new AjaxManager($framework, $watchlistTemplate, $actionManager, $watchlistManager));
     }
 
-    public function testWatchlistShowModalAction()
-    {
-        $container = $this->mockContainer();
-
-        $container->set('huh.ajax.token', $this->createMock(AjaxTokenManager::class));
-
-        System::setContainer($container);
-
-        $framework = $this->mockContaoFramework();
-        $watchlistTemplate = $this->createMock(WatchlistTemplateManager::class);
-        $watchlistTemplate->method('getWatchlistModal')->willReturn('modal');
-
-        $actionManager = $this->createMock(WatchlistActionManager::class);
-        $watchlistManager = $this->createMock(WatchlistManager::class);
-
-        $ajaxManager = new AjaxManager($framework, $watchlistTemplate, $actionManager, $watchlistManager);
-
-        $response = $ajaxManager->watchlistShowModalAction(null, null);
-        $this->assertInstanceOf(ResponseError::class, $response);
-
-        $response2 = $ajaxManager->watchlistShowModalAction(1, null);
-        $this->assertInstanceOf(ResponseSuccess::class, $response2);
-
-        $response3 = $ajaxManager->watchlistShowModalAction(1, 1);
-        $this->assertInstanceOf(ResponseSuccess::class, $response3);
-    }
+//    public function testWatchlistShowModalAction()
+//    {
+//        $container = $this->mockContainer();
+//
+//        $container->set('huh.ajax.token', $this->createMock(AjaxTokenManager::class));
+//
+//        System::setContainer($container);
+//
+//        $framework = $this->mockContaoFramework();
+//        $watchlistTemplate = $this->createMock(WatchlistTemplateManager::class);
+//        $watchlistTemplate->method('getWatchlistModal')->willReturn('modal');
+//
+//        $actionManager = $this->createMock(WatchlistActionManager::class);
+//        $watchlistManager = $this->createMock(WatchlistManager::class);
+//
+//        $ajaxManager = new AjaxManager($framework, $watchlistTemplate, $actionManager, $watchlistManager);
+//
+//        $response = $ajaxManager->watchlistShowModalAction(null, null);
+//        $this->assertInstanceOf(ResponseError::class, $response);
+//
+//        $response2 = $ajaxManager->watchlistShowModalAction(1, null);
+//        $this->assertInstanceOf(ResponseSuccess::class, $response2);
+//
+//        $response3 = $ajaxManager->watchlistShowModalAction(1, 1);
+//        $this->assertInstanceOf(ResponseSuccess::class, $response3);
+//    }
 
     public function testWatchlistAddAction()
     {

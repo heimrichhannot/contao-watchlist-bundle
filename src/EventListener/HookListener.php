@@ -13,6 +13,7 @@ namespace HeimrichHannot\WatchlistBundle\EventListener;
 
 use Contao\FilesModel;
 use Contao\Template;
+use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class HookListener
@@ -30,6 +31,7 @@ class HookListener
     public function onGetPageLayout()
     {
         // Register and check for ajax actions
+        $this->registerAjaxRoutes();
         $this->container->get('huh.watchlist.ajax_manager')->ajaxActions();
     }
 
@@ -69,5 +71,10 @@ class HookListener
                 break;
         }
         return;
+    }
+
+    protected function registerAjaxRoutes()
+    {
+        $this->container->get('huh.ajax')->runActiveAction(AjaxManager::XHR_GROUP, 'watchlistAjaxController', $this);
     }
 }

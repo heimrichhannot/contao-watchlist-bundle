@@ -82,23 +82,23 @@ class WatchlistTemplateManager
 
         $context['headline'] = $this->watchlistManager->getWatchlistName($watchlistModule, $watchlistModel);
         $context = $framework->compile($context);
-        return $this->container->get('twig')->render($framework->getTemplate(), $context);
+        return $this->container->get('twig')->render($framework->getWindowTemplate(), $context);
     }
 
     /**
-     * @param      $module
+     * @param      $configuration
      * @param      $items
      * @param bool $grouped
      *
      * @return string
      */
-    public function getWatchlist($module, $items, $watchlistId, $grouped = true)
+    public function getWatchlist(WatchlistConfigModel $configuration, $items, $watchlistId, $grouped = true)
     {
         $template = new FrontendTemplate('watchlist');
 
         $preparedWatchlistItems = [];
         if (!empty($items)) {
-            $preparedWatchlistItems = $this->prepareWatchlistItems($items, $module, $grouped);
+            $preparedWatchlistItems = $this->prepareWatchlistItems($items, $configuration, $grouped);
         }
 
         if (!empty($preparedWatchlistItems['parents'])) {
@@ -110,31 +110,31 @@ class WatchlistTemplateManager
         }
 
         // get download link action
-        if (!empty($items) && $module->useDownloadLink) {
+        if (!empty($items) && $configuration->useDownloadLink) {
             $template->actions = true;
-            $template->downloadLinkAction = $this->getDownloadLinkAction($module, $watchlistId);
+            $template->downloadLinkAction = $this->getDownloadLinkAction($configuration, $watchlistId);
         }
 
         // get delete watchlist action
-        if ($module->useMultipleWatchlist) {
+        if ($configuration->useMultipleWatchlist) {
             $template->actions = true;
-            $template->deleteWatchlistAction = $this->getDeleteWatchlistAction($watchlistId, $module->id);
+            $template->deleteWatchlistAction = $this->getDeleteWatchlistAction($watchlistId, $configuration->id);
 
             $template->selectWatchlist =
-                $this->getOptionsSelectTemplate(System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistOptions($module),
-                    static::WATCHLIST_SELECT_WATCHLIST_OPTIONS, $watchlistId, $module->id, System::getContainer()
+                $this->getOptionsSelectTemplate(System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistOptions($configuration),
+                    static::WATCHLIST_SELECT_WATCHLIST_OPTIONS, $watchlistId, $configuration->id, System::getContainer()
                         ->get('huh.ajax.action')
                         ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION));
         } // get empty watchlist action
         elseif (!empty($items)) {
             $template->actions = true;
-            $template->emptyWatchlistAction = $this->getEmptyWatchlistAction($watchlistId, $module->id);
+            $template->emptyWatchlistAction = $this->getEmptyWatchlistAction($watchlistId, $configuration->id);
         }
 
         // get download all action
-        if (!$module->disableDownloadAll && count($preparedWatchlistItems) > 1) {
+        if (!$configuration->disableDownloadAll && count($preparedWatchlistItems) > 1) {
             $template->actions = true;
-            $template->downloadAllAction = $this->getDownloadAllAction($watchlistId, $module->id);
+            $template->downloadAllAction = $this->getDownloadAllAction($watchlistId, $configuration->id);
         }
 
         if (empty($items)) {
@@ -225,11 +225,11 @@ class WatchlistTemplateManager
     /**
      * @param      $items
      * @param bool $grouped
-     * @param      $module
+     * @param      $watchlistConfiguration
      *
      * @return array
      */
-    public function prepareWatchlistItems($items, $module, $grouped)
+    public function prepareWatchlistItems($items, $watchlistConfiguration, $grouped)
     {
         $totalCount = $items->count();
 
@@ -239,7 +239,7 @@ class WatchlistTemplateManager
         foreach ($items as $key => $item) {
             $cssClass = trim((0 == $key ? 'first ' : '').($key == $totalCount ? 'last ' : '').(0 == ($key + 1) % 2 ? 'odd ' : 'even '));
 
-            $parsedItem = $this->parseItem($item, $module, $cssClass);
+            $parsedItem = $this->parseItem($item, $watchlistConfiguration, $cssClass);
 
             if ($grouped) {
                 $parsedItems[$item->pageID]['page'] = $this->framework->getAdapter(PageModel::class)->findByPk($item->pageID)->title;
@@ -593,35 +593,6 @@ class WatchlistTemplateManager
             $image['singleSRC'] = $path;
             Controller::addImageToTemplate($template, $image);
         }
-    }
-
-    /**
-     * return unparsed toggler template
-     * -> do not parse it yet since we want to access some properties in `WatchlistModule`.
-     *
-     * @param int $moduleId
-     *
-     * @return array
-     */
-    public function getWatchlistToggler(int $moduleId)
-    {
-        $watchlist = System::getContainer()->get('huh.watchlist.watchlist_manager')->getWatchlistModel($moduleId);
-
-        $template = new FrontendTemplate('watchlist_toggler');
-        $count = 0;
-
-        if (null !== ($watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlist->id))) {
-            $count = $watchlistItems->count();
-        }
-
-        $template->toggleLink = $this->getTogglerTitle($moduleId);
-        $template->moduleId = $moduleId;
-        $template->watchlistId = $watchlist->id;
-        $template->action =
-            System::getContainer()->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION);
-        $template->itemCount = $count;
-
-        return [$watchlist->id, $template->parse()];
     }
 
     /**

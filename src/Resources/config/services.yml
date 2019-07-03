@@ -61,6 +61,10 @@ services:
     class: HeimrichHannot\WatchlistBundle\Choice\WatchlistWindowTemplateChoice
     autowire: true
 
+  HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder:
+    autowire: true
+    public: true
+
   # Frontend Frameworks
   HeimrichHannot\WatchlistBundle\FrontendFramework\BaseWatchlistFramework: ~
   HeimrichHannot\WatchlistBundle\FrontendFramework\Bootstrap4WatchlistFramework: ~

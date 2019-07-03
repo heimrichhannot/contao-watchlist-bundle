@@ -14,9 +14,16 @@ use Contao\Module;
 use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\Request\Request;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\WatchlistWindowPartialTemplate;
 use Patchwork\Utf8;
 use Psr\Container\ContainerInterface;
 
+/**
+ * Class ModuleWatchlist
+ * @package HeimrichHannot\WatchlistBundle\Module
+ */
 class ModuleWatchlist extends Module
 {
     const MODULE_WATCHLIST = 'huhwatchlist';
@@ -62,12 +69,19 @@ class ModuleWatchlist extends Module
 
     protected function compile()
     {
+        $configuration = WatchlistConfigModel::findByPk($this->watchlistConfig);
+        if (null === $configuration)
+        {
+            $this->Template->toggler = '<div style="background-color: red; color: white;">No watchlist config set.</div>';
+            return;
+        }
 
+        $watchlist = $this->container->get('huh.watchlist.watchlist_manager')->getWatchlistModel($configuration);
+        $watchlistContainerId = 'huh_watchlist_window_'.$this->id.'_'.$configuration->id.'_'.rand(0,99999);
 
+        $this->Template->watchlistContainerId = $watchlistContainerId;
 
-        list($watchlist, $toggler) = $this->container->get('huh.watchlist.template_manager')->getWatchlistToggler($this->id);
-
-        $this->Template->toggler = $toggler;
+        $this->Template->toggler = $this->container->get(PartialTemplateBuilder::class)->generate(new WatchlistWindowPartialTemplate($configuration, $watchlist, $watchlistContainerId));
 
         if ($this->useGlobalDownloadAllAction) {
             $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist, $this->id);

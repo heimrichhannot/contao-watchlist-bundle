@@ -44,6 +44,7 @@ if(\Contao\System::getContainer()->get('huh.utils.container')->isFrontend())
  */
 $GLOBALS['TL_MODELS']['tl_watchlist']      = \HeimrichHannot\WatchlistBundle\Model\WatchlistModel::class;
 $GLOBALS['TL_MODELS']['tl_watchlist_item'] = \HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel::class;
+$GLOBALS['TL_MODELS']['tl_watchlist_config'] = \HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel::class;
 
 /**
  * AJAX
@@ -52,12 +53,6 @@ $GLOBALS['TL_MODELS']['tl_watchlist_item'] = \HeimrichHannot\WatchlistBundle\Mod
 $GLOBALS['AJAX'][\HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_GROUP] = [
     'actions' => [
         'watchlistAjaxController' => [
-            'arguments' => [
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA
-            ],
-            'optional' => [],
-        ],
-        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_SHOW_MODAL_ACTION => [
             'arguments' => [
                 \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA
             ],

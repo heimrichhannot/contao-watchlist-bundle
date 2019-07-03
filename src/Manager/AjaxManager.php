@@ -45,7 +45,6 @@ class AjaxManager
     const XHR_WATCHLIST_UPDATE_MODAL_ADD_ACTION            = 'watchlistUpdateModalAddAction';
     const XHR_WATCHLIST_DOWNLOAD_LINK_ACTION               = 'watchlistGenerateDownloadLinkAction';
     const XHR_WATCHLIST_DOWNLOAD_ALL_ACTION                = 'watchlistDownloadAllAction';
-    const XHR_WATCHLIST_SHOW_MODAL_ACTION                  = 'watchlistShowModalAction';
     const XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION              = 'watchlistShowModalAddAction';
     const XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION            = 'watchlistUpdateWatchlistAction';
     const XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST     = 'watchlistAddItemToSelectedWatchlistAction';
@@ -92,10 +91,6 @@ class AjaxManager
 
     public function ajaxActions()
     {
-        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
-            'watchlistAjaxController', $this);
-        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
-            static::XHR_WATCHLIST_SHOW_MODAL_ACTION, $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_ADD_ACTION,
             $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
@@ -122,45 +117,6 @@ class AjaxManager
             static::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_AS_NOTIFICATION, $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, $this);
-    }
-
-    public function watchlistAjaxController(string $data)
-    {
-        return new ResponseSuccess();
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return ResponseError|ResponseSuccess
-     */
-    public function watchlistShowModalAction(string $data)
-    {
-        $data        = json_decode($data);
-        $moduleId    = $data->moduleId;
-        $watchlistId = $data->watchlistId;
-
-        if (!$moduleId && !$watchlistId) {
-            return new ResponseError();
-        }
-
-        if (!$watchlistModule = ModuleModel::findByPk($moduleId))
-        {
-            return new ResponseError("No module found for given id ".$moduleId. "!");
-        }
-
-        try
-        {
-            $responceData = $this->watchlistTemplate->compileWatchlistWindow($watchlistModule, $watchlistId);
-        } catch (\Exception $e)
-        {
-            return new ResponseError($e->getMessage());
-        }
-
-        $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('',
-            ['response' => $responceData]));
-        return $response;
     }
 
     /**
