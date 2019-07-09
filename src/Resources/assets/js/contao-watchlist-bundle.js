@@ -53,10 +53,28 @@ class ContaoWatchlistBundle {
 
     onWatchlistCreateCountElementBase(event)
     {
+        let prefixNode = document.createTextNode('(');
+        let suffixNode = document.createTextNode(')');
         let badge = document.createElement('span');
+        badge.classList.add(event.detail.countSelector);
+        if (event.detail.hasOwnProperty('watchlist'))
+        {
+            badge.classList.add('watchlist-' + event.detail.watchlist);
+        }
+        badge.textContent = event.detail.count;
 
-        badge.textContent = '(' + event.detail.count +')';
-        event.target.append(badge);
+        let watchlistButton = document.querySelectorAll('.' + event.detail.openWatchlistSelector + '.watchlist-' + event.detail.watchlist);
+        if (watchlistButton.length < 1) {
+            watchlistButton = document.querySelectorAll('.' + event.detail.openWatchlistSelector);
+        }
+        if (watchlistButton.length > 0)
+        {
+            watchlistButton.forEach((element) => {
+                element.appendChild(prefixNode);
+                element.appendChild(badge);
+                element.appendChild(suffixNode);
+            });
+        }
     }
 
     /**
@@ -100,8 +118,11 @@ class ContaoWatchlistBundle {
             onSuccess: (response) => {
                 let data = JSON.parse(response.responseText);
 
-                let countSelector = '.huh_watchlist_item_count.watchlist-' + data.watchlist;
-                let countElements = document.querySelectorAll(countSelector);
+                let countSelector = 'huh_watchlist_item_count';
+                let countElements = document.querySelectorAll('.' + countSelector + '.watchlist-' + data.watchlist);
+                if (countElements.length < 1) {
+                    countElements = document.querySelectorAll('.' + countSelector);
+                }
                 if (data.hasOwnProperty('count') && data.count > 0) {
                     if (countElements.length > 0)
                     {
@@ -113,8 +134,10 @@ class ContaoWatchlistBundle {
                             bubbles: true,
                             detail: {
                                 count: data.count,
-                                watchist: data.watchlist,
-                                selector: countSelector,
+                                watchlist: data.watchlist,
+                                openWatchlistSelector: 'huh_watchlist_action',
+                                countSelector: countSelector,
+
                             }
                         }));
                     }
