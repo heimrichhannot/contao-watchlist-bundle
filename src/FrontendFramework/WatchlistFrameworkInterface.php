@@ -15,12 +15,27 @@ interface WatchlistFrameworkInterface
     public function getType(): string;
 
     /**
-     * Returns the twig template path.
+     * Return the twig template format, e.g. 'html.twig'
      *
      * @return string
      */
-    public function getWindowTemplate(): string;
+    public function getTemplateFormat(): string;
 
+    /**
+     * Returns the twig template name for the given action.
+     *
+     * Override this method for custom template names.
+     *
+     * @param string $action
+     * @return string
+     */
+    public function getTemplate(string $action): string;
+
+    /**
+     * Prepare the template.
+     *
+     * @param array $context
+     * @return array
+     */
     public function compile(array $context): array;
-
 }

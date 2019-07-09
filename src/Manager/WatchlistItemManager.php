@@ -51,10 +51,6 @@ class WatchlistItemManager
      */
     public function isItemInWatchlist(int $watchlistId, string $itemUuid = null, int $ptable = null, int $ptableId = null)
     {
-        if (null === $watchlistId) {
-            return false;
-        }
-
         if (null === $itemUuid && null === $ptable && null === $ptableId) {
             return false;
         }

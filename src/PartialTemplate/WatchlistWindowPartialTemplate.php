@@ -12,9 +12,15 @@
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
 
 
+use HeimrichHannot\WatchlistBundle\FrontendFramework\AbstractWatchlistFrontendFramework;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
-use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
+/**
+ * Class WatchlistWindowPartialTemplate
+ * @package HeimrichHannot\WatchlistBundle\PartialTemplate
+ *
+ * @property PartialTemplateBuilder $builder
+ */
 class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
 {
     /**
@@ -22,58 +28,52 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
      */
     private $configuration;
     /**
-     * @var WatchlistModel
+     * @var int|null
      */
-    private $watchlist;
-    /**
-     * @var string
-     */
-    private $watchlistContainerCssId;
+    private $watchlistId;
 
-    public function __construct(WatchlistConfigModel $configuration, WatchlistModel $watchlist, string $watchlistContainerCssId)
+
+    /**
+     * WatchlistWindowPartialTemplate constructor.
+     * @param WatchlistConfigModel $configuration
+     * @param int|null $watchlistId
+     */
+    public function __construct(WatchlistConfigModel $configuration, ?int $watchlistId)
     {
         $this->configuration = $configuration;
-        $this->watchlist = $watchlist;
-        $this->watchlistContainerCssId = $watchlistContainerCssId;
+        $this->watchlistId = $watchlistId;
     }
+
+    public function getTemplateType(): string
+    {
+        return static::TEMPLATE_WATCHLIST_WINDOW;
+    }
+
 
     /**
      * @return string
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
+     * @throws \Twig_Error_Loader
      */
     public function generate(): string
     {
-        $url = $this->builder->getRouter()->generate('huh_watchlist_open_watchlist_window');
-        $frontendFramework = $this->builder->getFrontendFramework($this->configuration);
-
-        $count = 0;
-
-        if (null !== ($watchlistItems = $this->builder->getWatchlistManager()->getItemsFromWatchlist($this->watchlist->id))) {
-            $count = $watchlistItems->count();
+        $context = [];
+        $watchlistModel = $this->builder->getWatchlistManager()->getWatchlistModel($this->configuration, $this->watchlistId);
+        if (!$watchlistModel)
+        {
+            $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
+        }
+        else {
+            $watchlistItems = $this->builder->getWatchlistManager()->getCurrentWatchlistItems($this->configuration, $this->watchlistId);
+            $context['content'] = $this->builder->getWatchlistTemplateManager()->getWatchlist($this->configuration, $watchlistItems, $watchlistModel->id);
         }
 
-        $dataAttributes = '';
+        $context['headline'] = $this->builder->getWatchlistManager()->getWatchlistName($this->configuration, $watchlistModel);
+        $context = $this->builder->getFrontendFramework($this->configuration)->compile($context);
 
-        $attributes = [
-            'action-url' => $url,
-            'watchlist-config' => $this->configuration->id,
-            'watchlist' => $this->watchlist->id,
-            'frontend' => $frontendFramework->getType(),
-            'request-token' => $this->builder->getCsrfToken(),
-            'watchlist-container' => $this->watchlistContainerCssId,
-        ];
-
-        array_walk($attributes, function($value, $key) use (&$dataAttributes) {
-            $dataAttributes .= "data-$key=$value ";
-        });
-
-        return $this->builder->getTwig()->render($frontendFramework->getActionTemplate(), [
-            'dataAttributes' => $dataAttributes,
-            'cssClass' => 'huh_watchlist_element',
-            'itemCount' => $count,
-            'content' => $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'],
-        ]);
+        $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
+        return $this->builder->getTwig()->render($template, $context);
     }
 }

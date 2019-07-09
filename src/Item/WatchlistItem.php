@@ -9,9 +9,9 @@
 namespace HeimrichHannot\WatchlistBundle\Item;
 
 use Contao\FrontendTemplate;
-use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 
 class WatchlistItem implements WatchlistItemInterface
 {
@@ -67,7 +67,7 @@ class WatchlistItem implements WatchlistItemInterface
     {
     }
 
-    public function getEditActions(ModuleModel $module)
+    public function getEditActions(WatchlistConfigModel $configuration)
     {
         $container              = System::getContainer();
         $translator             = $container->get('translator');
@@ -77,7 +77,7 @@ class WatchlistItem implements WatchlistItemInterface
             AjaxManager::XHR_WATCHLIST_DELETE_ITEM_ACTION);
         $template->delTitle     = $translator->trans('huh.watchlist.item.delete.label');
         $template->delLink      = $translator->trans('huh.watchlist.item.delete.link');
-        $template->moduleId     = $module->id;
+        $template->moduleId     = $configuration->id;
 
         if ($this->_raw['download'] && null !== ($file = $this->getFile())) {
             $template->downloadAction = $container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]) . '?file=' . $file;

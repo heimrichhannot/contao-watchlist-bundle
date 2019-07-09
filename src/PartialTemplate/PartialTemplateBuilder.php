@@ -14,10 +14,13 @@ namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
 
 use HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager;
+use HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Translation\Translator;
 use Twig\Environment;
 
 class PartialTemplateBuilder
@@ -42,17 +45,32 @@ class PartialTemplateBuilder
      * @var ContainerInterface
      */
     private $container;
+    /**
+     * @var WatchlistTemplateManager
+     */
+    private $watchlistTemplateManager;
+    /**
+     * @var WatchlistItemManager
+     */
+    private $watchlistItemManager;
+    /**
+     * @var Translator
+     */
+    private $translator;
 
     /**
      * PartialTemplateBuilder constructor.
      */
-    public function __construct(ContainerInterface $container, Router $router, WatchlistFrontendFrameworksManager $frameworksManager, Environment $twig, WatchlistManager $watchlistManager)
+    public function __construct(ContainerInterface $container, Router $router, WatchlistFrontendFrameworksManager $frameworksManager, Environment $twig, WatchlistManager $watchlistManager, WatchlistTemplateManager $watchlistTemplateManager, WatchlistItemManager $watchlistItemManager, Translator $translator)
     {
         $this->router = $router;
         $this->frameworksManager = $frameworksManager;
         $this->twig = $twig;
         $this->watchlistManager = $watchlistManager;
         $this->container = $container;
+        $this->watchlistTemplateManager = $watchlistTemplateManager;
+        $this->watchlistItemManager = $watchlistItemManager;
+        $this->translator = $translator;
     }
 
     /**
@@ -119,4 +137,38 @@ class PartialTemplateBuilder
     {
         return $this->frameworksManager->getFrameworkByType($configuration->watchlistFrontendFramework);
     }
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
+    }
+
+    /**
+     * @return WatchlistTemplateManager
+     */
+    public function getWatchlistTemplateManager(): WatchlistTemplateManager
+    {
+        return $this->watchlistTemplateManager;
+    }
+
+    /**
+     * @return WatchlistItemManager
+     */
+    public function getWatchlistItemManager(): WatchlistItemManager
+    {
+        return $this->watchlistItemManager;
+    }
+
+    /**
+     * @return Translator
+     */
+    public function getTranslator(): Translator
+    {
+        return $this->translator;
+    }
+
+
 }

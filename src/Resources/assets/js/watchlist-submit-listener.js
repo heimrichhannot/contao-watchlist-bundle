@@ -59,66 +59,6 @@ class WatchlistSubmitListener
     }
 }
 
-class WatchlistOpenWindowListener extends WatchlistSubmitListener
-{
-    doProcessSubmitEvent(event) {
-        this.showWatchlistWindow(event.target);
-    }
-
-    showWatchlistWindow (form)
-    {
-        let formData = this.serialize(form);
-        if (null === formData)
-        {
-            return;
-        }
-
-        let url = form.action,
-            moduleId = '' !== formData.moduleId ? formData.moduleId : null,
-            watchlistId = '' !== formData.watchlistId ? formData.watchlistId : null,
-            data = {
-                moduleId: moduleId,
-                watchlistId: watchlistId
-            };
-
-        this.doAjaxCall(url, data, true);
-    }
-
-    doAjaxCall (url, data, closeOnSuccess)
-    {
-        this.element.dispatchEvent(new CustomEvent('watchlist_content_ajax_before', {
-            bubbles: true
-        }));
-
-        Watchlist.ajax({
-            url: url,
-            dataType: 'JSON',
-            type: 'POST',
-            data: data,
-            success: (data, textStatus, jqXHR) => {
-                let response = JSON.parse(data.responseText);
-
-                this.initModal(response.result.data.response);
-                this.element.dispatchEvent(new CustomEvent('watchlist_content_ajax_success', {
-                    bubbles: true
-                }));
-            },
-
-            error: (data, textStatus, jqXHR) => {
-                this.element.dispatchEvent(new CustomEvent('watchlist_content_ajax_error', {
-                    bubbles: true
-                }));
-            }
-        });
-    }
-
-    initModal (content)
-    {
-        let contentElement = this.element.querySelector('.watchlist-content');
-        contentElement.innerHTML = content;
-    }
-}
-
 class WatchlistAddItemListener extends WatchlistSubmitListener
 {
     doProcessSubmitEvent(event) {
@@ -167,4 +107,4 @@ class WatchlistAddItemListener extends WatchlistSubmitListener
     }
 }
 
-export { WatchlistOpenWindowListener, WatchlistAddItemListener };
+export { WatchlistAddItemListener };

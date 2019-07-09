@@ -14,7 +14,7 @@ namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class BaseWatchlistFramework implements WatchlistFrameworkInterface
+class BaseWatchlistFramework extends AbstractWatchlistFrontendFramework
 {
     /**
      * @var ContainerInterface
@@ -32,18 +32,8 @@ class BaseWatchlistFramework implements WatchlistFrameworkInterface
         return 'base';
     }
 
-    public function getWindowTemplate(): string
-    {
-        return '@HeimrichHannotContaoWatchlist/watchlist/watchlist_window_base.html.twig';
-    }
-
     public function compile(array $context): array
     {
         return $context;
-    }
-
-    public function getActionTemplate()
-    {
-        return '@HeimrichHannotContaoWatchlist/action/watchlist_action_base.html.twig';
     }
 }

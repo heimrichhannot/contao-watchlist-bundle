@@ -1,4 +1,4 @@
-<div class="watchlist-list-item col-lg-3 mb-3 <?php echo $this->cssClass; ?>">
+<div class="watchlist-list-item<?php echo $this->cssClass; ?>">
     <?php if($this->picture || $this->image): ?>
     <figure class="image_container">
         <?php if($this->picture): ?>

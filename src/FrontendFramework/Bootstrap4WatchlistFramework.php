@@ -12,7 +12,7 @@
 namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 
-class Bootstrap4WatchlistFramework implements WatchlistFrameworkInterface
+class Bootstrap4WatchlistFramework extends AbstractWatchlistFrontendFramework
 {
 
     /**
@@ -24,16 +24,6 @@ class Bootstrap4WatchlistFramework implements WatchlistFrameworkInterface
     public function getType(): string
     {
         return 'bs4';
-    }
-
-    /**
-     * Returns the twig template path.
-     *
-     * @return string
-     */
-    public function getWindowTemplate(): string
-    {
-        return '@HeimrichHannotContaoWatchlist/watchlist/watchlist_window_model_bootstrap4.html.twig';
     }
 
     public function compile(array $context): array

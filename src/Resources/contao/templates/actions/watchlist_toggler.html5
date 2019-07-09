@@ -1,6 +1,0 @@
-<button id="watchlist-modal-button" class="btn btn-primary huh_watchlist_element" data-action="watchlist-show-modal" data-ajax-url="<?= $this->action ?>" data-request-token="{{request_token}}" data-module-id="<?= $this->moduleId; ?>" data-watchlist-id="<?= $this->watchlistId ?>" data-frontend="base">
-    <?php if ($this->itemCount > 0): ?>
-        <span id="watchlist-badge"><?= $this->itemCount; ?></span>
-    <?php endif; ?>
-    <span class="watchlist-label"><?= $this->toggleLink; ?></span>
-</button>

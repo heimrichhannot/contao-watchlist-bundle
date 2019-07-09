@@ -58,12 +58,6 @@ $GLOBALS['AJAX'][\HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_GROUP]
             ],
             'optional' => [],
         ],
-        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_ADD_ACTION => [
-            'arguments' => [
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA
-            ],
-            'optional' => [],
-        ],
         \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION => [
             'arguments' => [
                 \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA

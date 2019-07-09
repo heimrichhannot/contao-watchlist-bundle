@@ -14,6 +14,11 @@ namespace HeimrichHannot\WatchlistBundle\EventListener;
 use Contao\FilesModel;
 use Contao\Template;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
+use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\AddToWatchlistPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class HookListener
@@ -22,16 +27,25 @@ class HookListener
      * @var ContainerInterface
      */
     private $container;
+    /**
+     * @var PartialTemplateBuilder
+     */
+    private $templateBuilder;
+    /**
+     * @var WatchlistManager
+     */
+    private $watchlistManager;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, PartialTemplateBuilder $templateBuilder, WatchlistManager $watchlistManager)
     {
         $this->container = $container;
+        $this->templateBuilder = $templateBuilder;
+        $this->watchlistManager = $watchlistManager;
     }
 
     public function onGetPageLayout()
     {
         // Register and check for ajax actions
-        $this->registerAjaxRoutes();
         $this->container->get('huh.watchlist.ajax_manager')->ajaxActions();
     }
 
@@ -45,13 +59,31 @@ class HookListener
         switch ($template->type)
         {
             case 'download':
+                /** @var WatchlistConfigModel $configuration */
+                $configuration = WatchlistConfigModel::findAll()->current();
+                $watchlist = $this->watchlistManager->getWatchlistModel($configuration);
                 $template->addToWatchlistButton = ['html' => ''];
                 $fileModel = FilesModel::findByPath($template->singleSRC);
                 if ($fileModel)
                 {
+                    $data                           = $template->getData();
+                    $data['watchlistTitle']         = isset($data['link']) ? $data['link'] : (isset($data['title']) ? $data['title'] : $data['name']);
+                    $data['uuid']                   = $fileModel->uuid;
                     $template->addToWatchlistButton = [
-                        'html' => $this->container->get('huh.watchlist.template_manager')->generateAddToWatchlistButtonForContentElement($template->getData(), $fileModel->uuid)
+                        'html' => $this->templateBuilder->generate(new AddToWatchlistPartialTemplate(
+                            $configuration,
+                            $data,
+                            'tl_content'
+                        ))
                     ];
+
+
+//                        [
+//                        'html' => $this->container->get('huh.watchlist.template_manager')->generateAddToWatchlistButtonForContentElement(
+//                            $template->getData(),
+//                            $fileModel->uuid
+//                        )
+//                    ];
                 }
                 break;
             case 'downloads':
@@ -62,8 +94,19 @@ class HookListener
                 $files = [];
                 foreach ($template->files as $file)
                 {
-                    $entryData['title'] = isset($file['link']) ? $file['link'] : (isset($file['title']) ?  $file['title'] : $file['name']);
-                    $button = $this->container->get('huh.watchlist.template_manager')->generateAddToWatchlistButtonForContentElement($entryData, $file['uuid']);
+                    $entryData['watchlistTitle'] = isset($file['link']) ? $file['link'] : (isset($file['title']) ?  $file['title'] : $file['name']);
+                    $entryData['uuid'] = $file['uuid'];
+                    /** @var WatchlistConfigModel $configuration */
+                    $configuration = WatchlistConfigModel::findAll()->current();
+                    $button = $this->templateBuilder->generate(new AddToWatchlistPartialTemplate(
+                        $configuration,
+                        $entryData,
+                        'tl_content'
+                    ));
+//                    $button = $this->container->get('huh.watchlist.template_manager')->generateAddToWatchlistButtonForContentElement(
+//                        $entryData,
+//                        $file['uuid']
+//                    );
                     $file['addToWatchlistButton']['html'] = $button;
                     $files[] = $file;
                 }
@@ -71,10 +114,5 @@ class HookListener
                 break;
         }
         return;
-    }
-
-    protected function registerAjaxRoutes()
-    {
-        $this->container->get('huh.ajax')->runActiveAction(AjaxManager::XHR_GROUP, 'watchlistAjaxController', $this);
     }
 }

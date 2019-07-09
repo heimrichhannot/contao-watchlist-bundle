@@ -315,19 +315,19 @@ class WatchlistManager
      *
      * @return array
      */
-    public function getWatchlistOptions($module)
+    public function getWatchlistOptions(WatchlistConfigModel $configuration)
     {
-        $watchlist = $this->getWatchlistByUserOrGroups($module->id);
+        $watchlist = $this->getWatchlistByUserOrGroups($configuration);
 
         if (empty($watchlist)) {
             return [];
         }
 
-        if ($module->useWatchlistDurability) {
+        if ($configuration->useWatchlistDurability) {
             $options = [];
 
             foreach ($watchlist as $model) {
-                $durability = $module->watchlistDurability * 86400;
+                $durability = $configuration->watchlistDurability * 86400;
                 if (($model->tstamp + $durability) < time()) {
                     continue;
                 }
@@ -351,7 +351,7 @@ class WatchlistManager
      */
     public function getClassByName(string $name, string $context): ?string
     {
-        $config = System::getContainer()->getParameter('huh_watchlist');
+        $config = $this->container->getParameter('huh_watchlist');
 
         if (!isset($config[$context])) {
             return null;

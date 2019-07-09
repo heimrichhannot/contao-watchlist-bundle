@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\Item;
 
-use Contao\ModuleModel;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 
 interface WatchlistItemInterface
 {
@@ -34,5 +34,5 @@ interface WatchlistItemInterface
 
     public function getFile();
 
-    public function getEditActions(ModuleModel $module);
+    public function getEditActions(WatchlistConfigModel $configuration);
 }

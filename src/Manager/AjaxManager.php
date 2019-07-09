@@ -15,6 +15,7 @@ use Contao\StringUtil;
 use HeimrichHannot\AjaxBundle\Response\ResponseData;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
 use HeimrichHannot\AjaxBundle\Response\ResponseSuccess;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,7 +37,9 @@ class AjaxManager
     const XHR_PARAMETER_WATCHLIST_DURABILITY               = 'durability';
     const XHR_PARAMETER_WATCHLIST_ITEM_OPTIONS             = 'options';
     const XHR_PARAMETER_WATCHLIST_WATCHLIST_ID             = 'watchlistId';
+
     const XHR_WATCHLIST_ADD_ACTION                         = 'watchlistAddAction';
+
     const XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION      = 'watchlistNewWatchlistAddAction';
     const XHR_WATCHLIST_DELETE_ITEM_ACTION                 = 'watchlistDeleteItemAction';
     const XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION             = 'watchlistEmptyWatchlistAction';
@@ -91,8 +94,6 @@ class AjaxManager
 
     public function ajaxActions()
     {
-        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP, static::XHR_WATCHLIST_ADD_ACTION,
-            $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION, $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
@@ -119,37 +120,44 @@ class AjaxManager
             static::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, $this);
     }
 
-    /**
-     * clicked on the add to watchlist button.
-     *
-     * @param string $data
-     *
-     * @return ResponseError|ResponseSuccess
-     */
-    public function watchlistAddAction(string $data)
-    {
-        $data     = json_decode($data);
-        $moduleId = $data->moduleId;
-        $type     = $data->type;
-        $itemData = $data->itemData;
-
-        if (FE_USER_LOGGED_IN) {
-            return $this->watchlistShowModalAddAction($moduleId, $type, $itemData);
-        }
-
-        if (isset($itemData->options) && is_array($itemData->options) && count($itemData->options) > 1) {
-            $responseContent = $this->watchlistTemplate->getWatchlistItemOptions($moduleId, $type, $itemData->options);
-
-            return $this->getModalResponse($responseContent);
-        }
-
-        if (!isset($itemData->uuid)) {
-            return new ResponseError();
-        }
-
-        return $this->addItemToWatchlist($this->container->get('session')->get(WatchlistModel::WATCHLIST_SELECT), $type,
-            $itemData);
-    }
+//    /**
+//     * clicked on the add to watchlist button.
+//     *
+//     * @param string $data
+//     *
+//     * @return ResponseError|ResponseSuccess
+//     */
+//    public function watchlistAddAction(string $data)
+//    {
+//        $data     = json_decode($data);
+//        $moduleId = $data->moduleId;
+//        $type     = $data->type;
+//        $itemData = $data->itemData;
+//
+//        $module = ModuleModel::findByPk($moduleId);
+//        if (!$module) {
+//            return new ResponseError();
+//        }
+//        $configuration = WatchlistConfigModel::findByPk($module->watchlistConfig);
+//
+//
+//        if (FE_USER_LOGGED_IN) {
+//            return $this->watchlistShowModalAddAction($moduleId, $type, $itemData);
+//        }
+//
+//        if (isset($itemData->options) && is_array($itemData->options) && count($itemData->options) > 1) {
+//            $responseContent = $this->watchlistTemplate->getWatchlistItemOptions($moduleId, $type, $itemData->options);
+//
+//            return $this->getModalResponse($responseContent);
+//        }
+//
+//        if (!isset($itemData->uuid)) {
+//            return new ResponseError();
+//        }
+//
+//        return $this->addItemToWatchlist($this->container->get('session')->get(WatchlistModel::WATCHLIST_SELECT), $type,
+//            $itemData);
+//    }
 
     /**
      * add item to watchlist that has been selected by user.
@@ -368,20 +376,20 @@ class AjaxManager
         return $response;
     }
 
-    /**
-     * get watchlist modal.
-     *
-     * @param $content
-     *
-     * @return ResponseSuccess
-     */
-    public function getModalResponse($content)
-    {
-        $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('', ['response' => $this->watchlistTemplate->generateWatchlistWindow($content)]));
-
-        return $response;
-    }
+//    /**
+//     * get watchlist modal.
+//     *
+//     * @param $content
+//     *
+//     * @return ResponseSuccess
+//     */
+//    public function getModalResponse($content)
+//    {
+//        $response = new ResponseSuccess();
+//        $response->setResult(new ResponseData('', ['response' => $this->watchlistTemplate->generateWatchlistWindow($content)]));
+//
+//        return $response;
+//    }
 
     /**
      * check if a entity has options.
@@ -421,25 +429,27 @@ class AjaxManager
         return false;
     }
 
-    /**
-     * show the add action modal.
-     *
-     * @param int $moduleId
-     * @param     $itemData
-     *
-     * @return ResponseSuccess
-     */
-    //int $id, int $cid, $type, int $pageID, string $title
-    public function watchlistShowModalAddAction(int $moduleId, string $type, $itemData)
-    {
-        $response = new ResponseSuccess();
-
-        list($message, $modal, $count) = $this->watchlistTemplate->getWatchlistAddModal($moduleId, $type, $itemData);
-
-        $response->setResult(new ResponseData('', ['message' => $message, 'modal' => $modal, 'count' => $count]));
-
-        return $response;
-    }
+//    /**
+//     * show the add action modal.
+//     *
+//     * @param int $moduleId
+//     * @param     $itemData
+//     *
+//     * @return ResponseSuccess
+//     */
+//    //int $id, int $cid, $type, int $pageID, string $title
+//    public function watchlistShowModalAddAction(int $moduleId, string $type, $itemData)
+//    {
+//        $response = new ResponseSuccess();
+//
+//
+//
+//        list($message, $modal, $count) = $this->watchlistTemplate->getWatchlistAddModal($moduleId, $type, $itemData);
+//
+//        $response->setResult(new ResponseData('', ['message' => $message, 'modal' => $modal, 'count' => $count]));
+//
+//        return $response;
+//    }
 
     /**
      * get the link to the public download list of the current watchlist
@@ -470,33 +480,33 @@ class AjaxManager
         return $response;
     }
 
-    /**
-     * add the item to a watchlist.
-     *
-     * @param $watchlistId
-     * @param $type
-     * @param $itemData
-     *
-     * @return ResponseError|ResponseSuccess
-     */
-    public function addItemToWatchlist($watchlistId, $type, $itemData)
-    {
-        $response = new ResponseSuccess();
-
-        if (null === ($responseData = $this->actionManager->addItemToWatchlist($watchlistId,
-                $type, $itemData))) {
-            return new ResponseError();
-        }
-
-        $count = 0;
-        if (null !== ($watchlistItems = $this->watchlistManager->getItemsFromWatchlist($watchlistId))) {
-            $count = $watchlistItems->count();
-        }
-
-        $response->setResult(new ResponseData('', ['message' => $responseData, 'count' => $count]));
-
-        return $response;
-    }
+//    /**
+//     * add the item to a watchlist.
+//     *
+//     * @param $watchlistId
+//     * @param $type
+//     * @param $itemData
+//     *
+//     * @return ResponseError|ResponseSuccess
+//     */
+//    public function addItemToWatchlist($watchlistId, $type, $itemData)
+//    {
+//        $response = new ResponseSuccess();
+//
+//        if (null === ($responseData = $this->actionManager->addItemToWatchlist($watchlistId,
+//                $type, $itemData))) {
+//            return new ResponseError();
+//        }
+//
+//        $count = 0;
+//        if (null !== ($watchlistItems = $this->watchlistManager->getItemsFromWatchlist($watchlistId))) {
+//            $count = $watchlistItems->count();
+//        }
+//
+//        $response->setResult(new ResponseData('', ['message' => $responseData, 'count' => $count]));
+//
+//        return $response;
+//    }
 
     /**
      * check if configured field exists.

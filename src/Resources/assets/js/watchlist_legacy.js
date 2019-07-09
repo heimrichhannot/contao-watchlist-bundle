@@ -9,10 +9,10 @@ window.Watchlist = {
                 Watchlist.generateDownloadLink(document.getElementById(e.target.id));
             }
 
-            // if (e.target && e.target.id.includes('watchlist-add-item')) {
-            //     e.preventDefault();
-            //     Watchlist.addItem(document.getElementById(e.target.id));
-            // }
+            if (e.target && e.target.id.includes('watchlist-add-item')) {
+                e.preventDefault();
+                Watchlist.addItem(document.getElementById(e.target.id));
+            }
 
             if (e.target && 'watchlist-downloadLink-form' === e.target.id) {
                 e.preventDefault();
@@ -538,8 +538,4 @@ document.addEventListener('DOMContentLoaded', function () {
             Watchlist.init();
         });
     }
-
-    let watchlist = new ContaoWatchlistBundle();
-    watchlist.init();
-
 });

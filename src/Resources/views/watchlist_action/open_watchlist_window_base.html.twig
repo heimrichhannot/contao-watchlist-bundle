@@ -1,0 +1,8 @@
+<button id="watchlist-modal-button" class="{{ cssClass|default('huh_watchlist_action') }}" {{ dataAttributes }}>
+    <span class="watchlist-label">{{ link|default('Watchlist'|trans) }}</span>
+
+    {% if itemCount is defined and itemCount > 0 %}
+        <span class="{{ cssCountClass|default('huh_watchlist_item_count') }}">({{ itemCount }})</span>
+    {% endif %}
+
+</button>
