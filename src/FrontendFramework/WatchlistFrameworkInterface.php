@@ -4,6 +4,8 @@
 namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 
+use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
+
 interface WatchlistFrameworkInterface
 {
     /**
@@ -30,6 +32,15 @@ interface WatchlistFrameworkInterface
      * @return string
      */
     public function getTemplate(string $action): string;
+
+//    /**
+//     * Generate the actions for download items
+//     *
+//     * @param array $context
+//     * @param WatchlistItemModel $item
+//     * @return string
+//     */
+//    public function generateDownloadItemActions(WatchlistItemModel $item): string;
 
     /**
      * Prepare the template.

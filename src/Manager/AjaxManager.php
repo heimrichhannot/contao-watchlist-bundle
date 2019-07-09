@@ -10,8 +10,8 @@ namespace HeimrichHannot\WatchlistBundle\Manager;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FilesModel;
-use Contao\ModuleModel;
 use Contao\StringUtil;
+use HeimrichHannot\AjaxBundle\Response\Response;
 use HeimrichHannot\AjaxBundle\Response\ResponseData;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
 use HeimrichHannot\AjaxBundle\Response\ResponseSuccess;
@@ -247,7 +247,7 @@ class AjaxManager
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['watchlist' => $watchlist, 'modalTitle' => $title, 'count' => $count]));
+            ['watchlist' => $watchlist, 'headline' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -262,20 +262,21 @@ class AjaxManager
     public function watchlistDeleteItemAction(string $data)
     {
         $data     = json_decode($data);
-        $moduleId = $data->moduleId;
         $itemId   = $data->itemId;
+
+        $configuration = WatchlistConfigModel::findByPk($data->moduleId);
 
         if (null === ($watchlistId = $this->container->get('huh.watchlist.watchlist_item_manager')->getWatchlistIdFromItem($itemId))) {
             return new ResponseError();
         }
 
         $message = $this->actionManager->deleteWatchlistItem($itemId);
-        list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId,
+        list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($configuration,
             $watchlistId);
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -285,22 +286,27 @@ class AjaxManager
      *
      * @param string $data
      *
-     * @return ResponseSuccess
+     * @return Response
      */
     public function watchlistEmptyWatchlistAction(string $data)
     {
         $data        = json_decode($data);
-        $moduleId    = $data->moduleId;
         $watchlistId = $data->watchlistId;
+
+        $configuration = WatchlistConfigModel::findByPk($data->moduleId);
+        if (!$configuration)
+        {
+            return new ResponseError("No watchlist configuration found!");
+        }
 
         $response = new ResponseSuccess();
 
         $message = $this->actionManager->emptyWatchlist($watchlistId);
-        list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId,
+        list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($configuration,
             $watchlistId);
 
         $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -325,7 +331,7 @@ class AjaxManager
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId);
 
         $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'modalTitle' => $title, 'count' => $count]));
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count]));
 
         return $response;
     }

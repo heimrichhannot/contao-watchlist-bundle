@@ -21,6 +21,7 @@ use Contao\StringUtil;
 use Contao\ZipWriter;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistBeforeSendNotificationEvent;
+use HeimrichHannot\WatchlistBundle\Item\DownloadItemInterface;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Module\DownloadLinkSubmission;
@@ -583,6 +584,7 @@ class WatchlistActionManager
                 continue;
             }
 
+            /** @var DownloadItemInterface $downloadItem */
             if (null === ($downloadItem = new $class($item->row()))) {
                 continue;
             }

@@ -70,18 +70,34 @@ class WatchlistItem implements WatchlistItemInterface
     public function getEditActions(WatchlistConfigModel $configuration)
     {
         $container              = System::getContainer();
+        $request = $container->get('request_stack')->getCurrentRequest();
+        $url     = null;
+        if ($request->isXmlHttpRequest())
+        {
+            $url = $request->headers->get('referer');
+        }
         $translator             = $container->get('translator');
         $template               = new FrontendTemplate('watchlist_edit_actions');
         $template->id           = $this->_raw['id'];
-        $template->deleteAction = $container->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP,
-            AjaxManager::XHR_WATCHLIST_DELETE_ITEM_ACTION);
+        $template->deleteAction = $container->get('huh.ajax.action')->generateUrl(
+            AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DELETE_ITEM_ACTION, [], true, $url
+        );
         $template->delTitle     = $translator->trans('huh.watchlist.item.delete.label');
         $template->delLink      = $translator->trans('huh.watchlist.item.delete.link');
         $template->moduleId     = $configuration->id;
 
         if ($this->_raw['download'] && null !== ($file = $this->getFile())) {
-            $template->downloadAction = $container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]) . '?file=' . $file;
-            $template->downloadTitle  = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle'], $this->getTitle());
+            if (!$url) {
+                $url = $container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]);
+            }
+            else {
+                $url = parse_url($url, PHP_URL_PATH);
+            }
+            $template->downloadAction = $url.'?file=' . $file;
+            $template->downloadTitle  = $translator->trans('huh.watchlist.item.download.title', [
+                '%item%' => $this->getTitle()
+            ]);
+            $template->downloadLink  = $translator->trans('huh.watchlist.item.download.link');
         }
 
         return $template->parse();

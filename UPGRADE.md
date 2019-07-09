@@ -2,6 +2,11 @@
 
 ## 1.0 to 2.0
 
+### Database / DCA
+
+* moved the watchlist configuration from module to own config table
+* Change the field watchlist_config to watchlistConfig in tl_list_config and tl_reader_config
+
 ### Config
 
 The config structure has changes slightly and must be adapted:

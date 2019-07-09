@@ -13,12 +13,35 @@ use Contao\StringUtil;
 use Contao\System;
 use Contao\Validator;
 
+/**
+ * Class WatchlistItemModel
+ * @package HeimrichHannot\WatchlistBundle\Model
+ *
+ * @property int $id
+ * @property int $pid
+ * @property string $uuid
+ * @property int $pageID
+ * @property int $tstamp
+ * @property string $title
+ * @property string $download
+ * @property string $parentTable
+ * @property string $parentTableId
+ * @property string $type
+ */
 class WatchlistItemModel extends Model
 {
     const WATCHLIST_ITEM_TYPE_FILE = 'file';
     const WATCHLIST_ITEM_TYPE_ENTITY = 'entity';
 
     protected static $strTable = 'tl_watchlist_item';
+
+    public function __construct($objResult = null)
+    {
+        parent::__construct($objResult);
+
+        $this->container = System::getContainer();
+    }
+
 
     public function findByPidAndUuid($pid, $uuid, array $options = [])
     {
@@ -56,5 +79,19 @@ class WatchlistItemModel extends Model
     public function countByPid($pid)
     {
         return System::getContainer()->get('contao.framework')->getAdapter(self::class)->countBy('pid', $pid);
+    }
+
+    /**
+     * Returns the path to the file
+     *
+     * @return string|null
+     */
+    public function getFilePath()
+    {
+        if (static::WATCHLIST_ITEM_TYPE_FILE === $this->type)
+        {
+            return $this->container->get('huh.utils.file')->getPathFromUuid($this->uuid);
+        }
+        return null;
     }
 }

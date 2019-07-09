@@ -37,7 +37,7 @@ class WatchlistActionController extends AbstractController
     /**
      * @var WatchlistFrontendFrameworksManager
      */
-    private $frontendFrameworksManager;
+    private $frontendFrameworkManager;
     /**
      * @var WatchlistManager
      */
@@ -61,10 +61,10 @@ class WatchlistActionController extends AbstractController
 
     public function __construct(ContaoFramework $contaoFramework, WatchlistFrontendFrameworksManager $frameworksManager, WatchlistManager $watchlistManager, WatchlistTemplateManager $templateManager, PartialTemplateBuilder $templateBuilder, WatchlistActionManager $actionManager)
     {
-        $this->frontendFrameworksManager = $frameworksManager;
-        $this->watchlistManager = $watchlistManager;
-        $this->templateManager = $templateManager;
-        $this->contaoFramework = $contaoFramework;
+        $this->frontendFrameworkManager = $frameworksManager;
+        $this->watchlistManager         = $watchlistManager;
+        $this->templateManager          = $templateManager;
+        $this->contaoFramework          = $contaoFramework;
         $this->contaoFramework->initialize();
         $this->templateBuilder = $templateBuilder;
         $this->actionManager = $actionManager;
@@ -82,7 +82,7 @@ class WatchlistActionController extends AbstractController
             return new Response("No watchlist configuration could be found.", 404);
         }
 
-        $framework = $this->frontendFrameworksManager->getFrameworkByType('base');
+        $framework = $this->frontendFrameworkManager->getFrameworkByType($configuration->watchlistFrontendFramework);
         if (!$framework)
         {
             return new Response("No frontend framework for watchlist found.", 404);
@@ -100,7 +100,7 @@ class WatchlistActionController extends AbstractController
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
-     * @Route("addToWatchlist", name="huh_watchlist_add_to_watchlist")
+     * @Route("/addToWatchlist", name="huh_watchlist_add_to_watchlist")
      */
     public function addToWatchlist(Request $request)
     {
@@ -120,13 +120,15 @@ class WatchlistActionController extends AbstractController
         if (FE_USER_LOGGED_IN)
         {
             list($message, $modal, $count) = $this->templateManager->getWatchlistAddModal($configuration, $type, $itemData);
-            return new JsonResponse(['message' => $message, 'modal' => $modal, 'count' => $count]);
+            return new JsonResponse(['message' => $message, 'watchlistContent' => $modal, 'count' => $count]);
         }
 
         if (isset($itemData->options) && is_array($itemData->options) && count($itemData->options) > 1) {
             $responseContent = $this->templateManager->getWatchlistItemOptions($configuration, $type, $itemData->options);
 
-            return new JsonResponse(['response' => $this->templateManager->generateWatchlistWindow($responseContent)]);
+            $content = $this->templateBuilder->generate(new WatchlistWindowPartialTemplate($configuration, null, $responseContent));
+
+            return new JsonResponse(['watchlistContent' => $content]);
         }
 
         if (!isset($itemData->uuid)) {
@@ -143,10 +145,13 @@ class WatchlistActionController extends AbstractController
             $count = $watchlistItems->count();
         }
 
+        $content = $this->templateBuilder->generate(new WatchlistWindowPartialTemplate($configuration, $watchlistId));
+
         return new JsonResponse([
             'message' => $responseData,
             'count' => $count,
-            'watchlist' => $watchlistId
+            'watchlist' => $watchlistId,
+            'watchlistContent' => $content
         ]);
     }
 }

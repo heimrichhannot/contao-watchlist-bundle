@@ -16,7 +16,14 @@ huh:
         link: Löschen
         error: Es ist ein Fehler beim löschen aufgetreten.
         success: '%item% wurde aus der Merkliste entfernt.'
+      download:
+        title: '%item% herunterladen'
+        link: Herunterladen
       already_in_watchlist: Die gewählte Datei ist bereits in der Merkliste vorhanden.
+    list:
+      download:
+        link: 'Liste herunterladen'
+        title: 'Alle Elemente dieser Merkliste als ZIP Archiv herunterladen'
     download_link:
       title: Downloadlink erstellen
       success: Der Downloadlink wurde Ihnen per Mail zugesandt.

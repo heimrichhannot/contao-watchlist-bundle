@@ -25,7 +25,7 @@ class WatchlistListItem extends DefaultItem
         if (null !== ($listConfig = System::getContainer()->get('huh.list.list-config-registry')->findByPk($module['listConfig']))) {
             return System::getContainer()
                 ->get('huh.watchlist.template_manager')
-                ->getAddToWatchlistButton($this->_raw, $this->_dataContainer, $listConfig->watchlist_config);
+                ->getAddToWatchlistButton($this->_raw, $this->_dataContainer, $listConfig->watchlistConfig);
         }
     }
 }

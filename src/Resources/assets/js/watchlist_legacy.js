@@ -319,9 +319,12 @@ window.Watchlist = {
                     Watchlist.initModal(response.modal);
                 }
 
-                if (undefined !== response.modalTitle) {
-                    document.getElementById('watchlist-modalTitle').textContent = response.modalTitle;
+                if (response.hasOwnProperty('headline'))
+                {
+                    document.querySelector('.huh_watchlist_window_headline').textContent = response.headline;
                 }
+
+
 
                 if (response.count > 0) {
                     let badge = document.getElementById('watchlist-badge');

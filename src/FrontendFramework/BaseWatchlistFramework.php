@@ -12,6 +12,8 @@
 namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 
+use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class BaseWatchlistFramework extends AbstractWatchlistFrontendFramework

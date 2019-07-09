@@ -5,9 +5,7 @@
  */
 $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistLink']       = 'Liste löschen';
 $GLOBALS['TL_LANG']['WATCHLIST']['delWatchlistTitle']      = 'Alle Elemente von der Merkliste entfernen';
-$GLOBALS['TL_LANG']['WATCHLIST']['downloadAllLink']        = 'Liste herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAll']            = 'alles herunterladen';
-$GLOBALS['TL_LANG']['WATCHLIST']['downloadAllTitle']       = 'Alle Elemente der Liste als ZIP Archiv herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadAllSecondTitle'] = 'Alle Elemente als ZIP Archiv herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['selectOption']           = [
     'Wählen Sie eine Option',
@@ -15,7 +13,6 @@ $GLOBALS['TL_LANG']['WATCHLIST']['selectOption']           = [
     \HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager::WATCHLIST_SELECT_WATCHLIST_OPTIONS => 'Wählen Sie eine Merkliste',
 ];
 
-$GLOBALS['TL_LANG']['WATCHLIST']['downloadTitle']       = '%s herunterladen';
 $GLOBALS['TL_LANG']['WATCHLIST']['watchlist']           = 'Merkliste';
 $GLOBALS['TL_LANG']['WATCHLIST']['watchlist_name']      = 'Name';
 

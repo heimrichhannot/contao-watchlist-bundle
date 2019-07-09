@@ -81,10 +81,12 @@ class ModuleWatchlist extends Module
 
         $this->Template->watchlistContainerId = $watchlistContainerId;
 
+        $this->Template->watchlistContainerCssClass = 'watchlist-'.$watchlist->id;
+
         $this->Template->toggler = $this->container->get(PartialTemplateBuilder::class)->generate(new OpenWatchlistWindowPartialTemplate($configuration, $watchlist, $watchlistContainerId));
 
         if ($this->useGlobalDownloadAllAction) {
-            $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist, $this->id);
+            $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($configuration, $watchlist);
         }
     }
 }

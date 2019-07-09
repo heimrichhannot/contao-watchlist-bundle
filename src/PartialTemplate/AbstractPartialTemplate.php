@@ -20,6 +20,8 @@ use Twig\Error\LoaderError;
 abstract class AbstractPartialTemplate implements PartialTemplateInterface
 {
     const TEMPLATE_WATCHLIST_WINDOW      = 'watchlist_window';
+//    const TEMPLATE_WATCHLIST_LIST        = 'watchlist_list';
+    const TEMPLATE_WATCHLIST_ITEM        = 'watchlist_item';
     const TEMPLATE_OPEN_WATCHLIST_WINDOW = 'open_watchlist_window';
     const TEMPLATE_ADD_TO_WATCHLIST      = 'add_to_watchlist';
 
@@ -30,8 +32,6 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
      * @var PartialTemplateBuilder
      */
     protected $builder;
-
-    abstract public function generate(): string;
 
     abstract public function getTemplateType(): string;
 
@@ -76,12 +76,12 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
     protected function createDefaultActionAttributes(WatchlistConfigModel $configuration, string $actionUrl, string $actionType): array
     {
         return [
-            'action' => $this->getTemplateType(),
+            'action'          => $this->getTemplateType(),
             'watchlistConfig' => $configuration->id,
-            'requestToken' => $this->builder->getCsrfToken(),
-            'actionUrl' => $actionUrl,
-            'actionType' => $actionType,
-            'frontend' => $this->builder->getFrontendFramework($configuration)->getType(),
+            'requestToken'    => $this->builder->getCsrfToken(),
+            'actionUrl'       => $actionUrl,
+            'actionType'      => $actionType,
+            'frontend'        => $this->builder->getFrontendFramework($configuration)->getType(),
         ];
     }
 
@@ -94,14 +94,14 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
      */
     protected function createDefaultActionContext(array $dataAttributes, ?WatchlistModel $watchlistModel = null)
     {
-        $context = [];
+        $context                   = [];
         $context['dataAttributes'] = $this->generateDataAttributes($dataAttributes);
-        $context['cssClass'] = 'huh_watchlist_action';
-        $context['cssCountClass'] = 'huh_watchlist_item_count';
+        $context['cssClass']       = 'huh_watchlist_action';
+        $context['cssCountClass']  = 'huh_watchlist_item_count';
         if ($watchlistModel)
         {
-            $context['cssClass'] .= ' watchlist-'.$watchlistModel->id;
-            $context['cssCountClass'] .= ' watchlist-'.$watchlistModel->id;
+            $context['cssClass']      .= ' watchlist-' . $watchlistModel->id;
+            $context['cssCountClass'] .= ' watchlist-' . $watchlistModel->id;
         }
         return $context;
     }
@@ -115,8 +115,8 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
     protected function generateDataAttributes(array $attributes): string
     {
         $dataAttributes = '';
-        array_walk($attributes, function($value, $key) use (&$dataAttributes) {
-            $key = strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $key));
+        array_walk($attributes, function ($value, $key) use (&$dataAttributes) {
+            $key            = strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $key));
             $dataAttributes .= "data-$key=$value ";
         });
         return $dataAttributes;
@@ -130,7 +130,7 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
      */
     protected function prepareContext(array $context): array
     {
-        $context['id'] = $this->getTemplateType().'_'.rand(0,99999);
+        $context['id'] = $this->getTemplateType() . '_' . rand(0, 99999);
         return $context;
     }
 }

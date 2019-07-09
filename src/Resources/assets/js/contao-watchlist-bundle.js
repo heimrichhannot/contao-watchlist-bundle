@@ -118,36 +118,59 @@ class ContaoWatchlistBundle {
             onSuccess: (response) => {
                 let data = JSON.parse(response.responseText);
 
-                let countSelector = 'huh_watchlist_item_count';
-                let countElements = document.querySelectorAll('.' + countSelector + '.watchlist-' + data.watchlist);
-                if (countElements.length < 1) {
-                    countElements = document.querySelectorAll('.' + countSelector);
-                }
-                if (data.hasOwnProperty('count') && data.count > 0) {
-                    if (countElements.length > 0)
-                    {
-                        countElements.forEach((countElement) => {
-                            countElement.textContent = data.count;
-                        });
-                    } else {
-                        element.dispatchEvent(new CustomEvent('watchlist_create_count_element_' + element.dataset.frontend, {
-                            bubbles: true,
-                            detail: {
-                                count: data.count,
-                                watchlist: data.watchlist,
-                                openWatchlistSelector: 'huh_watchlist_action',
-                                countSelector: countSelector,
+                ContaoWatchlistBundle.updateWatchlistCount(data);
 
-                            }
-                        }));
+                if (data.hasOwnProperty('watchlistContent'))
+                {
+                    let watchlistContainer = document.querySelectorAll('.watchlist-content.watchlist-' + data.watchlist);
+                    if (watchlistContainer.length < 1)
+                    {
+                        watchlistContainer = document.querySelectorAll('.watchlist-content');
                     }
-                }
-                else {
-                    countElement.remove();
+                    watchlistContainer.forEach((element) => {
+                        element.innerHTML = data.watchlistContent;
+                    });
                 }
             }
         };
         this.doAjaxCall(element, element.dataset.actionUrl, element.dataset, config);
+    }
+
+    static updateWatchlistCount(data)
+    {
+        if (data.hasOwnProperty('count')) {
+            let countSelector = 'huh_watchlist_item_count';
+            let countElements = document.querySelectorAll('.' + countSelector + '.watchlist-' + data.watchlist);
+            if (countElements.length < 1) {
+                countElements = document.querySelectorAll('.' + countSelector);
+            }
+            if (data.count > 0) {
+                if (countElements.length > 0)
+                {
+                    countElements.forEach((countElement) => {
+                        countElement.textContent = data.count;
+                    });
+                } else {
+                    element.dispatchEvent(new CustomEvent('watchlist_create_count_element_' + element.dataset.frontend, {
+                        bubbles: true,
+                        detail: {
+                            count: data.count,
+                            watchlist: data.watchlist,
+                            openWatchlistSelector: 'huh_watchlist_action',
+                            countSelector: countSelector,
+
+                        }
+                    }));
+                }
+            }
+            else {
+                if (countElements.length > 0) {
+                    countElements.forEach((element) => {
+                        element.remove();
+                    });
+                }
+            }
+        }
     }
 
     /**
@@ -165,76 +188,6 @@ class ContaoWatchlistBundle {
 
         AjaxUtil.post(url, data, config);
     }
-
-    doAjaxCallWithUpdateOld(url, data, closeOnSuccess)
-    {
-        Watchlist.addLoader();
-        Watchlist.ajax({
-            url: url,
-            dataType: 'JSON',
-            type: 'POST',
-            data: data,
-            success: function (data, textStatus, jqXHR) {
-                let response = JSON.parse(data.responseText).result.data;
-
-                if (undefined !== response.message) {
-                    Watchlist.setMessage(response.message);
-                }
-
-                if (undefined !== response.file) {
-                    window.location = response.file;
-                }
-
-                if (undefined !== response.watchlist) {
-                    let updatedWatchlist = document.createElement('div');
-                    updatedWatchlist.innerHTML = response.watchlist;
-
-                    document.querySelector('.watchlist-body').replaceWith(updatedWatchlist);
-                }
-
-                if (undefined !== response.modal) {
-                    Watchlist.initModal(response.modal);
-                }
-
-                if (undefined !== response.modalTitle) {
-                    document.getElementById('watchlist-modalTitle').textContent = response.modalTitle;
-                }
-
-                if (response.count > 0) {
-                    let badge = document.getElementById('watchlist-badge');
-
-                    if (null !== badge) {
-                        badge.textContent = response.count;
-                    } else {
-                        badge = document.createElement('span');
-                        badge.setAttribute('id', 'watchlist-badge');
-                        badge.textContent = response.count;
-
-                        document.querySelector('.watchlist-show-modal .btn-primary').prepend(badge);
-                    }
-                } else if (document.getElementById('watchlist-badge')) {
-                    document.getElementById('watchlist-badge').remove();
-                }
-
-                if (closeOnSuccess && document.getElementById('watchlistModal')) {
-                    document.getElementById('watchlistModal').remove();
-
-                    if (document.querySelector('.modal-backdrop')) {
-                        document.querySelector('.modal-backdrop').remove();
-                    }
-
-                    document.querySelector('body').classList.remove('modal-open')
-                }
-
-                // $('#watchlistModal').modal('toggle');
-                Watchlist.ajaxCompleteCallback();
-            },
-
-            error: function (data, textStatus, jqXHR) {
-                Watchlist.ajaxCompleteCallback();
-            }
-        });
-    };
 }
 
 document.addEventListener('DOMContentLoaded', function () {

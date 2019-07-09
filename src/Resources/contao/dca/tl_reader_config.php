@@ -5,26 +5,18 @@
 
 $dca = &$GLOBALS['TL_DCA']['tl_reader_config'];
 
-$dca['fields']['watchlist_config'] = [
-    'label'            => &$GLOBALS['TL_LANG']['tl_list_config']['watchlist_config'],
-    'inputType'        => 'select',
-    'options_callback' => function () {
-        if (null === ($modules = \Contao\System::getContainer()->get('huh.utils.model')->findModelInstancesBy('tl_module', ['tl_module.type=?'], [\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST]))) {
-            return [];
-        }
-
-        $options = [];
-        while ($modules->next()) {
-            $options[$modules->id] = $modules->name;
-        }
-
-        return $options;
-    },
-    'eval'             => [
-        'includeBlankOption' => true,
-        'tl_class'           => 'w50',
+$dca['fields']['watchlistConfig'] = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_module']['watchlistConfig'],
+    'exclude'    => true,
+    'filter'     => true,
+    'inputType'  => 'select',
+    'foreignKey' => 'tl_watchlist_config.title',
+    'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
+    'eval'       => ['tl_class' => 'long clr', 'includeBlankOption' => true, 'chosen' => true],
+    'wizard'           => [
+        ['huh.watchlist.data_container.module_container', 'editWatchlistWizard'],
     ],
-    'sql'              => "varchar(255) NOT NULL default ''",
+    'sql'        => "int(10) unsigned NOT NULL default '0'"
 ];
 
-$dca['palettes']['default'] = str_replace('headTags;', 'headTags;{watchlist_legend},watchlist_config;', $dca['palettes']['default']);
+$dca['palettes']['default'] = str_replace('headTags;', 'headTags;{watchlist_legend},watchlistConfig;', $dca['palettes']['default']);

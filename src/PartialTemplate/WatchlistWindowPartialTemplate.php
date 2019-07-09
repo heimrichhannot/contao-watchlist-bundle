@@ -12,7 +12,6 @@
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
 
 
-use HeimrichHannot\WatchlistBundle\FrontendFramework\AbstractWatchlistFrontendFramework;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 
 /**
@@ -31,24 +30,29 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
      * @var int|null
      */
     private $watchlistId;
+    /**
+     * @var string|null
+     */
+    private $content;
 
 
     /**
      * WatchlistWindowPartialTemplate constructor.
      * @param WatchlistConfigModel $configuration
      * @param int|null $watchlistId
+     * @param string|null $content
      */
-    public function __construct(WatchlistConfigModel $configuration, ?int $watchlistId)
+    public function __construct(WatchlistConfigModel $configuration, ?int $watchlistId, ?string $content = null)
     {
         $this->configuration = $configuration;
         $this->watchlistId = $watchlistId;
+        $this->content = $content;
     }
 
     public function getTemplateType(): string
     {
         return static::TEMPLATE_WATCHLIST_WINDOW;
     }
-
 
     /**
      * @return string
@@ -60,17 +64,23 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
     public function generate(): string
     {
         $context = [];
-        $watchlistModel = $this->builder->getWatchlistManager()->getWatchlistModel($this->configuration, $this->watchlistId);
-        if (!$watchlistModel)
+        if (!$context)
         {
-            $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
+            $watchlistModel = $this->builder->getWatchlistManager()->getWatchlistModel($this->configuration, $this->watchlistId);
+            if (!$watchlistModel)
+            {
+                $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
+            }
+            else {
+                $watchlistItems = $this->builder->getWatchlistManager()->getCurrentWatchlistItems($this->configuration, $this->watchlistId);
+                $context['content'] = $this->builder->getWatchlistTemplateManager()->getWatchlist($this->configuration, $watchlistItems, $watchlistModel->id);
+            }
         }
         else {
-            $watchlistItems = $this->builder->getWatchlistManager()->getCurrentWatchlistItems($this->configuration, $this->watchlistId);
-            $context['content'] = $this->builder->getWatchlistTemplateManager()->getWatchlist($this->configuration, $watchlistItems, $watchlistModel->id);
+            $context['content'] = $this->content;
         }
-
-        $context['headline'] = $this->builder->getWatchlistManager()->getWatchlistName($this->configuration, $watchlistModel);
+        $context['headline'] = '<span class="huh_watchlist_window_headline">'.$this->builder->getWatchlistManager()
+                ->getWatchlistName($this->configuration, $watchlistModel).'</span>';
         $context = $this->builder->getFrontendFramework($this->configuration)->compile($context);
 
         $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));

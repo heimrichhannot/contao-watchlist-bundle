@@ -16,7 +16,14 @@ huh:
         link: Delete
         error: There has been an error while deleting the element.
         success: '%item% was removed from the list.'
+      download:
+        title: 'Download %item%'
+        link: Download
       already_in_watchlist: The selected file is already on your list.
+    list:
+      download:
+        link: 'Download all'
+        title: 'Download all elements from this watchlist as zip archive.'
     download_link:
       title: Create download link
       success: Your download link has been emailed to you.

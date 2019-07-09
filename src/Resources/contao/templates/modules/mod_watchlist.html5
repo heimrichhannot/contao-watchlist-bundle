@@ -10,5 +10,5 @@
         <?php endif; ?>
     </div>
 
-    <div class="watchlist-content" id="<?= $this->watchlistContainerId ?>"></div>
+    <div class="watchlist-content <?= $this->watchlistContainerCssClass ?>" id="<?= $this->watchlistContainerId ?>"></div>
 <?php $this->endblock(); ?>
