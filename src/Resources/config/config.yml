@@ -1,4 +1,7 @@
 huh_watchlist:
+  content_elements:
+    - download
+    - downloads
   downloadFileItems:
     - { name: default, class: HeimrichHannot\WatchlistBundle\Item\DownloadItemFile }
   downloadEntityItems:

@@ -65,8 +65,13 @@ document.addEventListener('watchlist_content_ajax_success', (event) => {
 
 ### Configuration
 
+All configuration options including the default values.
+
 ```yaml
 huh_watchlist:
+  content_elements:
+    - download
+    - downloads
   downloadFileItems:
     - { name: default, class: HeimrichHannot\WatchlistBundle\Item\DownloadItemFile }
   downloadEntityItems:
@@ -87,19 +92,62 @@ watchlist_content_ajax_error |
 
 ### Add watchlist support to your entity
 
-1. Add required field to your dca. To help you with this, we have created a helper class, see example for the download elements:
+1. Register your content element:
 
-    ```php
-    // src/Resources/contao/dca/tl_content.php
-    
-    // Adds the fields to the dca and add the field to the download palette before the template section. 
-    $dca = \HeimrichHannot\WatchlistBundle\Helper\DcaHelper::addDcaFields('tl_content, '{template_legend', 'download');
-    // Add fields to the downloads palette before the template section
-    \HeimrichHannot\WatchlistBundle\Helper\DcaHelper::addDcaMapping($dca, '{template_legend', 'downloads');
+    ```yaml
+    huh_watchlist:
+      content_elements:
+        - myContentElement
     ```
     
-2. Output the buttons in your template
-    * Download Element: `<?= $this->addToWatchlistButton['html'] ?>`
-    * Downloads Element: `<?= $this->files[$index]['addToWatchlistButton']['html'] ?>`
-       
-    For other content elements we recommend to use the `parseTemplate` Hook to add the corresponding template variables. Use `$this->container->get('huh.watchlist.template_manager')->generateAddToWatchlistButtonForContentElement($entryData, $file['uuid'])`.
+2. Optional: Add DCA fields to your element palette:
+
+    ```php
+    $dca['palettes']['myContentElement'] = str_replace(
+       '{template_legend',
+       '{watchlist_legend},disableWatchlist,overrideWatchlistConfig;{template_legend', 
+       $dca['palettes']['myContentElement']
+    );
+    ```
+    
+3. Create an event listener for the `huh.watchlist.event.prepare_element` event. Use the event to create the AddToWatchlist button and add it to the element template. To generate the buttons, call `PartialTemplateBuilder::generate(new AddToWatchlistPartialTemplate())`. See example for more details.
+
+    ```yaml
+    # Register event listener
+    services:
+      MyVendor\MyBundle\EventListener\WatchlistPrepareElementListener:
+        tags:
+          - { name: kernel.event_listener, event: huh.watchlist.event.prepare_element }
+    ```
+    
+    ```php
+    <?php
+    use HeimrichHannot\WatchlistBundle\Event\WatchlistPrepareElementEvent;
+    use HeimrichHannot\WatchlistBundle\PartialTemplate\AddToWatchlistPartialTemplate;
+    use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
+    
+    class WatchlistPrepareElementListener
+    {
+        /** @var PartialTemplateBuilder */
+        protected $templateBuilder;
+        
+        public function __construct(PartialTemplateBuilder $templateBuilder) 
+        {
+            $this->templateBuilder = $templateBuilder;
+        }
+        
+        public function onHuhWatchlistEventPrepareElement(WatchlistPrepareElementEvent $event)
+        {
+            if ($event->getTemplate()->type === 'myContentElement') {
+                $event->getTemplate()->addToWatchlistButton = $this->templateBuilder->generate(
+                    new AddToWatchlistPartialTemplate(
+                        $event->getConfiguration(),
+                        'tl_content',
+                        $event->getTemplate()->singleSRC,
+                        $event->getTemplate()->fileName
+                    )
+                );
+           }
+        }
+    }
+    ```

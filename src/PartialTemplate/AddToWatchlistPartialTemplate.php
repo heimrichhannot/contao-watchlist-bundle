@@ -34,10 +34,6 @@ class AddToWatchlistPartialTemplate extends AbstractPartialTemplate
      */
     private $watchlist;
     /**
-     * @var array
-     */
-    private $entryData;
-    /**
      * @var string
      */
     private $dataContainer;
@@ -48,19 +44,58 @@ class AddToWatchlistPartialTemplate extends AbstractPartialTemplate
     /**
      * @var string
      */
-    private $fileField;
+    private $uuid;
+    /**
+     * @var string
+     */
+    private $title;
+    /**
+     * @var array
+     */
+    private $options;
+    /**
+     * @var string
+     */
+    private $linkText;
+    /**
+     * @var string
+     */
+    private $linkTitle;
+    /**
+     * @var string
+     */
+    private $fileTitle;
 
     /**
      * AddToWatchlistPartialTemplate constructor.
+     * @param WatchlistConfigModel $configuration
+     * @param string $dataContainer
+     * @param string $uuid The uuid (binary format) of the file
+     * @param string $fileTitle A friendly file name
+     * @param array $options
+     * @param string $linkText Override default link text
+     * @param string $linkTitle Override default link title attribute text
+     * @param bool $downloadable
      */
-    public function __construct(WatchlistConfigModel $configuration, array $entryData, string $dataContainer, bool $downloadable = true, string $fileField = 'uuid'
+    public function __construct(
+        WatchlistConfigModel $configuration,
+        string $dataContainer,
+        string $uuid,
+        string $fileTitle,
+        array $options = [],
+        string $linkText = '',
+        string $linkTitle = '',
+        bool $downloadable = true
     )
     {
         $this->configuration = $configuration;
-        $this->entryData = $entryData;
         $this->dataContainer = $dataContainer;
+        $this->uuid = $uuid;
         $this->downloadable = $downloadable;
-        $this->fileField = $fileField;
+        $this->options = $options;
+        $this->linkText = $linkText;
+        $this->linkTitle = $linkTitle;
+        $this->fileTitle = $fileTitle;
     }
 
     public function getTemplateType(): string
@@ -71,25 +106,21 @@ class AddToWatchlistPartialTemplate extends AbstractPartialTemplate
 
     public function generate(): string
     {
-        if (null === ($fileUuid = StringUtil::deserialize($this->entryData[$this->fileField], true)[0])) {
-            return '';
-        }
         $url = $this->builder->getRouter()->generate('huh_watchlist_add_to_watchlist');
 
         $attributes = $this->createDefaultActionAttributes($this->configuration, $url, static::ACTION_TYPE_UPDATE);
         $attributes['type'] = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
         $attributes['added'] = '0'; //$this->builder->getWatchlistItemManager()->isItemInWatchlist($this->watchlist->id, $this->fileUuid);
-        $attributes['fileUuid'] = bin2hex($fileUuid);
-        $options = $this->entryData['options'] ?: [];
-        $attributes['options'] = json_encode($options);
+        $attributes['fileUuid'] = bin2hex($this->uuid);
+        $attributes['options'] = json_encode($this->options);
         $attributes['downloadable'] = $this->downloadable;
         $attributes['dataContainer'] = $this->dataContainer;
-        $attributes['title'] = $this->entryData['watchlistTitle'];
+        $attributes['title'] = $this->title;
 
 
         $context = $this->createDefaultActionContext($attributes);
-        $context['title'] = $this->builder->getTranslator()->trans('huh.watchlist.item.add.title', ['%item%' => $this->entryData['title']]);
-        $context['link'] = $this->entryData['linkTitle'] ?: $this->builder->getTranslator()->trans('huh.watchlist.item.add.link');
+        $context['linkText'] = $this->linkText ?: $this->builder->getTranslator()->trans('huh.watchlist.item.add.link');
+        $context['linkTitle'] = $this->linkTitle ?: $this->builder->getTranslator()->trans('huh.watchlist.item.add.title', ['%item%' => $this->fileTitle]);
         $context = $this->prepareContext($context);
 
         $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));

@@ -1,7 +1,11 @@
 services:
   _defaults:
-    public: true
     autowire: true
 
   huh.watchlist.listeners.hooks:
     class: HeimrichHannot\WatchlistBundle\EventListener\HookListener
+    public: true
+
+  HeimrichHannot\WatchlistBundle\EventListener\WatchlistPrepareElementListener:
+    tags:
+      - { name: kernel.event_listener, event: huh.watchlist.event.prepare_element }

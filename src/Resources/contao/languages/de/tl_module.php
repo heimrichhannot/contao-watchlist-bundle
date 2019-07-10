@@ -6,6 +6,9 @@ $lang = &$GLOBALS['TL_LANG']['tl_module'];
 /**
  * Fields
  */
+$lang['watchlistConfig'] = ['Merklisten-Konfiguration', 'Wählen Sie hier die Merklisten-Konfiguration für das Modul aus.'];
+
+
 $lang['useMultipleWatchlist'] = ['Mehrere Merklisten benutzen', 'Mehrere Merklisten benutzen und verwalten'];
 $lang['useGroupWatchlist']    =
     ['Mitgliedergruppe zuweisen', 'Mehrere Mitglieder der gleichen Gruppe können die selben Merklisten sehen und verwalten.'];
@@ -45,6 +48,7 @@ $lang['togglerTitle'] = ['Titel des Merklisten-Button', 'Tragen Sie hier den Tit
 /**
  * Legends
  */
+$lang['watchlist_config'] = 'Merkliste';
 $lang['additionalSettingsLegend'] = 'Erweiterte Einstellungen';
 
 
