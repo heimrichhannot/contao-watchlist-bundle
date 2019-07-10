@@ -1,3 +1,5 @@
+import { ContaoWatchlistBundle} from './contao-watchlist-bundle.class';
+
 window.Watchlist = {
     init: function () {
         this.registerEvents();
@@ -26,7 +28,7 @@ window.Watchlist = {
 
             if (e.target && e.target.id.includes('watchlist-delete-item')) {
                 e.preventDefault();
-                Watchlist.deleteItem(document.getElementById(e.target.id));
+                Watchlist.deleteItem(e.target);
             }
 
             if (e.target && 'watchlist-empty-watchlist' == e.target.id) {
@@ -84,7 +86,9 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     deleteItem: function (form) {
-        if(!(formData = Watchlist.serialize(form))) {
+        let formData = Watchlist.serialize(form);
+        if (!Array.isArray(formData))
+        {
             return;
         }
 
@@ -324,22 +328,16 @@ window.Watchlist = {
                     document.querySelector('.huh_watchlist_window_headline').textContent = response.headline;
                 }
 
-
-
-                if (response.count > 0) {
-                    let badge = document.getElementById('watchlist-badge');
-
-                    if (null !== badge) {
-                        badge.textContent = response.count;
-                    } else {
-                        badge = document.createElement('span');
-                        badge.setAttribute('id', 'watchlist-badge');
-                        badge.textContent = response.count;
-
-                        document.querySelector('.watchlist-show-modal .btn-primary').prepend(badge);
+                if (response.hasOwnProperty('count'))
+                {
+                    let countData = {
+                        count: response.count
+                    };
+                    if (response.hasOwnProperty('watchlistId'))
+                    {
+                        countData.watchlist = response.watchlistId;
                     }
-                } else if (document.getElementById('watchlist-badge')) {
-                    document.getElementById('watchlist-badge').remove();
+                    ContaoWatchlistBundle.updateWatchlistCount(countData);
                 }
 
                 if (closeOnSuccess && document.getElementById('watchlistModal')) {
@@ -349,7 +347,7 @@ window.Watchlist = {
                         document.querySelector('.modal-backdrop').remove();
                     }
 
-                    document.querySelector('body').classList.remove('modal-open')
+                    document.querySelector('body').classList.remove('modal-open');
                 }
 
                 // $('#watchlistModal').modal('toggle');

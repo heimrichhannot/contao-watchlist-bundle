@@ -1,7 +1,7 @@
 huh:
   encore:
     entries:
-      - { name: contao-watchlist-bundle, requiresCss: true, file: "vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/assets/js/contao-watchlist-bundle.js" }
+      - { name: contao-watchlist-bundle, requiresCss: false, file: "vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/assets/js/contao-watchlist-bundle.js" }
     legacy:
       js:
         - 'contao-watchlist-bundle'
