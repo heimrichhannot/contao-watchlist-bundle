@@ -23,7 +23,7 @@ window.Watchlist = {
 
             if (e.target && 'watchlist-download-all' == e.target.id) {
                 e.preventDefault();
-                Watchlist.downloadWatchlist(document.getElementById(e.target.id));
+                Watchlist.downloadWatchlist(e.target);
             }
 
             if (e.target && e.target.id.includes('watchlist-delete-item')) {
@@ -33,7 +33,7 @@ window.Watchlist = {
 
             if (e.target && 'watchlist-empty-watchlist' == e.target.id) {
                 e.preventDefault();
-                Watchlist.emptyWatchlist(document.getElementById(e.target.id));
+                Watchlist.emptyWatchlist(e.target);
             }
 
             if (e.target && 'watchlist-delete-watchlist' == e.target.id) {
@@ -105,7 +105,9 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     emptyWatchlist: function (form) {
-        if(!(formData = Watchlist.serialize(form))) {
+        let formData = Watchlist.serialize(form);
+        if (!Array.isArray(formData))
+        {
             return;
         }
 
@@ -122,7 +124,9 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data);
     },
     downloadWatchlist: function (form) {
-        if(!(formData = Watchlist.serialize(form))) {
+        let formData = Watchlist.serialize(form);
+        if (!Array.isArray(formData))
+        {
             return;
         }
 

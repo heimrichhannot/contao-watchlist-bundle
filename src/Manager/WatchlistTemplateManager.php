@@ -232,9 +232,11 @@ class WatchlistTemplateManager
      */
     public function getDownloadAllAction(WatchlistConfigModel $configuration, int $watchlistId)
     {
+        $url = $this->getOriginalRouteIfAjaxRequest();
         $downloadAllTemplate = new FrontendTemplate('watchlist_download_all_action');
-        $downloadAllTemplate->action =
-            $this->container->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION);
+        $downloadAllTemplate->action = $this->container->get('huh.ajax.action')->generateUrl(
+            AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION, [], true, $url
+        );
         $downloadAllTemplate->downloadAllLink = $this->translator->trans('huh.watchlist.list.download.link');
         $downloadAllTemplate->downloadAllTitle = $this->translator->trans('huh.watchlist.list.download.title');
         $downloadAllTemplate->watchlistId = $watchlistId;
@@ -431,8 +433,6 @@ class WatchlistTemplateManager
      */
     public function getUpdatedWatchlist(WatchlistConfigModel $configuration, int $watchlistId = null)
     {
-        $template = new FrontendTemplate('watchlist');
-
         if (!$watchlistId) {
             $watchlistId = $this->getRandomWatchlist($configuration);
         }

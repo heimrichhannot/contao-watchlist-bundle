@@ -115,7 +115,7 @@ class AddToWatchlistPartialTemplate extends AbstractPartialTemplate
         $attributes['options'] = json_encode($this->options);
         $attributes['downloadable'] = $this->downloadable;
         $attributes['dataContainer'] = $this->dataContainer;
-        $attributes['title'] = $this->title;
+        $attributes['title'] = $this->fileTitle;
 
 
         $context = $this->createDefaultActionContext($attributes);

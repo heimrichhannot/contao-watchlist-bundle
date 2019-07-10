@@ -34,8 +34,6 @@ class ContaoWatchlistBundle {
 
     onWatchlistCreateCountElementBase(event)
     {
-        let prefixNode = document.createTextNode('(');
-        let suffixNode = document.createTextNode(')');
         let badge = document.createElement('span');
         badge.classList.add(event.detail.countSelector);
         if (event.detail.hasOwnProperty('watchlist'))
@@ -51,9 +49,7 @@ class ContaoWatchlistBundle {
         if (watchlistButton.length > 0)
         {
             watchlistButton.forEach((element) => {
-                element.appendChild(prefixNode);
                 element.appendChild(badge);
-                element.appendChild(suffixNode);
             });
         }
     }
