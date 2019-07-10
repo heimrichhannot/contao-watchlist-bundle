@@ -3,7 +3,18 @@ import AjaxUtil from "@hundh/contao-utils-bundle/js/ajax-util";
 class ContaoWatchlistBundle {
     init()
     {
-        document.querySelectorAll('.huh_watchlist_action').forEach((element) => {
+        this.initEventDispatcher(document);
+
+        document.addEventListener('huh_watchlist_click', this.onHuhWatchlistClickEvent.bind(this));
+
+        // Frontend dependend listeners
+        document.addEventListener('watchlist_window_open_bs4', this.onWatchlistWindowOpenBs4.bind(this));
+        document.addEventListener('watchlist_create_count_element_base', this.onWatchlistCreateCountElementBase.bind(this));
+    }
+
+    initEventDispatcher(rootElement)
+    {
+        rootElement.querySelectorAll('.huh_watchlist_action').forEach((element) => {
             element.addEventListener('click', (event) => {
                 event.target.dispatchEvent(new CustomEvent('huh_watchlist_click', {
                     bubbles: true,
@@ -13,12 +24,6 @@ class ContaoWatchlistBundle {
                 }));
             });
         });
-
-        document.addEventListener('huh_watchlist_click', this.onHuhWatchlistClickEvent.bind(this));
-
-        // Frontend dependend listeners
-        document.addEventListener('watchlist_window_open_bs4', this.onWatchlistWindowOpenBs4.bind(this));
-        document.addEventListener('watchlist_create_count_element_base', this.onWatchlistCreateCountElementBase.bind(this));
     }
 
     /**
@@ -61,12 +66,24 @@ class ContaoWatchlistBundle {
     onHuhWatchlistClickEvent(event)
     {
         let element = event.detail.element;
-        if (element.dataset.actionType === 'update')
-        {
-            this.updateAction(element);
+        if (!element.dataset.hasOwnProperty('actionType')) {
+            console.throw("No action defined for watchlist click event!");
         }
-        else {
-            this.watchlistShowModelAction(element, element.dataset);
+
+        let action = element.dataset.actionType;
+
+        switch (action) {
+            case 'update':
+                this.updateAction(element);
+                break;
+            case 'toggle':
+                this.watchlistShowModelAction(element, element.dataset);
+                break;
+            case 'download':
+                this.downloadAction(element);
+                return;
+            default:
+                this.doAjaxCall(element, element.dataset.actionUrl, element.dataset);
         }
     }
 
@@ -84,6 +101,7 @@ class ContaoWatchlistBundle {
                         content: response.response
                     }
                 }));
+                this.initEventDispatcher(watchlistContainer);
             }
         };
         this.doAjaxCall(element, element.dataset.actionUrl, element.dataset, config);
@@ -159,7 +177,34 @@ class ContaoWatchlistBundle {
                     }
                     watchlistContainer.forEach((element) => {
                         element.innerHTML = data.watchlistContent;
+                        this.initEventDispatcher(element);
                     });
+                }
+            }
+        };
+        this.doAjaxCall(element, element.dataset.actionUrl, element.dataset, config);
+    }
+    
+    downloadAction(element)
+    {
+        let config = {
+            responseType: 'blob',
+            onSuccess: (response) => {
+                try {
+                    let result = JSON.parse(response.responseText);
+                } catch (e) {
+                    let disposition = response.getResponseHeader('content-disposition');
+                    let matches = /"([^"]*)"/.exec(disposition);
+                    let filename = (matches != null && matches[1] ? matches[1] : 'watchlist.zip');
+
+                    let a = document.createElement('a');
+                    let url = URL.createObjectURL(response.response);
+                    a.href = url;
+                    a.download = filename;
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
                 }
             }
         };

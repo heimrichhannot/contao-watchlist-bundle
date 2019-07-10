@@ -343,17 +343,21 @@ class AjaxManager
      *
      * @throws \Exception
      *
-     * @return ResponseSuccess
+     * @return Response
      */
     public function watchlistDownloadAllAction(string $data)
     {
         $data        = json_decode($data);
-        $moduleId    = $data->moduleId;
         $watchlistId = $data->watchlistId;
+
+        $configuration = WatchlistConfigModel::findByPk($data->moduleId);
+        if (!$configuration) {
+            return new ResponseError("No watchlist configuration found.");
+        }
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['file' => $this->actionManager->getDownloadZip($moduleId, $watchlistId)]));
+            ['file' => $this->actionManager->getDownloadZip($configuration, $watchlistId)]));
 
         return $response;
     }

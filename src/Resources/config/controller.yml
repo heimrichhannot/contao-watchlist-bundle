@@ -3,5 +3,7 @@ services:
     autoconfigure: true
     autowire: true
     public: false
+    bind:
+      $rootDir: '%kernel.project_dir%'
 
   HeimrichHannot\WatchlistBundle\Controller\WatchlistActionController: ~

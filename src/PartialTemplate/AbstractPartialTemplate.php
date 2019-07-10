@@ -24,9 +24,12 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
     const TEMPLATE_WATCHLIST_ITEM        = 'watchlist_item';
     const TEMPLATE_OPEN_WATCHLIST_WINDOW = 'open_watchlist_window';
     const TEMPLATE_ADD_TO_WATCHLIST      = 'add_to_watchlist';
+    const TEMPLATE_ACTION                = 'watchlist_action';
 
     const ACTION_TYPE_TOGGLE = 'toggle';
     const ACTION_TYPE_UPDATE = 'update';
+    const ACTION_TYPE_DOWNLOAD = 'download';
+    const ACTION_TYPE_NONE   = 'none';
 
     /**
      * @var PartialTemplateBuilder
@@ -117,7 +120,7 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
         $dataAttributes = '';
         array_walk($attributes, function ($value, $key) use (&$dataAttributes) {
             $key            = strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $key));
-            $dataAttributes .= "data-$key=$value ";
+            $dataAttributes .= 'data-'.$key.'="'.$value.'" ';
         });
         return $dataAttributes;
     }

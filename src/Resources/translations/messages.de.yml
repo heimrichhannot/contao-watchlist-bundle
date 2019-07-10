@@ -22,7 +22,7 @@ huh:
       already_in_watchlist: Die gewählte Datei ist bereits in der Merkliste vorhanden.
     list:
       download:
-        link: 'Liste herunterladen'
+        text: 'Liste herunterladen'
         title: 'Alle Elemente dieser Merkliste als ZIP Archiv herunterladen'
     download_link:
       title: Downloadlink erstellen

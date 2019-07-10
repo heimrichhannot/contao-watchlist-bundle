@@ -12,7 +12,6 @@
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
 
 
-use Contao\StringUtil;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;

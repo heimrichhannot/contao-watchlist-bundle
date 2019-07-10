@@ -1,1 +1,1 @@
-<button id="{{ id }}" class="{{ cssClass|default('huh_watchlist_action')}}" title="{{ linkTitle|default }}" {{ dataAttributes }}>{{ linkText|default('Add to watchlist') }}</button>
+<button id="{{ id }}" class="{{ cssClass|default('huh_watchlist_action')}}" title="{{ linkTitle|default }}" {{ dataAttributes|raw }}>{{ linkText|default('Add to watchlist') }}</button>

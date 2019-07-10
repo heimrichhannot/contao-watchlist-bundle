@@ -22,7 +22,7 @@ huh:
       already_in_watchlist: The selected file is already on your list.
     list:
       download:
-        link: 'Download all'
+        text: 'Download all'
         title: 'Download all elements from this watchlist as zip archive.'
     download_link:
       title: Create download link

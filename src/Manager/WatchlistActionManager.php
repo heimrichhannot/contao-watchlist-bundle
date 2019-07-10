@@ -12,6 +12,7 @@ use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\Environment;
+use Contao\Folder;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
@@ -20,12 +21,18 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\ZipWriter;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
+use HeimrichHannot\MultiFileUploadBundle\Response\DropzoneErrorResponse;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistBeforeSendNotificationEvent;
 use HeimrichHannot\WatchlistBundle\Item\DownloadItemInterface;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Module\DownloadLinkSubmission;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class WatchlistActionManager
@@ -332,13 +339,9 @@ class WatchlistActionManager
      *
      * @return ResponseError|null|string
      */
-    public function getDownloadZip(int $moduleId, int $watchlistId)
+    public function getDownloadZip(WatchlistConfigModel $configuration, int $watchlistId)
     {
         if (null === ($items = $this->container->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlistId))) {
-            return new ResponseError();
-        }
-
-        if (null === ($module = $this->container->get('huh.utils.model')->findModelInstanceByPk('tl_module', $moduleId))) {
             return new ResponseError();
         }
 
@@ -353,7 +356,7 @@ class WatchlistActionManager
             return $this->container->get('huh.utils.file')->getPathFromUuid($items[0]->uuid);
         }
 
-        return $this->createDownloadZipFile($items, $module, $watchlistName);
+        return $this->createDownloadZipFile($items, $configuration, $watchlistName);
     }
 
     /**
@@ -549,16 +552,34 @@ class WatchlistActionManager
 
     /**
      * @param Collection  $items
-     * @param ModuleModel $module
+     * @param ModuleModel $configuration
      * @param string      $watchlistName
      *
-     * @throws \Exception
-     *
      * @return string
+     *@throws \Exception
+     *
      */
-    protected function createDownloadZipFile(Collection $items, ModuleModel $module, string $watchlistName)
+    protected function createDownloadZipFile(Collection $items, WatchlistConfigModel $configuration, string $watchlistName)
     {
         $fileName = 'files/tmp/download_'.$watchlistName.'.zip';
+        if (!is_dir($this->container->getParameter('contao.web_dir').'/files/tmp'))
+        {
+            $folder = new Folder('files/tmp');
+            $folder->unprotect();
+
+            try {
+                $application = new Application($this->container->get('kernel'));
+                $application->setAutoExit(false);
+
+                $input = new ArrayInput([
+                    'command' => 'contao:symlinks',
+                ]);
+                $output = new NullOutput();
+                $application->run($input, $output);
+            } catch (\Exception $e) {
+               throw new \Exception("Could not create temporary folder. Please contact the system admin.");
+            }
+        }
 
         $zipWriter = new ZipWriter($fileName);
 
@@ -572,12 +593,12 @@ class WatchlistActionManager
                 case WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE:
                     $class = $this->container
                         ->get('huh.watchlist.watchlist_manager')
-                        ->getClassByName($module->downloadItemFile, WatchlistManager::WATCHLIST_DOWNLOAD_FILE_GROUP);
+                        ->getClassByName($configuration->downloadItemFile, WatchlistManager::WATCHLIST_DOWNLOAD_FILE_GROUP);
                     break;
                 case WatchlistItemModel::WATCHLIST_ITEM_TYPE_ENTITY:
                     $class = $this->container
                         ->get('huh.watchlist.watchlist_manager')
-                        ->getClassByName($module->downloadItemEntity, WatchlistManager::WATCHLIST_DOWNLOAD_ENTITY_GROUP);
+                        ->getClassByName($configuration->downloadItemEntity, WatchlistManager::WATCHLIST_DOWNLOAD_ENTITY_GROUP);
             }
 
             if ('' == $class) {
@@ -597,8 +618,7 @@ class WatchlistActionManager
         }
 
         $zipWriter->close();
-
-        chmod($fileName, '644');
+//        chmod($fileName, '644');
 
         return $fileName;
     }
