@@ -10,6 +10,7 @@ class ContaoWatchlistBundle {
         // Frontend dependend listeners
         document.addEventListener('watchlist_window_open_bs4', this.onWatchlistWindowOpenBs4.bind(this));
         document.addEventListener('watchlist_create_count_element_base', this.onWatchlistCreateCountElementBase.bind(this));
+        document.addEventListener('watchlist_create_count_element_bs4', this.onWatchlistCreateCountElementBs4.bind(this));
     }
 
     initEventDispatcher(rootElement)
@@ -40,23 +41,18 @@ class ContaoWatchlistBundle {
     onWatchlistCreateCountElementBase(event)
     {
         let badge = document.createElement('span');
-        badge.classList.add(event.detail.countSelector);
-        if (event.detail.hasOwnProperty('watchlist'))
-        {
-            badge.classList.add('watchlist-' + event.detail.watchlist);
-        }
+        badge.setAttribute('class', event.detail.cssClass);
         badge.textContent = event.detail.count;
+        event.target.appendChild(badge);
+    }
 
-        let watchlistButton = document.querySelectorAll('.' + event.detail.openWatchlistSelector + '.watchlist-' + event.detail.watchlist);
-        if (watchlistButton.length < 1) {
-            watchlistButton = document.querySelectorAll('.' + event.detail.openWatchlistSelector);
-        }
-        if (watchlistButton.length > 0)
-        {
-            watchlistButton.forEach((element) => {
-                element.appendChild(badge);
-            });
-        }
+    onWatchlistCreateCountElementBs4(event)
+    {
+        let badge = document.createElement('span');
+        badge.setAttribute('class', event.detail.cssClass);
+        badge.classList.add('badge', 'badge-secondary');
+        badge.textContent = event.detail.count;
+        event.target.appendChild(badge);
     }
 
     /**
@@ -128,6 +124,12 @@ class ContaoWatchlistBundle {
             if (countElements.length < 1) {
                 countElements = document.querySelectorAll('.' + countSelector);
             }
+
+            let cssClass = countSelector;
+            if (data.watchlist > 0) {
+                cssClass = cssClass.concat(' watchlist-' + data.watchlist);
+            }
+
             if (data.count > 0) {
                 if (countElements.length > 0)
                 {
@@ -140,6 +142,7 @@ class ContaoWatchlistBundle {
                             bubbles: true,
                             detail: {
                                 count: data.count,
+                                cssClass: cssClass,
                                 watchlist: data.watchlist,
                                 openWatchlistSelector: 'huh_watchlist_open_watchlist_window',
                                 countSelector: countSelector,

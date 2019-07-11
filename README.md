@@ -53,14 +53,23 @@ A contao watchlist for download elements. It enables users to collect items (e.g
 
 1. Create twig templates for your framework with framework type suffix, e.g. `watchlist_window_base.html.twig` for base framework or `watchlist_window_bs4.html.twig` for bootstrap 4.
 
-    Available Templates:
+    Available Templates (please consider the base templates for available template variables:
     
     Template | Description
     -------- | -----------
     watchlist_window | The watchlist window 
     add_to_watchlist | The add to watchlist button
     open_watchlist_window | The open watchlist button (used in the watchlist module)
-    watchlist_action | Action button. Used for download all action.
+    watchlist_action | Action button. Used for 'add to watchlist' and 'download all' action.
+    
+    Not defined template for a framework will fallback to the base templates, if the Framework class extends `AbstractWatchlistFrontendFramework`.
+    
+1. Create js event listener for update watchlist button count `watchlist_create_count_element_[FRAMEWORK TYPE]`
+
+    Example: 
+    
+
+1. Optional: create js event listener for open watchlist action, e.g. trigger the event toggle
 
 ### Custom Watchlist window templates
 
