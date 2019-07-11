@@ -15,7 +15,7 @@ use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\Request\Request;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
-use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllActionPartialTemplate;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\OpenWatchlistWindowActionPartialTemplate;
 use Patchwork\Utf8;
@@ -88,7 +88,7 @@ class ModuleWatchlist extends Module
 
         if ($this->useGlobalDownloadAllAction) {
             $this->Template->downloadAllAction = $this->container->get(PartialTemplateBuilder::class)->generate(
-                new DownloadAllPartialTemplate($configuration, $watchlist)
+                new DownloadAllActionPartialTemplate($configuration, $watchlist)
             );
         }
     }

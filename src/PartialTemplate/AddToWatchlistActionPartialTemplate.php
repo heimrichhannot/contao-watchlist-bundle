@@ -22,7 +22,7 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
  *
  * @property PartialTemplateBuilder $builder
  */
-class AddToWatchlistPartialTemplate extends AbstractPartialTemplate
+class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
 {
     /**
      * @var WatchlistConfigModel

@@ -15,7 +15,7 @@ namespace HeimrichHannot\WatchlistBundle\EventListener;
 use Contao\FilesModel;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistPrepareElementEvent;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
-use HeimrichHannot\WatchlistBundle\PartialTemplate\AddToWatchlistPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\AddToWatchlistActionPartialTemplate;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 
 class WatchlistPrepareElementListener
@@ -52,7 +52,7 @@ class WatchlistPrepareElementListener
                 if ($fileModel)
                 {
                     $template->addToWatchlistButton = [
-                        'html' => $this->templateBuilder->generate(new AddToWatchlistPartialTemplate(
+                        'html' => $this->templateBuilder->generate(new AddToWatchlistActionPartialTemplate(
                             $configuration,
                             'tl_content',
                             $fileModel->uuid,
@@ -70,7 +70,7 @@ class WatchlistPrepareElementListener
                 $files = [];
                 foreach ($template->files as $file)
                 {
-                    $button = $this->templateBuilder->generate(new AddToWatchlistPartialTemplate(
+                    $button = $this->templateBuilder->generate(new AddToWatchlistActionPartialTemplate(
                         $configuration,
                         'tl_content',
                         $file['uuid'],

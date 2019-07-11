@@ -24,7 +24,7 @@ use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\AbstractPartialTemplate;
-use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllActionPartialTemplate;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -115,7 +115,7 @@ class WatchlistTemplateManager
             if ($watchlist) {
                 $template->actions = true;
                 $template->downloadAllAction = $this->container->get(PartialTemplateBuilder::class)->generate(
-                    new DownloadAllPartialTemplate($configuration, $watchlist)
+                    new DownloadAllActionPartialTemplate($configuration, $watchlist)
                 );
             }
         }
