@@ -15,7 +15,7 @@ namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
-class OpenWatchlistWindowPartialTemplate extends AbstractPartialTemplate
+class OpenWatchlistWindowActionPartialTemplate extends AbstractPartialTemplate
 {
     /**
      * @var WatchlistConfigModel

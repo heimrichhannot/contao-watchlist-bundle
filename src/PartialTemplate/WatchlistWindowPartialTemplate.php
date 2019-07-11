@@ -64,7 +64,7 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
     public function generate(): string
     {
         $context = [];
-        if (!$context)
+        if (!$this->content)
         {
             $watchlistModel = $this->builder->getWatchlistManager()->getWatchlistModel($this->configuration, $this->watchlistId);
             if (!$watchlistModel)

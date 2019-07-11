@@ -14,6 +14,7 @@ namespace HeimrichHannot\WatchlistBundle\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FilesModel;
 use Contao\Folder;
+use Contao\FrontendIndex;
 use Contao\Model\Collection;
 use Contao\ZipWriter;
 use HeimrichHannot\WatchlistBundle\Item\DownloadItemInterface;
@@ -42,7 +43,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class WatchlistActionController
  * @package HeimrichHannot\WatchlistBundle\Controller
  *
- * @Route("/contao-watchlist/action")
+ * @Route("/contao-watchlist/action", defaults={"_scope" = "frontend", "_token_check" = true})
  */
 class WatchlistActionController extends AbstractController
 {
@@ -74,6 +75,7 @@ class WatchlistActionController extends AbstractController
      * @var string
      */
     private $rootDir;
+    private $isInitialized = false;
 
     public function __construct(ContaoFramework $contaoFramework, WatchlistFrontendFrameworksManager $frameworksManager, WatchlistManager $watchlistManager, WatchlistTemplateManager $templateManager, PartialTemplateBuilder $templateBuilder, WatchlistActionManager $actionManager, string $rootDir)
     {
@@ -81,10 +83,19 @@ class WatchlistActionController extends AbstractController
         $this->watchlistManager         = $watchlistManager;
         $this->templateManager          = $templateManager;
         $this->contaoFramework          = $contaoFramework;
-        $this->contaoFramework->initialize();
         $this->templateBuilder = $templateBuilder;
         $this->actionManager = $actionManager;
         $this->rootDir = $rootDir;
+    }
+
+    public function initializeController()
+    {
+        if (!$this->isInitialized) {
+            $this->contaoFramework->initialize();
+            new FrontendIndex(); // initialize BE_USER_LOGGED_IN or FE_USER_LOGGED_IN
+            $this->isInitialized = true;
+        }
+
     }
 
     /**
@@ -92,6 +103,7 @@ class WatchlistActionController extends AbstractController
      */
     public function openWatchlistWindow(Request $request)
     {
+        $this->initializeController();
         $configuration = WatchlistConfigModel::findByPk($request->get('watchlistConfig'));
         $watchlistId = $request->get('watchlist');
         if (!$configuration)
@@ -121,6 +133,8 @@ class WatchlistActionController extends AbstractController
      */
     public function addToWatchlist(Request $request)
     {
+        $this->initializeController();
+        $this->contaoFramework->initialize();
         $configuration = WatchlistConfigModel::findByPk($request->get('watchlistConfig'));
         if (!$configuration)
         {
@@ -177,6 +191,8 @@ class WatchlistActionController extends AbstractController
      */
     public function downloadAll(Request $request)
     {
+        $this->initializeController();
+        $this->contaoFramework->initialize();
         $watchlistId = $request->get('watchlist');
         $configuration = WatchlistConfigModel::findByPk($request->get('watchlistConfig'));
         if (!$configuration)

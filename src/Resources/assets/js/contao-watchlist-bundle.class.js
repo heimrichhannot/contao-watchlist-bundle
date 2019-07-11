@@ -220,6 +220,10 @@ class ContaoWatchlistBundle {
      */
     doAjaxCall (element, url, data, config = {})
     {
+        if (data.hasOwnProperty('langauge'))
+        {
+
+        }
         element.dispatchEvent(new CustomEvent('watchlist_content_ajax_before', {
             bubbles: true
         }));

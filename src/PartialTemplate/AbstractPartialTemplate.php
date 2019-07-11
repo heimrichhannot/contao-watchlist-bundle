@@ -20,7 +20,6 @@ use Twig\Error\LoaderError;
 abstract class AbstractPartialTemplate implements PartialTemplateInterface
 {
     const TEMPLATE_WATCHLIST_WINDOW      = 'watchlist_window';
-//    const TEMPLATE_WATCHLIST_LIST        = 'watchlist_list';
     const TEMPLATE_WATCHLIST_ITEM        = 'watchlist_item';
     const TEMPLATE_OPEN_WATCHLIST_WINDOW = 'open_watchlist_window';
     const TEMPLATE_ADD_TO_WATCHLIST      = 'add_to_watchlist';
@@ -85,6 +84,7 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
             'actionUrl'       => $actionUrl,
             'actionType'      => $actionType,
             'frontend'        => $this->builder->getFrontendFramework($configuration)->getType(),
+            'language'        => $this->builder->getContainer()->get('request_stack')->getMasterRequest()->getLocale(),
         ];
     }
 
