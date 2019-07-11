@@ -57,25 +57,15 @@ class DownloadAllActionPartialTemplate extends AbstractPartialTemplate
         $dataAttributes              = $this->createDefaultActionAttributes($this->configuration, $url, static::ACTION_TYPE_DOWNLOAD);
         $dataAttributes['watchlist'] = $this->watchlist->id;
 
-        $context              = $this->createDefaultActionContext($dataAttributes, $this->watchlist);
+        $context              = $this->createDefaultActionContext($dataAttributes, $this->configuration, $this->watchlist);
         $context['id']        = '';
+        $context['cssClass'] .= ' huh_watchlist_download_all';
         $context['linkText']  = $this->builder->getTranslator()->trans('huh.watchlist.list.download.text');
         $context['linkTitle'] = $this->builder->getTranslator()->trans('huh.watchlist.list.download.title');
 
-        $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
+        $watchlistFramework = $this->builder->getFrontendFramework($this->configuration);
+        $context            = $watchlistFramework->prepareContext($context, $this);
+        $template           = $this->getTemplate($watchlistFramework);
         return $this->builder->getTwig()->render($template, $context);
-//
-//
-//        $url = $this->getOriginalRouteIfAjaxRequest();
-//        $downloadAllTemplate = new FrontendTemplate('watchlist_download_all_action');
-//        $downloadAllTemplate->action = $this->container->get('huh.ajax.action')->generateUrl(
-//            AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION, [], true, $url
-//        );
-//        $downloadAllTemplate->downloadAllLink = $this->builder->getTranslator()->trans('huh.watchlist.list.download.text');
-//        $downloadAllTemplate->downloadAllTitle = $this->translator->trans('huh.watchlist.list.download.title');
-//        $downloadAllTemplate->watchlistId = $watchlistId;
-//        $downloadAllTemplate->moduleId = $configuration->id;
-//
-//        return $downloadAllTemplate->parse();
     }
 }

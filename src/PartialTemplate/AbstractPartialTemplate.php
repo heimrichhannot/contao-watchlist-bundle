@@ -100,8 +100,9 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
      * @param WatchlistModel|null $watchlistModel
      * @return array
      */
-    protected function createDefaultActionContext(array $dataAttributes, ?WatchlistModel $watchlistModel = null)
+    protected function createDefaultActionContext(array $dataAttributes, WatchlistConfigModel $configuration, ?WatchlistModel $watchlistModel = null)
     {
+        $dataAttributes = $this->builder->getFrontendFramework($configuration)->prepareDataAttributes($dataAttributes, $this);
         $context                   = [];
         $context['dataAttributes'] = $this->generateDataAttributes($dataAttributes);
         $context['cssClass']       = 'huh_watchlist_action';

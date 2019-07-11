@@ -65,7 +65,7 @@ class OpenWatchlistWindowActionPartialTemplate extends AbstractPartialTemplate
         $attributes['watchlist'] = $this->watchlist->id;
 
         $template = $this->getTemplate($frontendFramework);
-        $context = $this->createDefaultActionContext($attributes, $this->watchlist);
+        $context = $this->createDefaultActionContext($attributes, $this->configuration, $this->watchlist);
         $context['cssClass'] .= ' huh_watchlist_open_watchlist_window huh_watchlist_show_count';
         $context['itemCount'] = $count;
         $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];

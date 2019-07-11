@@ -1,4 +1,4 @@
-<form id="watchlist-empty-watchlist" action="<?= $this->action; ?>">
+<form id="watchlist-empty-watchlist" class="watchlist-empty-watchlist" action="<?= $this->action; ?>">
     <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
     <input type="hidden" name="moduleId" value="<?= $this->moduleId; ?>">
     <input type="hidden" name="watchlistId" value="<?= $this->watchlistId; ?>">

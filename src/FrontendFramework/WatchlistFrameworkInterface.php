@@ -4,7 +4,9 @@
 namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
 
+use Contao\Module;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateInterface;
 
 interface WatchlistFrameworkInterface
 {
@@ -34,10 +36,29 @@ interface WatchlistFrameworkInterface
     public function getTemplate(string $action): string;
 
     /**
-     * Prepare the template.
+     * Add or edit the module template variables
      *
      * @param array $context
+     * @param Module $template
      * @return array
      */
-    public function compile(array $context): array;
+    public function prepareModuleTemplate(array $context, Module $template): array;
+
+    /**
+     * Add or edit data attributes
+     *
+     * @param array $attributes
+     * @param PartialTemplateInterface $template
+     * @return array
+     */
+    public function prepareDataAttributes(array $attributes, PartialTemplateInterface $template): array;
+
+    /**
+     * Prepare the template context.
+     *
+     * @param array $context
+     * @param PartialTemplateInterface $template
+     * @return array
+     */
+    public function prepareContext(array $context, PartialTemplateInterface $template): array;
 }

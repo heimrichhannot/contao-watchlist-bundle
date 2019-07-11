@@ -14,10 +14,12 @@ use Contao\Module;
 use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\Request\Request;
+use HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllActionPartialTemplate;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\OpenWatchlistWindowActionPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\WatchlistWindowPartialTemplate;
 use Patchwork\Utf8;
 use Psr\Container\ContainerInterface;
 
@@ -77,6 +79,8 @@ class ModuleWatchlist extends Module
             return;
         }
 
+
+
         $watchlist = $this->container->get('huh.watchlist.watchlist_manager')->getWatchlistModel($configuration);
         $watchlistContainerId = 'huh_watchlist_window_'.$this->id.'_'.$configuration->id.'_'.rand(0,99999);
 
@@ -86,10 +90,18 @@ class ModuleWatchlist extends Module
 
         $this->Template->toggler = $this->container->get(PartialTemplateBuilder::class)->generate(new OpenWatchlistWindowActionPartialTemplate($configuration, $watchlist, $watchlistContainerId));
 
+        $this->Template->watchlistWindow = $this->container->get(PartialTemplateBuilder::class)->generate(
+            new WatchlistWindowPartialTemplate($configuration, $watchlist->id, null, ['watchlistContainerId' => $watchlistContainerId])
+        );
+
         if ($this->useGlobalDownloadAllAction) {
             $this->Template->downloadAllAction = $this->container->get(PartialTemplateBuilder::class)->generate(
                 new DownloadAllActionPartialTemplate($configuration, $watchlist)
             );
         }
+
+        /** @var WatchlistFrameworkInterface $framework */
+        $framework = $this->container->get('huh.watchlist.manager.frontend_frameworks')->getFrameworkByType($configuration->watchlistFrontendFramework);
+        $this->Template->setData($framework->prepareModuleTemplate($this->Template->getData(), $this));
     }
 }

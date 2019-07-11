@@ -17,6 +17,8 @@ class ContaoWatchlistBundle {
     {
         rootElement.querySelectorAll('.huh_watchlist_action').forEach((element) => {
             element.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
                 event.target.dispatchEvent(new CustomEvent('huh_watchlist_click', {
                     bubbles: true,
                     detail: {
@@ -61,7 +63,11 @@ class ContaoWatchlistBundle {
      */
     onHuhWatchlistClickEvent(event)
     {
+        /**
+         * @type {Element} element
+         */
         let element = event.detail.element;
+
         if (!element.dataset.hasOwnProperty('actionType')) {
             console.throw("No action defined for watchlist click event!");
         }

@@ -34,6 +34,10 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
      * @var string|null
      */
     private $content;
+    /**
+     * @var array
+     */
+    private $context;
 
 
     /**
@@ -42,11 +46,12 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
      * @param int|null $watchlistId
      * @param string|null $content
      */
-    public function __construct(WatchlistConfigModel $configuration, ?int $watchlistId, ?string $content = null)
+    public function __construct(WatchlistConfigModel $configuration, ?int $watchlistId, ?string $content = null, array $context = [])
     {
         $this->configuration = $configuration;
         $this->watchlistId = $watchlistId;
         $this->content = $content;
+        $this->context = $context;
     }
 
     public function getTemplateName(): string
@@ -64,9 +69,9 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
     public function generate(): string
     {
         $context = [];
+        $watchlistModel = $this->builder->getWatchlistManager()->getWatchlistModel($this->configuration, $this->watchlistId);
         if (!$this->content)
         {
-            $watchlistModel = $this->builder->getWatchlistManager()->getWatchlistModel($this->configuration, $this->watchlistId);
             if (!$watchlistModel)
             {
                 $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
@@ -81,7 +86,8 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
         }
         $context['headline'] = '<span class="huh_watchlist_window_headline">'.$this->builder->getWatchlistManager()
                 ->getWatchlistName($this->configuration, $watchlistModel).'</span>';
-        $context = $this->builder->getFrontendFramework($this->configuration)->compile($context);
+        $context['containerSelector'] = '.watchlist-content.watchlist-'.$this->watchlistId;
+        $context = $this->builder->getFrontendFramework($this->configuration)->prepareContext($context, $this);
 
         $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
         return $this->builder->getTwig()->render($template, $context);
