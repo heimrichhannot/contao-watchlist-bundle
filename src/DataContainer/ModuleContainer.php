@@ -9,8 +9,10 @@
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 use Contao\DataContainer;
+use Contao\StringUtil;
 use HeimrichHannot\Submissions\Creator\SubmissionCreator;
 use HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist;
+use Image;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ModuleContainer
@@ -106,27 +108,21 @@ class ModuleContainer
     }
 
     /**
-     * Get frontend framework types as selection
+     * Edit watchlist config
      *
      * @param DataContainer $dc
      * @return string
      */
     public function editWatchlistWizard(DataContainer $dc)
     {
-        return '';
-//        return ($dc->value < 1)
-//            ? ''
-//            : ' <a href="contao?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $dc->value . '&amp;rt=' . REQUEST_TOKEN . '" title="'
-//            . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px">'
-//            . $this->generateImage('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
+        return '<a href="'
+            .$this->container->get('huh.utils.routing')->generateBackendRoute([
+                'do' => 'watchlist_config',
+                'act' => 'edit',
+                'id' => $dc->value,
+                'popup' => '1',
+                'nb' => '1',
+            ])
+            .' title="' . sprintf(StringUtil::specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" onclick="Backend.openModalIframe({\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_content']['editalias'][0]) . '</a>';
     }
-
-//    public function editModule(\DataContainer $dc)
-//    {
-//        return ($dc->value < 1)
-//            ? ''
-//            : ' <a href="contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $dc->value . '&amp;rt=' . REQUEST_TOKEN . '" title="'
-//            . sprintf(specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" style="padding-left:3px">'
-//            . $this->generateImage('alias.gif', $GLOBALS['TL_LANG']['tl_content']['editalias'][0], 'style="vertical-align:top"') . '</a>';
-//    }
 }

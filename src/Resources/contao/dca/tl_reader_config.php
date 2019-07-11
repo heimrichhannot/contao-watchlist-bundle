@@ -12,7 +12,7 @@ $dca['fields']['watchlistConfig'] = [
     'inputType'  => 'select',
     'foreignKey' => 'tl_watchlist_config.title',
     'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
-    'eval'       => ['tl_class' => 'long clr', 'includeBlankOption' => true, 'chosen' => true],
+    'eval'       => ['tl_class' => 'w50 clr wizard', 'includeBlankOption' => true, 'chosen' => true],
     'wizard'           => [
         ['huh.watchlist.data_container.module_container', 'editWatchlistWizard'],
     ],
