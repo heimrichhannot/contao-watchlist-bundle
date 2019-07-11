@@ -45,63 +45,6 @@ A contao watchlist for download elements. It enables users to collect items (e.g
 
 ## Developers
 
-## Add custom frontend layouts
-
-> Due alpha state of this bundle, no all templates supported by the frontend framework system. Old templates must be overridden the "contao way".
-
-1. Create an frontend framework class extending `AbstractWatchlistFrontendFramework` and register it as service with `huh.watchlist.framework` service tag.
-
-1. Create twig templates for your framework with framework type suffix, e.g. `watchlist_window_base.html.twig` for base framework or `watchlist_window_bs4.html.twig` for bootstrap 4.
-
-    Available Templates (please consider the base templates for available template variables:
-    
-    Template | Description
-    -------- | -----------
-    watchlist_window | The watchlist window 
-    add_to_watchlist | The add to watchlist button
-    open_watchlist_window | The open watchlist button (used in the watchlist module)
-    watchlist_action | Action button. Used for 'add to watchlist' and 'download all' action.
-    
-    Not defined template for a framework will fallback to the base templates, if the Framework class extends `AbstractWatchlistFrontendFramework`.
-    
-1. Create js event listener for update watchlist button count `watchlist_create_count_element_[FRAMEWORK TYPE]`
-
-    Example: 
-    
-
-1. Optional: create js event listener for open watchlist action, e.g. trigger the event toggle
-
-### Custom Watchlist window templates
-
-Create twig templates with 'watchlist_window_' prefix. They should output the `headline` and `content` variable (be sure to output `content` as raw!).
-
-Example: 
-```twig
-# src/Resources/views/watchlist/watchlist_window_default.html.twig
-
-<div class="{{ class|default('') }}">
-    {% if headlines is defined %}<h4>{{ headline }}</h4>{% endif %}
-    {{ content|default|raw }}
-</div>
-```
-
-### Modals
-
-Modals typically need an starting event to be opened. Watchlist bundle comes with javascript events that can be used to archive these.
-
-Example for bootstrap 4:
-
-```js
-// event.target is the module (.mod_watchlist) node
-
-document.addEventListener('watchlist_content_ajax_success', (event) => {
-    let modalElement = event.target.querySelector('.modal');
-    if (null !== modalElement) {
-        $(modalElement).modal();
-    }
-});
-```
-
 ### Configuration
 
 All configuration options including the default values.
@@ -121,13 +64,71 @@ huh_watchlist:
     - { name: default, class: HeimrichHannot\WatchlistBundle\Item\WatchlistItemEntity }
 ```
 
-### Javascript Events
+### Add custom frontend layouts
 
-Event | Description
------ | -----------
-watchlist_content_ajax_before |
-watchlist_content_ajax_success |
-watchlist_content_ajax_error |
+> Due alpha state of this bundle, no all templates supported by the frontend framework system. Old templates must be overridden the "contao way".
+
+1. Create an frontend framework class extending `AbstractWatchlistFrontendFramework` and register it as service with `huh.watchlist.framework` service tag.
+
+1. Create twig templates for your framework with framework type suffix, e.g. `watchlist_window_base.html.twig` for base framework or `watchlist_window_bs4.html.twig` for bootstrap 4.
+
+    Available Templates (please consider the base templates for available template variables:
+    
+    Template | Description
+    -------- | -----------
+    watchlist_window | The watchlist window 
+    add_to_watchlist | The add to watchlist button
+    open_watchlist_window | The open watchlist button (used in the watchlist module)
+    watchlist_action | Action button. Used for 'add to watchlist' and 'download all' action.
+    
+    Not defined template for a framework will fallback to the base templates, if the Framework class extends `AbstractWatchlistFrontendFramework`.
+    
+1. Create js event listener for adding watchlist button count `watchlist_create_count_element_[FRAMEWORK TYPE]`, if non exist. Event is dispatched on every element that need an updated count.
+
+    Example: 
+    
+    ```js
+    // init event listener
+    class MyEventListener {
+        init () 
+        {
+            document.addEventListener('watchlist_create_count_element_base', this.onWatchlistCreateCountElementBase);
+        }
+        
+        // event listener method
+        onWatchlistCreateCountElementBase(event)
+        {
+            let badge = document.createElement('span');
+            badge.setAttribute('class', event.detail.cssClass);
+            badge.textContent = event.detail.count;
+            event.target.appendChild(badge);
+        }
+    }
+    ```
+
+1. Optional: create js event listener for open watchlist action, e.g. trigger the event toggle
+
+    Example:
+
+    ```js
+    class MyEventListener {
+        init () 
+        {
+            document.addEventListener('watchlist_window_open_bs4', this.onWatchlistWindowOpenBs4);
+        }
+        
+        /**
+         * @param {CustomEvent} event
+         */
+        onWatchlistWindowOpenBs4(event)
+        {
+            let modalElement = event.detail.container.querySelector('.modal');
+            if (null !== modalElement) {
+                $(modalElement).modal();
+            }
+        }
+    }
+    ```
 
 ### Add watchlist support to your entity
 
