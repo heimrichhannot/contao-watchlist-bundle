@@ -10,6 +10,9 @@ namespace HeimrichHannot\WatchlistBundle\ListItem;
 
 use Contao\System;
 use HeimrichHannot\ListBundle\Item\DefaultItem;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\AddToWatchlistActionPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 
 class WatchlistListItem extends DefaultItem
 {
@@ -20,12 +23,13 @@ class WatchlistListItem extends DefaultItem
      */
     public function getAddToWatchlistButton()
     {
-        $module = $this->getModule();
-
-        if (null !== ($listConfig = System::getContainer()->get('huh.list.list-config-registry')->findByPk($module['listConfig']))) {
-            return System::getContainer()
-                ->get('huh.watchlist.template_manager')
-                ->getAddToWatchlistButton($this->_raw, $this->_dataContainer, $listConfig->watchlistConfig);
+        $listConfig = $this->getManager()->getListConfig();
+        $configuration = WatchlistConfigModel::findByPk($listConfig->watchlistConfig);
+        if (!$configuration) {
+            return '';
         }
+        return System::getContainer()->get(PartialTemplateBuilder::class)->generate(
+            new AddToWatchlistActionPartialTemplate($configuration, $this->_dataContainer, $this->uuid, $this->title)
+        );
     }
 }

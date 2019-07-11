@@ -84,7 +84,6 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
             'actionUrl'       => $actionUrl,
             'actionType'      => $actionType,
             'frontend'        => $this->builder->getFrontendFramework($configuration)->getType(),
-            'language'        => $this->builder->getContainer()->get('request_stack')->getMasterRequest()->getLocale(),
         ];
     }
 

@@ -12,7 +12,10 @@ use Contao\Controller;
 use Contao\ModuleModel;
 use Contao\System;
 use HeimrichHannot\ListBundle\Module\ModuleList;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllActionPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 
 class ModuleWatchlistDownloadList extends ModuleList
 {
@@ -59,8 +62,12 @@ class ModuleWatchlistDownloadList extends ModuleList
             $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST_ITEMS']['empty'];
         }
 
-        $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist->id, $this->id);
-
+        $configuration = WatchlistConfigModel::findByPk($this->listConfig->watchlistConfig);
+        if ($configuration) {
+            $this->Template->downloadAllAction = $this->container->get(PartialTemplateBuilder::class)->generate(
+                new DownloadAllActionPartialTemplate($configuration, $watchlist)
+            );
+        }
         parent::compile();
     }
 

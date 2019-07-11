@@ -37,7 +37,6 @@ $GLOBALS['TL_LANG']['WATCHLIST']['noDownload']           = 'Diese Datei ist nich
 $GLOBALS['TL_LANG']['WATCHLIST']['downloadListHeadline'] = 'Beispieltitel';
 $GLOBALS['TL_LANG']['WATCHLIST']['addToWatchlist']       = 'Einer Merkliste hinzufügen';
 $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadlineConfig']  = 'Merkliste: %s';
-$GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline']        = 'Merkliste';
 $GLOBALS['TL_LANG']['WATCHLIST']['validityExpired']      = 'Diese Merkliste ist nicht mehr einsehbar.';
 $GLOBALS['TL_LANG']['WATCHLIST']['invalidActivation']    = 'Ihnen fehlt die Berechtigung diese Merkliste einzusehen.';
 

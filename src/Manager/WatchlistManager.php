@@ -415,6 +415,9 @@ class WatchlistManager
             return $this->container->get('translator')->trans($configuration->watchlistTitle);
         }
 
-        return WatchlistTemplateManager::WATCHLIST_NAME_SUBMISSION == $watchlist->name ? $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'] : $watchlist->name;
+        if (WatchlistTemplateManager::WATCHLIST_NAME_SUBMISSION == $watchlist->name) {
+            return $this->container->get('translator')->trans('huh.watchlist.watchlist_label.default');
+        }
+        return  $watchlist->name;
     }
 }

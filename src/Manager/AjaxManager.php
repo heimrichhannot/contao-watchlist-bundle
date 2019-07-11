@@ -105,8 +105,6 @@ class AjaxManager
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION, $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
-            static::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION, $this);
-        $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION, $this);
         $this->container->get('huh.ajax')->runActiveAction(static::XHR_GROUP,
             static::XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION, $this);
@@ -332,32 +330,6 @@ class AjaxManager
 
         $response->setResult(new ResponseData('',
             ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count]));
-
-        return $response;
-    }
-
-    /**
-     * download all elements of current watchlist as zip file.
-     *
-     * @param string $data
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function watchlistDownloadAllAction(string $data)
-    {
-        $data        = json_decode($data);
-        $watchlistId = $data->watchlistId;
-
-        $configuration = WatchlistConfigModel::findByPk($data->moduleId);
-        if (!$configuration) {
-            return new ResponseError("No watchlist configuration found.");
-        }
-
-        $response = new ResponseSuccess();
-        $response->setResult(new ResponseData('',
-            ['file' => $this->actionManager->getDownloadZip($configuration, $watchlistId)]));
 
         return $response;
     }

@@ -84,12 +84,6 @@ $GLOBALS['AJAX'][\HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_GROUP]
             ],
             'optional' => [],
         ],
-        \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION => [
-            'arguments' => [
-                \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA
-            ],
-            'optional' => [],
-        ],
         \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_WATCHLIST_DELETE_ITEM_ACTION => [
             'arguments' => [
                 \HeimrichHannot\WatchlistBundle\Manager\AjaxManager::XHR_PARAMETER_DATA

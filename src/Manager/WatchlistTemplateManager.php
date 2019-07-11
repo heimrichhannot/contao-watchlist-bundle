@@ -233,94 +233,6 @@ class WatchlistTemplateManager
     }
 
     /**
-     * @param WatchlistConfigModel $configuration
-     * @param int $watchlistId
-     * @return string
-     */
-    public function getDownloadAllAction(WatchlistConfigModel $configuration, int $watchlistId)
-    {
-        $url = $this->getOriginalRouteIfAjaxRequest();
-        $downloadAllTemplate = new FrontendTemplate('watchlist_download_all_action');
-        $downloadAllTemplate->action = $this->container->get('huh.ajax.action')->generateUrl(
-            AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_ALL_ACTION, [], true, $url
-        );
-        $downloadAllTemplate->downloadAllLink = $this->translator->trans('huh.watchlist.list.download.link');
-        $downloadAllTemplate->downloadAllTitle = $this->translator->trans('huh.watchlist.list.download.title');
-        $downloadAllTemplate->watchlistId = $watchlistId;
-        $downloadAllTemplate->moduleId = $configuration->id;
-
-        return $downloadAllTemplate->parse();
-    }
-
-    /**
-     * generate the add-to-watchlist button.
-     *
-     * @param array  $data
-     * @param string $dataContainer
-     * @param int    $watchlistConfig
-     * @param bool   $downloadable
-     *
-     * @return string
-     */
-    public function getAddToWatchlistButton(
-        array $data,
-        string $dataContainer,
-        int $watchlistConfig,
-        bool $downloadable = true,
-        string $fileField = 'uuid',
-        string $template = 'watchlist_add_action'
-    ) {
-        $template = new FrontendTemplate($template);
-        $template->added = false;
-
-        if (null === ($file = StringUtil::deserialize($data[$fileField], true)[0])) {
-            return '';
-        }
-
-        if ($this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlistConfig, $data[$fileField])) {
-            $template->added = true;
-        }
-
-        $template->type = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
-        $template->id = $data['id'];
-        $template->options = json_encode($data['options']);
-        $template->moduleId = $watchlistConfig;
-        $template->dataContainer = $dataContainer;
-        $template->downloadable = $downloadable;
-        $template->itemTitle = $data['title'];
-        $template->uuid = bin2hex($file);
-        $template->action = $this->container->get('huh.ajax.action')->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_ADD_ACTION);
-        $template->title = $this->translator->trans('huh.watchlist.item.add.title', ['%item%' => $data['title']]);
-        $template->link = $data['linkTitle'] ?: $this->translator->trans('huh.watchlist.item.add.link');
-
-        return $template->parse();
-    }
-
-    public function generateAddToWatchlistButtonForContentElement(array $data, ?string $uuid = null)
-    {
-        return $this->generateAddToWatchlistButtonForTemplate($data, 'tl_content', $uuid);
-    }
-
-    /**
-     *  Returns an add to watchlist button for the given entity.
-     *
-     * @param array $data
-     * @param string $dataContainer
-     * @param string|null $uuid
-     * @return string
-     */
-    public function generateAddToWatchlistButtonForTemplate(array $data, string $dataContainer, ?string $uuid = null)
-    {
-        if ($data['addAddToWatchlistButton']) {
-            if ($uuid)
-            {
-                $data['uuid'] = $uuid;
-            }
-            return $this->getAddToWatchlistButton($data, $dataContainer, $data['watchlistConfiguration']);
-        }
-    }
-
-    /**
      * get add modal.
      *
      * @param WatchlistConfigModel $configuration
@@ -471,24 +383,10 @@ class WatchlistTemplateManager
      */
     public function generateWatchlistWindow(string $content, array $config = [])
     {
-//        $template = 'watchlist_window_default';
-//        if ($config['template']) {
-//            $template = $config['template'];
-//        }
-//
-//        $context = [
-//            'content' => $content,
-//            'headline' => isset($config['headline']) ? $config['headline'] : $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'],
-//            'class' => isset($config['class']) ? $config['class'] : '',
-//        ];
-//
-//        return $this->container->get('huh.utils.template')->renderTwigTemplate($template, $context);
-
-
         $template = new FrontendTemplate('watchlist_modal_wrapper');
         $template->content = $content;
 
-        $template->headline = $config['headline'] ? $config['headline'] : $GLOBALS['TL_LANG']['WATCHLIST']['modalHeadline'];
+        $template->headline = $config['headline'] ? $config['headline'] : $this->container->get('translator')->trans('huh.watchlist.watchlist_label.default');
 
         if ($config['class']) {
             $template->class = $config['class'];
