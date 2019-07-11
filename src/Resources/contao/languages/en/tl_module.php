@@ -20,4 +20,4 @@ $lang['watchlistConfig'] = ['Watchlist configuration', 'Choose the watchlist con
  * Legends
  */
 
-$lang['watchlist_config'] = 'Watchlist';
+$lang['watchlist_legend'] = 'Watchlist';

@@ -35,7 +35,13 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
      */
     protected $builder;
 
-    abstract public function getTemplateType(): string;
+    /**
+     * Return the template name without framework suffix and file extension,
+     * e.g. 'watchlist_window'
+     *
+     * @return string
+     */
+    abstract public function getTemplateName(): string;
 
     public function setBuilder(PartialTemplateBuilder $builder)
     {
@@ -54,13 +60,13 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
         try
         {
             $template = $this->builder->getContainer()->get('huh.utils.template')->getTemplate(
-                $frontendFramework->getTemplate($this->getTemplateType()),
+                $frontendFramework->getTemplate($this->getTemplateName()),
                 $frontendFramework->getTemplateFormat()
             );
         } catch (LoaderError $e)
         {
             $template = $this->builder->getContainer()->get('huh.utils.template')->getTemplate(
-                $this->builder->getFrameworksManager()->getFrameworkByType('base')->getTemplate($this->getTemplateType()),
+                $this->builder->getFrameworksManager()->getFrameworkByType('base')->getTemplate($this->getTemplateName()),
                 $this->builder->getFrameworksManager()->getFrameworkByType('base')->getTemplateFormat()
             );
         }
@@ -78,7 +84,7 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
     protected function createDefaultActionAttributes(WatchlistConfigModel $configuration, string $actionUrl, string $actionType): array
     {
         return [
-            'action'          => $this->getTemplateType(),
+            'action'          => $this->getTemplateName(),
             'watchlistConfig' => $configuration->id,
             'requestToken'    => $this->builder->getCsrfToken(),
             'actionUrl'       => $actionUrl,
@@ -132,7 +138,7 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
      */
     protected function prepareContext(array $context): array
     {
-        $context['id'] = $this->getTemplateType() . '_' . rand(0, 99999);
+        $context['id'] = $this->getTemplateName() . '_' . rand(0, 99999);
         return $context;
     }
 }

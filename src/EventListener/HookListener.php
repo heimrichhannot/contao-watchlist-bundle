@@ -11,6 +11,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\EventListener;
 
+use Contao\PageModel;
 use Contao\Template;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistPrepareElementEvent;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
@@ -59,28 +60,42 @@ class HookListener
      */
     public function onParseTemplate(Template $template)
     {
-        $configuration = $this->container->getParameter('huh_watchlist');
+        /** @var PageModel $objPage */
+        global $objPage;
+        if (!$objPage) {
+            return;
+        }
+        $rootPage = PageModel::findByPk($objPage->rootId);
+        if (!$rootPage)
+        {
+            return;
+        }
+        if (!$rootPage->enableWatchlist && !$template->overrideWatchlistConfig) {
+            return;
+        }
 
-        if (in_array($template->type, $configuration['content_elements']))
+        $bundleConfig = $this->container->getParameter('huh_watchlist');
+
+        if (in_array($template->type, $bundleConfig['content_elements']))
         {
             if ($template->disableWatchlist)
             {
                 return;
             }
-            $configuration = null;
+            $bundleConfig = null;
             if ($template->overrideWatchlistConfig) {
-                $configuration = WatchlistConfigModel::findByPk($template->watchlistConfig);
+                $watchlistConfig = WatchlistConfigModel::findByPk($template->watchlistConfig);
             }
-            if (!$configuration) {
-
-                // TODO: Get default config
-
-                /** @var WatchlistConfigModel $configuration */
-                $configuration = WatchlistConfigModel::findAll()->current();
+            if (!$watchlistConfig && $rootPage->enableWatchlist) {
+                /** @var WatchlistConfigModel $bundleConfig */
+                $watchlistConfig = WatchlistConfigModel::findByPk($rootPage->watchlistConfig);
+            }
+            if (!$watchlistConfig) {
+                return;
             }
             $this->eventDispatcher->dispatch(
                 WatchlistPrepareElementEvent::NAME,
-                new WatchlistPrepareElementEvent($template, $configuration)
+                new WatchlistPrepareElementEvent($template, $watchlistConfig)
             );
         }
     }

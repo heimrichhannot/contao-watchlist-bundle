@@ -48,7 +48,7 @@ $lang['togglerTitle'] = ['Titel des Merklisten-Button', 'Tragen Sie hier den Tit
 /**
  * Legends
  */
-$lang['watchlist_config'] = 'Merkliste';
+$lang['watchlist_legend'] = 'Merkliste';
 $lang['additionalSettingsLegend'] = 'Erweiterte Einstellungen';
 
 

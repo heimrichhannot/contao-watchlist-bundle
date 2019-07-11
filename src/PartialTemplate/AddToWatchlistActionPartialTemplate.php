@@ -97,9 +97,9 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
         $this->fileTitle = $fileTitle;
     }
 
-    public function getTemplateType(): string
+    public function getTemplateName(): string
     {
-        return static::TEMPLATE_ADD_TO_WATCHLIST;
+        return static::TEMPLATE_ACTION;
     }
 
 

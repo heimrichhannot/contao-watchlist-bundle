@@ -49,7 +49,7 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
         $this->content = $content;
     }
 
-    public function getTemplateType(): string
+    public function getTemplateName(): string
     {
         return static::TEMPLATE_WATCHLIST_WINDOW;
     }

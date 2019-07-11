@@ -18,7 +18,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
  */
 $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST] =
     '{title_legend},name,headline,type;
-    {watchlist_config},watchlistConfig;
+    {watchlist_legend},watchlistConfig;
     {template_legend:hide},customTpl;
     {download_legend}, downloadLinkUseNotification;
     {protected_legend:hide},protected;

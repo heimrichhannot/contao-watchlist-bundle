@@ -36,7 +36,7 @@ class DownloadAllActionPartialTemplate extends AbstractPartialTemplate
         $this->watchlist = $watchlist;
     }
 
-    public function getTemplateType(): string
+    public function getTemplateName(): string
     {
         return static::TEMPLATE_ACTION;
     }

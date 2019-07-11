@@ -37,7 +37,7 @@ class OpenWatchlistWindowActionPartialTemplate extends AbstractPartialTemplate
         $this->watchlistContainerCssId = $watchlistContainerCssId;
     }
 
-    public function getTemplateType(): string
+    public function getTemplateName(): string
     {
         return static::TEMPLATE_OPEN_WATCHLIST_WINDOW;
     }
