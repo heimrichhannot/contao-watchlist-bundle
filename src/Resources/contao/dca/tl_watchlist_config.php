@@ -110,6 +110,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'inputType'        => 'select',
             'label'            => &$GLOBALS['TL_LANG']['tl_watchlist_config']['watchlistFrontendFramework'],
             'options_callback' => ['huh.watchlist.data_container.module_container', 'getWatchlistFrontendFrameworks'],
+            'reference'        => &$GLOBALS['TL_LANG']['tl_watchlist_config']['FRONTENDFRAMEWORK'],
             'eval'             => [
                 'mandatory' => true,
                 'tl_class'           => 'w50',
@@ -150,14 +151,14 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'label'     => &$GLOBALS['TL_LANG']['tl_watchlist_config']['watchlistDurability'],
             'exclude'   => true,
             'inputType' => 'text',
-            'eval'      => ['mandatory' => true, 'tl_class' => 'w50'],
+            'eval'      => ['mandatory' => true, 'tl_class' => 'w50', 'rgxp' => 'natural'],
             'sql'       => "varchar(8) NOT NULL default ''",
         ],
         'useGlobalDownloadAllAction'               => [
             'label'     => &$GLOBALS['TL_LANG']['tl_watchlist_config']['useGlobalDownloadAllAction'],
             'exclude'   => true,
             'inputType' => 'checkbox',
-            'eval'      => ['tl_class' => 'w50', 'submitOnChange' => true],
+            'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'watchlistItemFile'                        => [
