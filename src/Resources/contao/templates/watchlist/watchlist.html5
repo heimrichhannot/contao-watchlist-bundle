@@ -31,7 +31,7 @@
                 <?php if ($this->grouped): ?>
                     <?php foreach ($this->items as $group => $childrens): ?>
                         <div class="group">
-                            <h5><?php echo $childrens['page']; ?></h5>
+                            <h5><?php echo $childrens['pageTitle']; //can be pageTitle or pagePath ?></h5>
                             <div class="children <?= $this->css ?>">
                                 <?php foreach ($childrens['items'] as $id => $item): ?>
                                     <?php echo $item; ?>

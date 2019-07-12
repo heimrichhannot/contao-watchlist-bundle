@@ -11,7 +11,10 @@ namespace HeimrichHannot\WatchlistBundle\Model;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
+use Contao\File;
+use Contao\FilesModel;
 use Contao\FrontendTemplate;
+use Contao\Image;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
 use Contao\PageModel;
@@ -25,6 +28,7 @@ use HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\AbstractPartialTemplate;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllActionPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\ItemParentListPartialTemplate;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 use Psr\Cache\InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -188,11 +192,20 @@ class WatchlistTemplateManager
             $parsedItem = $this->parseItem($item, $watchlistConfiguration, $cssClass);
 
             if ($grouped) {
-                $parsedItems[$item->pageID]['page'] = $this->framework->getAdapter(PageModel::class)->findByPk($item->pageID)->title;
                 $parsedItems[$item->pageID]['items'][$item->id] = $parsedItem;
             } else {
                 $arrPids[$item->pageID] = $parents[$item->pageID];
                 $parsedItems[$item->id] = $parsedItem;
+            }
+        }
+        if ($grouped) {
+            foreach ($parsedItems as $pageId => $group)
+            {
+                $page = \HeimrichHannot\Modal\PageModel::findByPk($pageId);
+                $parsedItems[$pageId]['pagePath'] = $this->container->get(PartialTemplateBuilder::class)->generate(
+                    new ItemParentListPartialTemplate($watchlistConfiguration, $page)
+                );
+                $parsedItems[$pageId]['pageTitle'] = $page->title;
             }
         }
 
@@ -404,7 +417,7 @@ class WatchlistTemplateManager
      * @param FrontendTemplate $template
      * @param string           $path
      */
-    public function addImageToTemplate(FrontendTemplate $template, string $path, $module)
+    public function addImageToTemplate(FrontendTemplate $template, string $path, $configuration)
     {
         if (!isset($path)) {
             return;
@@ -413,13 +426,13 @@ class WatchlistTemplateManager
         $template->image = $path;
 
         // resize image if set
-        if ('' != $module->imgSize) {
+        if ('' != $configuration->imgSize) {
             $image = [];
 
-            $size = StringUtil::deserialize($module->imgSize, true);
+            $size = StringUtil::deserialize($configuration->imgSize, true);
 
             if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
-                $image['size'] = $module->imgSize;
+                $image['size'] = $configuration->imgSize;
             }
 
             $image['singleSRC'] = $path;
@@ -554,22 +567,22 @@ class WatchlistTemplateManager
 
     /**
      * @param WatchlistItemModel $item
-     * @param                    $module
+     * @param                    $configuration
      * @param                    $cssClass
      *
      * @return string
      */
-    protected function parseItem(WatchlistItemModel $item, $module, $cssClass)
+    protected function parseItem(WatchlistItemModel $item, $configuration, $cssClass)
     {
         $template = new FrontendTemplate('watchlist_item');
 
         $class = '';
         switch ($item->type) {
             case WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE:
-                $class = $this->watchlistManager->getClassByName($module->watchlistItemFile, WatchlistManager::WATCHLIST_ITEM_FILE_GROUP);
+                $class = $this->watchlistManager->getClassByName($configuration->watchlistItemFile, WatchlistManager::WATCHLIST_ITEM_FILE_GROUP);
                 break;
             case WatchlistItemModel::WATCHLIST_ITEM_TYPE_ENTITY:
-                $class = $this->watchlistManager->getClassByName($module->watchlistItemEntity, WatchlistManager::WATCHLIST_ITEM_ENTITY_GROUP);
+                $class = $this->watchlistManager->getClassByName($configuration->watchlistItemEntity, WatchlistManager::WATCHLIST_ITEM_ENTITY_GROUP);
         }
 
         if ('' == $class) {
@@ -581,13 +594,37 @@ class WatchlistTemplateManager
             return '';
         }
 
-        if (null !== ($file = $watchlistItem->getFile())) {
-            $template->image = $watchlistItem->getFile();
-            $this->addImageToTemplate($template, $file, $module);
+        if ($filePath = $watchlistItem->getFile()) {
+
+            try
+            {
+                $file = new File($filePath);
+                if ($file->isImage) {
+                    $template->image = $filePath;
+                    $this->addImageToTemplate($template, $filePath, $configuration);
+                }
+            } catch (\Exception $e)
+            {
+            }
+        }
+
+        if ($item->download && $filePath)
+        {
+            $url = $this->getOriginalRouteIfAjaxRequest();
+            if (!$url) {
+                $url = $this->container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]);
+            }
+            else {
+                $url = parse_url($url, PHP_URL_PATH);
+            }
+            $template->downloadAction = $url.'?file=' . $filePath;
+            $template->downloadTitle  = $this->translator->trans('huh.watchlist.item.download.title', [
+                '%item%' => $item->title
+            ]);
         }
 
         $template->title = $watchlistItem->getTitle();
-        $template->actions = $watchlistItem->getEditActions($module);
+        $template->actions = $watchlistItem->getEditActions($configuration);
         $template->cssClass = $watchlistItem->getType();
         $template->id = $item->id;
         $template->type = $watchlistItem->getType();

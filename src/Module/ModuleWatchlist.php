@@ -83,6 +83,7 @@ class ModuleWatchlist extends Module
         $watchlistContainerId = 'huh_watchlist_window_'.$this->id.'_'.$configuration->id.'_'.rand(0,99999);
 
         $this->Template->watchlistContainerId = $watchlistContainerId;
+        $this->Template->watchlistId = $watchlist->id;
 
         $this->Template->watchlistContainerCssClass = 'watchlist-'.$watchlist->id;
 

@@ -22,8 +22,8 @@ abstract class AbstractPartialTemplate implements PartialTemplateInterface
     const TEMPLATE_WATCHLIST_WINDOW      = 'watchlist_window';
     const TEMPLATE_WATCHLIST_ITEM        = 'watchlist_item';
     const TEMPLATE_OPEN_WATCHLIST_WINDOW = 'open_watchlist_window';
-    const TEMPLATE_ADD_TO_WATCHLIST      = 'add_to_watchlist';
     const TEMPLATE_ACTION                = 'watchlist_action';
+    const TEMPLATE_ITEM_PARENT_LIST      = 'watchlist_item_parent_list';
 
     const ACTION_TYPE_TOGGLE = 'toggle';
     const ACTION_TYPE_UPDATE = 'update';

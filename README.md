@@ -74,11 +74,12 @@ huh_watchlist:
 
     Available Templates (please consider the base templates for available template variables:
     
-    Template              | Description
-    --------------------- | -----------
-    watchlist_window      | The watchlist window 
-    open_watchlist_window | The open watchlist button (used in the watchlist module)
-    watchlist_action      | Action button. Used for 'add to watchlist' and 'download all' action.
+    Template                   | Description
+    -------------------------- | -----------
+    open_watchlist_window      | The open watchlist button (used in the watchlist module)
+    watchlist_action           | Action button. Used for 'add to watchlist' and 'download all' action.
+    watchlist_item_parent_list | Renders the parent `pagePath` if grouped  
+    watchlist_window           | The watchlist window 
     
     Not defined template for a framework will fallback to the base templates, if the Framework class extends `AbstractWatchlistFrontendFramework`.
     

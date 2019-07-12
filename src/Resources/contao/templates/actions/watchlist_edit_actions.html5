@@ -1,5 +1,5 @@
 <?php if($this->deleteAction): ?>
-<form id="watchlist-delete-item-<?= $this->id ?>" action="<?= $this->deleteAction ?>">
+<form id="watchlist-delete-item-<?= $this->id ?>" class="watchlist-delete-item-action" action="<?= $this->deleteAction ?>">
     <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
     <input type="hidden" name="moduleId" value="<?= $this->moduleId?>">
     <input type="hidden" name="itemId" value="<?= $this->id?>">
@@ -9,5 +9,5 @@
 <?php endif; ?>
 
 <?php if ($this->downloadAction): ?>
-<a href="<?= $this->downloadAction ?>" title="<?= $this->downloadTitle ?>"><?= $this->downloadLink ?></a>
+<a href="<?= $this->downloadAction ?>" class="watchlist-download-item-action" title="<?= $this->downloadTitle ?>"><?= $this->downloadLink ?></a>
 <?php endif;?>

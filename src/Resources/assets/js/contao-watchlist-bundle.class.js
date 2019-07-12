@@ -192,6 +192,11 @@ class ContaoWatchlistBundle {
                         this.initEventDispatcher(element);
                     });
                 }
+
+                if (data.hasOwnProperty('message'))
+                {
+                    let watchlistMessageContainer = document.querySelectorAll('')
+                }
             }
         };
         this.doAjaxCall(element, element.dataset.actionUrl, element.dataset, config);

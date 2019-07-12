@@ -1,0 +1,13 @@
+<ul class="parents">
+    {% for item in items %}
+        {% if not item.isRoot %}
+            <li class="{{ class|default }}" title="{{ title|default }}">
+                {% if item.isActive %}
+                    <a href="{{ item.href|default }}">{{ item.link|default }}</a>
+                {% else %}
+                    {{ item.link }} &raquo;
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

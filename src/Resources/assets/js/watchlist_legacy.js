@@ -295,7 +295,11 @@ window.Watchlist = {
 
                 if (response.hasOwnProperty('headline'))
                 {
-                    document.querySelector('.huh_watchlist_window_headline').textContent = response.headline;
+                    let headlineElement = document.querySelector('.huh_watchlist_window_headline');
+                    if (null !== headlineElement) {
+                        headlineElement.textContent = response.headline;
+                    }
+
                 }
 
                 if (response.hasOwnProperty('count'))
