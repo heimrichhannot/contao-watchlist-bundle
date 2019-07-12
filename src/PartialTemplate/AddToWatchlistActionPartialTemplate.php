@@ -29,10 +29,6 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
      */
     private $configuration;
     /**
-     * @var WatchlistModel
-     */
-    private $watchlist;
-    /**
      * @var string
      */
     private $dataContainer;
@@ -44,10 +40,6 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
      * @var string
      */
     private $uuid;
-    /**
-     * @var string
-     */
-    private $title;
     /**
      * @var array
      */
@@ -64,6 +56,22 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
      * @var string
      */
     private $fileTitle;
+    /**
+     * @var int
+     */
+    private $pageId;
+    /**
+     * @var string
+     */
+    private $ptable;
+    /**
+     * @var string
+     */
+    private $ptableId;
+    /**
+     * @var WatchlistModel
+     */
+    private $watchlistModel;
 
     /**
      * AddToWatchlistPartialTemplate constructor.
@@ -71,9 +79,12 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
      * @param string $dataContainer
      * @param string $uuid The uuid (binary format) of the file
      * @param string $fileTitle A friendly file name
+     * @param int $pageId
      * @param array $options
      * @param string $linkText Override default link text
      * @param string $linkTitle Override default link title attribute text
+     * @param string $ptable
+     * @param string $ptableId
      * @param bool $downloadable
      */
     public function __construct(
@@ -81,9 +92,13 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
         string $dataContainer,
         string $uuid,
         string $fileTitle,
+        WatchlistModel $watchlistModel = null,
+        int $pageId = 0,
         array $options = [],
         string $linkText = '',
         string $linkTitle = '',
+        string $ptable = '',
+        string $ptableId = '',
         bool $downloadable = true
     )
     {
@@ -95,6 +110,10 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
         $this->linkText = $linkText;
         $this->linkTitle = $linkTitle;
         $this->fileTitle = $fileTitle;
+        $this->pageId = $pageId;
+        $this->ptable = $ptable;
+        $this->ptableId = $ptableId;
+        $this->watchlistModel = $watchlistModel;
     }
 
     public function getTemplateName(): string
@@ -106,21 +125,27 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
     public function generate(): string
     {
         $url = $this->builder->getRouter()->generate('huh_watchlist_add_to_watchlist');
-
+        $added = $this->watchlistModel ?
+            $this->builder->getWatchlistItemManager()->isItemInWatchlist($this->watchlistModel->id, $this->uuid) : false;
         $attributes = $this->createDefaultActionAttributes($this->configuration, $url, static::ACTION_TYPE_UPDATE);
         $attributes['type'] = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
-        $attributes['added'] = '0'; //$this->builder->getWatchlistItemManager()->isItemInWatchlist($this->watchlist->id, $this->fileUuid);
+        $attributes['added'] = (int) $added;
         $attributes['fileUuid'] = bin2hex($this->uuid);
         $attributes['options'] = json_encode($this->options);
         $attributes['downloadable'] = $this->downloadable;
         $attributes['dataContainer'] = $this->dataContainer;
         $attributes['title'] = $this->fileTitle;
+        $attributes['pageId'] = $this->pageId;
+        $attributes['ptable'] = $this->ptable;
+        $attributes['ptableId'] = $this->ptableId;
 
 
         $context = $this->createDefaultActionContext($attributes, $this->configuration);
         $context['cssClass'] .= ' huh_watchlist_add_to_watchlist';
+        if ($added) $context['cssClass'] .= ' active';
         $context['linkText'] = $this->linkText ?: $this->builder->getTranslator()->trans('huh.watchlist.item.add.link');
-        $context['linkTitle'] = $this->linkTitle ?: $this->builder->getTranslator()->trans('huh.watchlist.item.add.title', ['%item%' => $this->fileTitle]);
+        $context['linkTitle'] = $this->linkTitle ?: $this->builder->getTranslator()
+            ->trans('huh.watchlist.item.add.title', ['%item%' => $this->fileTitle]);
         $context = $this->prepareContext($context);
 
         $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));

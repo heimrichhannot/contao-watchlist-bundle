@@ -294,16 +294,14 @@ class WatchlistActionManager
             return $response;
         }
 
-        if (isset($itemData->ptable) && isset($itemData->ptableId)
+        if ($itemData->ptable && $itemData->ptableId
             && true !== ($response = $this->checkEntity($watchlist, $itemData->ptable, $itemData->ptableId))) {
             return $response;
         }
 
-        global $objPage;
-
         $item = new WatchlistItemModel();
         $item->pid = $watchlist->id;
-        $item->pageID = $objPage->id;
+        $item->pageID = $itemData->pageId;
         $item->type = $type;
         $item->tstamp = time();
 

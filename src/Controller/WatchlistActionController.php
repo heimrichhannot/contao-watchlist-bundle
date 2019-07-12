@@ -148,6 +148,10 @@ class WatchlistActionController extends AbstractController
         $itemData->downloadable = $request->get('downloadable');
         $itemData->title        = $request->get('title');
 
+        $itemData->pageId        = $request->get('pageId');
+        $itemData->ptable        = $request->get('ptable');
+        $itemData->ptableId        = $request->get('ptableId');
+
         if (FE_USER_LOGGED_IN)
         {
             list($message, $modal, $count) = $this->templateManager->getWatchlistAddModal($configuration, $type, $itemData);

@@ -79,8 +79,6 @@ class ModuleWatchlist extends Module
             return;
         }
 
-
-
         $watchlist = $this->container->get('huh.watchlist.watchlist_manager')->getWatchlistModel($configuration);
         $watchlistContainerId = 'huh_watchlist_window_'.$this->id.'_'.$configuration->id.'_'.rand(0,99999);
 

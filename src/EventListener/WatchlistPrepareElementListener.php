@@ -13,6 +13,7 @@ namespace HeimrichHannot\WatchlistBundle\EventListener;
 
 
 use Contao\FilesModel;
+use Contao\PageModel;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistPrepareElementEvent;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\AddToWatchlistActionPartialTemplate;
@@ -43,6 +44,10 @@ class WatchlistPrepareElementListener
     {
         $template = $event->getTemplate();
         $configuration = $event->getConfiguration();
+        $watchlist = $this->watchlistManager->getWatchlistModel($configuration);
+
+        /** @var PageModel $objPage */
+        global $objPage;
 
         switch ($template->type)
         {
@@ -57,6 +62,8 @@ class WatchlistPrepareElementListener
                             'tl_content',
                             $fileModel->uuid,
                             $template->link ?: ($template->title ?: $template->name),
+                            $watchlist,
+                            $objPage->id,
                             $template->options ?: []
                         ))
                     ];
@@ -75,6 +82,8 @@ class WatchlistPrepareElementListener
                         'tl_content',
                         $file['uuid'],
                         isset($file['link']) ? $file['link'] : (isset($file['title']) ?  $file['title'] : $file['name']),
+                        $watchlist,
+                        $objPage->id,
                         $template->options ?: []
                     ));
                     $file['addToWatchlistButton']['html'] = $button;
