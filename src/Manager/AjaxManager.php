@@ -16,6 +16,7 @@ use HeimrichHannot\AjaxBundle\Response\ResponseData;
 use HeimrichHannot\AjaxBundle\Response\ResponseError;
 use HeimrichHannot\AjaxBundle\Response\ResponseSuccess;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -261,8 +262,9 @@ class AjaxManager
     {
         $data     = json_decode($data);
         $itemId   = $data->itemId;
-
         $configuration = WatchlistConfigModel::findByPk($data->moduleId);
+        $item = WatchlistItemModel::findByPk($itemId);
+        $itemUuid = $item->uuid;
 
         if (null === ($watchlistId = $this->container->get('huh.watchlist.watchlist_item_manager')->getWatchlistIdFromItem($itemId))) {
             return new ResponseError();
@@ -274,7 +276,7 @@ class AjaxManager
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count]));
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count, 'uuid' => bin2hex($itemUuid)]));
 
         return $response;
     }

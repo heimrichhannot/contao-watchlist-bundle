@@ -142,7 +142,7 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
 
         $context = $this->createDefaultActionContext($attributes, $this->configuration);
         $context['cssClass'] .= ' huh_watchlist_add_to_watchlist';
-        if ($added) $context['cssClass'] .= ' active';
+        if ($added) $context['cssClass'] .= ' added';
         $context['linkText'] = $this->linkText ?: $this->builder->getTranslator()->trans('huh.watchlist.item.add.link');
         $context['linkTitle'] = $this->linkTitle ?: $this->builder->getTranslator()
             ->trans('huh.watchlist.item.add.title', ['%item%' => $this->fileTitle]);

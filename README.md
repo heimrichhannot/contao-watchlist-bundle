@@ -74,12 +74,11 @@ huh_watchlist:
 
     Available Templates (please consider the base templates for available template variables:
     
-    Template | Description
-    -------- | -----------
-    watchlist_window | The watchlist window 
-    add_to_watchlist | The add to watchlist button
+    Template              | Description
+    --------------------- | -----------
+    watchlist_window      | The watchlist window 
     open_watchlist_window | The open watchlist button (used in the watchlist module)
-    watchlist_action | Action button. Used for 'add to watchlist' and 'download all' action.
+    watchlist_action      | Action button. Used for 'add to watchlist' and 'download all' action.
     
     Not defined template for a framework will fallback to the base templates, if the Framework class extends `AbstractWatchlistFrontendFramework`.
     
@@ -143,6 +142,8 @@ huh_watchlist:
 2. Optional: Add DCA fields to your element palette:
 
     ```php
+    // tl_content.php
+ 
     $dca['palettes']['myContentElement'] = str_replace(
        '{template_legend',
        '{watchlist_legend},disableWatchlist,overrideWatchlistConfig;{template_legend', 

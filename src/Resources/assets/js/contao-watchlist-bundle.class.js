@@ -79,7 +79,7 @@ class ContaoWatchlistBundle {
                 this.updateAction(element);
                 break;
             case 'toggle':
-                this.watchlistShowModelAction(element, element.dataset);
+                this.toggleAction(element, element.dataset);
                 break;
             case 'download':
                 this.downloadAction(element);
@@ -89,18 +89,20 @@ class ContaoWatchlistBundle {
         }
     }
 
-    watchlistShowModelAction(element, data)
+    toggleAction(element, data)
     {
 
         let config = {
             onSuccess: (response) => {
                 let watchlistContainer = document.querySelector('#' + data.watchlistContainer);
                 watchlistContainer.innerHTML = response.response;
+
                 element.dispatchEvent(new CustomEvent('watchlist_window_open_' + data.frontend, {
                     bubbles: true,
                     detail: {
                         container: watchlistContainer,
-                        content: response.response
+                        content: response.response,
+                        toggleElement: element
                     }
                 }));
                 this.initEventDispatcher(watchlistContainer);
@@ -173,6 +175,7 @@ class ContaoWatchlistBundle {
     {
         let config = {
             onSuccess: (response) => {
+                element.classList.add('added');
                 let data = JSON.parse(response.responseText);
 
                 ContaoWatchlistBundle.updateWatchlistCount(data);
@@ -229,14 +232,9 @@ class ContaoWatchlistBundle {
      */
     doAjaxCall (element, url, data, config = {})
     {
-        if (data.hasOwnProperty('langauge'))
-        {
-
-        }
         element.dispatchEvent(new CustomEvent('watchlist_content_ajax_before', {
             bubbles: true
         }));
-
         AjaxUtil.post(url, data, config);
     }
 }

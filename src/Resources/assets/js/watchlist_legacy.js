@@ -21,11 +21,6 @@ window.Watchlist = {
                 Watchlist.sendDownloadNotification(document.getElementById(e.target.id));
             }
 
-            if (e.target && 'watchlist-download-all' == e.target.id) {
-                e.preventDefault();
-                Watchlist.downloadWatchlist(e.target);
-            }
-
             if (e.target && e.target.id.includes('watchlist-delete-item')) {
                 e.preventDefault();
                 Watchlist.deleteItem(e.target);
@@ -121,24 +116,15 @@ window.Watchlist = {
                 'REQUEST_TOKEN': request_token
             };
 
-        Watchlist.doAjaxCallWithUpdate(url, data);
-    },
-    downloadWatchlist: function (form) {
-        let formData = Watchlist.serialize(form);
-        if (!Array.isArray(formData))
-        {
-            return;
-        }
+        let config = {
+            successCallback: () => {
+                document.querySelectorAll('.huh_watchlist_add_to_watchlist.added').forEach((element) => {
+                    element.classList.remove('added');
+                });
+            }
+        };
 
-        let url = form.action,
-            moduleId = formData['moduleId'],
-            watchlistId = formData['watchlistId'],
-            data = {
-                'moduleId': moduleId,
-                'watchlistId': watchlistId
-            };
-
-        Watchlist.doAjaxCallWithUpdate(url, data);
+        Watchlist.doAjaxCallWithUpdate(url, data, config);
     },
     generateDownloadLink: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
@@ -266,7 +252,7 @@ window.Watchlist = {
     },
     sendDownloadNotification: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
-            return
+            return;
         }
 
         let url = form.action,
@@ -276,29 +262,9 @@ window.Watchlist = {
             data[key] = value;
         }
 
-        Watchlist.doAjaxCallWithUpdate(url, data, true);
+        Watchlist.doAjaxCallWithUpdate(url, data, {closeOnSuccess: true});
     },
-    doAjaxCall: function (url, data, closeOnSuccess) {
-        Watchlist.addLoader();
-
-        Watchlist.ajax({
-            url: url,
-            dataType: 'JSON',
-            type: 'POST',
-            data: data,
-            success: function (data, textStatus, jqXHR) {
-                let response = JSON.parse(data.responseText);
-
-                Watchlist.initModal(response.result.data.response);
-                Watchlist.ajaxCompleteCallback();
-            },
-
-            error: function (data, textStatus, jqXHR) {
-                Watchlist.ajaxCompleteCallback();
-            }
-        });
-    },
-    doAjaxCallWithUpdate: function (url, data, closeOnSuccess) {
+    doAjaxCallWithUpdate: function (url, data, config = {}) {
         Watchlist.addLoader();
         Watchlist.ajax({
             url: url,
@@ -344,14 +310,32 @@ window.Watchlist = {
                     ContaoWatchlistBundle.updateWatchlistCount(countData);
                 }
 
-                if (closeOnSuccess && document.getElementById('watchlistModal')) {
-                    document.getElementById('watchlistModal').remove();
-
-                    if (document.querySelector('.modal-backdrop')) {
-                        document.querySelector('.modal-backdrop').remove();
+                if (response.hasOwnProperty('uuid'))
+                {
+                    let addToWatchlistElements = document.querySelectorAll('.huh_watchlist_add_to_watchlist.added[data-file-uuid="' + response.uuid + '"]');
+                    if (addToWatchlistElements.length > 0) {
+                        addToWatchlistElements.forEach((element) => {
+                            element.classList.remove('added');
+                        });
                     }
+                }
 
-                    document.querySelector('body').classList.remove('modal-open');
+                if (config.hasOwnProperty('successCallback'))
+                {
+                    if (config.closeOnSuccess && document.getElementById('watchlistModal')) {
+                        document.getElementById('watchlistModal').remove();
+
+                        if (document.querySelector('.modal-backdrop')) {
+                            document.querySelector('.modal-backdrop').remove();
+                        }
+
+                        document.querySelector('body').classList.remove('modal-open');
+                    }
+                }
+
+                if (config.hasOwnProperty('successCallback'))
+                {
+                    config.successCallback();
                 }
 
                 // $('#watchlistModal').modal('toggle');
