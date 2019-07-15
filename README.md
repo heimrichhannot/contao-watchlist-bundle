@@ -2,7 +2,7 @@
 
 A contao watchlist for download elements. It enables users to collect items (e.g. downloads, images) into an watchlist and download them later or altogether as zip file.
 
-> Version 2 of this bundle is an major rewrite of this bundle and fully backwards compatible. A migration tool is not given, but you can view the major changes in the [UPGRADE](./UPGRADE.md) document.
+> Version 2 of this bundle is an major rewrite of this bundle and not complete backwards compatible. A migration tool is not given, but you can view the major changes in the [UPGRADE](./UPGRADE.md) document.
 
 > This bundle is still in alpha, as not all parts of the bundle are rewritten and tested. Currently only the parts for using it with content elements is mostly done and well tested.
 

@@ -1,7 +1,7 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-    <div id="watchlist-notify" class="huh_watchlist_notification <?= ?>"></div>
+    <div id="watchlist-notify" class="huh_watchlist_notification <?php if ($this->watchlistId) echo 'watchlist-'.$this->watchlistId; ?>"></div>
 
     <div class="watchlist-action">
         <?= $this->toggler; ?>
