@@ -11,12 +11,16 @@ All notable changes to this project will be documented in this file.
 - Watchlist configuration now lives in own entity
 - made submissions an optional dependency
 - configuration root key changed from huh:watchlist to huh_watchlist)
+- renamed namespace Module to FrontendModule
 
 ### Fixed 
 - ModuleWatchlist now working
 - Ajax module classes used
 - encore bundle legacy support
 - hook issue
+
+
+
 
 ## [1.0.9] - 2019-02-14
 

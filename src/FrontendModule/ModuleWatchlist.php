@@ -6,7 +6,7 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace HeimrichHannot\WatchlistBundle\Module;
+namespace HeimrichHannot\WatchlistBundle\FrontendModule;
 
 use Contao\BackendTemplate;
 use Contao\Controller;

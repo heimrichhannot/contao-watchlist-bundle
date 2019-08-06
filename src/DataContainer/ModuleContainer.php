@@ -11,7 +11,7 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 use Contao\DataContainer;
 use Contao\StringUtil;
 use HeimrichHannot\Submissions\Creator\SubmissionCreator;
-use HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist;
+use HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlist;
 use Image;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

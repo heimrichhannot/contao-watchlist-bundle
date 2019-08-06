@@ -1,7 +1,7 @@
 {
   "name": "heimrichhannot/contao-watchlist-bundle",
   "type": "contao-bundle",
-  "description": "Project bundle",
+  "description": "A watchlist/downloadlist bundle for contao CMS.",
   "license": "LGPL-3.0-or-later",
   "require": {
     "php": "^7.1",

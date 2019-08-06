@@ -19,8 +19,8 @@ $GLOBALS['TL_PERMISSIONS'][] = 'watchlistp';
  */
 array_insert($GLOBALS['FE_MOD'], 2, [
     'miscellaneous' => [
-        HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST                           => \HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::class,
-        HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST => \HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::class,
+        HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlist::MODULE_WATCHLIST                           => \HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlist::class,
+        HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST => \HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlistDownloadList::class,
     ],
 ]);
 

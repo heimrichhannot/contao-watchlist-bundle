@@ -32,7 +32,7 @@ $lang['additionalSettingsLegend'] = 'Erweiterte Einstellungen';
 /**
  * Front-end modules
  */
-$GLOBALS['TL_LANG']['FMD'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST]                           =
+$GLOBALS['TL_LANG']['FMD'][\HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlist::MODULE_WATCHLIST]                           =
     ['Merkliste', 'Füge Inhaltselement zur Merkliste hinzu und lade diese auf einmal herunter.'];
-$GLOBALS['TL_LANG']['FMD'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] =
+$GLOBALS['TL_LANG']['FMD'][\HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] =
     ['Merkliste - Download', 'Auflistung der Elemente einer Merkliste mit Download-Funktion.'];

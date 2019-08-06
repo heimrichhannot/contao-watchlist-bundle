@@ -20,7 +20,7 @@ use Contao\StringUtil;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistBeforeSendNotificationEvent;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
-use HeimrichHannot\WatchlistBundle\Module\DownloadLinkSubmission;
+use HeimrichHannot\WatchlistBundle\FrontendModule\DownloadLinkSubmission;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 

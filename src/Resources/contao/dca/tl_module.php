@@ -16,7 +16,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
 /**
  * Palettes
  */
-$dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_WATCHLIST] =
+$dc['palettes'][\HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlist::MODULE_WATCHLIST] =
     '{title_legend},name,headline,type;
     {watchlist_legend},watchlistConfig;
     {template_legend:hide},customTpl;
@@ -25,7 +25,7 @@ $dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlist::MODULE_W
     {misc_legend},imgSize;
     {expert_legend:hide},guests,cssID,space';
 
-$dc['palettes'][\HeimrichHannot\WatchlistBundle\Module\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] =
+$dc['palettes'][\HeimrichHannot\WatchlistBundle\FrontendModule\ModuleWatchlistDownloadList::MODULE_WATCHLIST_DOWNLOAD_LIST] =
     '{title_legend},name,headline,type;{template_legend:hide},customTpl;{additionalSettingsLegend},listConfig,usePublicLinkDurability;{protected_legend:hide},protected;{misc_legend},imgSize;{expert_legend:hide},guests,cssID,space';
 
 /**
