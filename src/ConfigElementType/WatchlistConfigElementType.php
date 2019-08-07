@@ -12,6 +12,8 @@
 namespace HeimrichHannot\WatchlistBundle\ConfigElement;
 
 
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\PageModel;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementData;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementTypeInterface;
@@ -33,12 +35,17 @@ class WatchlistConfigElementType implements ListConfigElementTypeInterface
      * @var PartialTemplateBuilder
      */
     private $templateBuilder;
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    private $framework;
 
 
-    public function __construct(WatchlistManager $watchlistManager, PartialTemplateBuilder $templateBuilder)
+    public function __construct(WatchlistManager $watchlistManager, PartialTemplateBuilder $templateBuilder, ContaoFrameworkInterface $framework)
     {
         $this->watchlistManager = $watchlistManager;
         $this->templateBuilder = $templateBuilder;
+        $this->framework = $framework;
     }
 
     public function addToItemData(ItemInterface $item, ListConfigElementModel $listConfigElement)
@@ -49,11 +56,13 @@ class WatchlistConfigElementType implements ListConfigElementTypeInterface
             return;
         }
 
+        /** @var WatchlistConfigModel|null $configuration */
+        $configuration = null;
         if ($listConfigElement->overrideWatchlistConfig) {
-            $configuration = WatchlistConfigModel::findByPk($listConfigElement->watchlistConfig);
+            $configuration = $this->framework->getAdapter(WatchlistConfigModel::class)->findByPk($listConfigElement->watchlistConfig);
         }
         if (!$configuration) {
-            $configuration = WatchlistConfigModel::findByPage($objPage);
+            $configuration = $this->framework->getAdapter(WatchlistConfigModel::class)->findByPage($objPage);
         }
 
         if (!$configuration) {

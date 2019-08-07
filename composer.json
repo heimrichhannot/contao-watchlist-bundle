@@ -7,10 +7,9 @@
     "php": "^7.1",
     "contao/core-bundle": "^4.4",
     "heimrichhannot/contao-utils-bundle": "^2.96",
-    "heimrichhannot/contao-ajax-bundle": "^1.0",
+    "heimrichhannot/contao-ajax-bundle": "^1.0"
   },
   "require-dev": {
-    "contao/core-bundle": "4.4.*",
     "contao/test-case": "1.1.*",
     "contao/manager-plugin": "^2.0",
     "friendsofphp/php-cs-fixer": "^2.2",
@@ -45,7 +44,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "HeimrichHannot\\WatchlistBundle\\Test\\": "tests/"
+      "HeimrichHannot\\WatchlistBundle\\Test\\": "tests/",
+      "HeimrichHannot\\UtilsBundle\\Tests\\": "vendor/heimrichhannot/contao-utils-bundle/tests"
     }
   },
   "config": {
