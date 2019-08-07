@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-## [2.0.0-alpha.0.2.0-DEV] - 2019-08-06
+## [2.0.0-alpha.0.2.0] - 2019-08-07
 - added WatchlistConfigElementType to add a "Add to watchlist" button to lists
 - removed WatchlistListItem, WatchlistDownloadList, WatchlistDownloadListItem
 - renamed namespace Module to FrontendModule
