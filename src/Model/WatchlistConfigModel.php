@@ -9,7 +9,24 @@ use Contao\PageModel;
  * Class WatchlistConfigModel
  * @package HeimrichHannot\WatchlistBundle\Model
  *
- * @property string watchlistFrontendFramework
+ * @property int $id
+ * @property int $tstamp
+ * @property int $dateAdded
+ * @property string $title
+ * @property string $watchlistFrontendFramework
+ * @property bool $useMultipleWatchlist
+ * @property bool $useGroupWatchlist
+ * @property bool $groupWatchlist
+ * @property bool $useWatchlistDurability
+ * @property string $watchlistDurability
+ * @property bool $useGlobalDownloadAllAction
+ * @property bool $disableDownloadAll
+ * @property bool $overrideWatchlistTitle
+ * @property string $watchlistItemFile
+ * @property string $watchlistItemEntity
+ * @property string $downloadItemFile
+ * @property string $downloadItemEntity
+ * @property string $watchlistTitle
  */
 class WatchlistConfigModel extends Model
 {

@@ -68,8 +68,12 @@ class OpenWatchlistWindowActionPartialTemplate extends AbstractPartialTemplate
         $context = $this->createDefaultActionContext($attributes, $this->configuration, $this->watchlist);
         $context['cssClass'] .= ' huh_watchlist_open_watchlist_window huh_watchlist_show_count';
         $context['itemCount'] = $count;
-        $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['toggleLink'];
-
+        if ($this->configuration->watchlistTitle) {
+            $context['link'] = $this->builder->getTranslator()->trans($this->configuration->watchlistTitle);
+        }
+        else {
+            $context['link'] = $this->builder->getTranslator()->trans('huh.watchlist.watchlist_label.default');
+        }
         return $this->builder->getTwig()->render($template, $context);
     }
 }
