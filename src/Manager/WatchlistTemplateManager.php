@@ -201,7 +201,7 @@ class WatchlistTemplateManager
         if ($grouped) {
             foreach ($parsedItems as $pageId => $group)
             {
-                $page = \HeimrichHannot\Modal\PageModel::findByPk($pageId);
+                $page = PageModel::findByPk($pageId);
                 $parsedItems[$pageId]['pagePath'] = $this->container->get(PartialTemplateBuilder::class)->generate(
                     new ItemParentListPartialTemplate($watchlistConfiguration, $page)
                 );

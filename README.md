@@ -14,11 +14,11 @@ A contao watchlist for download elements. It enables users to collect items (e.g
 * generate link to watchlist
 * define durability of the watchlist
 * users of the same group can use same watchlist
-* Easily add watchlist support to your entity/modules/contentelement
+* Easily add watchlist support to your entity/modules/contentelement/list
     * download and downloads content element supported out of the box
 * Frontend output is high customizable to be used with your frontend framework
     * a simple base layout and bootstrap 4 already bundled
-* [List Bundle](https://github.com/heimrichhannot/contao-list-bundle) support
+* [List Bundle](https://github.com/heimrichhannot/contao-list-bundle) support 
 * [Encore Bundle](https://github.com/heimrichhannot/contao-encore-bundle) support
 * [Notification Center](https://github.com/terminal42/contao-notification_center) support
 
@@ -41,6 +41,15 @@ A contao watchlist for download elements. It enables users to collect items (e.g
 1. Create an watchlist module and select the created config.
 
 1. Optional: If you have custom templates for download(s) content element, output `$this->addToWatchlistButton['html']`
+
+
+## Usage
+
+### List bundle 
+
+To add an "add to watchlist" button to your list entries, add the watchlist list config element type to the list configuration and output the corresponding template variable.
+
+If you want to create a watchlist list (output the content of an watchlist from list bundle), use the auto_item filter config element with pid for a filter on tl_watchlist_item.
 
 
 ## Developers

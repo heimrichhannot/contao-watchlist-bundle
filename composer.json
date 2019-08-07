@@ -8,11 +8,9 @@
     "contao/core-bundle": "^4.4",
     "heimrichhannot/contao-utils-bundle": "^2.96",
     "heimrichhannot/contao-ajax-bundle": "^1.0",
-    "heimrichhannot/contao-modal": "^1.4",
-    "heimrichhannot/contao-list-bundle": "^1.0.0-beta",
-    "terminal42/notification_center": "^1.5"
   },
   "require-dev": {
+    "contao/core-bundle": "4.4.*",
     "contao/test-case": "1.1.*",
     "contao/manager-plugin": "^2.0",
     "friendsofphp/php-cs-fixer": "^2.2",
@@ -25,7 +23,10 @@
     "symfony/phpunit-bridge": "^3.2"
   },
   "suggest": {
-    "heimrichhannot/contao-submissions": "^1.5"
+    "heimrichhannot/contao-submissions": "^1.5",
+    "heimrichhannot/contao-list-bundle": "^1.0",
+    "terminal42/notification_center": "^1.5"
+
   },
   "minimum-stability": "dev",
   "autoload": {

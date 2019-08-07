@@ -68,3 +68,8 @@ services:
   # Frontend Frameworks
   HeimrichHannot\WatchlistBundle\FrontendFramework\BaseWatchlistFramework: ~
   HeimrichHannot\WatchlistBundle\FrontendFramework\Bootstrap4WatchlistFramework: ~
+
+  # List Bundle
+  HeimrichHannot\WatchlistBundle\ConfigElement\WatchlistConfigElementType:
+    autowire: true
+    tags: ['huh.list.config_element_type']

@@ -1,26 +1,30 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [2.0.0-DEV] - 2019-05-22
+
+## [2.0.0-alpha.0.2.0-DEV] - 2019-08-06
+- added WatchlistConfigElementType to add a "Add to watchlist" button to lists
+- removed WatchlistListItem, WatchlistDownloadList, WatchlistDownloadListItem
+- renamed namespace Module to FrontendModule
+- made list bundle and notification center module optional dependencies
+- removed modal dependency
+- updated readme
+
+## [2.0.0-alpha.0.1.0] - 2019-07-15
 
 ### Added
 - readme
-
 
 ### Changed
 - Watchlist configuration now lives in own entity
 - made submissions an optional dependency
 - configuration root key changed from huh:watchlist to huh_watchlist)
-- renamed namespace Module to FrontendModule
 
 ### Fixed 
 - ModuleWatchlist now working
 - Ajax module classes used
 - encore bundle legacy support
 - hook issue
-
-
-
 
 ## [1.0.9] - 2019-02-14
 

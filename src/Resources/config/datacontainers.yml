@@ -3,7 +3,8 @@ services:
     autowire: true
     public: true
 
-  huh.watchlist.data_container.module_container:
-    class: HeimrichHannot\WatchlistBundle\DataContainer\ModuleContainer
-  huh.watchlist.data_container.watchlist_config:
-    class: HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer
+  HeimrichHannot\WatchlistBundle\DataContainer\ModuleContainer: ~
+  huh.watchlist.data_container.module_container: '@HeimrichHannot\WatchlistBundle\DataContainer\ModuleContainer'
+
+  HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer: ~
+  huh.watchlist.data_container.watchlist_config: '@HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer'

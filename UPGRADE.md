@@ -16,3 +16,9 @@ huh_watchlist:
   downloadFileItems:
     - { name: default, class: HeimrichHannot\WatchlistBundle\Item\DownloadItemFile }
 ```
+
+### Lists
+
+* removed WatchlistDownloadListItem, use ImageConfigElementType and formatted field for uuid instead
+* removed WatchlistListItem, use WatchlistConfigElementType instead
+* removed WatchlistDownloadList, use FilterConfigElement auto_item with pid instead.
