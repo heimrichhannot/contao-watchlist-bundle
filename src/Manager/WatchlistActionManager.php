@@ -544,14 +544,14 @@ class WatchlistActionManager
 
     /**
      * @param Collection  $items
-     * @param ModuleModel $module
+     * @param $module
      * @param string      $watchlistName
      *
      * @throws \Exception
      *
      * @return string
      */
-    protected function createDownloadZipFile(Collection $items, ModuleModel $module, string $watchlistName)
+    public function createDownloadZipFile(Collection $items, $module, string $watchlistName)
     {
         $fileName = 'files/tmp/download_'.$watchlistName.'.zip';
 
@@ -591,8 +591,6 @@ class WatchlistActionManager
         }
 
         $zipWriter->close();
-
-        chmod($fileName, '644');
 
         return $fileName;
     }

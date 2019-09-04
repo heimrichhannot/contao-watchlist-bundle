@@ -54,11 +54,13 @@ class ModuleWatchlistDownloadList extends ModuleList
             $this->Template->empty = System::getContainer()->get('translator')->trans('huh.watchlist.downloadlist.validity_expired');
         }
 
-        if (0 === $this->container->get('contao.framework')->getAdapter(WatchlistItemModel::class)->countByPid($watchlist->id)) {
+        if(null === ($watchlistItems = $this->container->get('contao.framework')->getAdapter(WatchlistItemModel::class)->findByPid($watchlist->id))) {
             $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST_ITEMS']['empty'];
         }
 
-        $this->Template->downloadAllAction = $this->container->get('huh.watchlist.template_manager')->getDownloadAllAction($watchlist->id, $this->id);
+        $zipFile = $this->container->get('huh.watchlist.action_manager')->createDownloadZipFile($watchlistItems, $this, md5($this->container->get('session')->getId()));
+
+        $this->Template->download = $this->container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]) . '?file='.$zipFile;
 
         parent::compile();
     }

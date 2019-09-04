@@ -5,6 +5,6 @@
     <?= $this->empty; ?>
 <?php else: ?>
     <?= $this->list; ?>
-    <?= $this->downloadAllAction; ?>
+    <a class="btn btn-primary" href="<?= $this->download ?>">herunterladen</a>
 <?php endif; ?>
 <?php $this->endblock(); ?>
