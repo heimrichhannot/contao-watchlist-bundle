@@ -191,7 +191,7 @@ huh_watchlist:
         {
             if ($event->getTemplate()->type === 'myContentElement') {
                 $event->getTemplate()->addToWatchlistButton = $this->templateBuilder->generate(
-                    new AddToWatchlistPartialTemplate(
+                    new AddToWatchlistActionPartialTemplate(
                         $event->getConfiguration(),
                         'tl_content',
                         $event->getTemplate()->singleSRC,
