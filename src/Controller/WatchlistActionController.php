@@ -16,7 +16,9 @@ use Contao\FilesModel;
 use Contao\Folder;
 use Contao\FrontendIndex;
 use Contao\Model\Collection;
+use Contao\StringUtil;
 use Contao\ZipWriter;
+use HeimrichHannot\FilenameSanitizerBundle\Util\FilenameSanitizerUtil;
 use HeimrichHannot\WatchlistBundle\Item\DownloadItemInterface;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager;
@@ -292,7 +294,9 @@ class WatchlistActionController extends AbstractController
                 continue;
             }
 
-            $zipWriter->addFile($download->getFile(), $download->getTitle());
+
+            $zipEntryFileName = StringUtil::generateAlias($download->getTitle()).'.'.pathinfo($download->getFile(), PATHINFO_EXTENSION);
+            $zipWriter->addFile($download->getFile(), $zipEntryFileName);
         }
 
         $zipWriter->close();
