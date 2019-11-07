@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.10] - 2019-11-07
+
+### Added
+- `aria-modal="true"` and `role=dialog"` to first modal element
+
+### Changed
+- `role=dialog` to `role=document` of second modal element
+
 ## [1.0.9] - 2019-02-14
 
 ### Changed

@@ -508,8 +508,8 @@ window.Watchlist = {
     getWatchlistWrapper: function () {
         let wrapper = document.createElement('div');
         wrapper.innerHTML = '' +
-            '<div class="modal fade" id="watchlistModal" tabindex="-1">\n' +
-            '    <div class="modal-dialog modal-xl" role="dialog">\n' +
+            '<div class="modal fade" id="watchlistModal" tabindex="-1" aria-modal="true" role="dialog">\n' +
+            '    <div class="modal-dialog modal-xl" role="document">\n' +
             '        <div class="modal-content"></div>\n' +
             '    </div>\n' +
             '</div>';
