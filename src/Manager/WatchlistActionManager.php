@@ -523,9 +523,11 @@ class WatchlistActionManager
             $uuid = $uuid['uuid'];
         }
 
-        $uuid = hex2bin($uuid);
+        $uuid = StringUtil::uuidToBin($uuid);
 
         if (null === $this->container->get('huh.utils.file')->getFileFromUuid($uuid)) {
+            $this->container->get('huh.utils.dca')->loadLanguageFile('default');
+
             $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_invalid_file'];
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);

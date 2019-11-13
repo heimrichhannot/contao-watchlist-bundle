@@ -12,6 +12,7 @@
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
 
 
+use Contao\StringUtil;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -130,7 +131,7 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
         $attributes = $this->createDefaultActionAttributes($this->configuration, $url, static::ACTION_TYPE_UPDATE);
         $attributes['type'] = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
         $attributes['added'] = (int) $added;
-        $attributes['fileUuid'] = bin2hex($this->uuid);
+        $attributes['fileUuid'] = StringUtil::binToUuid($this->uuid);
         $attributes['options'] = json_encode($this->options);
         $attributes['downloadable'] = $this->downloadable;
         $attributes['dataContainer'] = $this->dataContainer;

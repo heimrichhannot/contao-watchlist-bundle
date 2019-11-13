@@ -44,8 +44,8 @@ class WatchlistConfigElementType implements ListConfigElementTypeInterface
     public function __construct(WatchlistManager $watchlistManager, PartialTemplateBuilder $templateBuilder, ContaoFrameworkInterface $framework)
     {
         $this->watchlistManager = $watchlistManager;
-        $this->templateBuilder = $templateBuilder;
-        $this->framework = $framework;
+        $this->templateBuilder  = $templateBuilder;
+        $this->framework        = $framework;
     }
 
     public function addToItemData(ItemInterface $item, ListConfigElementModel $listConfigElement)
@@ -70,13 +70,19 @@ class WatchlistConfigElementType implements ListConfigElementTypeInterface
         }
 
         $watchlistModel = $this->watchlistManager->getWatchlistModel($configuration);
-        $button = $this->templateBuilder->generate(
+        $button         = $this->templateBuilder->generate(
             new AddToWatchlistActionPartialTemplate(
-                $configuration, $item->getDataContainer(), $item->{$listConfigElement->fileField}, $item->{$listConfigElement->titleField}, $watchlistModel, $objPage->id
+                $configuration,
+                $item->getDataContainer(),
+                $item->{$listConfigElement->fileField},
+                $item->{$listConfigElement->titleField},
+                $watchlistModel,
+                $objPage->id,
+                []
             )
         );
 
-        $templateVariable = $listConfigElement->templateVariable ? $listConfigElement->templateVariable : 'addToWatchlistButton';
+        $templateVariable          = $listConfigElement->templateVariable ? $listConfigElement->templateVariable : 'addToWatchlistButton';
         $item->{$templateVariable} = $button;
     }
 

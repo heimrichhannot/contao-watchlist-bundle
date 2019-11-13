@@ -276,7 +276,7 @@ class AjaxManager
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count, 'uuid' => bin2hex($itemUuid)]));
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count, 'uuid' => StringUtil::binToUuid($itemUuid)]));
 
         return $response;
     }
