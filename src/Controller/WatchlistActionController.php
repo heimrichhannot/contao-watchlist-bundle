@@ -168,7 +168,7 @@ class WatchlistActionController extends AbstractController
             return new JsonResponse(['watchlistContent' => $content]);
         }
 
-        if (!isset($itemData->uuid)) {
+        if (WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE == $type && !isset($itemData->uuid)) {
             return new Response('Missing file identifier', 404);
         }
 

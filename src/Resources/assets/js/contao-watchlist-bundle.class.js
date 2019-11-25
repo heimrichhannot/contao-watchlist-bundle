@@ -195,13 +195,14 @@ class ContaoWatchlistBundle {
 
                 if (data.hasOwnProperty('message'))
                 {
-                    let watchlistMessageContainer = document.querySelectorAll('')
+                    this.displayMessage(data.message);
                 }
             }
         };
+
         this.doAjaxCall(element, element.dataset.actionUrl, element.dataset, config);
     }
-    
+
     downloadAction(element)
     {
         let config = {
@@ -226,6 +227,21 @@ class ContaoWatchlistBundle {
             }
         };
         this.doAjaxCall(element, element.dataset.actionUrl, element.dataset, config);
+    }
+
+
+    displayMessage(message)
+    {
+        let messageContainer = document.createElement('div');
+
+        messageContainer.innerHTML = message;
+        messageContainer.classList.add('watchlist-notification');
+
+        document.body.appendChild(messageContainer);
+
+        setTimeout(function(){
+            document.querySelector('.watchlist-notification').remove();
+        }, 3000);
     }
 
     /**

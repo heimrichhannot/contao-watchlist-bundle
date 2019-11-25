@@ -44,10 +44,10 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
         'download'   => [
             'sql' => "char(1) NOT NULL default '1'",
         ],
-        'parentTable'   => [
+        'ptable'   => [
             'sql' => "varchar(64) NOT NULL default ''",
         ],
-        'parentTableId'   => [
+        'ptableId'   => [
             'sql' => "varchar(8) NOT NULL default ''",
         ],
         'type' => [

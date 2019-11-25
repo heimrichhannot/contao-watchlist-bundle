@@ -17,6 +17,7 @@ use Contao\FrontendUser;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\StringUtil;
+use Contao\System;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistBeforeSendNotificationEvent;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -290,12 +291,12 @@ class WatchlistActionManager
         }
 
         // check if item is already in this watchlist
-        if (isset($itemData->uuid) && true !== ($response = $this->checkFile($watchlist, $itemData->uuid))) {
+        if (isset($itemData->uuid) && false !== ($response = $this->checkFile($watchlist, $itemData->uuid))) {
             return $response;
         }
 
         if ($itemData->ptable && $itemData->ptableId
-            && true !== ($response = $this->checkEntity($watchlist, $itemData->ptable, $itemData->ptableId))) {
+            && false !== ($response = $this->checkEntity($watchlist, $itemData->ptable, $itemData->ptableId, $itemData->title))) {
             return $response;
         }
 
@@ -533,15 +534,13 @@ class WatchlistActionManager
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
-        if (false !== ($watchlistItem =
-                $this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid))) {
+        if ($this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $uuid)) {
             $message = $this->translator->trans('huh.watchlist.item.already_in_watchlist');
-
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -553,15 +552,15 @@ class WatchlistActionManager
      *
      * @return bool|string
      */
-    protected function checkEntity($watchlist, $ptable, $ptableId)
+    protected function checkEntity(WatchlistModel $watchlist, string $ptable, int $ptableId, string $title)
     {
-        if (null !== ($watchlistItem =
-                $this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId))) {
-            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['notify_in_watchlist'], $watchlistItem->title, $watchlist->name);
+        System::loadLanguageFile('default');
+        if($this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId)) {
+            $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_item_already_in_watchlist'], $title);
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
-        return true;
+        return false;
     }
 }

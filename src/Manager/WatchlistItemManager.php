@@ -44,12 +44,12 @@ class WatchlistItemManager
      *
      * @param int         $watchlistId
      * @param string|null $itemUuid
-     * @param int|null    $ptable
+     * @param string|null $ptable
      * @param int|null    $ptableId
      *
      * @return bool
      */
-    public function isItemInWatchlist(int $watchlistId, string $itemUuid = null, int $ptable = null, int $ptableId = null)
+    public function isItemInWatchlist(int $watchlistId, string $itemUuid = null, string $ptable = null, int $ptableId = null)
     {
         if (null === $itemUuid && null === $ptable && null === $ptableId) {
             return false;

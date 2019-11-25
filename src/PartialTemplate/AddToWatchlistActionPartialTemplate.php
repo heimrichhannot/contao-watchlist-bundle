@@ -8,13 +8,9 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
 
-
-use Contao\StringUtil;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
-use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
 /**
@@ -30,91 +26,36 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
      */
     private $configuration;
     /**
-     * @var string
+     * @var WatchlistModel
      */
-    private $dataContainer;
+    private $watchlist;
     /**
-     * @var bool
+     * @var array
      */
-    private $downloadable;
-    /**
-     * @var string
-     */
-    private $uuid;
+    private $buttonData;
     /**
      * @var array
      */
     private $options;
-    /**
-     * @var string
-     */
-    private $linkText;
-    /**
-     * @var string
-     */
-    private $linkTitle;
-    /**
-     * @var string
-     */
-    private $fileTitle;
-    /**
-     * @var int
-     */
-    private $pageId;
-    /**
-     * @var string
-     */
-    private $ptable;
-    /**
-     * @var string
-     */
-    private $ptableId;
-    /**
-     * @var WatchlistModel
-     */
-    private $watchlistModel;
 
     /**
      * AddToWatchlistPartialTemplate constructor.
      * @param WatchlistConfigModel $configuration
-     * @param string $dataContainer
-     * @param string $uuid The uuid (binary format) of the file
-     * @param string $fileTitle A friendly file name
-     * @param int $pageId
+     * @param WatchlistModel $watchlist
+     * @param array $buttonData
      * @param array $options
-     * @param string $linkText Override default link text
-     * @param string $linkTitle Override default link title attribute text
-     * @param string $ptable
-     * @param string $ptableId
-     * @param bool $downloadable
      */
     public function __construct(
         WatchlistConfigModel $configuration,
-        string $dataContainer,
-        string $uuid,
-        string $fileTitle,
-        WatchlistModel $watchlistModel = null,
-        int $pageId = 0,
-        array $options = [],
-        string $linkText = '',
-        string $linkTitle = '',
-        string $ptable = '',
-        string $ptableId = '',
-        bool $downloadable = true
-    )
-    {
-        $this->configuration = $configuration;
-        $this->dataContainer = $dataContainer;
-        $this->uuid = $uuid;
-        $this->downloadable = $downloadable;
-        $this->options = $options;
-        $this->linkText = $linkText;
-        $this->linkTitle = $linkTitle;
-        $this->fileTitle = $fileTitle;
-        $this->pageId = $pageId;
-        $this->ptable = $ptable;
-        $this->ptableId = $ptableId;
-        $this->watchlistModel = $watchlistModel;
+        WatchlistModel $watchlist,
+        array $buttonData,
+        array $options = []
+    ) {
+        $this->configuration  = $configuration;
+        $this->watchlistModel = $watchlist;
+        $this->buttonData     = $buttonData;
+        $this->options        = $options;
+
     }
 
     public function getTemplateName(): string
@@ -122,34 +63,58 @@ class AddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
         return static::TEMPLATE_ACTION;
     }
 
-
     public function generate(): string
     {
-        $url = $this->builder->getRouter()->generate('huh_watchlist_add_to_watchlist');
-        $added = $this->watchlistModel ?
-            $this->builder->getWatchlistItemManager()->isItemInWatchlist($this->watchlistModel->id, $this->uuid) : false;
-        $attributes = $this->createDefaultActionAttributes($this->configuration, $url, static::ACTION_TYPE_UPDATE);
-        $attributes['type'] = WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE;
-        $attributes['added'] = (int) $added;
-        $attributes['fileUuid'] = StringUtil::binToUuid($this->uuid);
-        $attributes['options'] = json_encode($this->options);
-        $attributes['downloadable'] = $this->downloadable;
-        $attributes['dataContainer'] = $this->dataContainer;
-        $attributes['title'] = $this->fileTitle;
-        $attributes['pageId'] = $this->pageId;
-        $attributes['ptable'] = $this->ptable;
-        $attributes['ptableId'] = $this->ptableId;
-
-
-        $context = $this->createDefaultActionContext($attributes, $this->configuration);
-        $context['cssClass'] .= ' huh_watchlist_add_to_watchlist';
-        if ($added) $context['cssClass'] .= ' added';
-        $context['linkText'] = $this->linkText ?: $this->builder->getTranslator()->trans('huh.watchlist.item.add.link');
-        $context['linkTitle'] = $this->linkTitle ?: $this->builder->getTranslator()
-            ->trans('huh.watchlist.item.add.title', ['%item%' => $this->fileTitle]);
-        $context = $this->prepareContext($context);
+        $attributes = $this->getAttributes();
+        $context    = $this->getContext($attributes);
 
         $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
         return $this->builder->getTwig()->render($template, $context);
+    }
+
+    /**
+     * @param array $attributes
+     * @return array
+     */
+    protected function getContext(array $attributes = []): array
+    {
+        $context              = $this->createDefaultActionContext($attributes, $this->configuration);
+        $context['cssClass']  .= ' huh_watchlist_add_to_watchlist' . $this->buttonData['added'] ? ' added' : '';
+        $context['linkText']  = $this->buttonData['label'];
+        $context['linkTitle'] = $this->buttonData['title'];
+
+        return $this->prepareContext($context);
+    }
+
+    /**
+     * get action attributes
+     *
+     * @return array
+     */
+    protected function getAttributes(): array
+    {
+        $attributes = $this->createDefaultActionAttributes($this->configuration, $this->getUrl(),static::ACTION_TYPE_UPDATE);
+
+        foreach($this->buttonData as $key => $value) {
+            if('uuid' == $key) {
+                continue;
+            }
+
+            $attributes[$key] = $value;
+        }
+
+        if($this->options) {
+            $attributes['options'] = json_encode($this->options);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUrl(): string
+    {
+        return $this->builder->getRouter()->generate('huh_watchlist_add_to_watchlist');
     }
 }

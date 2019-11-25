@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0-alpha.0.3.0] - 2019-11-25
+- added entity support
+- fixed notification after successfull adding to watchlist
 
 ## [2.0.0-alpha.0.2.2] - 2019-10-25
 - fixed missing file extensions in downloaded archives (#2)

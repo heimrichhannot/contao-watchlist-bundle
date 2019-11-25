@@ -72,3 +72,4 @@ $GLOBALS['TL_LANG']['WATCHLIST']['message_no_module']                          =
 $GLOBALS['TL_LANG']['WATCHLIST']['message_config_error']                       = 'Die Konfiguration ist fehlerhaft.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_no_user']                            = 'Es wurden keine Nutzerdaten gefunden.';
 $GLOBALS['TL_LANG']['WATCHLIST']['message_notofication_error']                 = 'Es wurde keine Benachrichtigungs-Konfiguration gefunden.';
+$GLOBALS['TL_LANG']['WATCHLIST']['message_item_already_in_watchlist']          = '"%s" befindet sich bereits in der Merkliste';
