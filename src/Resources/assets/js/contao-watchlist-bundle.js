@@ -390,7 +390,7 @@ window.Watchlist = {
 
         setTimeout(function () {
             messageElement.remove();
-        }, 3500);
+        }, 20000);
     },
     initModal: function (content) {
         let modalElement = Watchlist.getWatchlistWrapper();

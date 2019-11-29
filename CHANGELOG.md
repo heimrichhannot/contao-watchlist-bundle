@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.11] - 2019-11-29
+- modified time to to display message, now its shown for 20s instead of 3.5s
+
 ## [1.0.10] - 2019-11-07
 
 ### Added
