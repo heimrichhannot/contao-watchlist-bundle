@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.12] - 2019-12-04
+- added new event `huh.watchlist.event.modal.onshow` dispatched right after creating and showing modal dialog
+
 ## [1.0.11] - 2019-11-29
 - modified time to to display message, now its shown for 20s instead of 3.5s
 

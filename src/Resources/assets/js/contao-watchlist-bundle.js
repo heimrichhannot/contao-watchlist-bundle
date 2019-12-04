@@ -397,11 +397,16 @@ window.Watchlist = {
         let modal = new bsn.Modal(modalElement, {
             content: content
         });
-
         modal.show();
+        document.dispatchEvent(new CustomEvent('huh.watchlist.event.modal.onshow', {
+            bubbles: true,
+            cancelable: true,
+            detail: {
+                wrapper: modalElement
+            }
+        }))
     },
     ajax: function (config) { // $.ajax(...) without jquery.
-
         if (typeof(config.url) === "undefined") {
             try {
                 config.url = location.href;
