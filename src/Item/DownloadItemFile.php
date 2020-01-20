@@ -29,9 +29,9 @@ class DownloadItemFile extends DownloadItem
     /**
      * retrieve the item for download.
      *
-     * @return $this|null
+     * @return array|null
      */
-    public function retrieveItem()
+    public function getDownloads(): ?array
     {
         if (null === ($file = $this->getFile())) {
             return null;
@@ -45,6 +45,11 @@ class DownloadItemFile extends DownloadItem
             return null;
         }
 
-        return $this;
+        return [
+            'title' => $this->getTitle(),
+            'file'  => $this->getFile()
+        ];
     }
+
+
 }

@@ -50,7 +50,10 @@ window.Watchlist = {
                 e.preventDefault();
                 Watchlist.updateWatchlist(document.getElementById(e.target.id));
             }
+        });
 
+        $(document).on('click', '#watchlist-clipboard-link', function() {
+            Watchlist.addToClipboard();
         });
     },
     addItem: function (form) {
@@ -82,6 +85,7 @@ window.Watchlist = {
     },
     deleteItem: function (form) {
         let formData = Watchlist.serialize(form);
+
         if (!Array.isArray(formData))
         {
             return;
@@ -91,9 +95,11 @@ window.Watchlist = {
             moduleId = formData['moduleId'],
             itemId = formData['itemId'],
             request_token = formData['REQUEST_TOKEN'],
+            watchlistId = formData['watchlistId'],
             data = {
                 'moduleId': moduleId,
                 'itemId': itemId,
+                'watchlistId': watchlistId,
                 'REQUEST_TOKEN': request_token
             };
 
@@ -127,44 +133,71 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data, config);
     },
     generateDownloadLink: function (form) {
-        if(!(formData = Watchlist.serialize(form))) {
+        let formData = Watchlist.serialize(form);
+
+        if(!formData) {
             return;
         }
 
         let url = form.action,
-            moduleId = formData['moduleId'],
-            watchlistId = formData['watchlistId'],
+            configId = formData['configId'],
+            itemId = formData['itemId'],
             request_token = formData['REQUEST_TOKEN'],
+            watchlistId = formData['watchlistId'],
             data = {
-                'moduleId': moduleId,
+                'configId': configId,
+                'itemId': itemId,
                 'watchlistId': watchlistId,
                 'REQUEST_TOKEN': request_token
             };
 
-        Watchlist.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            success: function (data) {
-                let response = JSON.parse(data.responseText).result.data;
-
-                if (undefined !== response.form) {
-                    Watchlist.initModal(response.form);
+        let config = {
+            successCallback: (data) => {
+                if(!data) {
+                    return;
                 }
 
-                if (undefined !== response.link) {
-                    let linkElement = document.querySelector('.watchlist-download-link-href');
-                    linkElement.textContent = response.link;
-                    linkElement.setAttribute('href', response.link);
-                }
+                let response = JSON.parse(data.responseText),
+                    link = response.result.data.link,
+                    clipboardInput = document.querySelector('.watchlist-download-link-clipboard input[name="clipboard-input"]');
 
-                if (undefined !== response.message) {
-                    document.getElementsByTagName('body')[0].appendChild(response.message);
-                }
+                console.log(clipboardInput);
+                console.log(link);
 
-                Watchlist.ajaxCompleteCallback();
+                document.querySelector('.watchlist-download-link-text').textContent = link;
+                clipboardInput.value = link;
+                document.querySelector('.watchlist-download-link-container').classList.add('show');
             }
-        });
+        };
+
+        Watchlist.doAjaxCallWithUpdate(url, data, config);
+
+
+        // Watchlist.ajax({
+        //     url: url,
+        //     type: 'POST',
+        //     dataType: 'JSON',
+        //     data: data,
+        //     success: function (data) {
+        //         let response = JSON.parse(data.responseText).result.data;
+        //
+        //         if (undefined !== response.form) {
+        //             Watchlist.initModal(response.form);
+        //         }
+        //
+        //         if (undefined !== response.link) {
+        //             let linkElement = document.querySelector('.watchlist-download-link-href');
+        //             linkElement.textContent = response.link;
+        //             linkElement.setAttribute('href', response.link);
+        //         }
+        //
+        //         if (undefined !== response.message) {
+        //             document.getElementsByTagName('body')[0].appendChild(response.message);
+        //         }
+        //
+        //         Watchlist.ajaxCompleteCallback();
+        //     }
+        // });
     },
     deleteWatchlist: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
@@ -264,6 +297,24 @@ window.Watchlist = {
 
         Watchlist.doAjaxCallWithUpdate(url, data, {closeOnSuccess: true});
     },
+    addToClipboard: function() {
+        let text = document.querySelector('.watchlist-download-link-text'),
+            selection = window.getSelection(),
+            range = document.createRange();
+
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        try {
+            document.execCommand('copy');
+            selection.removeAllRanges();
+
+            alert('Link wurde kopiert');
+        } catch (e) {
+        }
+
+    },
     doAjaxCallWithUpdate: function (url, data, config = {}) {
         Watchlist.addLoader();
         Watchlist.ajax({
@@ -339,7 +390,7 @@ window.Watchlist = {
 
                 if (config.hasOwnProperty('successCallback'))
                 {
-                    config.successCallback();
+                    config.successCallback(data);
                 }
 
                 // $('#watchlistModal').modal('toggle');

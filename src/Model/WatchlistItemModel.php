@@ -76,6 +76,11 @@ class WatchlistItemModel extends Model
         return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(static::$strTable, [static::$strTable.'.id=?'], [$pk], $options);
     }
 
+    public function findByPidAndPtableId(int $pid, int $ptableId, array $options = [])
+    {
+        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(static::$strTable, [static::$strTable.'.pid=?',static::$strTable.'.ptableId=?'], [$pid,$ptableId], $options);
+    }
+
     public function countByPid($pid)
     {
         return System::getContainer()->get('contao.framework')->getAdapter(self::class)->countBy('pid', $pid);

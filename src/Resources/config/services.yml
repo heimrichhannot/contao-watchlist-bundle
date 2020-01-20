@@ -65,11 +65,16 @@ services:
     autowire: true
     public: true
 
+  # Reader Bundle
+  HeimrichHannot\WatchlistBundle\ConfigElementType\WatchlistConfigElementReaderType:
+    autowire: true
+    tags: ['huh.reader.config_element_type']
+
+  # List Bundle
+  HeimrichHannot\WatchlistBundle\ConfigElementType\WatchlistConfigElementListType:
+    autowire: true
+    tags: ['huh.list.config_element_type']
+
   # Frontend Frameworks
   HeimrichHannot\WatchlistBundle\FrontendFramework\BaseWatchlistFramework: ~
   HeimrichHannot\WatchlistBundle\FrontendFramework\Bootstrap4WatchlistFramework: ~
-
-  # List Bundle
-  HeimrichHannot\WatchlistBundle\ConfigElement\WatchlistConfigElementType:
-    autowire: true
-    tags: ['huh.list.config_element_type']

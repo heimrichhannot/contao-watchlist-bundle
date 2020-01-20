@@ -68,6 +68,12 @@ class ModuleWatchlistDownloadList extends ModuleList
                 new DownloadAllActionPartialTemplate($configuration, $watchlist)
             );
         }
+
+        $filter = $this->filter;
+        $queryBuilder = $this->getFilterConfig()->getQueryBuilder();
+
+        $queryBuilder->add('where', $filter->dataContainer . '.uuid=' . $watchlistUuid, true);
+
         parent::compile();
     }
 

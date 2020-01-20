@@ -17,14 +17,20 @@ class DownloadItemEntity extends DownloadItem
      */
     public function setRaw(array $data = []): void
     {
-        if (null === ($entity = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($data['parentTable'], $data['parentTableId']))) {
+        if (null === ($entity = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($data['ptable'], $data['ptableId']))) {
             $this->_raw = null;
         }
 
         $this->_raw = $entity->row();
     }
 
-    public function retrieveItem()
+    /**
+     * @return array|null
+     */
+    public function getDownloads(): ?array
     {
+
+
+        return null;
     }
 }

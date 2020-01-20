@@ -80,7 +80,7 @@ class WatchlistTemplateManager
 
         $preparedWatchlistItems = [];
         if (!empty($items)) {
-            $preparedWatchlistItems = $this->prepareWatchlistItems($items, $configuration, $grouped);
+            $preparedWatchlistItems = $this->prepareWatchlistItems($items, $configuration, $watchlistId, $grouped );
         }
 
         if (!empty($preparedWatchlistItems['parents'])) {
@@ -179,7 +179,7 @@ class WatchlistTemplateManager
      *
      * @return array
      */
-    public function prepareWatchlistItems($items, $watchlistConfiguration, $grouped)
+    public function prepareWatchlistItems($items, $watchlistConfiguration, $watchlistId, $grouped)
     {
         $totalCount = $items->count();
 
@@ -189,7 +189,7 @@ class WatchlistTemplateManager
         foreach ($items as $key => $item) {
             $cssClass = trim((0 == $key ? 'first ' : '').($key == $totalCount ? 'last ' : '').(0 == ($key + 1) % 2 ? 'odd ' : 'even '));
 
-            $parsedItem = $this->parseItem($item, $watchlistConfiguration, $cssClass);
+            $parsedItem = $this->parseItem($item, $watchlistConfiguration, $watchlistId, $cssClass);
 
             if ($grouped) {
                 $parsedItems[$item->pageID]['items'][$item->id] = $parsedItem;
@@ -223,21 +223,27 @@ class WatchlistTemplateManager
         $template = new FrontendTemplate('watchlist_downloadLink_action');
         $action = null;
 
-        $template->moduleId = $configuration->id;
+        $template->configId = $configuration->id;
         $template->watchlistId = $watchlistId;
         $template->downloadLinkTitle = $this->translator->trans('huh.watchlist.download_link.title');
 
+        $url = '';
+        $request = System::getContainer()->get('request_stack')->getCurrentRequest();
+        if($request->isXmlHttpRequest()) {
+            $url = $request->headers->get('referer');
+        }
+
         if (!$configuration->downloadLinkUseNotification) {
             $action = $this->container->get('huh.ajax.action')
-                ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION);
+                ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_DOWNLOAD_LINK_ACTION, [],true,$url);
         } else {
             $action = $this->container->get('huh.ajax.action')
-                ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION);
+                ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION, [],true,$url);
         }
 
         if ($configuration->downloadLinkFormConfigModule) {
             $action = $this->container->get('huh.ajax.action')
-                ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM);
+                ->generateUrl(AjaxManager::XHR_GROUP, AjaxManager::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, [],true,$url);
         }
 
         $template->action = $action;
@@ -572,7 +578,7 @@ class WatchlistTemplateManager
      *
      * @return string
      */
-    protected function parseItem(WatchlistItemModel $item, $configuration, $cssClass)
+    protected function parseItem(WatchlistItemModel $item, $configuration, $watchlistId, $cssClass)
     {
         $template = new FrontendTemplate('watchlist_item');
 
@@ -608,23 +614,8 @@ class WatchlistTemplateManager
             }
         }
 
-        if ($item->download && $filePath)
-        {
-            $url = $this->getOriginalRouteIfAjaxRequest();
-            if (!$url) {
-                $url = $this->container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]);
-            }
-            else {
-                $url = parse_url($url, PHP_URL_PATH);
-            }
-            $template->downloadAction = $url.'?file=' . $filePath;
-            $template->downloadTitle  = $this->translator->trans('huh.watchlist.item.download.title', [
-                '%item%' => $item->title
-            ]);
-        }
-
         $template->title = $watchlistItem->getTitle();
-        $template->actions = $watchlistItem->getEditActions($configuration);
+        $template->actions = $watchlistItem->getEditActions($configuration, $watchlistId);
         $template->cssClass = $watchlistItem->getType();
         $template->id = $item->id;
         $template->type = $watchlistItem->getType();

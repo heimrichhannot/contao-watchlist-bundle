@@ -8,8 +8,10 @@
 
 namespace HeimrichHannot\WatchlistBundle\Item;
 
+use Contao\Controller;
 use Contao\FrontendTemplate;
 use Contao\System;
+use HeimrichHannot\WatchlistBundle\Event\WatchlistModifyEditActionsForWatchlistItemEvent;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 
@@ -67,7 +69,7 @@ class WatchlistItem implements WatchlistItemInterface
     {
     }
 
-    public function getEditActions(WatchlistConfigModel $configuration)
+    public function getEditActions(WatchlistConfigModel $configuration, int $watchlistId): string
     {
         $container              = System::getContainer();
         $request = $container->get('request_stack')->getCurrentRequest();
@@ -85,8 +87,9 @@ class WatchlistItem implements WatchlistItemInterface
         $template->delTitle     = $translator->trans('huh.watchlist.item.delete.label');
         $template->delLink      = $translator->trans('huh.watchlist.item.delete.link');
         $template->moduleId     = $configuration->id;
+        $template->watchlistId  = $watchlistId;
 
-        if ($this->_raw['download'] && null !== ($file = $this->getFile())) {
+        if (null !== ($file = $this->getFile())) {
             if (!$url) {
                 $url = $container->get('huh.utils.url')->getCurrentUrl(['skipParams' => true]);
             }
@@ -99,6 +102,11 @@ class WatchlistItem implements WatchlistItemInterface
             ]);
             $template->downloadLink  = $translator->trans('huh.watchlist.item.download.link');
         }
+
+
+        $event = System::getContainer()->get('event_dispatcher')->dispatch(WatchlistModifyEditActionsForWatchlistItemEvent::NAME, new WatchlistModifyEditActionsForWatchlistItemEvent($template, $configuration, $watchlistId, $this->getRaw()));
+        $template = $event->getTemplate();
+
 
         return $template->parse();
     }

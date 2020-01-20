@@ -18,7 +18,7 @@ class WatchlistModel extends Model
 
     protected static $strTable = 'tl_watchlist';
 
-    public function findModelInstanceByPk($pk, array $options = [])
+    public static function findModelInstanceByPk($pk, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findModelInstanceByPk(
             static::$strTable,
@@ -27,7 +27,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findOnePublishedById($id, array $options = [])
+    public static function findOnePublishedById($id, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(
             static::$strTable,
@@ -37,7 +37,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findOnePublishedByPid($pid, array $options = [])
+    public static function findOnePublishedByPid($pid, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(
             static::$strTable,
@@ -47,7 +47,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findPublishedByPids(array $ids, array $options = [])
+    public static function findPublishedByPids(array $ids, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
             static::$strTable,
@@ -57,7 +57,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findByHashAndName(string $hash, string $name, array $options = [])
+    public static function findByHashAndName(string $hash, string $name, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
             static::$strTable,
@@ -67,7 +67,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findOnePublishedBySessionId($sessionId, array $options = [])
+    public static function findOnePublishedBySessionId($sessionId, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
             static::$strTable,
@@ -77,7 +77,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findPublishedByUuid($uuid, array $options = [])
+    public static function findPublishedByUuid($uuid, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findModelInstancesBy(
             static::$strTable,
@@ -87,7 +87,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findByNameAndPid($name, $pid, array $options = [])
+    public static function findByNameAndPid($name, $pid, array $options = [])
     {
         return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(
             static::$strTable,
@@ -97,7 +97,7 @@ class WatchlistModel extends Model
         );
     }
 
-    public function findByUserGroups(array $groups, array $options = [])
+    public static function findByUserGroups(array $groups, array $options = [])
     {
         $user = System::getContainer()->get('huh.utils.member')->findActiveByGroups($groups);
 

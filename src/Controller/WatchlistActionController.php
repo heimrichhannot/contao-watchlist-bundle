@@ -17,6 +17,7 @@ use Contao\Folder;
 use Contao\FrontendIndex;
 use Contao\Model\Collection;
 use Contao\StringUtil;
+use Contao\System;
 use Contao\ZipWriter;
 use HeimrichHannot\FilenameSanitizerBundle\Util\FilenameSanitizerUtil;
 use HeimrichHannot\WatchlistBundle\Item\DownloadItemInterface;
@@ -243,7 +244,6 @@ class WatchlistActionController extends AbstractController
             $unique = !$filesystem->exists($this->rootDir.$fileName);
         }
 
-
         if (!is_dir($this->rootDir.'/web/files/tmp'))
         {
             $folder = new Folder('files/tmp');
@@ -266,7 +266,7 @@ class WatchlistActionController extends AbstractController
         $zipWriter = new ZipWriter($fileName);
 
         foreach ($items as $item) {
-            if (!$item->uuid && !$item->parentTable && !$item->parentTableId) {
+            if (!$item->uuid && !$item->ptable && !$item->ptableId) {
                 continue;
             }
 
@@ -290,17 +290,17 @@ class WatchlistActionController extends AbstractController
                 continue;
             }
 
-            if (null === ($download = $downloadItem->retrieveItem())) {
+            if (null === ($downloads = $downloadItem->getDownloads())) {
                 continue;
             }
 
-
-            $zipEntryFileName = StringUtil::generateAlias($download->getTitle()).'.'.pathinfo($download->getFile(), PATHINFO_EXTENSION);
-            $zipWriter->addFile($download->getFile(), $zipEntryFileName);
+            foreach($downloads as $download) {
+                $zipEntryFileName = StringUtil::generateAlias($download['title']).'.'.pathinfo($download['file'], PATHINFO_EXTENSION);
+                $zipWriter->addFile($download['file'], System::getContainer()->get('huh.utils.file')->sanitizeFileName($zipEntryFileName));
+            }
         }
 
         $zipWriter->close();
-//        chmod($fileName, '644');
 
         return $fileName;
     }

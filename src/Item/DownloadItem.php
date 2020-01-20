@@ -65,7 +65,7 @@ class DownloadItem implements DownloadItemInterface
     {
     }
 
-    public function retrieveItem()
+    public function getDownloads(): ?array
     {
     }
 }

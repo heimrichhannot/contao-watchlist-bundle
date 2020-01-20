@@ -17,6 +17,8 @@ use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use HeimrichHannot\AjaxBundle\HeimrichHannotContaoAjaxBundle;
+use HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle;
+use HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\WatchlistBundle\HeimrichHannotContaoWatchlistBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -56,6 +58,13 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, ConfigP
             __DIR__.'/../Resources/config/config_list.yml'
         );
 
+        $extensionConfigs = ContainerUtil::mergeConfigFile(
+            'huh_filter',
+            $extensionName,
+            $extensionConfigs,
+            __DIR__.'/../Resources/config/config_filter.yml'
+        );
+
         return ContainerUtil::mergeConfigFile(
             'huh_encore',
             $extensionName,
@@ -73,7 +82,6 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, ConfigP
         $loader->load('@HeimrichHannotContaoWatchlistBundle/Resources/config/datacontainers.yml');
         $loader->load('@HeimrichHannotContaoWatchlistBundle/Resources/config/listeners.yml');
         $loader->load('@HeimrichHannotContaoWatchlistBundle/Resources/config/controller.yml');
-
     }
 
     /**

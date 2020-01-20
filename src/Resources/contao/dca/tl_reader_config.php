@@ -6,17 +6,17 @@
 $dca = &$GLOBALS['TL_DCA']['tl_reader_config'];
 
 $dca['fields']['watchlistConfig'] = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_module']['watchlistConfig'],
-    'exclude'    => true,
-    'filter'     => true,
-    'inputType'  => 'select',
-    'foreignKey' => 'tl_watchlist_config.title',
-    'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
-    'eval'       => ['tl_class' => 'w50 clr wizard', 'includeBlankOption' => true, 'chosen' => true],
-    'wizard'           => [
-        ['huh.watchlist.data_container.module_container', 'editWatchlistWizard'],
-    ],
-    'sql'        => "int(10) unsigned NOT NULL default '0'"
+        'label'      => &$GLOBALS['TL_LANG']['tl_module']['watchlistConfig'],
+        'exclude'    => true,
+        'filter'     => true,
+        'inputType'  => 'select',
+        'foreignKey' => 'tl_watchlist_config.title',
+        'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
+        'eval'       => ['tl_class' => 'w50 clr wizard', 'includeBlankOption' => true, 'chosen' => true],
+        'wizard'           => [
+            ['huh.watchlist.data_container.module_container', 'editWatchlistWizard'],
+        ],
+        'sql'        => "int(10) unsigned NOT NULL default '0'"
 ];
 
-$dca['palettes']['default'] = str_replace('headTags;', 'headTags;{watchlist_legend},watchlistConfig;', $dca['palettes']['default']);
+$dca['palettes']['default'] = str_replace('addShare;', 'addShare;{watchlist_legend},watchlistConfig;', $dca['palettes']['default']);

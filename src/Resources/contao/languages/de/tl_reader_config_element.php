@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
-$lang = &$GLOBALS['TL_LANG']['tl_list_config_element'];
+$lang = &$GLOBALS['TL_LANG']['tl_reader_config_element'];
 
 $lang['overrideWatchlistConfig'][0]                                                                          = 'Merklisten-Konfiguration überschreiben';
 $lang['overrideWatchlistConfig'][1]                                                                          = 'Eine individuelle Merklisten-Konfiguration für dieses Element verwenden.';
@@ -23,4 +23,4 @@ $lang['watchlistType'][1]                                                       
 $lang['watchlistType'][\HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel::WATCHLIST_ITEM_TYPE_FILE]   = 'Datei';
 $lang['watchlistType'][\HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel::WATCHLIST_ITEM_TYPE_ENTITY] = 'Entität';
 
-$lang['reference'][\HeimrichHannot\WatchlistBundle\ConfigElementType\WatchlistConfigElementListType::TYPE] = 'Watchlist ("Zur Watchlist hinzufügen"-Button)';
+$lang['reference'][\HeimrichHannot\WatchlistBundle\ConfigElementType\WatchlistConfigElementReaderType::TYPE] = 'Watchlist ("Zur Watchlist hinzufügen"-Button)';

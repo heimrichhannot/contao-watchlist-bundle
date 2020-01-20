@@ -25,21 +25,21 @@ class AjaxManager
 {
     const XHR_GROUP = 'watchlist';
 
-    const XHR_PARAMETER_DATA                               = 'data';
-    const XHR_PARAMETER_MODULE_ID                          = 'moduleId';
-    const XHR_PARAMETER_WATCHLIST_ITEM_ID                  = 'itemId';
-    const XHR_PARAMETER_WATCHLIST_ITEM_UUID                = 'uuid';
-    const XHR_PARAMETER_WATCHLIST_ITEM_TITLE               = 'title';
-    const XHR_PARAMETER_WATCHLIST_ITEM_DATA_CONTAINER      = 'dataContainer';
-    const XHR_PARAMETER_WATCHLIST_ITEM_PAGE                = 'pageID';
-    const XHR_PARAMETER_WATCHLIST_ITEM_DATA                = 'itemData';
-    const XHR_PARAMETER_WATCHLIST_ITEM_TYPE                = 'type';
-    const XHR_PARAMETER_WATCHLIST_NAME                     = 'watchlist';
-    const XHR_PARAMETER_WATCHLIST_DURABILITY               = 'durability';
-    const XHR_PARAMETER_WATCHLIST_ITEM_OPTIONS             = 'options';
-    const XHR_PARAMETER_WATCHLIST_WATCHLIST_ID             = 'watchlistId';
+    const XHR_PARAMETER_DATA                          = 'data';
+    const XHR_PARAMETER_MODULE_ID                     = 'moduleId';
+    const XHR_PARAMETER_WATCHLIST_ITEM_ID             = 'itemId';
+    const XHR_PARAMETER_WATCHLIST_ITEM_UUID           = 'uuid';
+    const XHR_PARAMETER_WATCHLIST_ITEM_TITLE          = 'title';
+    const XHR_PARAMETER_WATCHLIST_ITEM_DATA_CONTAINER = 'dataContainer';
+    const XHR_PARAMETER_WATCHLIST_ITEM_PAGE           = 'pageID';
+    const XHR_PARAMETER_WATCHLIST_ITEM_DATA           = 'itemData';
+    const XHR_PARAMETER_WATCHLIST_ITEM_TYPE           = 'type';
+    const XHR_PARAMETER_WATCHLIST_NAME                = 'watchlist';
+    const XHR_PARAMETER_WATCHLIST_DURABILITY          = 'durability';
+    const XHR_PARAMETER_WATCHLIST_ITEM_OPTIONS        = 'options';
+    const XHR_PARAMETER_WATCHLIST_WATCHLIST_ID        = 'watchlistId';
 
-    const XHR_WATCHLIST_ADD_ACTION                         = 'watchlistAddAction';
+    const XHR_WATCHLIST_ADD_ACTION = 'watchlistAddAction';
 
     const XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION      = 'watchlistNewWatchlistAddAction';
     const XHR_WATCHLIST_DELETE_ITEM_ACTION                 = 'watchlistDeleteItemAction';
@@ -90,7 +90,7 @@ class AjaxManager
         $this->watchlistTemplate = $watchlistTemplate;
         $this->actionManager     = $actionManager;
         $this->watchlistManager  = $watchlistManager;
-        $this->container = $container;
+        $this->container         = $container;
     }
 
     public function ajaxActions()
@@ -119,44 +119,6 @@ class AjaxManager
             static::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, $this);
     }
 
-//    /**
-//     * clicked on the add to watchlist button.
-//     *
-//     * @param string $data
-//     *
-//     * @return ResponseError|ResponseSuccess
-//     */
-//    public function watchlistAddAction(string $data)
-//    {
-//        $data     = json_decode($data);
-//        $moduleId = $data->moduleId;
-//        $type     = $data->type;
-//        $itemData = $data->itemData;
-//
-//        $module = ModuleModel::findByPk($moduleId);
-//        if (!$module) {
-//            return new ResponseError();
-//        }
-//        $configuration = WatchlistConfigModel::findByPk($module->watchlistConfig);
-//
-//
-//        if (FE_USER_LOGGED_IN) {
-//            return $this->watchlistShowModalAddAction($moduleId, $type, $itemData);
-//        }
-//
-//        if (isset($itemData->options) && is_array($itemData->options) && count($itemData->options) > 1) {
-//            $responseContent = $this->watchlistTemplate->getWatchlistItemOptions($moduleId, $type, $itemData->options);
-//
-//            return $this->getModalResponse($responseContent);
-//        }
-//
-//        if (!isset($itemData->uuid)) {
-//            return new ResponseError();
-//        }
-//
-//        return $this->addItemToWatchlist($this->container->get('session')->get(WatchlistModel::WATCHLIST_SELECT), $type,
-//            $itemData);
-//    }
 
     /**
      * add item to watchlist that has been selected by user.
@@ -258,25 +220,26 @@ class AjaxManager
      *
      * @return ResponseError|ResponseSuccess
      */
-    public function watchlistDeleteItemAction(string $data)
+    public function watchlistDeleteItemAction($data)
     {
-        $data     = json_decode($data);
-        $itemId   = $data->itemId;
-        $configuration = WatchlistConfigModel::findByPk($data->moduleId);
-        $item = WatchlistItemModel::findByPk($itemId);
-        $itemUuid = $item->uuid;
+        $data        = json_decode($data);
+        $itemId      = (int)$data->itemId;
+        $configId    = (int)$data->moduleId;
+        $watchlistId = (int)$data->watchlistId;
 
-        if (null === ($watchlistId = $this->container->get('huh.watchlist.watchlist_item_manager')->getWatchlistIdFromItem($itemId))) {
-            return new ResponseError();
-        }
+        $configAdapter = $this->framework->getAdapter(WatchlistConfigModel::class);
+        $itemAdapter = $this->framework->getAdapter(WatchlistItemModel::class);
 
-        $message = $this->actionManager->deleteWatchlistItem($itemId);
+        $configuration = $configAdapter->findByPk($configId);
+        $item          = WatchlistItemModel::findOneBy(['pid=?','ptableId=?'],[$watchlistId, $itemId]);
+        $message       = $this->actionManager->deleteWatchlistItem($item);
+
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($configuration,
             $watchlistId);
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData('',
-            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count, 'uuid' => StringUtil::binToUuid($itemUuid)]));
+            ['message' => $message, 'watchlist' => $updatedWatchlist, 'headline' => $title, 'count' => $count]));
 
         return $response;
     }
@@ -294,8 +257,7 @@ class AjaxManager
         $watchlistId = $data->watchlistId;
 
         $configuration = WatchlistConfigModel::findByPk($data->moduleId);
-        if (!$configuration)
-        {
+        if (!$configuration) {
             return new ResponseError("No watchlist configuration found!");
         }
 
@@ -444,8 +406,12 @@ class AjaxManager
      *
      * @return ResponseSuccess
      */
-    public function watchlistGenerateDownloadLinkAction(int $moduleId, int $watchlistId = null)
+    public function watchlistGenerateDownloadLinkAction(string $data)
     {
+        $data        = json_decode($data);
+        $configId    = (int)$data->configId;
+        $watchlistId = (int)$data->watchlistId;
+
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData(false));
 
@@ -457,7 +423,7 @@ class AjaxManager
             return $response;
         }
 
-        list($link, $message) = $this->actionManager->generateDownloadLink($moduleId, $watchlistId);
+        list($link, $message) = $this->actionManager->generateDownloadLink($configId, $watchlistId);
 
         $response->setResult(new ResponseData('', ['link' => $link, 'message' => $message]));
 

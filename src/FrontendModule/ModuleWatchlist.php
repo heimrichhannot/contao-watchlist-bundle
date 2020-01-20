@@ -10,6 +10,7 @@ namespace HeimrichHannot\WatchlistBundle\FrontendModule;
 
 use Contao\BackendTemplate;
 use Contao\Controller;
+use Contao\Model\Collection;
 use Contao\Module;
 use Contao\ModuleModel;
 use Contao\System;
@@ -40,7 +41,6 @@ class ModuleWatchlist extends Module
 
     public function __construct(ModuleModel $objModule)
     {
-
         $this->container = System::getContainer();
 
         parent::__construct($objModule);
@@ -80,6 +80,11 @@ class ModuleWatchlist extends Module
         }
 
         $watchlist = $this->container->get('huh.watchlist.watchlist_manager')->getWatchlistModel($configuration);
+
+        if($watchlist instanceof Collection) {
+            $watchlist = $watchlist[0];
+        }
+
         $watchlistContainerId = 'huh_watchlist_window_'.$this->id.'_'.$configuration->id.'_'.rand(0,99999);
 
         $this->Template->watchlistContainerId = $watchlistContainerId;

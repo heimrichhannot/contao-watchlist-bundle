@@ -3,6 +3,7 @@
     <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
     <input type="hidden" name="moduleId" value="<?= $this->moduleId?>">
     <input type="hidden" name="itemId" value="<?= $this->id?>">
+    <input type="hidden" name="watchlistId" value="<?= $this->id?>">
     <button type="submit" class="border-0 p-0 bg-transparent text-muted" title="<?= $this->delTitle; ?>">
         <span><?= $this->delLink; ?></span></button>
 </form>

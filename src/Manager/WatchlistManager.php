@@ -30,9 +30,9 @@ class WatchlistManager
     const WATCHLIST_SESSION_BE = 'WATCHLIST_SESSION_BE';
 
     const WATCHLIST_ITEM_FILE_GROUP       = 'watchlistFileItems';
-    const WATCHLIST_ITEM_ENTITY_GROUP     = 'watchlistFileItems';
+    const WATCHLIST_ITEM_ENTITY_GROUP     = 'watchlistEntityItems';
     const WATCHLIST_DOWNLOAD_FILE_GROUP   = 'downloadFileItems';
-    const WATCHLIST_DOWNLOAD_ENTITY_GROUP = 'downloadFileItems';
+    const WATCHLIST_DOWNLOAD_ENTITY_GROUP = 'downloadEntityItems';
 
     /**
      * @var ContaoFrameworkInterface
@@ -121,7 +121,7 @@ class WatchlistManager
      */
     public function getWatchlistByGroups(WatchlistConfigModel $configuration)
     {
-        $groups = StringUtil::deserialize($configuration->groups, true);
+        $groups = StringUtil::deserialize($configuration->groupWatchlist, true);
         return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($groups);
 
         /**

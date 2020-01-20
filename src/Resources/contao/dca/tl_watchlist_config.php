@@ -70,6 +70,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             .'{display_legend},watchlistFrontendFramework;'
             .'{additional_settings_legend},useMultipleWatchlist,useGroupWatchlist,useWatchlistDurability,useGlobalDownloadAllAction,disableDownloadAll,overrideWatchlistTitle,overrideTogglerTitle;'
             .'{item_legend},watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity;'
+            .'{image_legend},imgSize;'
             .'{download_legend},useDownloadLink;'
     ],
     'subpalettes' => [
@@ -302,5 +303,17 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'eval'             => ['includeBlankOption' => true, 'tl_class' => 'clr w50'],
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
+        'imgSize' => [
+            'label'                   => &$GLOBALS['TL_LANG']['tl_watchlist_config']['size'],
+            'exclude'                 => true,
+            'inputType'               => 'imageSize',
+            'reference'               => &$GLOBALS['TL_LANG']['MSC'],
+            'eval'                    => ['rgxp'=>'natural', 'includeBlankOption'=>true, 'nospace'=>true, 'helpwizard'=>true, 'tl_class'=>'w50'],
+            'options_callback' => function ()
+            {
+                return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
+            },
+            'sql'                     => "varchar(64) NOT NULL default ''"
+        ]
     ],
 ];

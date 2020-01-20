@@ -15,4 +15,4 @@ $lang['watchlistConfig']         = ['Watchlist configuration', 'Choose the watch
 $lang['fileField']               = ['File field', 'Choose the field which reference the download file.'];
 $lang['titleField']              = ['Title field', 'Choose the field which contains the download file title.'];
 
-$lang['reference'][\HeimrichHannot\WatchlistBundle\ConfigElement\WatchlistConfigElementType::TYPE] = 'Watchlist ("Add to watchlist" button)';
+$lang['reference'][\HeimrichHannot\WatchlistBundle\ConfigElementType\WatchlistConfigElementListType::TYPE] = 'Watchlist ("Add to watchlist" button)';

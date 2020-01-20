@@ -32,5 +32,5 @@ interface DownloadItemInterface
 
     public function getTitle();
 
-    public function retrieveItem();
+    public function getDownloads(): ?array;
 }

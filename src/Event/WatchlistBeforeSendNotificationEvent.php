@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\Event;
 
 class WatchlistBeforeSendNotificationEvent extends Event
 {
-    const NAME = 'huh.watchlist.event.watchlist_before_send_notification';
+    const NAME = 'watchlist_before_send_notification';
 
     /**
      * @var array

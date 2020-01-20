@@ -14,10 +14,10 @@ class WatchlistItemEntity extends WatchlistItem
 {
     public function setRaw(array $data = []): void
     {
-        if (null === ($entity = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($data['parentTable'], $data['parentTableId']))) {
+        if (null === ($entity = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($data['ptable'], $data['ptableId']))) {
             return;
         }
 
-        $this->_raw = $entity->raw();
+        $this->_raw = $entity->row();
     }
 }

@@ -19,6 +19,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistBeforeSendNotificationEvent;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\FrontendModule\DownloadLinkSubmission;
@@ -72,20 +73,20 @@ class WatchlistActionManager
     /**
      * delete a watchlist.
      *
-     * @param int $id
+     * @param WatchlistItemModel $id
      *
      * @return string
      */
-    public function deleteWatchlistItem(int $id)
+    public function deleteWatchlistItem(WatchlistItemModel $item)
     {
-        if (null === ($watchlistItem = $this->framework->getAdapter(WatchlistItemModel::class)->findInstanceByPk($id))) {
+        if (null === ($item)) {
             $message = $this->translator->trans('huh.watchlist.item.delete.error');
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);
         }
 
-        $message = $this->translator->trans('huh.watchlist.item.delete.success', ['%item%' => $watchlistItem->title]);
-        $watchlistItem->delete();
+        $message = $this->translator->trans('huh.watchlist.item.delete.success', ['%item%' => $item->title]);
+        $item->delete();
 
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
     }
@@ -175,24 +176,24 @@ class WatchlistActionManager
     /**
      * generate link to public list of watchlist items.
      *
-     * @param     $module
+     * @param     $config
      * @param int $watchlistId
      *
      * @return array
      */
-    public function generateDownloadLink($module, int $watchlistId)
+    public function generateDownloadLink($config, int $watchlistId)
     {
-        if (!$module instanceof ModuleModel) {
-            $module = $this->framework->getAdapter(ModuleModel::class)->findByPk($module);
+        if (!$config instanceof WatchlistConfigModel) {
+            $config = $this->framework->getAdapter(WatchlistConfigModel::class)->findByPk($config);
         }
 
-        if (null === $module) {
+        if (null === $config) {
             $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_download_link_error'];
 
             return [false, $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR)];
         }
 
-        if (null === ($page = $this->framework->getAdapter(PageModel::class)->findByPk($module->downloadLink))) {
+        if (null === ($page = $this->framework->getAdapter(PageModel::class)->findByPk($config->downloadLink))) {
             $message = $GLOBALS['TL_LANG']['WATCHLIST']['message_watchlist_download_link_page_error'];
 
             return [false, $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR)];
