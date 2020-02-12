@@ -10,6 +10,7 @@ namespace HeimrichHannot\WatchlistBundle\FrontendModule;
 
 use Contao\Controller;
 use Contao\ModuleModel;
+use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\ListBundle\Module\ModuleList;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
@@ -62,17 +63,16 @@ class ModuleWatchlistDownloadList extends ModuleList
             $this->Template->empty = $GLOBALS['TL_LANG']['WATCHLIST_ITEMS']['empty'];
         }
 
-        $configuration = WatchlistConfigModel::findByPk($this->listConfig->watchlistConfig);
-        if ($configuration) {
+        if ($this->useDownloadAllAction && (null !== ($configuration = WatchlistConfigModel::findByPk($this->listConfig->watchlistConfig)))) {
             $this->Template->downloadAllAction = $this->container->get(PartialTemplateBuilder::class)->generate(
                 new DownloadAllActionPartialTemplate($configuration, $watchlist)
             );
         }
 
-        $filter = $this->filter;
         $queryBuilder = $this->getFilterConfig()->getQueryBuilder();
+        $query = $this->filter->dataContainer . '.uuid=' . $watchlistUuid;
 
-        $queryBuilder->add('where', $filter->dataContainer . '.uuid=' . $watchlistUuid, true);
+        $queryBuilder->add('where', $query, true);
 
         parent::compile();
     }

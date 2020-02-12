@@ -34,6 +34,14 @@ $lang['downloadLinkUseNotification']             = ['Downloadlink per Benachrich
 $lang['downloadLinkNotification']                = ['Downloadlink-Benachrichtigung', 'Wählen Sie hier die Nachricht aus, über die der Downloadlink verschickt werden soll.'];
 $lang['downloadLinkUseConfirmationNotification'] = ['Bestätigungsbenachrichtigung versenden', 'Wählen Sie diese Option, wenn der Nutzer vor erhalt des Downloadlinks eine Bestätigungsemail erhalten soll.'];
 $lang['downloadLinkFormConfigModule']            = ['Formular-Konfiguration', 'Wählen Sie hier das Module aus, welches die Konfiguration für das Formular vorgibt. ACHTUNG: Wird hier keine Konfiguration ausgewählt, wird versucht die Nutzerdaten für den Versandt des Downloadlinks vom Frontend-Nutzer zu beziehen.'];
+$lang['skipItemsForDownloadList']                = ['Items von der Downloadliste einschränken', 'Wählen Sie diese Option, wenn Sie einschränken möchten, welche Items in der Downloadliste aufgeführt werden sollen. Diese Items können dennoch zur Merkliste hinzugefügt werden.'];
+$lang['skipItemsForDownloadListConfig']          = ['Bedingungen', ''];
+$lang['skipItemsForDownloadListConfig']['field'] = ['Feld', ''];
+$lang['skipItemsForDownloadListConfig']['operator'] = ['Operator', ''];
+$lang['skipItemsForDownloadListConfig']['value'] = ['Wert', ''];
+$lang['skipItemsDataContainer'] = ['DataContainer', ''];
+
+
 
 /**
  * Legends

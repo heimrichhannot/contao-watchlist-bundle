@@ -13,7 +13,9 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 
 use Contao\Controller;
+use Contao\DataContainer;
 use Contao\DC_Table;
+use Contao\System;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class WatchlistConfigContainer
@@ -38,5 +40,18 @@ class WatchlistConfigContainer
             $dca['palettes']['default'] = str_replace('useDownloadLink', 'useDownloadLink,downloadLinkUseNotification', $dca['palettes']['default']);
         }
         return;
+    }
+
+    /**
+     * @param DataContainer $dc
+     * @return array
+     */
+    public function getFields(DataContainer $dc): array
+    {
+        if(!($dataContainer = $dc->activeRecord->skipItemsDataContainer)) {
+            return [];
+        }
+
+        return System::getContainer()->get('huh.utils.dca')->getFields($dataContainer);
     }
 }

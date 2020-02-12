@@ -36,7 +36,7 @@ $dca['palettes']['__selector__'][] = 'downloadLinkUseNotification';
 $dca['palettes']['__selector__'][] = 'downloadLinkSendConfirmationNotification';
 
 
-$dca['subpalettes']['usePublicLinkDurability']                  = 'publicLinkDurability';
+$dca['subpalettes']['usePublicLinkDurability']                  = 'publicLinkDurability,useDownloadAllAction';
 $dca['subpalettes']['downloadLinkUseNotification']              = 'downloadLinkNotification,downloadLinkUseConfirmationNotification,downloadLinkFormConfigModule';
 
 
@@ -85,6 +85,13 @@ $arrFields = [
         ],
         'exclude'          => true,
         'sql'              => "varchar(128) NOT NULL default 'default'",
+    ],
+    'useDownloadAllAction'                     => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_module']['useDownloadAllAction'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => ['tl_class' => 'w50'],
+        'sql'       => "char(1) NOT NULL default ''",
     ],
 ];
 

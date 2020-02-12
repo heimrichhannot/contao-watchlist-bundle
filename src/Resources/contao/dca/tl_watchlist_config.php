@@ -65,11 +65,12 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'overrideTogglerTitle',
             'useDownloadLink',
             'downloadLinkUseNotification',
+            'skipItemsForDownloadList'
         ],
         'default' => '{general_legend},title;'
             .'{display_legend},watchlistFrontendFramework;'
             .'{additional_settings_legend},useMultipleWatchlist,useGroupWatchlist,useWatchlistDurability,useGlobalDownloadAllAction,disableDownloadAll,overrideWatchlistTitle,overrideTogglerTitle;'
-            .'{item_legend},watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity;'
+            .'{item_legend},watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity,skipItemsForDownloadList;'
             .'{image_legend},imgSize;'
             .'{download_legend},useDownloadLink;'
     ],
@@ -81,6 +82,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
         'overrideTogglerTitle' => 'togglerTitle',
         'useDownloadLink' => 'downloadLink',
         'downloadLinkUseNotification' => 'downloadLinkNotification,downloadLinkUseConfirmationNotification,downloadLinkFormConfigModule',
+        'skipItemsForDownloadList' => 'skipItemsDataContainer,skipItemsForDownloadListConfig'
     ],
     'fields'   => [
         'id' => [
@@ -302,6 +304,54 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'options_callback' => ['huh.watchlist.data_container.module_container', 'getFormConfigModules'],
             'eval'             => ['includeBlankOption' => true, 'tl_class' => 'clr w50'],
             'sql'              => "varchar(64) NOT NULL default ''",
+        ],
+        'skipItemsForDownloadList'             => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_watchlist_config']['skipItemsForDownloadList'],
+            'exclude'          => true,
+            'inputType'        => 'checkbox',
+            'eval'             => ['submitOnChange' => true, 'tl_class' => 'clr w50'],
+            'sql'              => "char(1) NOT NULL default ''",
+        ],
+        'skipItemsDataContainer' => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_watchlist_config']['skipItemsDataContainer'],
+            'inputType' => 'select',
+            'options_callback' => ['huh.utils.choice.data_container', 'getChoices'],
+            'eval'      => ['style' => 'width: 200px', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql'       => "varchar(64) NOT NULL default ''",
+
+        ],
+        'skipItemsForDownloadListConfig'             => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_watchlist_config']['skipItemsForDownloadListConfig'],
+            'exclude'          => true,
+            'inputType'        => 'multiColumnEditor',
+            'eval'      => [
+                'tl_class'          => 'long clr',
+                'multiColumnEditor' => [
+                    'minRowCount' => 1,
+                    'fields'      => [
+
+                        'field' => [
+                            'label'     => &$GLOBALS['TL_LANG']['tl_watchlist_config']['skipItemsForDownloadListConfig']['field'],
+                            'inputType' => 'select',
+                            'options_callback' => ['huh.watchlist.data_container.watchlist_config', 'getFields'],
+                            'eval'      => ['style' => 'width: 200px', 'mandatory' => true, 'includeBlankOption' => true],
+                        ],
+                        'operator' => [
+                            'label'     => &$GLOBALS['TL_LANG']['tl_watchlist_config']['skipItemsForDownloadListConfig']['operator'],
+                            'inputType' => 'select',
+                            'options'   => \HeimrichHannot\UtilsBundle\Database\DatabaseUtil::OPERATORS,
+                            'reference' => &$GLOBALS['TL_LANG']['MSC']['databaseOperators'],
+                            'eval'      => ['style' => 'width: 200px', 'mandatory' => true, 'includeBlankOption' => true],
+                        ],
+                        'value' => [
+                            'label'     => &$GLOBALS['TL_LANG']['tl_watchlist_config']['skipItemsForDownloadListConfig']['value'],
+                            'inputType' => 'text',
+                            'eval'      => ['style' => 'width: 200px'],
+                        ],
+                    ]
+                ]
+            ],
+            'sql'       => "blob NULL"
         ],
         'imgSize' => [
             'label'                   => &$GLOBALS['TL_LANG']['tl_watchlist_config']['size'],

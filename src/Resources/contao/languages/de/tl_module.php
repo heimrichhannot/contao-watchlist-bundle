@@ -20,7 +20,7 @@ $lang['groupWatchlist']         = ['Nutzergruppen'];
 
 $lang['usePublicLinkDurability']  = ['Verfallzeit hinzufügen', 'Wählen Sie diese Option, wenn der geteilte Link nur für eine eingeschränkte Zeit gültig sein soll.'];
 $lang['publicLinkDurability']     = ['Verfallzeit', 'Tragen Sie hier die Zeit in Sekunden ein für die der Link gültig ist.'];
-
+$lang['useDownloadAllAction']     = ['"alle herunterladen"-Action nutzen', 'Wählen Sie diese Option, wenn alle Elemente der Downloadliste über einen Button heruntergeladen werden können sollen.'];
 
 /**
  * Legends
