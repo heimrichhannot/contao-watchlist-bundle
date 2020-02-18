@@ -11,6 +11,7 @@ huh:
         success: '%item% wurde der Liste hinzugefügt.'
         link: Zur Liste hinzufügen
         title: '%item% zur Liste hinzufügen'
+        watching: gemerkt
       delete:
         label: Element von der Liste entfernen
         link: Löschen

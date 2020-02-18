@@ -128,8 +128,6 @@ class WatchlistConfigElementListType implements ListConfigElementTypeInterface
                 $item->getDataContainer(),
                 $item->getRawValue('id')
             );
-
-
         }
     }
 
@@ -148,6 +146,10 @@ class WatchlistConfigElementListType implements ListConfigElementTypeInterface
             $buttonData['added'] = (int)System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, $item->getRawValue($listConfigElement->fileField));
         } else {
             $buttonData['added'] = (int)System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $item->getDataContainer(), $item->getRawValue('id'));
+        }
+
+        if($buttonData['added']) {
+            $buttonData['label'] = System::getContainer()->get('translator')->trans('huh.watchlist.item.add.watching');
         }
 
         return $buttonData;

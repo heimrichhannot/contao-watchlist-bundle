@@ -409,8 +409,11 @@ class AjaxManager
     public function watchlistGenerateDownloadLinkAction(string $data)
     {
         $data        = json_decode($data);
+
         $configId    = (int)$data->configId;
         $watchlistId = (int)$data->watchlistId;
+
+
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData(false));

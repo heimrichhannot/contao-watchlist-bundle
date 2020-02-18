@@ -8,7 +8,7 @@ window.Watchlist = {
         document.addEventListener('submit', function (e) {
             if (e.target && 'watchlist-download-link' === e.target.id) {
                 e.preventDefault();
-                Watchlist.generateDownloadLink(document.getElementById(e.target.id));
+                Watchlist.generateDownloadLink(e.target);
             }
 
             if (e.target && e.target.id.includes('watchlist-add-item')) {
@@ -53,7 +53,7 @@ window.Watchlist = {
         });
 
         $(document).on('click', '#watchlist-clipboard-link', function() {
-            Watchlist.addToClipboard();
+            Watchlist.addToClipboard($(this));
         });
     },
     addItem: function (form) {
@@ -139,6 +139,8 @@ window.Watchlist = {
             return;
         }
 
+        console.log(form.action);
+
         let url = form.action,
             configId = formData['configId'],
             itemId = formData['itemId'],
@@ -151,6 +153,8 @@ window.Watchlist = {
                 'REQUEST_TOKEN': request_token
             };
 
+        console.log(data);
+
         let config = {
             successCallback: (data) => {
                 if(!data) {
@@ -159,14 +163,12 @@ window.Watchlist = {
 
                 let response = JSON.parse(data.responseText),
                     link = response.result.data.link,
-                    clipboardInput = document.querySelector('.watchlist-download-link-clipboard input[name="clipboard-input"]');
+                    clipboardInput = document.querySelector('.watchlist-download-link-clipboard input[name="clipboard-input"]'),
+                    container = form.closest('.watchlist-download-link-container');
 
-                console.log(clipboardInput);
-                console.log(link);
-
-                document.querySelector('.watchlist-download-link-text').textContent = link;
+                container.querySelector('.watchlist-download-link-text').textContent = link;
                 clipboardInput.value = link;
-                document.querySelector('.watchlist-download-link-container').classList.add('show');
+                container.classList.add('show');
             }
         };
 
@@ -297,8 +299,11 @@ window.Watchlist = {
 
         Watchlist.doAjaxCallWithUpdate(url, data, {closeOnSuccess: true});
     },
-    addToClipboard: function() {
-        let text = document.querySelector('.watchlist-download-link-text'),
+    addToClipboard: function(jQueryElement) {
+        // let text = document.querySelector('.watchlist-download-link-text'),
+        let element = jQueryElement[0],
+            link = element.closest('.watchlist-download-link'),
+            text = link.querySelector('.watchlist-download-link-text'),
             selection = window.getSelection(),
             range = document.createRange();
 

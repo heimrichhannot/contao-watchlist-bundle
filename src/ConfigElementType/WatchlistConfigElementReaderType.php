@@ -145,6 +145,10 @@ class WatchlistConfigElementReaderType implements ReaderConfigElementTypeInterfa
             $buttonData['added'] = (int)System::getContainer()->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $item->getDataContainer(), $item->getRawValue('id'));
         }
 
+        if($buttonData['added']) {
+            $buttonData['label'] = System::getContainer()->get('translator')->trans('huh.watchlist.item.add.watching');
+        }
+
         return $buttonData;
     }
 
