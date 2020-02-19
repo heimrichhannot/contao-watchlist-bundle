@@ -106,7 +106,7 @@ window.Watchlist = {
                 'context': form
             };
 
-        Watchlist.doAjaxCallWithUpdate(url, data);
+        Watchlist.doAjaxCallWithUpdate(url, data, config);
     },
     emptyWatchlist: function (form) {
         let formData = Watchlist.serialize(form);
@@ -155,8 +155,6 @@ window.Watchlist = {
                 'REQUEST_TOKEN': request_token
             };
 
-        console.log(data);
-
         let config = {
             successCallback: (data) => {
                 if(!data) {
@@ -194,7 +192,7 @@ window.Watchlist = {
                 'context': form
             };
 
-        Watchlist.doAjaxCallWithUpdate(url, data);
+        Watchlist.doAjaxCallWithUpdate(url, data, config);
     },
     newAndAdd: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
