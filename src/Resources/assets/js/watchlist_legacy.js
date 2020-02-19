@@ -101,6 +101,9 @@ window.Watchlist = {
                 'itemId': itemId,
                 'watchlistId': watchlistId,
                 'REQUEST_TOKEN': request_token
+            },
+            config = {
+                'context': form
             };
 
         Watchlist.doAjaxCallWithUpdate(url, data);
@@ -127,7 +130,8 @@ window.Watchlist = {
                 document.querySelectorAll('.huh_watchlist_add_to_watchlist.added').forEach((element) => {
                     element.classList.remove('added');
                 });
-            }
+            },
+            'context': form
         };
 
         Watchlist.doAjaxCallWithUpdate(url, data, config);
@@ -138,8 +142,6 @@ window.Watchlist = {
         if(!formData) {
             return;
         }
-
-        console.log(form.action);
 
         let url = form.action,
             configId = formData['configId'],
@@ -173,33 +175,6 @@ window.Watchlist = {
         };
 
         Watchlist.doAjaxCallWithUpdate(url, data, config);
-
-
-        // Watchlist.ajax({
-        //     url: url,
-        //     type: 'POST',
-        //     dataType: 'JSON',
-        //     data: data,
-        //     success: function (data) {
-        //         let response = JSON.parse(data.responseText).result.data;
-        //
-        //         if (undefined !== response.form) {
-        //             Watchlist.initModal(response.form);
-        //         }
-        //
-        //         if (undefined !== response.link) {
-        //             let linkElement = document.querySelector('.watchlist-download-link-href');
-        //             linkElement.textContent = response.link;
-        //             linkElement.setAttribute('href', response.link);
-        //         }
-        //
-        //         if (undefined !== response.message) {
-        //             document.getElementsByTagName('body')[0].appendChild(response.message);
-        //         }
-        //
-        //         Watchlist.ajaxCompleteCallback();
-        //     }
-        // });
     },
     deleteWatchlist: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
@@ -214,6 +189,9 @@ window.Watchlist = {
                 'moduleId': moduleId,
                 'watchlistId': watchlistId,
                 'REQUEST_TOKEN': request_token
+            },
+            config = {
+                'context': form
             };
 
         Watchlist.doAjaxCallWithUpdate(url, data);
@@ -281,9 +259,12 @@ window.Watchlist = {
             data = {
                 'moduleId': moduleId,
                 'watchlistId': watchlistId
+            },
+            config = {
+                'context': form
             };
 
-        Watchlist.doAjaxCallWithUpdate(url, data);
+        Watchlist.doAjaxCallWithUpdate(url, data, config);
     },
     sendDownloadNotification: function (form) {
         if(!(formData = Watchlist.serialize(form))) {
@@ -300,7 +281,6 @@ window.Watchlist = {
         Watchlist.doAjaxCallWithUpdate(url, data, {closeOnSuccess: true});
     },
     addToClipboard: function(jQueryElement) {
-        // let text = document.querySelector('.watchlist-download-link-text'),
         let element = jQueryElement[0],
             link = element.closest('.watchlist-download-link'),
             text = link.querySelector('.watchlist-download-link-text'),
@@ -339,10 +319,11 @@ window.Watchlist = {
                 }
 
                 if (undefined !== response.watchlist) {
-                    let updatedWatchlist = document.createElement('div');
+                    let updatedWatchlist = document.createElement('div'),
+                        watchlistContainer = config.context.closest('.mod_huhwatchlist');
                     updatedWatchlist.innerHTML = response.watchlist;
 
-                    document.querySelector('.watchlist-body').replaceWith(updatedWatchlist);
+                    watchlistContainer.querySelector('.watchlist-body').replaceWith(updatedWatchlist);
                 }
 
                 if (undefined !== response.modal) {
@@ -351,7 +332,7 @@ window.Watchlist = {
 
                 if (response.hasOwnProperty('headline'))
                 {
-                    let headlineElement = document.querySelector('.huh_watchlist_window_headline');
+                    let headlineElement = watchlistContainer.querySelector('.huh_watchlist_window_headline');
                     if (null !== headlineElement) {
                         headlineElement.textContent = response.headline;
                     }
@@ -391,14 +372,10 @@ window.Watchlist = {
 
                         document.querySelector('body').classList.remove('modal-open');
                     }
-                }
 
-                if (config.hasOwnProperty('successCallback'))
-                {
                     config.successCallback(data);
                 }
 
-                // $('#watchlistModal').modal('toggle');
                 Watchlist.ajaxCompleteCallback();
             },
 
