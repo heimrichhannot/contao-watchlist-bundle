@@ -40,6 +40,9 @@ $lang['skipItemsForDownloadListConfig']['field'] = ['Feld', ''];
 $lang['skipItemsForDownloadListConfig']['operator'] = ['Operator', ''];
 $lang['skipItemsForDownloadListConfig']['value'] = ['Wert', ''];
 $lang['skipItemsDataContainer'] = ['DataContainer', ''];
+$lang['addDetails'] = ['Detail-Weiterleitung hinzufügen', 'Wählen Sie diese Option, wenn den Elementen in der Merkliste eine Verlinkung zu einer Detailseite hinzugefügt werden soll.'];
+$lang['jumpToDetails'] = ['Weiterleitungsseite', ''];
+$lang['alias'] = ['Alias', 'Tragen Sie hier die Feldbezeichnung ein anhand der die Entität auf der Detailsseite gefunden werden soll.'];
 
 
 

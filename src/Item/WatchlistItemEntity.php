@@ -9,6 +9,7 @@
 namespace HeimrichHannot\WatchlistBundle\Item;
 
 use Contao\System;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 
 class WatchlistItemEntity extends WatchlistItem
 {
@@ -19,5 +20,22 @@ class WatchlistItemEntity extends WatchlistItem
         }
 
         $this->_raw = $entity->row();
+    }
+
+    public function getDetailsUrl(WatchlistConfigModel $configuration): ?string
+    {
+        if(!$configuration->jumpToDetails) {
+            return null;
+        }
+
+        if(null === ($page = System::getContainer()->get('huh.utils.url')->getJumpToPageUrl($configuration->jumpToDetails))) {
+            return null;
+        }
+
+        if(!$configuration->alias) {
+            return $page;
+        }
+
+        return $page . DIRECTORY_SEPARATOR . $this->_raw[$configuration->alias];
     }
 }

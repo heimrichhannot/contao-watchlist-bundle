@@ -35,4 +35,7 @@ interface WatchlistItemInterface
     public function getFile();
 
     public function getEditActions(WatchlistConfigModel $configuration, int $watchlistId);
+
+    public function getDetailsUrl(WatchlistConfigModel $configuration): ?string;
 }
+

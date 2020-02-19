@@ -110,4 +110,9 @@ class WatchlistItem implements WatchlistItemInterface
 
         return $template->parse();
     }
+
+    public function getDetailsUrl(WatchlistConfigModel $configuration): ?string
+    {
+        return null;
+    }
 }

@@ -627,12 +627,13 @@ class WatchlistTemplateManager
             }
         }
 
-        $template->raw      = $watchlistItem->getRaw();
-        $template->title    = $watchlistItem->getTitle();
-        $template->actions  = $watchlistItem->getEditActions($configuration, $watchlistId);
-        $template->cssClass = $watchlistItem->getType();
-        $template->id       = $item->id;
-        $template->type     = $watchlistItem->getType();
+        $template->raw        = $watchlistItem->getRaw();
+        $template->title      = $watchlistItem->getTitle();
+        $template->actions    = $watchlistItem->getEditActions($configuration, $watchlistId);
+        $template->cssClass   = $watchlistItem->getType();
+        $template->id         = $item->id;
+        $template->type       = $watchlistItem->getType();
+        $template->detailsUrl = $watchlistItem->getDetailsUrl($configuration);
 
         return $template->parse();
     }

@@ -70,7 +70,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
         'default' => '{general_legend},title;'
             .'{display_legend},watchlistFrontendFramework;'
             .'{additional_settings_legend},useMultipleWatchlist,useGroupWatchlist,useWatchlistDurability,useGlobalDownloadAllAction,disableDownloadAll,overrideWatchlistTitle,overrideTogglerTitle;'
-            .'{item_legend},watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity,skipItemsForDownloadList;'
+            .'{item_legend},watchlistItemFile,watchlistItemEntity,downloadItemFile,downloadItemEntity,skipItemsForDownloadList,addDetails;'
             .'{image_legend},imgSize;'
             .'{download_legend},useDownloadLink;'
     ],
@@ -82,7 +82,8 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
         'overrideTogglerTitle' => 'togglerTitle',
         'useDownloadLink' => 'downloadLink',
         'downloadLinkUseNotification' => 'downloadLinkNotification,downloadLinkUseConfirmationNotification,downloadLinkFormConfigModule',
-        'skipItemsForDownloadList' => 'skipItemsDataContainer,skipItemsForDownloadListConfig'
+        'skipItemsForDownloadList' => 'skipItemsDataContainer,skipItemsForDownloadListConfig',
+        'addDetails' => 'jumpToDetails,alias'
     ],
     'fields'   => [
         'id' => [
@@ -364,6 +365,27 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
                 return System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance());
             },
             'sql'                     => "varchar(64) NOT NULL default ''"
-        ]
+        ],
+        'addDetails' => [
+            'label'            => &$GLOBALS['TL_LANG']['tl_watchlist_config']['addDetails'],
+            'exclude'          => true,
+            'inputType'        => 'checkbox',
+            'eval'             => ['submitOnChange' => true, 'tl_class' => 'clr w50'],
+            'sql'              => "char(1) NOT NULL default ''",
+        ],
+        'jumpToDetails' => [
+            'label'         => &$GLOBALS['TL_LANG']['tl_watchlist_config']['jumpToDetails'],
+            'exclude'       => true,
+            'inputType'     => 'pageTree',
+            'eval'          => ['fieldType' => 'radio', 'tl_class' => 'clr w50'],
+            'sql'           => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'alias' => [
+            'label'         => &$GLOBALS['TL_LANG']['tl_watchlist_config']['jumpToDetails'],
+            'exclude'       => true,
+            'inputType'     => 'text',
+            'eval'          => ['tl_class' => 'w50'],
+            'sql'           => "varchar(255) NOT NULL default ''",
+        ],
     ],
 ];
