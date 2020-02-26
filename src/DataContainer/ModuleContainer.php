@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -28,8 +28,6 @@ class ModuleContainer
     }
 
     /**
-     * @param DataContainer $dc
-     *
      * @return array
      */
     public function getFormConfigModules(DataContainer $dc)
@@ -81,7 +79,6 @@ class ModuleContainer
 
     public function getWatchlistModules()
     {
-
         if (null === ($modules = $this->container->get('huh.utils.model')->findModelInstancesBy(
             'tl_module', ['tl_module.type=?'], [ModuleWatchlist::MODULE_WATCHLIST]
         ))) {
@@ -97,20 +94,20 @@ class ModuleContainer
     }
 
     /**
-     * Get frontend framework types as selection
+     * Get frontend framework types as selection.
      *
      * @return array
      */
     public function getWatchlistFrontendFrameworks()
     {
         $frameworks = $this->container->get('huh.watchlist.manager.frontend_frameworks')->getAllFrameworks();
+
         return array_keys($frameworks);
     }
 
     /**
-     * Edit watchlist config
+     * Edit watchlist config.
      *
-     * @param DataContainer $dc
      * @return string
      */
     public function editWatchlistWizard(DataContainer $dc)
@@ -123,6 +120,6 @@ class ModuleContainer
                 'popup' => '1',
                 'nb' => '1',
             ])
-            .' title="' . sprintf(StringUtil::specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value) . '" onclick="Backend.openModalIframe({\'title\':\'' . StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))) . '\',\'url\':this.href});return false">' . Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_content']['editalias'][0]) . '</a>';
+            .' title="'.sprintf(StringUtil::specialchars($GLOBALS['TL_LANG']['tl_content']['editalias'][1]), $dc->value).'" onclick="Backend.openModalIframe({\'title\':\''.StringUtil::specialchars(str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_content']['editalias'][1], $dc->value))).'\',\'url\':this.href});return false">'.Image::getHtml('alias.svg', $GLOBALS['TL_LANG']['tl_content']['editalias'][0]).'</a>';
     }
 }

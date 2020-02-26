@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -14,14 +14,13 @@ use Contao\System;
 use Contao\Validator;
 
 /**
- * Class WatchlistItemModel
- * @package HeimrichHannot\WatchlistBundle\Model
+ * Class WatchlistItemModel.
  *
- * @property int $id
- * @property int $pid
+ * @property int    $id
+ * @property int    $pid
  * @property string $uuid
- * @property int $pageID
- * @property int $tstamp
+ * @property int    $pageID
+ * @property int    $tstamp
  * @property string $title
  * @property string $download
  * @property string $parentTable
@@ -41,7 +40,6 @@ class WatchlistItemModel extends Model
 
         $this->container = System::getContainer();
     }
-
 
     public function findByPidAndUuid($pid, $uuid, array $options = [])
     {
@@ -78,7 +76,7 @@ class WatchlistItemModel extends Model
 
     public function findByPidAndPtableId(int $pid, int $ptableId, array $options = [])
     {
-        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(static::$strTable, [static::$strTable.'.pid=?',static::$strTable.'.ptableId=?'], [$pid,$ptableId], $options);
+        return System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy(static::$strTable, [static::$strTable.'.pid=?', static::$strTable.'.ptableId=?'], [$pid, $ptableId], $options);
     }
 
     public function countByPid($pid)
@@ -87,16 +85,16 @@ class WatchlistItemModel extends Model
     }
 
     /**
-     * Returns the path to the file
+     * Returns the path to the file.
      *
      * @return string|null
      */
     public function getFilePath()
     {
-        if (static::WATCHLIST_ITEM_TYPE_FILE === $this->type)
-        {
+        if (static::WATCHLIST_ITEM_TYPE_FILE === $this->type) {
             return $this->container->get('huh.utils.file')->getPathFromUuid($this->uuid);
         }
+
         return null;
     }
 }

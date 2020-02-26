@@ -1,11 +1,9 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
@@ -14,21 +12,12 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
 /**
- * Class AddToWatchlistPartialTemplate
- * @package HeimrichHannot\WatchlistBundle\PartialTemplate
+ * Class AddToWatchlistPartialTemplate.
  *
  * @property PartialTemplateBuilder $builder
  */
 abstract class AbstractAddToWatchlistActionPartialTemplate extends AbstractPartialTemplate
 {
-    /**
-     * @var WatchlistConfigModel
-     */
-    private $configuration;
-    /**
-     * @var WatchlistModel
-     */
-    private $watchlist;
     /**
      * @var array
      */
@@ -46,19 +35,22 @@ abstract class AbstractAddToWatchlistActionPartialTemplate extends AbstractParti
      */
     protected $ptableId;
     /**
+     * @var WatchlistConfigModel
+     */
+    private $configuration;
+    /**
+     * @var WatchlistModel
+     */
+    private $watchlist;
+    /**
      * @var array
      */
     private $context = [];
 
     /**
      * AddToWatchlistPartialTemplate constructor.
-     * @param WatchlistConfigModel $configuration
-     * @param WatchlistModel $watchlist
-     * @param array $buttonData
+     *
      * @param array $options
-     * @param string|null $uuid
-     * @param string|null $ptable
-     * @param int|null $ptableId
      */
     public function __construct(
         WatchlistConfigModel $configuration,
@@ -68,12 +60,12 @@ abstract class AbstractAddToWatchlistActionPartialTemplate extends AbstractParti
         string $ptable = null,
         int $ptableId = null
     ) {
-        $this->configuration  = $configuration;
+        $this->configuration = $configuration;
         $this->watchlistModel = $watchlist;
-        $this->buttonData     = $buttonData;
-        $this->uuid           = $uuid;
-        $this->ptable         = $ptable;
-        $this->ptableId       = $ptableId;
+        $this->buttonData = $buttonData;
+        $this->uuid = $uuid;
+        $this->ptable = $ptable;
+        $this->ptableId = $ptableId;
     }
 
     public function getTemplateName(): string
@@ -86,40 +78,42 @@ abstract class AbstractAddToWatchlistActionPartialTemplate extends AbstractParti
         $this->setButtonContext();
 
         $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
+
         return $this->builder->getTwig()->render($template, $this->getContext());
     }
 
-    /**
-     *
-     */
     public function setButtonContext(): void
     {
         $defaultAttributes = $this->getDefaultAttributes();
-        $attributes        = $this->getAttributes($defaultAttributes);
+        $attributes = $this->getAttributes($defaultAttributes);
 
-        $context              = $this->createDefaultActionContext($attributes, $this->configuration);
-        $context['cssClass']  .= ' huh_watchlist_add_to_watchlist' . ($this->buttonData['added'] ? ' added' : '');
-        $context['linkText']  = $this->buttonData['label'];
+        $context = $this->createDefaultActionContext($attributes, $this->configuration);
+        $context['cssClass'] .= ' huh_watchlist_add_to_watchlist'.($this->buttonData['added'] ? ' added' : '');
+        $context['linkText'] = $this->buttonData['label'];
         $context['linkTitle'] = $this->buttonData['linkTitle'];
 
-        if($this->buttonData['added']) {
+        if ($this->buttonData['added']) {
             $context['disabled'] = true;
         }
 
         $this->setContext($this->prepareContext($context));
     }
 
-    /**
-     * @return string
-     */
+    public function setContext(array $context): void
+    {
+        $this->context = $context;
+    }
+
+    public function getContext(): array
+    {
+        return $this->context;
+    }
+
     protected function getUrl(): string
     {
         return $this->builder->getRouter()->generate('huh_watchlist_add_to_watchlist');
     }
 
-    /**
-     * @return array
-     */
     protected function getDefaultAttributes(): array
     {
         $attributes = $this->createDefaultActionAttributes($this->configuration, $this->getUrl(),
@@ -133,25 +127,7 @@ abstract class AbstractAddToWatchlistActionPartialTemplate extends AbstractParti
     }
 
     /**
-     * get action attributes
-     *
-     * @return array
+     * get action attributes.
      */
     abstract protected function getAttributes(array $attributes = []): array;
-
-    /**
-     * @param array $context
-     */
-    public function setContext(array $context): void
-    {
-        $this->context = $context;
-    }
-
-    /**
-     * @return array
-     */
-    public function getContext(): array
-    {
-        return $this->context;
-    }
 }

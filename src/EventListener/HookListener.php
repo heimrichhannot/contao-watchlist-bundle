@@ -1,13 +1,10 @@
 <?php
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
- */
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\WatchlistBundle\EventListener;
 
@@ -54,20 +51,17 @@ class HookListener
     }
 
     /**
-     * Hook: parseTemplate
-     *
-     * @param Template $template
+     * Hook: parseTemplate.
      */
     public function onParseTemplate(Template $template)
     {
-        /** @var PageModel $objPage */
+        /* @var PageModel $objPage */
         global $objPage;
         if (!$objPage) {
             return;
         }
         $rootPage = PageModel::findByPk($objPage->rootId);
-        if (!$rootPage)
-        {
+        if (!$rootPage) {
             return;
         }
         if (!$rootPage->enableWatchlist && !$template->overrideWatchlistConfig) {
@@ -76,10 +70,8 @@ class HookListener
 
         $bundleConfig = $this->container->getParameter('huh_watchlist');
 
-        if (in_array($template->type, $bundleConfig['content_elements']))
-        {
-            if ($template->disableWatchlist)
-            {
+        if (\in_array($template->type, $bundleConfig['content_elements'], true)) {
+            if ($template->disableWatchlist) {
                 return;
             }
             $bundleConfig = null;

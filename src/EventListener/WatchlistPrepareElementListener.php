@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\EventListener;
-
 
 use Contao\FilesModel;
 use Contao\PageModel;
@@ -30,7 +26,6 @@ class WatchlistPrepareElementListener
      */
     private $templateBuilder;
 
-
     /**
      * WatchlistPrepareElementListener constructor.
      */
@@ -46,16 +41,14 @@ class WatchlistPrepareElementListener
         $configuration = $event->getConfiguration();
         $watchlist = $this->watchlistManager->getWatchlistModel($configuration);
 
-        /** @var PageModel $objPage */
+        /* @var PageModel $objPage */
         global $objPage;
 
-        switch ($template->type)
-        {
+        switch ($template->type) {
             case 'download':
                 $template->addToWatchlistButton = ['html' => ''];
                 $fileModel = FilesModel::findByPath($template->singleSRC);
-                if ($fileModel)
-                {
+                if ($fileModel) {
                     $template->addToWatchlistButton = [
                         'html' => $this->templateBuilder->generate(new AddToWatchlistActionPartialTemplate(
                             $configuration,
@@ -65,23 +58,23 @@ class WatchlistPrepareElementListener
                             $watchlist,
                             $objPage->id,
                             $template->options ?: []
-                        ))
+                        )),
                     ];
                 }
                 $event->stopPropagation();
+
                 return;
             case 'downloads':
                 if (empty($template->files)) {
                     break;
                 }
                 $files = [];
-                foreach ($template->files as $file)
-                {
+                foreach ($template->files as $file) {
                     $button = $this->templateBuilder->generate(new AddToWatchlistActionPartialTemplate(
                         $configuration,
                         'tl_content',
                         $file['uuid'],
-                        isset($file['link']) ? $file['link'] : (isset($file['title']) ?  $file['title'] : $file['name']),
+                        isset($file['link']) ? $file['link'] : (isset($file['title']) ? $file['title'] : $file['name']),
                         $watchlist,
                         $objPage->id,
                         $template->options ?: []
@@ -91,8 +84,8 @@ class WatchlistPrepareElementListener
                 }
                 $template->files = $files;
                 $event->stopPropagation();
+
                 return;
         }
-        return;
     }
 }

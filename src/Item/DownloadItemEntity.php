@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -24,13 +24,8 @@ class DownloadItemEntity extends DownloadItem
         $this->_raw = $entity->row();
     }
 
-    /**
-     * @return array|null
-     */
     public function getDownloads(): ?array
     {
-
-
         return null;
     }
 }

@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
-
 
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -42,9 +38,7 @@ class OpenWatchlistWindowActionPartialTemplate extends AbstractPartialTemplate
         return static::TEMPLATE_OPEN_WATCHLIST_WINDOW;
     }
 
-
     /**
-     * @return string
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
@@ -70,10 +64,10 @@ class OpenWatchlistWindowActionPartialTemplate extends AbstractPartialTemplate
         $context['itemCount'] = $count;
         if ($this->configuration->watchlistTitle) {
             $context['link'] = $this->builder->getTranslator()->trans($this->configuration->watchlistTitle);
-        }
-        else {
+        } else {
             $context['link'] = $this->builder->getTranslator()->trans('huh.watchlist.watchlist_label.default');
         }
+
         return $this->builder->getTwig()->render($template, $context);
     }
 }

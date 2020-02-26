@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -17,8 +17,6 @@ use Contao\ManagerPlugin\Config\ContainerBuilder;
 use Contao\ManagerPlugin\Config\ExtensionPluginInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use HeimrichHannot\AjaxBundle\HeimrichHannotContaoAjaxBundle;
-use HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle;
-use HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle;
 use HeimrichHannot\UtilsBundle\Container\ContainerUtil;
 use HeimrichHannot\WatchlistBundle\HeimrichHannotContaoWatchlistBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -87,12 +85,14 @@ class Plugin implements BundlePluginInterface, ExtensionPluginInterface, ConfigP
     /**
      * Returns a collection of routes for this bundle.
      *
-     * @return RouteCollection|null
      * @throws \Exception
+     *
+     * @return RouteCollection|null
      */
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
     {
         $file = '@HeimrichHannotContaoWatchlistBundle/Resources/config/routing.yml';
+
         return $resolver->resolve($file)->load($file);
     }
 }

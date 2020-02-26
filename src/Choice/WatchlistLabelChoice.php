@@ -1,13 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dev
- * Date: 04.02.19
- * Time: 16:20
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\WatchlistBundle\Choice;
-
 
 use Contao\System;
 use HeimrichHannot\UtilsBundle\Choice\AbstractChoice;

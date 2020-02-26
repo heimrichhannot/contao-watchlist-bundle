@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\Event;
-
 
 use Contao\Template;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
@@ -31,7 +27,6 @@ class WatchlistPrepareElementEvent extends Event
 
     /**
      * WatchlistPrepareElementEvent constructor.
-     * @param Template $template
      */
     public function __construct(Template $template, WatchlistConfigModel $configuration)
     {
@@ -39,40 +34,23 @@ class WatchlistPrepareElementEvent extends Event
         $this->configuration = $configuration;
     }
 
-    /**
-     * @return Template
-     */
     public function getTemplate(): Template
     {
         return $this->template;
     }
 
-    /**
-     * @param Template $template
-     */
     public function setTemplate(Template $template): void
     {
         $this->template = $template;
     }
 
-    /**
-     * @return WatchlistConfigModel
-     */
     public function getConfiguration(): WatchlistConfigModel
     {
         return $this->configuration;
     }
 
-    /**
-     * @param WatchlistConfigModel $configuration
-     */
     public function setConfiguration(WatchlistConfigModel $configuration): void
     {
         $this->configuration = $configuration;
     }
-
-
-
-
-
 }

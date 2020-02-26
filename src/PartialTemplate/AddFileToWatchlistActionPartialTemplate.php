@@ -1,11 +1,12 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
-
-
-use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
-use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
 class AddFileToWatchlistActionPartialTemplate extends AbstractAddToWatchlistActionPartialTemplate
 {

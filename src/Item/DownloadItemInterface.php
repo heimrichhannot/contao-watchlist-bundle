@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -12,15 +12,11 @@ interface DownloadItemInterface
 {
     /**
      * Get entire raw item data.
-     *
-     * @return array
      */
     public function getRaw(): array;
 
     /**
      * Set entire raw item data.
-     *
-     * @param array $data
      */
     public function setRaw(array $data = []): void;
 

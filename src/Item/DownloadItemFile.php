@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -28,8 +28,6 @@ class DownloadItemFile extends DownloadItem
 
     /**
      * retrieve the item for download.
-     *
-     * @return array|null
      */
     public function getDownloads(): ?array
     {
@@ -47,9 +45,7 @@ class DownloadItemFile extends DownloadItem
 
         return [
             'title' => $this->getTitle(),
-            'file'  => $this->getFile()
+            'file' => $this->getFile(),
         ];
     }
-
-
 }

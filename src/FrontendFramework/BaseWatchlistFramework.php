@@ -1,20 +1,14 @@
 <?php
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
- */
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
 
-
 use Contao\Module;
-use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
-use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -30,7 +24,6 @@ class BaseWatchlistFramework extends AbstractWatchlistFrontendFramework
         $this->container = $container;
     }
 
-
     public function getType(): string
     {
         return 'base';
@@ -42,22 +35,13 @@ class BaseWatchlistFramework extends AbstractWatchlistFrontendFramework
     }
 
     /**
-     * Add or edit data attributes
-     *
-     * @param array $attributes
-     * @param PartialTemplateInterface $template
-     * @return array
+     * Add or edit data attributes.
      */
     public function prepareDataAttributes(array $attributes, PartialTemplateInterface $template): array
     {
         return $attributes;
     }
 
-    /**
-     * @param array $context
-     * @param Module $template
-     * @return array
-     */
     public function prepareModuleTemplate(array $context, Module $template): array
     {
         return $context;

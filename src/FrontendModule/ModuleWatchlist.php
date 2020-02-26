@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -18,15 +18,14 @@ use HeimrichHannot\Request\Request;
 use HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\DownloadAllActionPartialTemplate;
-use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\OpenWatchlistWindowActionPartialTemplate;
+use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\WatchlistWindowPartialTemplate;
 use Patchwork\Utf8;
 use Psr\Container\ContainerInterface;
 
 /**
- * Class ModuleWatchlist
- * @package HeimrichHannot\WatchlistBundle\Module
+ * Class ModuleWatchlist.
  */
 class ModuleWatchlist extends Module
 {
@@ -73,19 +72,19 @@ class ModuleWatchlist extends Module
     protected function compile()
     {
         $configuration = WatchlistConfigModel::findByPk($this->watchlistConfig);
-        if (null === $configuration)
-        {
+        if (null === $configuration) {
             $this->Template->toggler = '<div style="background-color: red; color: white;">No watchlist config set.</div>';
+
             return;
         }
 
         $watchlist = $this->container->get('huh.watchlist.watchlist_manager')->getWatchlistModel($configuration);
 
-        if($watchlist instanceof Collection) {
+        if ($watchlist instanceof Collection) {
             $watchlist = $watchlist[0];
         }
 
-        $watchlistContainerId = 'huh_watchlist_window_'.$this->id.'_'.$configuration->id.'_'.rand(0,99999);
+        $watchlistContainerId = 'huh_watchlist_window_'.$this->id.'_'.$configuration->id.'_'.rand(0, 99999);
 
         $this->Template->watchlistContainerId = $watchlistContainerId;
         $this->Template->watchlistId = $watchlist->id;

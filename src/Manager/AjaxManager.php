@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -25,36 +25,36 @@ class AjaxManager
 {
     const XHR_GROUP = 'watchlist';
 
-    const XHR_PARAMETER_DATA                          = 'data';
-    const XHR_PARAMETER_MODULE_ID                     = 'moduleId';
-    const XHR_PARAMETER_WATCHLIST_ITEM_ID             = 'itemId';
-    const XHR_PARAMETER_WATCHLIST_ITEM_UUID           = 'uuid';
-    const XHR_PARAMETER_WATCHLIST_ITEM_TITLE          = 'title';
+    const XHR_PARAMETER_DATA = 'data';
+    const XHR_PARAMETER_MODULE_ID = 'moduleId';
+    const XHR_PARAMETER_WATCHLIST_ITEM_ID = 'itemId';
+    const XHR_PARAMETER_WATCHLIST_ITEM_UUID = 'uuid';
+    const XHR_PARAMETER_WATCHLIST_ITEM_TITLE = 'title';
     const XHR_PARAMETER_WATCHLIST_ITEM_DATA_CONTAINER = 'dataContainer';
-    const XHR_PARAMETER_WATCHLIST_ITEM_PAGE           = 'pageID';
-    const XHR_PARAMETER_WATCHLIST_ITEM_DATA           = 'itemData';
-    const XHR_PARAMETER_WATCHLIST_ITEM_TYPE           = 'type';
-    const XHR_PARAMETER_WATCHLIST_NAME                = 'watchlist';
-    const XHR_PARAMETER_WATCHLIST_DURABILITY          = 'durability';
-    const XHR_PARAMETER_WATCHLIST_ITEM_OPTIONS        = 'options';
-    const XHR_PARAMETER_WATCHLIST_WATCHLIST_ID        = 'watchlistId';
+    const XHR_PARAMETER_WATCHLIST_ITEM_PAGE = 'pageID';
+    const XHR_PARAMETER_WATCHLIST_ITEM_DATA = 'itemData';
+    const XHR_PARAMETER_WATCHLIST_ITEM_TYPE = 'type';
+    const XHR_PARAMETER_WATCHLIST_NAME = 'watchlist';
+    const XHR_PARAMETER_WATCHLIST_DURABILITY = 'durability';
+    const XHR_PARAMETER_WATCHLIST_ITEM_OPTIONS = 'options';
+    const XHR_PARAMETER_WATCHLIST_WATCHLIST_ID = 'watchlistId';
 
     const XHR_WATCHLIST_ADD_ACTION = 'watchlistAddAction';
 
-    const XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION      = 'watchlistNewWatchlistAddAction';
-    const XHR_WATCHLIST_DELETE_ITEM_ACTION                 = 'watchlistDeleteItemAction';
-    const XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION             = 'watchlistEmptyWatchlistAction';
-    const XHR_WATCHLIST_DELETE_WATCHLIST_ACTION            = 'watchlistDeleteWatchlistAction';
-    const XHR_WATCHLIST_SELECT_ACTION                      = 'watchlistSelectAction';
-    const XHR_WATCHLIST_UPDATE_MODAL_ADD_ACTION            = 'watchlistUpdateModalAddAction';
-    const XHR_WATCHLIST_DOWNLOAD_LINK_ACTION               = 'watchlistGenerateDownloadLinkAction';
-    const XHR_WATCHLIST_DOWNLOAD_ALL_ACTION                = 'watchlistDownloadAllAction';
-    const XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION              = 'watchlistShowModalAddAction';
-    const XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION            = 'watchlistUpdateWatchlistAction';
-    const XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST     = 'watchlistAddItemToSelectedWatchlistAction';
-    const XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION    = 'watchlistSendDownloadLinkNotification';
+    const XHR_WATCHLIST_NEW_WATCHLIST_ADD_ITEM_ACTION = 'watchlistNewWatchlistAddAction';
+    const XHR_WATCHLIST_DELETE_ITEM_ACTION = 'watchlistDeleteItemAction';
+    const XHR_WATCHLIST_EMPTY_WATCHLIST_ACTION = 'watchlistEmptyWatchlistAction';
+    const XHR_WATCHLIST_DELETE_WATCHLIST_ACTION = 'watchlistDeleteWatchlistAction';
+    const XHR_WATCHLIST_SELECT_ACTION = 'watchlistSelectAction';
+    const XHR_WATCHLIST_UPDATE_MODAL_ADD_ACTION = 'watchlistUpdateModalAddAction';
+    const XHR_WATCHLIST_DOWNLOAD_LINK_ACTION = 'watchlistGenerateDownloadLinkAction';
+    const XHR_WATCHLIST_DOWNLOAD_ALL_ACTION = 'watchlistDownloadAllAction';
+    const XHR_WATCHLIST_SHOW_MODAL_ADD_ACTION = 'watchlistShowModalAddAction';
+    const XHR_WATCHLIST_UPDATE_WATCHLIST_ACTION = 'watchlistUpdateWatchlistAction';
+    const XHR_WATCHLIST_ADD_ITEM_TO_SELECTED_WATCHLIST = 'watchlistAddItemToSelectedWatchlistAction';
+    const XHR_WATCHLIST_SEND_DOWNLOAD_LINK_NOTIFICATION = 'watchlistSendDownloadLinkNotification';
     const XHR_WATCHLIST_SEND_DOWNLOAD_LINK_AS_NOTIFICATION = 'watchlistSendDownloadLinkAsNotification';
-    const XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM            = 'watchlistLoadDownloadLinkForm';
+    const XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM = 'watchlistLoadDownloadLinkForm';
 
     /**
      * @var ContaoFramework
@@ -86,11 +86,11 @@ class AjaxManager
         WatchlistActionManager $actionManager,
         WatchlistManager $watchlistManager
     ) {
-        $this->framework         = $container->get('contao.framework');
+        $this->framework = $container->get('contao.framework');
         $this->watchlistTemplate = $watchlistTemplate;
-        $this->actionManager     = $actionManager;
-        $this->watchlistManager  = $watchlistManager;
-        $this->container         = $container;
+        $this->actionManager = $actionManager;
+        $this->watchlistManager = $watchlistManager;
+        $this->container = $container;
     }
 
     public function ajaxActions()
@@ -119,20 +119,17 @@ class AjaxManager
             static::XHR_WATCHLIST_LOAD_DOWNLOAD_LINK_FORM, $this);
     }
 
-
     /**
      * add item to watchlist that has been selected by user.
-     *
-     * @param string $data
      *
      * @return ResponseSuccess
      */
     public function watchlistAddItemToSelectedWatchlistAction(string $data)
     {
-        $data        = json_decode($data);
+        $data = json_decode($data);
         $watchlistId = $data->watchlistId;
-        $type        = $data->type;
-        $item        = $data->item;
+        $type = $data->type;
+        $item = $data->item;
 
         $message = $this->actionManager->addItemToWatchlist($watchlistId, $type, $item);
 
@@ -145,17 +142,15 @@ class AjaxManager
     /**
      * create new watchlist and add item to it.
      *
-     * @param string $data
-     *
      * @return ResponseSuccess
      */
     public function watchlistNewWatchlistAddAction(string $data)
     {
-        $data       = json_decode($data);
-        $moduleId   = $data->moduleId;
-        $itemData   = $data->itemData;
-        $name       = $data->name;
-        $type       = $data->type;
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
+        $itemData = $data->itemData;
+        $name = $data->name;
+        $type = $data->type;
         $durability = $data->durability ? $data->durability : null;
 
         $response = new ResponseSuccess();
@@ -167,7 +162,7 @@ class AjaxManager
                     'message' => $this->actionManager->getStatusMessage($message,
                         WatchlistActionManager::MESSAGE_STATUS_ERROR),
                     null,
-                    0
+                    0,
                 ]));
 
             return $response;
@@ -175,8 +170,8 @@ class AjaxManager
 
         $watchlist = $this->actionManager->createWatchlist($name);
 
-        if (!is_array($itemData)) {
-            $data     = null !== json_decode($itemData) ? json_decode($itemData) : $itemData;
+        if (!\is_array($itemData)) {
+            $data = null !== json_decode($itemData) ? json_decode($itemData) : $itemData;
             $itemData = [
                 'uuid' => $data->uuid,
                 'title' => $data->title,
@@ -194,14 +189,12 @@ class AjaxManager
     /**
      * update watchlist.
      *
-     * @param string $data
-     *
      * @return ResponseSuccess
      */
     public function watchlistUpdateWatchlistAction(string $data)
     {
-        $data        = json_decode($data);
-        $moduleId    = $data->moduleId;
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
         $watchlistId = $data->watchlistId;
 
         list($watchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($moduleId, $watchlistId);
@@ -222,17 +215,17 @@ class AjaxManager
      */
     public function watchlistDeleteItemAction($data)
     {
-        $data        = json_decode($data);
-        $itemId      = (int)$data->itemId;
-        $configId    = (int)$data->moduleId;
-        $watchlistId = (int)$data->watchlistId;
+        $data = json_decode($data);
+        $itemId = (int) $data->itemId;
+        $configId = (int) $data->moduleId;
+        $watchlistId = (int) $data->watchlistId;
 
         $configAdapter = $this->framework->getAdapter(WatchlistConfigModel::class);
         $itemAdapter = $this->framework->getAdapter(WatchlistItemModel::class);
 
         $configuration = $configAdapter->findByPk($configId);
-        $item          = WatchlistItemModel::findOneBy(['pid=?','ptableId=?'],[$watchlistId, $itemId]);
-        $message       = $this->actionManager->deleteWatchlistItem($item);
+        $item = WatchlistItemModel::findOneBy(['pid=?', 'ptableId=?'], [$watchlistId, $itemId]);
+        $message = $this->actionManager->deleteWatchlistItem($item);
 
         list($updatedWatchlist, $title, $count) = $this->watchlistTemplate->getUpdatedWatchlist($configuration,
             $watchlistId);
@@ -247,18 +240,16 @@ class AjaxManager
     /**
      * delete all items from specific watchlist.
      *
-     * @param string $data
-     *
      * @return Response
      */
     public function watchlistEmptyWatchlistAction(string $data)
     {
-        $data        = json_decode($data);
+        $data = json_decode($data);
         $watchlistId = $data->watchlistId;
 
         $configuration = WatchlistConfigModel::findByPk($data->moduleId);
         if (!$configuration) {
-            return new ResponseError("No watchlist configuration found!");
+            return new ResponseError('No watchlist configuration found!');
         }
 
         $response = new ResponseSuccess();
@@ -276,14 +267,12 @@ class AjaxManager
     /**
      * delete specific watchlist.
      *
-     * @param string $data
-     *
      * @return ResponseSuccess
      */
     public function watchlistDeleteWatchlistAction(string $data)
     {
-        $data        = json_decode($data);
-        $moduleId    = $data->moduleId;
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
         $watchlistId = $data->watchlistId;
 
         $response = new ResponseSuccess();
@@ -303,7 +292,7 @@ class AjaxManager
         $data = json_decode($data);
 
         $response = new ResponseSuccess();
-        $message  = $this->actionManager->sendDownloadLinkNotification($data);
+        $message = $this->actionManager->sendDownloadLinkNotification($data);
         $response->setResult(new ResponseData('', ['message' => $message]));
 
         return $response;
@@ -311,12 +300,12 @@ class AjaxManager
 
     public function watchlistLoadDownloadLinkForm(string $data)
     {
-        $data        = json_decode($data);
-        $moduleId    = $data->moduleId;
+        $data = json_decode($data);
+        $moduleId = $data->moduleId;
         $watchlistId = $data->watchlistId;
 
         $response = new ResponseSuccess();
-        $form     = $this->actionManager->watchlistLoadDownloadLinkForm($moduleId, $watchlistId);
+        $form = $this->actionManager->watchlistLoadDownloadLinkForm($moduleId, $watchlistId);
         $response->setResult(new ResponseData('', ['form' => $form]));
 
         return $response;
@@ -339,10 +328,6 @@ class AjaxManager
 
     /**
      * check if a entity has options.
-     *
-     * @param int $id
-     * @param int $moduleId
-     * @param string $dataContainer
      *
      * @return array|bool
      */
@@ -401,19 +386,17 @@ class AjaxManager
      * get the link to the public download list of the current watchlist
      * this link can be shared so that other users can see the items of the watchlist.
      *
-     * @param int $moduleId
+     * @param int      $moduleId
      * @param int|null $watchlistId
      *
      * @return ResponseSuccess
      */
     public function watchlistGenerateDownloadLinkAction(string $data)
     {
-        $data        = json_decode($data);
+        $data = json_decode($data);
 
-        $configId    = (int)$data->configId;
-        $watchlistId = (int)$data->watchlistId;
-
-
+        $configId = (int) $data->configId;
+        $watchlistId = (int) $data->watchlistId;
 
         $response = new ResponseSuccess();
         $response->setResult(new ResponseData(false));

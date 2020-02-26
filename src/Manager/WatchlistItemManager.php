@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -27,9 +27,6 @@ class WatchlistItemManager
         $this->module = $module;
     }
 
-    /**
-     * @param int $itemId
-     */
     public function getWatchlistIdFromItem(int $itemId)
     {
         if (null === ($watchlistItem = $this->framework->getAdapter(WatchlistItemModel::class)->findInstanceByPk($itemId))) {
@@ -41,11 +38,6 @@ class WatchlistItemManager
 
     /**
      * * check if item has already been added to a watchlist.
-     *
-     * @param int         $watchlistId
-     * @param string|null $itemUuid
-     * @param string|null $ptable
-     * @param int|null    $ptableId
      *
      * @return bool
      */

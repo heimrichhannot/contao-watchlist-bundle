@@ -1,7 +1,12 @@
 <?php
 
-namespace HeimrichHannot\WatchlistBundle\ListItem;
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
+namespace HeimrichHannot\WatchlistBundle\ListItem;
 
 use Contao\StringUtil;
 use Contao\System;
@@ -14,7 +19,7 @@ class WatchlistDownloadListItem extends DefaultItem
      */
     public function setRaw(array $data = []): void
     {
-        if($data['ptable'] && $data['ptableId'] && (null !== $item = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($data['ptable'], $data['ptableId']))) {
+        if ($data['ptable'] && $data['ptableId'] && (null !== $item = System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($data['ptable'], $data['ptableId']))) {
             $data = $item->row();
             $data['uuid'] = StringUtil::deserialize($data['file'], true)[0];
         }

@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0-alpha.0.4.1] - 2020-02-26
+- fixed request_tokens
+- fixed errors in legacy script
+
+## [2.0.0-alpha.0.4.0] - 2019-02-13
+- merged branch scetch with master
+
 ## [2.0.0-alpha.0.3.0] - 2019-11-25
 - added entity support
 - fixed notification after successfull adding to watchlist

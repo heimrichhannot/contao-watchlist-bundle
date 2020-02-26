@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -24,18 +24,18 @@ class WatchlistItemEntity extends WatchlistItem
 
     public function getDetailsUrl(WatchlistConfigModel $configuration): ?string
     {
-        if(!$configuration->jumpToDetails) {
+        if (!$configuration->jumpToDetails) {
             return null;
         }
 
-        if(null === ($page = System::getContainer()->get('huh.utils.url')->getJumpToPageUrl($configuration->jumpToDetails))) {
+        if (null === ($page = System::getContainer()->get('huh.utils.url')->getJumpToPageUrl($configuration->jumpToDetails))) {
             return null;
         }
 
-        if(!$configuration->alias) {
+        if (!$configuration->alias) {
             return $page;
         }
 
-        return $page . DIRECTORY_SEPARATOR . $this->_raw[$configuration->alias];
+        return $page.\DIRECTORY_SEPARATOR.$this->_raw[$configuration->alias];
     }
 }

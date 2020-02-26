@@ -1,22 +1,17 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
-
 
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 
 /**
- * Class WatchlistWindowPartialTemplate
- * @package HeimrichHannot\WatchlistBundle\PartialTemplate
+ * Class WatchlistWindowPartialTemplate.
  *
  * @property PartialTemplateBuilder $builder
  */
@@ -39,12 +34,8 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
      */
     private $context;
 
-
     /**
      * WatchlistWindowPartialTemplate constructor.
-     * @param WatchlistConfigModel $configuration
-     * @param int|null $watchlistId
-     * @param string|null $content
      */
     public function __construct(WatchlistConfigModel $configuration, ?int $watchlistId, ?string $content = null, array $context = [])
     {
@@ -60,7 +51,6 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
     }
 
     /**
-     * @return string
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
@@ -70,18 +60,14 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
     {
         $context = [];
         $watchlistModel = $this->builder->getWatchlistManager()->getWatchlistModel($this->configuration, $this->watchlistId);
-        if (!$this->content)
-        {
-            if (!$watchlistModel)
-            {
+        if (!$this->content) {
+            if (!$watchlistModel) {
                 $context['content'] = $GLOBALS['TL_LANG']['WATCHLIST']['empty'];
-            }
-            else {
+            } else {
                 $watchlistItems = $this->builder->getWatchlistManager()->getCurrentWatchlistItems($this->configuration, $this->watchlistId);
                 $context['content'] = $this->builder->getWatchlistTemplateManager()->getWatchlist($this->configuration, $watchlistItems, $watchlistModel->id);
             }
-        }
-        else {
+        } else {
             $context['content'] = $this->content;
         }
         $context['headline'] = '<span class="huh_watchlist_window_headline">'.$this->builder->getWatchlistManager()
@@ -90,6 +76,7 @@ class WatchlistWindowPartialTemplate extends AbstractPartialTemplate
         $context = $this->builder->getFrontendFramework($this->configuration)->prepareContext($context, $this);
 
         $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
+
         return $this->builder->getTwig()->render($template, $context);
     }
 }

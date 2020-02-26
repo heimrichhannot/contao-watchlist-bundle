@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -19,10 +19,10 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistBeforeSendNotificationEvent;
+use HeimrichHannot\WatchlistBundle\FrontendModule\DownloadLinkSubmission;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
-use HeimrichHannot\WatchlistBundle\FrontendModule\DownloadLinkSubmission;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -94,8 +94,6 @@ class WatchlistActionManager
     /**
      * delete all items from specific watchlist.
      *
-     * @param int $watchlistId
-     *
      * @return string
      */
     public function deleteWatchlistItemFromWatchlist(int $watchlistId)
@@ -120,8 +118,6 @@ class WatchlistActionManager
     }
 
     /**
-     * @param int $watchlistId
-     *
      * @return string
      */
     public function emptyWatchlist(int $watchlistId)
@@ -143,8 +139,6 @@ class WatchlistActionManager
 
     /**
      * delete watchlist and its watchlistItems.
-     *
-     * @param int $watchlistId
      *
      * @return string
      */
@@ -176,8 +170,7 @@ class WatchlistActionManager
     /**
      * generate link to public list of watchlist items.
      *
-     * @param     $config
-     * @param int $watchlistId
+     * @param $config
      *
      * @return array
      */
@@ -215,9 +208,6 @@ class WatchlistActionManager
     /**
      * get the status message.
      *
-     * @param string $message
-     * @param string $status
-     *
      * @return string
      */
     public function getStatusMessage(string $message, string $status)
@@ -232,9 +222,7 @@ class WatchlistActionManager
     /**
      * create a new watchlist.
      *
-     * @param string      $name
-     * @param string|null $hash
-     * @param null        $durability
+     * @param null $durability
      *
      * @return WatchlistModel
      */
@@ -269,9 +257,7 @@ class WatchlistActionManager
     /**
      * add a item to a watchlist.
      *
-     * @param int    $watchlistId
-     * @param string $type
-     * @param        $itemData
+     * @param $itemData
      *
      * @return string
      */
@@ -308,14 +294,14 @@ class WatchlistActionManager
         $item->tstamp = time();
 
         $item->title = $itemData->title ? html_entity_decode($itemData->title) : '';
-        $item->uuid = $itemData->uuid ? StringUtil::uuidToBin(is_array($itemData->uuid) ? $itemData->uuid['uuid'] : $itemData->uuid) : null;
+        $item->uuid = $itemData->uuid ? StringUtil::uuidToBin(\is_array($itemData->uuid) ? $itemData->uuid['uuid'] : $itemData->uuid) : null;
         $item->ptable = $itemData->ptable ? $itemData->ptable : '';
         $item->ptableId = $itemData->ptableId ? $itemData->ptableId : '';
         $item->downloadable = $itemData->downloadable;
 
         $item->save();
 
-        $message = $this->translator->trans('huh.watchlist.item.add.success',['%item%' => $item->title]);
+        $message = $this->translator->trans('huh.watchlist.item.add.success', ['%item%' => $item->title]);
 
         return $this->getStatusMessage($message, static::MESSAGE_STATUS_SUCCESS);
     }
@@ -375,9 +361,6 @@ class WatchlistActionManager
     }
 
     /**
-     * @param ModuleModel $module
-     * @param array       $submissionData
-     *
      * @return string
      */
     public function sendDownloadLinkAsNotification(ModuleModel $module, array $submissionData)
@@ -396,9 +379,6 @@ class WatchlistActionManager
     }
 
     /**
-     * @param int $moduleId
-     * @param int $watchlistId
-     *
      * @return string
      */
     public function watchlistLoadDownloadLinkForm(int $moduleId, int $watchlistId)
@@ -426,9 +406,6 @@ class WatchlistActionManager
     }
 
     /**
-     * @param int    $watchlistId
-     * @param string $activation
-     *
      * @return bool
      */
     protected function setWatchlistActivation(int $watchlistId, string $activation)
@@ -450,7 +427,7 @@ class WatchlistActionManager
      */
     protected function getSubmissionData($data)
     {
-        if (!is_array($data)) {
+        if (!\is_array($data)) {
             $data = (array) $data;
         }
 
@@ -458,9 +435,7 @@ class WatchlistActionManager
     }
 
     /**
-     * @param FrontendUser $user
-     *
-     * @return null|array
+     * @return array|null
      */
     protected function getSubmissionDataFromFrontendUser(FrontendUser $user)
     {
@@ -475,7 +450,6 @@ class WatchlistActionManager
     }
 
     /**
-     * @param array  $submission
      * @param string $prefix
      *
      * @return array
@@ -496,11 +470,6 @@ class WatchlistActionManager
         return $token;
     }
 
-    /**
-     * @param DownloadLinkSubmission $form
-     * @param int                    $moduleId
-     * @param int                    $watchlistId
-     */
     protected function beforeFormGeneration(DownloadLinkSubmission $form, int $moduleId, int $watchlistId)
     {
         $defaultData = [
@@ -521,7 +490,7 @@ class WatchlistActionManager
      */
     protected function checkFile($watchlist, $uuid)
     {
-        if (is_array($uuid)) {
+        if (\is_array($uuid)) {
             $uuid = $uuid['uuid'];
         }
 
@@ -556,7 +525,7 @@ class WatchlistActionManager
     protected function checkEntity(WatchlistModel $watchlist, string $ptable, int $ptableId, string $title)
     {
         System::loadLanguageFile('default');
-        if($this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId)) {
+        if ($this->container->get('huh.watchlist.watchlist_item_manager')->isItemInWatchlist($watchlist->id, null, $ptable, $ptableId)) {
             $message = sprintf($GLOBALS['TL_LANG']['WATCHLIST']['message_item_already_in_watchlist'], $title);
 
             return $this->getStatusMessage($message, static::MESSAGE_STATUS_ERROR);

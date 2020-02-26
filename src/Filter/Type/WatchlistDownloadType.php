@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -31,8 +31,8 @@ class WatchlistDownloadType extends TextType
 
         $filter = $this->config->getFilter();
 
-        $builder->andWhere($filter['dataContainer'] . '.id ' . $this->getDefaultOperator($element) . ' (' . implode(',',
-                $ids) . ')');
+        $builder->andWhere($filter['dataContainer'].'.id '.$this->getDefaultOperator($element).' ('.implode(',',
+                $ids).')');
     }
 
     /**
@@ -52,14 +52,12 @@ class WatchlistDownloadType extends TextType
     }
 
     /**
-     * get an array of ids of items in watchlist
-     * @param int|null $watchlistConfig
-     * @return array
+     * get an array of ids of items in watchlist.
      */
     protected function getSourceItemIds(int $watchlistConfig = null): array
     {
         $uuid = System::getContainer()->get('huh.request')->getGet('watchlist');
-        $ids  = [];
+        $ids = [];
 
         if (!$uuid) {
             return $ids;
@@ -81,57 +79,54 @@ class WatchlistDownloadType extends TextType
 
     protected function getQuery(WatchlistModel $watchlist, int $watchlistConfigId = null): array
     {
-        $table   = 'tl_watchlist_item';
-        $columns = [$table . '.pid=?'];
-        $values  = [$watchlist->id];
+        $table = 'tl_watchlist_item';
+        $columns = [$table.'.pid=?'];
+        $values = [$watchlist->id];
 
-
-        if(null === ($watchlistConfig = System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy('tl_watchlist_config', ['tl_watchlist_config.id=?'],[$watchlistConfigId]))) {
+        if (null === ($watchlistConfig = System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy('tl_watchlist_config', ['tl_watchlist_config.id=?'], [$watchlistConfigId]))) {
             return [$table, $columns, $values];
         }
 
-        if(!$watchlistConfig->skipItemsForDownloadList) {
+        if (!$watchlistConfig->skipItemsForDownloadList) {
             return [$table, $columns, $values];
         }
 
-        if(empty($skipConfig = StringUtil::deserialize($watchlistConfig->skipItemsForDownloadListConfig, true))) {
+        if (empty($skipConfig = StringUtil::deserialize($watchlistConfig->skipItemsForDownloadListConfig, true))) {
             return [$table, $columns, $values];
         }
 
-        if(null === ($watchlistItems = System::getContainer()->get('huh.utils.model')->findModelInstancesBy($table, $columns, $values))) {
+        if (null === ($watchlistItems = System::getContainer()->get('huh.utils.model')->findModelInstancesBy($table, $columns, $values))) {
             return [$table, $columns, $values];
         }
-
 
         $allowedIds = [];
-        foreach($watchlistItems as $item) {
+        foreach ($watchlistItems as $item) {
             $itemColumns = [];
-            $itemValues  = [];
+            $itemValues = [];
 
-            if('entity' == $item->type) {
-                $itemColumns[] = $item->ptable . '.id=?';
-                $itemValues[]  = $item->ptableId;
+            if ('entity' == $item->type) {
+                $itemColumns[] = $item->ptable.'.id=?';
+                $itemValues[] = $item->ptableId;
             }
 
-            foreach($skipConfig as $condition) {
+            foreach ($skipConfig as $condition) {
                 list($itemColumns[], $conditionValues) = System::getContainer()->get('huh.utils.database')->computeCondition($condition['field'], $condition['operator'], $condition['value'], $item->ptable);
                 $itemValues[] = reset($conditionValues);
             }
 
-            if(null === ($retrievedItem = System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy($item->ptable, $itemColumns, $itemValues))) {
+            if (null === ($retrievedItem = System::getContainer()->get('huh.utils.model')->findOneModelInstanceBy($item->ptable, $itemColumns, $itemValues))) {
                 continue;
             }
 
             $allowedIds[] = $item->id;
         }
 
-        if(empty($allowedIds)) {
+        if (empty($allowedIds)) {
             return [$table, $columns, $values];
         }
 
         $ids = implode(',', $allowedIds);
         list($cols, $vals) = System::getContainer()->get('huh.utils.database')->computeCondition('id', DatabaseUtil::OPERATOR_IN, $ids, $table);
-
 
         return [$table, [$cols], $vals];
     }

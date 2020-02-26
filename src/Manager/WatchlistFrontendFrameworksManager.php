@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\Manager;
-
 
 use HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface;
 
@@ -23,13 +19,11 @@ class WatchlistFrontendFrameworksManager
 
     public function addFramework(WatchlistFrameworkInterface $framework)
     {
-        if (!preg_match('/^[a-z0-9_]+$/u', $framework->getType()))
-        {
-            throw new \Exception("Not a valid watchlist frontend framework type. Only use these characters: [a-z0-9_]");
+        if (!preg_match('/^[a-z0-9_]+$/u', $framework->getType())) {
+            throw new \Exception('Not a valid watchlist frontend framework type. Only use these characters: [a-z0-9_]');
         }
-        if (strlen($framework->getType()) > 32)
-        {
-            throw new \Exception("Not a valid watchlist frontend framework type. Must not be longer than 32 characters.");
+        if (\strlen($framework->getType()) > 32) {
+            throw new \Exception('Not a valid watchlist frontend framework type. Must not be longer than 32 characters.');
         }
         $this->frameworks[$framework->getType()] = $framework;
     }
@@ -38,16 +32,15 @@ class WatchlistFrontendFrameworksManager
      * Return the framework by type.
      * Returns NULL if type not found.
      *
-     * @param string $type
      * @return WatchlistFrameworkInterface|null
      */
     public function getFrameworkByType(string $type)
     {
-        return isset($this->frameworks[$type]) ? $this->frameworks[$type] : NULL;
+        return isset($this->frameworks[$type]) ? $this->frameworks[$type] : null;
     }
 
     /**
-     * Returns all frameworks
+     * Returns all frameworks.
      *
      * @return array|WatchlistFrameworkInterface[]
      */

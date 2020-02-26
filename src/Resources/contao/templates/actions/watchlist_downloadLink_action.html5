@@ -1,7 +1,7 @@
 <div class="watchlist-download-link-container">
     <div class="watchlist-download-link-button-action">
         <form id="watchlist-download-link" action="<?= $this->action ?>" method="POST">
-            <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+            <input type="hidden" name="REQUEST_TOKEN" value="<?= $this->request_token; ?>">
             <input type="hidden" name="watchlistId" value="<?= $this->watchlistId?>">
             <input type="hidden" name="configId" value="<?= $this->configId ?>">
             <button type="submit" class="btn btn-primary" title="<?= $this->downloadLinkTitle; ?>">

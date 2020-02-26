@@ -1,14 +1,13 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\WatchlistBundle\FrontendModule;
 
-use HeimrichHannot\FrontendEdit\ModuleReader;
 use HeimrichHannot\Submissions\Creator\ModuleSubmissionReader;
 
 class DownloadLinkSubmission extends ModuleSubmissionReader

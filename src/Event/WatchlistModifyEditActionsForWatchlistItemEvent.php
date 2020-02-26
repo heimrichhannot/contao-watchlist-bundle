@@ -1,8 +1,12 @@
 <?php
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\WatchlistBundle\Event;
-
 
 use Contao\FrontendTemplate;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
@@ -32,77 +36,51 @@ class WatchlistModifyEditActionsForWatchlistItemEvent extends Event
      */
     protected $item;
 
-
     public function __construct(FrontendTemplate $template, WatchlistConfigModel $config, int $watchlist, array $item)
     {
-        $this->template  = $template;
-        $this->config    = $config;
+        $this->template = $template;
+        $this->config = $config;
         $this->watchlist = $watchlist;
-        $this->item      = $item;
+        $this->item = $item;
     }
 
-    /**
-     * @return FrontendTemplate
-     */
     public function getTemplate(): FrontendTemplate
     {
         return $this->template;
     }
 
-    /**
-     * @param FrontendTemplate $template
-     */
     public function setTemplate(FrontendTemplate $template): void
     {
         $this->template = $template;
     }
 
-    /**
-     * @return WatchlistConfigModel
-     */
     public function getConfig(): WatchlistConfigModel
     {
         return $this->config;
     }
 
-    /**
-     * @param WatchlistConfigModel $config
-     */
     public function setConfig(WatchlistConfigModel $config): void
     {
         $this->config = $config;
     }
 
-    /**
-     * @return int
-     */
     public function getWatchlist(): int
     {
         return $this->watchlist;
     }
 
-    /**
-     * @param int $watchlist
-     */
     public function setWatchlist(int $watchlist): void
     {
         $this->watchlist = $watchlist;
     }
 
-    /**
-     * @return array
-     */
     public function getItem(): array
     {
         return $this->item;
     }
 
-    /**
-     * @param array $item
-     */
     public function setItem(array $item): void
     {
         $this->item = $item;
     }
-
 }

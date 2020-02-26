@@ -1,11 +1,9 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\WatchlistBundle\Test\ConfigElementType;
@@ -15,14 +13,12 @@ use Contao\TestCase\ContaoTestCase;
 use HeimrichHannot\ListBundle\ConfigElementType\ListConfigElementData;
 use HeimrichHannot\ListBundle\Item\DefaultItem;
 use HeimrichHannot\ListBundle\Model\ListConfigElementModel;
-use HeimrichHannot\UtilsBundle\Tests\ContaoFrameworkTrait;
 use HeimrichHannot\UtilsBundle\Tests\ModelMockTrait;
 use HeimrichHannot\WatchlistBundle\ConfigElement\WatchlistConfigElementType;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistManager;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder;
-use function Clue\StreamFilter\fun;
 
 class WatchlistConfigElementTypeTest extends ContaoTestCase
 {
@@ -37,6 +33,7 @@ class WatchlistConfigElementTypeTest extends ContaoTestCase
             switch ($id) {
                 case 2:
                     $watchlistConfig->id = 2;
+
                     return $watchlistConfig;
                 default:
                     return null;
@@ -50,6 +47,7 @@ class WatchlistConfigElementTypeTest extends ContaoTestCase
             switch ($id) {
                 case 2:
                     $watchlistModel->id = 2;
+
                     return $watchlistModel;
                 default:
                     return null;
@@ -90,7 +88,7 @@ class WatchlistConfigElementTypeTest extends ContaoTestCase
             'overrideWatchlistConfig' => true,
             'watchlistConfig' => 2,
             'fileField' => 'uuid',
-            'titleField' => 'title'
+            'titleField' => 'title',
         ]);
         $itemData = new ListConfigElementData($item, $listConfigElementModel);
         $configElement->addToListItemData($itemData);
@@ -105,7 +103,7 @@ class WatchlistConfigElementTypeTest extends ContaoTestCase
         $templateBuilder = $this->createMock(PartialTemplateBuilder::class);
         $framework = $this->mockContaoFramework();
         $configElement = new WatchlistConfigElementType($watchlistManager, $templateBuilder, $framework);
-        $this->assertTrue(is_string($configElement->getPalette()));
+        $this->assertTrue(\is_string($configElement->getPalette()));
     }
 
     public function testGetType()

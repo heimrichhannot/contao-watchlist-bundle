@@ -1,13 +1,10 @@
 <?php
-/**
- * Contao Open Source CMS
- *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
- */
 
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace HeimrichHannot\WatchlistBundle\Controller;
 
@@ -19,7 +16,6 @@ use Contao\Model\Collection;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\ZipWriter;
-use HeimrichHannot\FilenameSanitizerBundle\Util\FilenameSanitizerUtil;
 use HeimrichHannot\WatchlistBundle\Item\DownloadItemInterface;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager;
@@ -43,8 +39,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class WatchlistActionController
- * @package HeimrichHannot\WatchlistBundle\Controller
+ * Class WatchlistActionController.
  *
  * @Route("/contao-watchlist/action", defaults={"_scope" = "frontend", "_token_check" = true})
  */
@@ -83,9 +78,9 @@ class WatchlistActionController extends AbstractController
     public function __construct(ContaoFramework $contaoFramework, WatchlistFrontendFrameworksManager $frameworksManager, WatchlistManager $watchlistManager, WatchlistTemplateManager $templateManager, PartialTemplateBuilder $templateBuilder, WatchlistActionManager $actionManager, string $rootDir)
     {
         $this->frontendFrameworkManager = $frameworksManager;
-        $this->watchlistManager         = $watchlistManager;
-        $this->templateManager          = $templateManager;
-        $this->contaoFramework          = $contaoFramework;
+        $this->watchlistManager = $watchlistManager;
+        $this->templateManager = $templateManager;
+        $this->contaoFramework = $contaoFramework;
         $this->templateBuilder = $templateBuilder;
         $this->actionManager = $actionManager;
         $this->rootDir = $rootDir;
@@ -98,7 +93,6 @@ class WatchlistActionController extends AbstractController
             new FrontendIndex(); // initialize BE_USER_LOGGED_IN or FE_USER_LOGGED_IN
             $this->isInitialized = true;
         }
-
     }
 
     /**
@@ -109,15 +103,13 @@ class WatchlistActionController extends AbstractController
         $this->initializeController();
         $configuration = WatchlistConfigModel::findByPk($request->get('watchlistConfig'));
         $watchlistId = $request->get('watchlist');
-        if (!$configuration)
-        {
-            return new Response("No watchlist configuration could be found.", 404);
+        if (!$configuration) {
+            return new Response('No watchlist configuration could be found.', 404);
         }
 
         $framework = $this->frontendFrameworkManager->getFrameworkByType($configuration->watchlistFrontendFramework);
-        if (!$framework)
-        {
-            return new Response("No frontend framework for watchlist found.", 404);
+        if (!$framework) {
+            return new Response('No frontend framework for watchlist found.', 404);
         }
         $responseContent = $this->templateBuilder->generate(new WatchlistWindowPartialTemplate($configuration, $watchlistId));
 
@@ -125,13 +117,13 @@ class WatchlistActionController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @return Response
-     *
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
+     *
+     * @return Response
+     *
      * @Route("/add-to-watchlist", name="huh_watchlist_add_to_watchlist")
      */
     public function addToWatchlist(Request $request)
@@ -139,29 +131,28 @@ class WatchlistActionController extends AbstractController
         $this->initializeController();
         $this->contaoFramework->initialize();
         $configuration = WatchlistConfigModel::findByPk($request->get('watchlistConfig'));
-        if (!$configuration)
-        {
-            return new Response("No watchlist configuration could be found.", 404);
+        if (!$configuration) {
+            return new Response('No watchlist configuration could be found.', 404);
         }
 
         $type = $request->get('type');
-        $itemData               = new \stdClass();
-        $itemData->options      = $request->get('options');
-        $itemData->uuid         = $request->get('fileUuid');
+        $itemData = new \stdClass();
+        $itemData->options = $request->get('options');
+        $itemData->uuid = $request->get('fileUuid');
         $itemData->downloadable = $request->get('downloadable');
-        $itemData->title        = $request->get('title');
+        $itemData->title = $request->get('title');
 
-        $itemData->pageId        = $request->get('pageId');
-        $itemData->ptable        = $request->get('ptable');
-        $itemData->ptableId        = $request->get('ptableId');
+        $itemData->pageId = $request->get('pageId');
+        $itemData->ptable = $request->get('ptable');
+        $itemData->ptableId = $request->get('ptableId');
 
-        if (FE_USER_LOGGED_IN)
-        {
+        if (FE_USER_LOGGED_IN) {
             list($message, $modal, $count) = $this->templateManager->getWatchlistAddModal($configuration, $type, $itemData);
+
             return new JsonResponse(['message' => $message, 'watchlistContent' => $modal, 'count' => $count]);
         }
 
-        if (isset($itemData->options) && is_array($itemData->options) && count($itemData->options) > 1) {
+        if (isset($itemData->options) && \is_array($itemData->options) && \count($itemData->options) > 1) {
             $responseContent = $this->templateManager->getWatchlistItemOptions($configuration, $type, $itemData->options);
 
             $content = $this->templateBuilder->generate(new WatchlistWindowPartialTemplate($configuration, null, $responseContent));
@@ -174,8 +165,7 @@ class WatchlistActionController extends AbstractController
         }
 
         $watchlistId = $request->getSession()->get(WatchlistModel::WATCHLIST_SELECT);
-        if (null === ($responseData = $this->actionManager->addItemToWatchlist($watchlistId, $type, $itemData)))
-        {
+        if (null === ($responseData = $this->actionManager->addItemToWatchlist($watchlistId, $type, $itemData))) {
             return new Response('Missing file identifier', 404);
         }
         $count = 0;
@@ -189,7 +179,7 @@ class WatchlistActionController extends AbstractController
             'message' => $responseData,
             'count' => $count,
             'watchlist' => $watchlistId,
-            'watchlistContent' => $content
+            'watchlistContent' => $content,
         ]);
     }
 
@@ -202,12 +192,11 @@ class WatchlistActionController extends AbstractController
         $this->contaoFramework->initialize();
         $watchlistId = $request->get('watchlist');
         $configuration = WatchlistConfigModel::findByPk($request->get('watchlistConfig'));
-        if (!$configuration)
-        {
-            return new Response("No watchlist configuration could be found.", 404);
+        if (!$configuration) {
+            return new Response('No watchlist configuration could be found.', 404);
         }
         if (null === ($items = $this->watchlistManager->getItemsFromWatchlist($watchlistId))) {
-            return new Response("Empty download list");
+            return new Response('Empty download list');
         }
 
         $watchlistName = AjaxManager::XHR_GROUP;
@@ -217,14 +206,13 @@ class WatchlistActionController extends AbstractController
                 || WatchlistManager::WATCHLIST_SESSION_FE == $watchlist->name) ? $watchlistName : $watchlist->name;
         }
 
-        if (1 == count($items)) {
+        if (1 == \count($items)) {
             $file = FilesModel::findByUuid($items[0]->uuid);
             if ($file) {
                 return $this->file($file->path);
             }
-            else {
-                return new Response("File not found", 404);
-            }
+
+            return new Response('File not found', 404);
         }
 
         return $this->file(
@@ -239,13 +227,12 @@ class WatchlistActionController extends AbstractController
         $filesystem = new Filesystem();
 
         $unique = false;
-        while(!$unique) {
+        while (!$unique) {
             $fileName = '/files/tmp/'.uniqid($watchlistName.'_'.date('Ymd').'_').'.zip';
             $unique = !$filesystem->exists($this->rootDir.$fileName);
         }
 
-        if (!is_dir($this->rootDir.'/web/files/tmp'))
-        {
+        if (!is_dir($this->rootDir.'/web/files/tmp')) {
             $folder = new Folder('files/tmp');
             $folder->unprotect();
 
@@ -259,7 +246,7 @@ class WatchlistActionController extends AbstractController
                 $output = new NullOutput();
                 $application->run($input, $output);
             } catch (\Exception $e) {
-                throw new \Exception("Could not create temporary folder. Please contact the system admin.");
+                throw new \Exception('Could not create temporary folder. Please contact the system admin.');
             }
         }
 
@@ -294,7 +281,7 @@ class WatchlistActionController extends AbstractController
                 continue;
             }
 
-            foreach($downloads as $download) {
+            foreach ($downloads as $download) {
                 $zipEntryFileName = StringUtil::generateAlias($download['title']).'.'.pathinfo($download['file'], PATHINFO_EXTENSION);
                 $zipWriter->addFile($download['file'], System::getContainer()->get('huh.utils.file')->sanitizeFileName($zipEntryFileName));
             }

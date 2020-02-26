@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\FrontendFramework;
-
 
 abstract class AbstractWatchlistFrontendFramework implements WatchlistFrameworkInterface
 {
@@ -21,9 +17,6 @@ abstract class AbstractWatchlistFrontendFramework implements WatchlistFrameworkI
 
     /**
      * Returns the twig template name for the given action.
-     *
-     * @param string $action
-     * @return string
      */
     public function getTemplate(string $action): string
     {

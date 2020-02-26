@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2019 Heimrich & Hannot GmbH
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -13,25 +13,22 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Environment;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
-use Contao\ModuleModel;
 use Contao\StringUtil;
-use Contao\System;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Translation\TranslatorInterface;
 
 class WatchlistManager
 {
     const WATCHLIST_SESSION_FE = 'WATCHLIST_SESSION_FE';
     const WATCHLIST_SESSION_BE = 'WATCHLIST_SESSION_BE';
 
-    const WATCHLIST_ITEM_FILE_GROUP       = 'watchlistFileItems';
-    const WATCHLIST_ITEM_ENTITY_GROUP     = 'watchlistEntityItems';
-    const WATCHLIST_DOWNLOAD_FILE_GROUP   = 'downloadFileItems';
+    const WATCHLIST_ITEM_FILE_GROUP = 'watchlistFileItems';
+    const WATCHLIST_ITEM_ENTITY_GROUP = 'watchlistEntityItems';
+    const WATCHLIST_DOWNLOAD_FILE_GROUP = 'downloadFileItems';
     const WATCHLIST_DOWNLOAD_ENTITY_GROUP = 'downloadEntityItems';
 
     /**
@@ -55,16 +52,13 @@ class WatchlistManager
 
     public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, WatchlistActionManager $actionManager, Session $session)
     {
-        $this->framework    = $framework;
+        $this->framework = $framework;
         $this->actionManger = $actionManager;
-        $this->container    = $container;
-        $this->session      = $session;
+        $this->container = $container;
+        $this->session = $session;
     }
 
     /**
-     * @param WatchlistConfigModel|null $configuration
-     * @param int|null $watchlistId
-     *
      * @return WatchlistModel|null
      */
     public function getWatchlistModel(?WatchlistConfigModel $configuration = null, ?int $watchlistId = null)
@@ -115,16 +109,15 @@ class WatchlistManager
     }
 
     /**
-     * @param WatchlistConfigModel $configuration
-     *
      * @return WatchlistModel|null
      */
     public function getWatchlistByGroups(WatchlistConfigModel $configuration)
     {
         $groups = StringUtil::deserialize($configuration->groupWatchlist, true);
+
         return $this->framework->getAdapter(WatchlistModel::class)->findByUserGroups($groups);
 
-        /**
+        /*
          * @todo revert module user group restriction?
          */
 //
@@ -168,9 +161,9 @@ class WatchlistManager
      */
     public function getWatchlistBySession()
     {
-        $ip          = (!Config::get('disableIpCheck') ? Environment::get('ip') : '');
-        $name        = FE_USER_LOGGED_IN ? static::WATCHLIST_SESSION_FE : static::WATCHLIST_SESSION_BE;
-        $hash        = sha1(session_id() . $ip . $name);
+        $ip = (!Config::get('disableIpCheck') ? Environment::get('ip') : '');
+        $name = FE_USER_LOGGED_IN ? static::WATCHLIST_SESSION_FE : static::WATCHLIST_SESSION_BE;
+        $hash = sha1(session_id().$ip.$name);
         $watchlistId = $this->session->get(WatchlistModel::WATCHLIST_SELECT);
 
         if (null === $watchlistId) {
@@ -230,7 +223,7 @@ class WatchlistManager
         foreach ($watchlist as $value) {
             if ($showDurability) {
                 if ($value->start <= 0 || $value->stop <= 0) {
-                    $watchlistArray[$value->id] = $value->name . ' ( ' . $GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal'] . ' )';
+                    $watchlistArray[$value->id] = $value->name.' ( '.$GLOBALS['TL_LANG']['WATCHLIST']['durability']['immortal'].' )';
                     continue;
                 }
 
@@ -239,7 +232,7 @@ class WatchlistManager
                     $this->unsetWatchlist($value->id);
                     continue;
                 }
-                $watchlistArray[$value->id] = $value->name . ' ( ' . $durability . ' )';
+                $watchlistArray[$value->id] = $value->name.' ( '.$durability.' )';
                 continue;
             }
 
@@ -279,9 +272,6 @@ class WatchlistManager
 
     /**
      * get current watchlist.
-     *
-     * @param WatchlistConfigModel $configuration
-     * @param int|null $watchlistId
      *
      * @return mixed|null
      */
@@ -343,11 +333,6 @@ class WatchlistManager
 
     /**
      * get class for watchlist items and download items.
-     *
-     * @param string $context
-     * @param string $name
-     *
-     * @return null|string
      */
     public function getClassByName(string $name, string $context): ?string
     {
@@ -404,9 +389,6 @@ class WatchlistManager
     }
 
     /**
-     * @param WatchlistConfigModel $configuration
-     * @param WatchlistModel $watchlist
-     *
      * @return string
      */
     public function getWatchlistName(WatchlistConfigModel $configuration, WatchlistModel $watchlist)
@@ -418,6 +400,7 @@ class WatchlistManager
         if (WatchlistTemplateManager::WATCHLIST_NAME_SUBMISSION == $watchlist->name) {
             return $this->container->get('translator')->trans('huh.watchlist.watchlist_label.default');
         }
+
         return  $watchlist->name;
     }
 }

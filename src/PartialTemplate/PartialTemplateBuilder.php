@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
-
 
 use HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface;
 use HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager;
@@ -74,51 +70,37 @@ class PartialTemplateBuilder
     }
 
     /**
-     * Generate the template
-     *
-     * @param PartialTemplateInterface $template
-     * @return string
+     * Generate the template.
      */
     public function generate(PartialTemplateInterface $template): string
     {
         $template->setBuilder($this);
+
         return $template->generate();
     }
 
-    /**
-     * @return Router
-     */
     public function getRouter(): Router
     {
         return $this->router;
     }
 
-    /**
-     * @return WatchlistFrontendFrameworksManager
-     */
     public function getFrameworksManager(): WatchlistFrontendFrameworksManager
     {
         return $this->frameworksManager;
     }
 
-    /**
-     * @return Environment
-     */
     public function getTwig(): Environment
     {
         return $this->twig;
     }
 
-    /**
-     * @return WatchlistManager
-     */
     public function getWatchlistManager(): WatchlistManager
     {
         return $this->watchlistManager;
     }
 
     /**
-     * Return the current csrf token
+     * Return the current csrf token.
      *
      * @return string
      */
@@ -128,9 +110,8 @@ class PartialTemplateBuilder
     }
 
     /**
-     * Return the frontend framework for given watchlist configuration
+     * Return the frontend framework for given watchlist configuration.
      *
-     * @param WatchlistConfigModel $configuration
      * @return WatchlistFrameworkInterface|null
      */
     public function getFrontendFramework(WatchlistConfigModel $configuration)
@@ -138,37 +119,23 @@ class PartialTemplateBuilder
         return $this->frameworksManager->getFrameworkByType($configuration->watchlistFrontendFramework);
     }
 
-    /**
-     * @return ContainerInterface
-     */
     public function getContainer(): ContainerInterface
     {
         return $this->container;
     }
 
-    /**
-     * @return WatchlistTemplateManager
-     */
     public function getWatchlistTemplateManager(): WatchlistTemplateManager
     {
         return $this->watchlistTemplateManager;
     }
 
-    /**
-     * @return WatchlistItemManager
-     */
     public function getWatchlistItemManager(): WatchlistItemManager
     {
         return $this->watchlistItemManager;
     }
 
-    /**
-     * @return Translator
-     */
     public function getTranslator(): Translator
     {
         return $this->translator;
     }
-
-
 }

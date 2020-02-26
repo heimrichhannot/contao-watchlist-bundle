@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\PartialTemplate;
-
 
 use Contao\Controller;
 use Contao\Environment;
@@ -38,12 +34,9 @@ class ItemParentListPartialTemplate extends AbstractPartialTemplate
         $this->configuration = $configuration;
     }
 
-
     /**
      * Return the template name without framework suffix and file extension,
-     * e.g. 'watchlist_window'
-     *
-     * @return string
+     * e.g. 'watchlist_window'.
      */
     public function getTemplateName(): string
     {
@@ -51,48 +44,45 @@ class ItemParentListPartialTemplate extends AbstractPartialTemplate
     }
 
     /**
-     * Generate the template
-     *
-     * @return string
+     * Generate the template.
      */
     public function generate(): string
     {
-        $type   = null;
+        $type = null;
         $pageId = $this->page->id;
-        $pages  = [$this->page->row()];
-        $items  = [];
+        $pages = [$this->page->row()];
+        $items = [];
 
         // Get all pages up to the root page
         $objPages = PageModel::findParentsById($this->page->pid);
 
-        if ($objPages !== null) {
-            while ($pageId > 0 && $type != 'root' && $objPages->next()) {
-                $type    = $objPages->type;
-                $pageId  = $objPages->pid;
+        if (null !== $objPages) {
+            while ($pageId > 0 && 'root' != $type && $objPages->next()) {
+                $type = $objPages->type;
+                $pageId = $objPages->pid;
                 $pages[] = $objPages->row();
             }
         }
 
         // Get the first active regular page and display it instead of the root page
-        if ($type == 'root') {
+        if ('root' == $type) {
             $objFirstPage = PageModel::findFirstPublishedByPid($objPages->id);
 
-            $items[] = array
-            (
-                'isRoot'   => true,
+            $items[] = [
+                'isRoot' => true,
                 'isActive' => false,
-                'href'     => (($objFirstPage !== null) ? Controller::generateFrontendUrl($objFirstPage->row()) : Environment::get('base')),
-                'title'    => StringUtil::specialchars($objPages->pageTitle ? : $objPages->title, true),
-                'link'     => $objPages->title,
-                'data'     => $objFirstPage->row(),
-                'class'    => ''
-            );
+                'href' => ((null !== $objFirstPage) ? Controller::generateFrontendUrl($objFirstPage->row()) : Environment::get('base')),
+                'title' => StringUtil::specialchars($objPages->pageTitle ?: $objPages->title, true),
+                'link' => $objPages->title,
+                'data' => $objFirstPage->row(),
+                'class' => '',
+            ];
 
             array_pop($pages);
         }
 
         // Build the breadcrumb menu
-        for ($i = (count($pages) - 1); $i > 0; $i--) {
+        for ($i = (\count($pages) - 1); $i > 0; --$i) {
             if (($pages[$i]['hide'] && !$this->showHidden) || (!$pages[$i]['published'] && !BE_USER_LOGGED_IN)) {
                 continue;
             }
@@ -102,54 +92,54 @@ class ItemParentListPartialTemplate extends AbstractPartialTemplate
                 case 'redirect':
                     $href = $pages[$i]['url'];
 
-                    if (strncasecmp($href, 'mailto:', 7) === 0) {
+                    if (0 === strncasecmp($href, 'mailto:', 7)) {
                         $href = StringUtil::encodeEmail($href);
                     }
                     break;
                 case 'forward':
                     $objNext = PageModel::findPublishedById($pages[$i]['jumpTo']);
 
-                    if ($objNext !== null) {
+                    if (null !== $objNext) {
                         $href = Controller::generateFrontendUrl($objNext->row());
                         break;
                     }
                 // DO NOT ADD A break; STATEMENT
 
+                // no break
                 default:
                     $href = Controller::generateFrontendUrl($pages[$i]);
                     break;
             }
 
-            $items[] = array
-            (
-                'isRoot'   => false,
+            $items[] = [
+                'isRoot' => false,
                 'isActive' => false,
-                'href'     => $href,
-                'title'    => StringUtil::specialchars($pages[$i]['pageTitle'] ? : $pages[$i]['title'], true),
-                'link'     => $pages[$i]['title'],
-                'data'     => $pages[$i],
-                'class'    => ''
-            );
+                'href' => $href,
+                'title' => StringUtil::specialchars($pages[$i]['pageTitle'] ?: $pages[$i]['title'], true),
+                'link' => $pages[$i]['title'],
+                'data' => $pages[$i],
+                'class' => '',
+            ];
         }
 
         // Active page
-        $items[] = array
-        (
-            'isRoot'   => false,
+        $items[] = [
+            'isRoot' => false,
             'isActive' => true,
-            'href'     => Controller::generateFrontendUrl($pages[0]),
-            'title'    => StringUtil::specialchars($pages[0]['pageTitle'] ? : $pages[0]['title']),
-            'link'     => $pages[0]['title'],
-            'data'     => $pages[0],
-            'class'    => 'last'
-        );
+            'href' => Controller::generateFrontendUrl($pages[0]),
+            'title' => StringUtil::specialchars($pages[0]['pageTitle'] ?: $pages[0]['title']),
+            'link' => $pages[0]['title'],
+            'data' => $pages[0],
+            'class' => 'last',
+        ];
 
         $items[0]['class'] = 'first';
 
         $context = [];
         $context['items'] = $items;
 
-        $template           = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
+        $template = $this->getTemplate($this->builder->getFrontendFramework($this->configuration));
+
         return $this->builder->getTwig()->render($template, $context);
     }
 }

@@ -1,16 +1,12 @@
 <?php
-/**
- * Contao Open Source CMS
+
+/*
+ * Copyright (c) 2020 Heimrich & Hannot GmbH
  *
- * Copyright (c) 2019 Heimrich & Hannot GmbH
- *
- * @author  Thomas Körner <t.koerner@heimrich-hannot.de>
- * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
-
 
 use Contao\Controller;
 use Contao\DataContainer;
@@ -30,25 +26,18 @@ class WatchlistConfigContainer
         $this->container = $container;
     }
 
-
     public function onLoadCallback(DC_Table $dcTable)
     {
-        if ($this->container->get('huh.utils.container')->isBundleActive('submissions'))
-        {
+        if ($this->container->get('huh.utils.container')->isBundleActive('submissions')) {
             Controller::loadLanguageFile('tl_submission_archive');
             $dca = &$GLOBALS['TL_DCA']['tl_watchlist_config'];
             $dca['palettes']['default'] = str_replace('useDownloadLink', 'useDownloadLink,downloadLinkUseNotification', $dca['palettes']['default']);
         }
-        return;
     }
 
-    /**
-     * @param DataContainer $dc
-     * @return array
-     */
     public function getFields(DataContainer $dc): array
     {
-        if(!($dataContainer = $dc->activeRecord->skipItemsDataContainer)) {
+        if (!($dataContainer = $dc->activeRecord->skipItemsDataContainer)) {
             return [];
         }
 
