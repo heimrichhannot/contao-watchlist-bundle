@@ -14,6 +14,7 @@ use Contao\Environment;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
 use Contao\StringUtil;
+use Contao\System;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -355,12 +356,28 @@ class WatchlistManager
 
     /**
      * @param $watchlistId
-     *
-     * @return mixed
      */
-    public function getItemsFromWatchlist($watchlistId)
+    public function getItemsFromWatchlist($watchlistId): ?array
     {
-        return $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId);
+        /*
+         * @var WatchlistItemModel $watchlistItem
+         */
+        if (null === ($watchlistItems = $this->framework->getAdapter(WatchlistItemModel::class)->findByPid($watchlistId))) {
+            return null;
+        }
+
+        $items = [];
+
+        foreach ($watchlistItems as $watchlistItem) {
+            if (null === System::getContainer()->get('huh.utils.model')->findModelInstanceByPk($watchlistItem->ptable, $watchlistItem->ptableId)) {
+                $watchlistItem->delete();
+                continue;
+            }
+
+            $items[] = $watchlistItem;
+        }
+
+        return $items;
     }
 
     /**

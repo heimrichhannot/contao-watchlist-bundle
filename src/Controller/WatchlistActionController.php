@@ -170,7 +170,7 @@ class WatchlistActionController extends AbstractController
         }
         $count = 0;
         if (null !== ($watchlistItems = $this->watchlistManager->getItemsFromWatchlist($watchlistId))) {
-            $count = $watchlistItems->count();
+            $count = \count($watchlistItems);
         }
 
         $content = $this->templateBuilder->generate(new WatchlistWindowPartialTemplate($configuration, $watchlistId));

@@ -178,7 +178,7 @@ class WatchlistTemplateManager
      */
     public function prepareWatchlistItems($items, $watchlistConfiguration, $watchlistId, $grouped)
     {
-        $totalCount = $items->count();
+        $totalCount = \count($items);
 
         $parsedItems = [];
         $parents = [];
@@ -384,7 +384,7 @@ class WatchlistTemplateManager
         return [
             $this->getWatchlist($configuration, $watchlistItems, $watchlistId),
             $watchlistName,
-            $watchlistItems ? $watchlistItems->count() : 0,
+            $watchlistItems ? \count($watchlistItems) : 0,
         ];
     }
 
@@ -637,7 +637,7 @@ class WatchlistTemplateManager
                 $type, $itemData);
             $watchlistItems = System::getContainer()->get('huh.watchlist.watchlist_manager')->getItemsFromWatchlist($watchlist->id);
 
-            return [$message, null, $watchlistItems->count()];
+            return [$message, null, \count($watchlistItems)];
         }
 
         $template = new FrontendTemplate('watchlist_add_option_modal');

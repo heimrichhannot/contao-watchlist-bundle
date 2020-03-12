@@ -9,6 +9,7 @@
 namespace HeimrichHannot\WatchlistBundle\Item;
 
 use Contao\FrontendTemplate;
+use Contao\RequestToken;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistModifyEditActionsForWatchlistItemEvent;
 use HeimrichHannot\WatchlistBundle\Manager\AjaxManager;
@@ -86,6 +87,7 @@ class WatchlistItem implements WatchlistItemInterface
         $template->delLink = $translator->trans('huh.watchlist.item.delete.link');
         $template->moduleId = $configuration->id;
         $template->watchlistId = $watchlistId;
+        $template->request_token = RequestToken::get();
 
         if (null !== ($file = $this->getFile())) {
             if (!$url) {

@@ -12,6 +12,7 @@ use Contao\Model;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Validator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class WatchlistItemModel.
@@ -33,6 +34,11 @@ class WatchlistItemModel extends Model
     const WATCHLIST_ITEM_TYPE_ENTITY = 'entity';
 
     protected static $strTable = 'tl_watchlist_item';
+
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     public function __construct($objResult = null)
     {
@@ -92,7 +98,7 @@ class WatchlistItemModel extends Model
     public function getFilePath()
     {
         if (static::WATCHLIST_ITEM_TYPE_FILE === $this->type) {
-            return $this->container->get('huh.utils.file')->getPathFromUuid($this->uuid);
+            return System::getContainer()->get('huh.utils.file')->getPathFromUuid($this->uuid);
         }
 
         return null;

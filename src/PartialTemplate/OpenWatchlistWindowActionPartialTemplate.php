@@ -51,7 +51,7 @@ class OpenWatchlistWindowActionPartialTemplate extends AbstractPartialTemplate
         $count = 0;
 
         if (null !== ($watchlistItems = $this->builder->getWatchlistManager()->getItemsFromWatchlist($this->watchlist->id))) {
-            $count = $watchlistItems->count();
+            $count = \count($watchlistItems);
         }
 
         $attributes = $this->createDefaultActionAttributes($this->configuration, $url, static::ACTION_TYPE_TOGGLE);

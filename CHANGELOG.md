@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0-alpha.0.5.0] - 2020-03-12
+- fixed collecting watchlistItems
+- fixed missing request_tokens
+
 ## [2.0.0-alpha.0.4.1] - 2020-02-26
 - fixed request_tokens
 - fixed errors in legacy script
