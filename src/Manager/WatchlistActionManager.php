@@ -587,7 +587,7 @@ class WatchlistActionManager
                 continue;
             }
 
-            $zipWriter->addFile($download->getFile(), $download->getTitle());
+            $zipWriter->addFile($download->getFile(), basename($download->getFile()));
         }
 
         $zipWriter->close();
