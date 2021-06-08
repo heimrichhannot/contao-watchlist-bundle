@@ -27,6 +27,8 @@ services:
       - "@contao.framework"
       - "@huh.utils.model"
 
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager: "@huh.watchlist.watchlist_item_manager"
+
   huh.watchlist.action_manager:
       class: HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager
       autowire: true

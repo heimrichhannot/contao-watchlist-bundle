@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -20,7 +20,7 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class WatchlistManager
 {
@@ -47,11 +47,11 @@ class WatchlistManager
      */
     private $container;
     /**
-     * @var Session
+     * @var SessionInterface
      */
     private $session;
 
-    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, WatchlistActionManager $actionManager, Session $session)
+    public function __construct(ContainerInterface $container, ContaoFrameworkInterface $framework, WatchlistActionManager $actionManager, SessionInterface $session)
     {
         $this->framework = $framework;
         $this->actionManger = $actionManager;

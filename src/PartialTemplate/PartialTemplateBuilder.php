@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2020 Heimrich & Hannot GmbH
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -16,7 +16,9 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class PartialTemplateBuilder
@@ -57,7 +59,7 @@ class PartialTemplateBuilder
     /**
      * PartialTemplateBuilder constructor.
      */
-    public function __construct(ContainerInterface $container, Router $router, WatchlistFrontendFrameworksManager $frameworksManager, Environment $twig, WatchlistManager $watchlistManager, WatchlistTemplateManager $watchlistTemplateManager, WatchlistItemManager $watchlistItemManager, Translator $translator)
+    public function __construct(ContainerInterface $container, RouterInterface $router, WatchlistFrontendFrameworksManager $frameworksManager, Environment $twig, WatchlistManager $watchlistManager, WatchlistTemplateManager $watchlistTemplateManager, WatchlistItemManager $watchlistItemManager, TranslatorInterface $translator)
     {
         $this->router = $router;
         $this->frameworksManager = $frameworksManager;
