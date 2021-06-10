@@ -81,7 +81,7 @@ class PartialTemplateBuilder
         return $template->generate();
     }
 
-    public function getRouter(): Router
+    public function getRouter(): RouterInterface
     {
         return $this->router;
     }
@@ -136,7 +136,7 @@ class PartialTemplateBuilder
         return $this->watchlistItemManager;
     }
 
-    public function getTranslator(): Translator
+    public function getTranslator(): TranslatorInterface
     {
         return $this->translator;
     }

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0-alpha.0.6.1] - 2021-06-10
+
+- fixes for contao 4.9
+
 ## [2.0.0-alpha.0.6.0] - 2021-06-08
 
 - fixes for contao 4.9
