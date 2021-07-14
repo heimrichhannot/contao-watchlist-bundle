@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-beta1] - 2021-07-*
+
+- major refactoring (see `UPGRADE.md` for details)
+- contao 4.9-only
+
 ## [2.0.0-alpha.0.6.1] - 2021-06-10
 
 - fixes for contao 4.9

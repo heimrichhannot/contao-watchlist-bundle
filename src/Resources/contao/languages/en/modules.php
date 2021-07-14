@@ -1,12 +1,9 @@
 <?php
 
-/**
- * Front-end modules
+/*
+ * Copyright (c) 2021 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
  */
 
-$GLOBALS['TL_LANG']['FMD']['watchlist'] = array('Watchlist', 'Add content elements to an watchlist and download them at all.');
-
-/**
- * Backend modules
- */
-$GLOBALS['TL_LANG']['MOD']['watchlist_config'][0] = 'Merklistenkonfigurationen';
+$GLOBALS['TL_LANG']['MOD']['watchlist_item'][0] = 'Merklistenobjekte';
