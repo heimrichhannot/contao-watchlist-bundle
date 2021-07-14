@@ -1,7 +1,82 @@
 services:
   _defaults:
     public: true
+
+  _instanceof:
+    HeimrichHannot\WatchlistBundle\FrontendFramework\WatchlistFrameworkInterface:
+      autowire: true
+      public: false
+      tags: ['huh.watchlist.framework']
+
+  huh.watchlist.ajax_manager:
+    class: HeimrichHannot\WatchlistBundle\Manager\AjaxManager
+    arguments:
+      - "@service_container"
+      - "@huh.watchlist.template_manager"
+      - "@huh.watchlist.action_manager"
+      - "@huh.watchlist.watchlist_manager"
+
+  huh.watchlist.watchlist_manager:
+    class: HeimrichHannot\WatchlistBundle\Manager\WatchlistManager
+    autowire: true
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistManager: '@huh.watchlist.watchlist_manager'
+
+  huh.watchlist.watchlist_item_manager:
+    class: HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager
+    arguments:
+      - "@contao.framework"
+      - "@huh.utils.model"
+
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistItemManager: "@huh.watchlist.watchlist_item_manager"
+
+  huh.watchlist.action_manager:
+      class: HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager
+      autowire: true
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistActionManager: '@huh.watchlist.action_manager'
+
+  huh.watchlist.template_manager:
+    class: HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager
+    autowire: true
+  HeimrichHannot\WatchlistBundle\Model\WatchlistTemplateManager: '@huh.watchlist.template_manager'
+
+  huh.watchlist.manager.frontend_frameworks:
+    class: HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager
+    autowire: true
+  HeimrichHannot\WatchlistBundle\Manager\WatchlistFrontendFrameworksManager: '@huh.watchlist.manager.frontend_frameworks'
+
+  huh.watchlist.choice.download_file:
+    class: HeimrichHannot\WatchlistBundle\Choice\DownloadItemFileChoice
+    autowire: true
+  huh.watchlist.choice.download_entity:
+    class: HeimrichHannot\WatchlistBundle\Choice\DownloadItemEntityChoice
+    autowire: true
+  huh.watchlist.choice.watchlist_file:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistItemFileChoice
+    autowire: true
+  huh.watchlist.choice.watchlist_entity:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistItemEntityChoice
+    autowire: true
+  huh.watchlist.choice.watchlist_label:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistLabelChoice
+    autowire: true
+  huh.watchlist.choice.watchlist_window_template:
+    class: HeimrichHannot\WatchlistBundle\Choice\WatchlistWindowTemplateChoice
     autowire: true
 
-  HeimrichHannot\WatchlistBundle\:
-    resource: '../../{Util}/*'
+  HeimrichHannot\WatchlistBundle\PartialTemplate\PartialTemplateBuilder:
+    autowire: true
+    public: true
+
+  # Reader Bundle
+  HeimrichHannot\WatchlistBundle\ConfigElementType\WatchlistConfigElementReaderType:
+    autowire: true
+    tags: ['huh.reader.config_element_type']
+
+  # List Bundle
+  HeimrichHannot\WatchlistBundle\ConfigElementType\WatchlistConfigElementListType:
+    autowire: true
+    tags: ['huh.list.config_element_type']
+
+  # Frontend Frameworks
+  HeimrichHannot\WatchlistBundle\FrontendFramework\BaseWatchlistFramework: ~
+  HeimrichHannot\WatchlistBundle\FrontendFramework\Bootstrap4WatchlistFramework: ~

@@ -1,0 +1,12 @@
+{% extends '@ContaoTwigTemplates/block/block_searchable.html.twig' %}
+
+{% block content %}
+    <ul>
+        {% for file in files %}
+            <li class="download-element ext-{{ file.extension|default }}">
+                <a href="{{ file.href|default }}" title="{{ file.title|default }}">{{ file.link|default }} <span class="size">({{ file.filesize|default }})</span></a>
+                {{ file.addToWatchlistButton.html|default|raw }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

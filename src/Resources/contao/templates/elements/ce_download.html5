@@ -1,0 +1,5 @@
+<?php
+$this->extend('block_searchable');
+$this->block('content');
+    echo \Contao\System::getContainer()->get('twig')->loadTemplate('@HeimrichHannotContaoWatchlist/elements/ce_download.html.twig')->renderBlock('content', $this->getData());
+$this->endblock();

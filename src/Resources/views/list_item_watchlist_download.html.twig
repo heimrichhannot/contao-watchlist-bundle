@@ -1,0 +1,11 @@
+<div class="{{ cssClass }}">
+    <figure class="image_container">
+        {% if image.picture|default() %}
+            {{ include('@HeimrichHannotContaoUtils/image.html.twig', image) }}
+        {% elseif uuid|default() %}
+            <img src="{{ uuid }}" alt="{{ raw.title }}"/>
+        {% endif %}
+    </figure>
+    <h5>{{ raw.title }}</h5>
+    <a href="{{ downloadLink }}" title="{{ raw.title }} herunterladen" class="watchlist-download">herunterladen</a>
+</div>

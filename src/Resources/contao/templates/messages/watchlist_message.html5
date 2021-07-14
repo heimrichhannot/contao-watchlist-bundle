@@ -1,0 +1,3 @@
+<div class="watchlist-message fixed-top p-3" id="watchlist-message">
+    <span class="message p-3 d-block text-white <?= $this->cssClass ?>"><?= $this->message; ?></span>
+</div>

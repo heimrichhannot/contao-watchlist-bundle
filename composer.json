@@ -1,59 +1,57 @@
 {
-    "name": "heimrichhannot/contao-watchlist-bundle",
-    "description": "This utility bundle offers a flexible watchlist for the Contao CMS.",
-    "keywords": [
-        "contao",
-        "watchlist"
+  "name": "heimrichhannot/contao-watchlist-bundle",
+  "type": "contao-bundle",
+  "description": "A watchlist/downloadlist bundle for contao CMS.",
+  "license": "LGPL-3.0-or-later",
+  "require": {
+    "php": "^7.1",
+    "contao/core-bundle": "^4.4",
+    "heimrichhannot/contao-utils-bundle": "^2.96",
+    "heimrichhannot/contao-ajax-bundle": "^1.0"
+  },
+  "require-dev": {
+    "contao/test-case": "1.1.*",
+    "contao/manager-plugin": "^2.0",
+    "friendsofphp/php-cs-fixer": "^2.2",
+    "phpunit/phpunit": "^6.5",
+    "phpunit/phpunit-mock-objects": "^4.0|^5.0",
+    "phpunit/php-token-stream": "^1.4|^2.0|^3.0",
+    "php-http/guzzle6-adapter": "^1.1",
+    "php-http/message-factory": "^1.0.2",
+    "satooshi/php-coveralls": "^2.0",
+    "symfony/phpunit-bridge": "^3.2"
+  },
+  "suggest": {
+    "heimrichhannot/contao-submissions": "^1.5",
+    "heimrichhannot/contao-list-bundle": "^1.0",
+    "terminal42/notification_center": "^1.5"
+
+  },
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "HeimrichHannot\\WatchlistBundle\\": "src/"
+    },
+    "classmap": [
+      "src/"
     ],
-    "type": "contao-bundle",
-    "homepage": "https://github.com/heimrichhannot/contao-watchlist-bundle",
-    "license": "LGPL-3.0-or-later",
-    "authors": [
-        {
-            "name": "Heimrich & Hannot",
-            "email": "digitales@heimrich-hannot.de",
-            "homepage": "http://www.heimrich-hannot.de",
-            "role": "Developer"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/heimrichhannot/contao-watchlist-bundle/issues"
-    },
-    "require": {
-        "php": "^7.4",
-        "contao/core-bundle": "^4.9",
-        "heimrichhannot/contao-utils-bundle": "^2.198",
-        "heimrichhannot/contao-request-bundle": "^1.2"
-    },
-    "require-dev": {
-        "contao/test-case": "1.1.*",
-        "contao/manager-plugin": "^2.0",
-        "friendsofphp/php-cs-fixer": "^2.2",
-        "phpunit/phpunit": "^6.0",
-        "php-http/guzzle6-adapter": "^1.1",
-        "php-http/message-factory": "^1.0.2",
-        "php-coveralls/php-coveralls": "^2.0",
-        "symfony/phpunit-bridge": "^3.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "HeimrichHannot\\WatchlistBundle\\": "src/",
-            "Contao\\": "src/Contao/"
-        },
-        "classmap": [
-            "src/"
-        ],
-        "exclude-from-classmap": [
-            "src/Resources/contao/config/",
-            "src/Resources/contao/dca/",
-            "src/Resources/contao/languages/",
-            "src/Resources/contao/templates/"
-        ]
-    },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "extra": {
-        "contao-manager-plugin": "HeimrichHannot\\WatchlistBundle\\ContaoManager\\Plugin"
+    "exclude-from-classmap": [
+      "src/Resources/contao/config/",
+      "src/Resources/contao/dca/",
+      "src/Resources/contao/languages/",
+      "src/Resources/contao/templates/"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "HeimrichHannot\\WatchlistBundle\\Test\\": "tests/",
+      "HeimrichHannot\\UtilsBundle\\Tests\\": "vendor/heimrichhannot/contao-utils-bundle/tests"
     }
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "extra": {
+    "contao-manager-plugin": "HeimrichHannot\\WatchlistBundle\\ContaoManager\\Plugin"
+  }
 }

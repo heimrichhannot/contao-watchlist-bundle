@@ -1,0 +1,4 @@
+huh:
+  filter:
+    types:
+      - {name: watchlistDownload, class: HeimrichHannot\WatchlistBundle\Filter\Type\WatchlistDownloadType, type: text}

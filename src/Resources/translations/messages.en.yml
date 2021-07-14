@@ -1,0 +1,33 @@
+# label
+huh:
+  watchlist:
+    watchlist_label:
+      default: Watchlist
+      download: Downloadlist
+    empty_watchlist: Empty list
+    remove_all_from_list: Remove all elements from the list
+    item:
+      add:
+        success: '%item% was added to the list.'
+        link: Add to list
+        title: 'Add %item% to list'
+      delete:
+        label: Delete item from list
+        link: Delete
+        error: There has been an error while deleting the element.
+        success: '%item% was removed from the list.'
+      download:
+        title: 'Download %item%'
+        link: Download
+      already_in_watchlist: The selected file is already on your list.
+    list:
+      download:
+        text: 'Download all'
+        title: 'Download all elements from this watchlist as zip archive.'
+    download_link:
+      title: Create download link
+      success: Your download link has been emailed to you.
+    empty_list: No elements available
+    downloadlist:
+      validity_expired: You can no longer view this list.
+      invalid_activation: You do not have permission to view this list.
