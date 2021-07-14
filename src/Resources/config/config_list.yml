@@ -1,9 +1,0 @@
-huh:
-  list:
-    items:
-      - { name: watchlistDownload, class: HeimrichHannot\WatchlistBundle\ListItem\WatchlistDownloadListItem }
-
-    templates:
-      item:
-        - { name: watchlist-list-item, template: "@HeimrichHannotContaoWatchlist/list_item_watchlist.html.twig" }
-        - { name: watchlist-downloadlist-item, template: "@HeimrichHannotContaoWatchlist/list_item_watchlist_download.html.twig" }
