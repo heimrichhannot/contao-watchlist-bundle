@@ -6,12 +6,8 @@
  * @license LGPL-3.0-or-later
  */
 
-$GLOBALS['BE_MOD']['system']['watchlist_item'] = [
-    'tables' => ['tl_watchlist', 'tl_watchlist_item'],
-];
-
 $GLOBALS['BE_MOD']['system']['watchlist'] = [
-    'tables' => ['tl_watchlist'],
+    'tables' => ['tl_watchlist', 'tl_watchlist_item'],
 ];
 
 /*

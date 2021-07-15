@@ -4,4 +4,4 @@ services:
     autowire: true
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../../{Util}/*'
+    resource: '../../{DataContainer,EventListener,Util}/*'

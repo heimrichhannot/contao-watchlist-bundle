@@ -6,4 +6,4 @@
  * @license LGPL-3.0-or-later
  */
 
-$GLOBALS['TL_LANG']['MOD']['watchlist_item'][0] = 'Merklistenobjekte';
+$GLOBALS['TL_LANG']['MOD']['watchlist'][0] = 'Merklisten';
