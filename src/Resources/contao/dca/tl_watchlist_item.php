@@ -69,7 +69,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'pid' => [
-            'foreignKey' => 'tl_watchlist.id',
+            'foreignKey' => 'tl_watchlist.name',
             'sql' => "int(10) unsigned NOT NULL default '0'",
             'relation' => ['type' => 'belongsTo', 'load' => 'eager'],
         ],
@@ -83,6 +83,24 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'flag' => 6,
             'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'title' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['title'],
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
+            'sql' => "varchar(255) NOT NULL default ''",
+        ],
+        'type' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['type'],
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'select',
+            'options' => \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPES,
+            'reference' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['reference'],
+            'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
+            'sql' => "varchar(64) NOT NULL default ''",
         ],
     ],
 ];

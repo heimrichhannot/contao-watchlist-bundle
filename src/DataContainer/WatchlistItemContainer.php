@@ -10,6 +10,14 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 class WatchlistItemContainer
 {
+    const TYPE_FILE = 'file';
+    const TYPE_ENTITY = 'entity';
+
+    const TYPES = [
+        self::TYPE_FILE,
+        self::TYPE_ENTITY,
+    ];
+
     public function listChildren($arrRow)
     {
         return '<div class="tl_content_left">'.($arrRow['title'] ?: $arrRow['id']).' <span style="color:#b3b3b3; padding-left:3px">['.

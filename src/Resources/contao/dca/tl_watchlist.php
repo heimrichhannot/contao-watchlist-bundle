@@ -69,7 +69,7 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
     ],
     'palettes' => [
         '__selector__' => [],
-        'default' => '{general_legend},name,authorType,author;',
+        'default' => '{general_legend},name,authorType,author,uuid;',
     ],
     'fields' => [
         'id' => [
@@ -86,8 +86,8 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'name' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['name'],
+        'title' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['title'],
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
@@ -99,7 +99,7 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
-            'eval' => ['maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
+            'eval' => ['maxlength' => 36, 'tl_class' => 'w50', 'mandatory' => true, 'disabled' => true],
             'sql' => "varchar(36) NOT NULL default ''",
         ],
     ],
