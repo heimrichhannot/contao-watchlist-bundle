@@ -8,17 +8,45 @@
 
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
-use Contao\Controller;
+use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\DataContainer;
+use HeimrichHannot\UtilsBundle\Choice\ModelInstanceChoice;
+use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 class WatchlistContainer
 {
-    public function editHeader($row, $href, $label, $title, $icon, $attributes)
+    protected DcaUtil             $dcaUtil;
+    protected ModelInstanceChoice $modelInstanceChoice;
+
+    public function __construct(DcaUtil $dcaUtil, ModelInstanceChoice $modelInstanceChoice)
     {
-        return \Contao\BackendUser::getInstance()->canEditFieldsOf('tl_watchlist') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        $this->dcaUtil = $dcaUtil;
+        $this->modelInstanceChoice = $modelInstanceChoice;
     }
 
-    public function deleteArchive($row, $href, $label, $title, $icon, $attributes)
+    /**
+     * @Callback(table="tl_watchlist", target="config.onsubmit")
+     */
+    public function setDateAdded(DataContainer $dc)
     {
-        return \Contao\BackendUser::getInstance()->hasAccess('delete', 'contao_watchlist_bundlep') ? '<a href="'.Controller::addToUrl($href.'&amp;id='.$row['id']).'&rt='.\RequestToken::get().'" title="'.\StringUtil::specialchars($title).'"'.$attributes.'>'.\Image::getHtml($icon, $label).'</a> ' : \Image::getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        $this->dcaUtil->setDateAdded($dc);
+    }
+
+    /**
+     * @Callback(table="tl_watchlist", target="config.oncopy")
+     */
+    public function setDateAddedOnCopy($insertId, DataContainer $dc)
+    {
+        $this->dcaUtil->setDateAddedOnCopy($insertId, $dc);
+    }
+
+    /**
+     * @Callback(table="tl_watchlist", target="fields.config.options")
+     */
+    public function getWatchlistConfigs(DataContainer $dc)
+    {
+        return $this->modelInstanceChoice->getChoices([
+            'dataContainer' => 'tl_watchlist_config',
+        ]);
     }
 }

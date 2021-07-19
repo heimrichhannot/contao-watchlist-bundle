@@ -4,4 +4,9 @@ services:
     autowire: true
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../../{DataContainer,EventListener,Util}/*'
+    resource: '../../{Controller,DataContainer,EventListener,Migration,Util}/*'
+
+  HeimrichHannot\WatchlistBundle\Migration\:
+    resource: '../../Migration/*'
+    tags:
+      - { name: contao.migration }

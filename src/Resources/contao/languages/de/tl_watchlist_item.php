@@ -13,10 +13,34 @@ $lang = &$GLOBALS['TL_LANG']['tl_watchlist_item'];
  */
 $lang['tstamp'][0] = 'Änderungsdatum';
 
+$lang['title'][0] = 'Titel';
+$lang['title'][1] = 'Geben Sie hier einen Titel ein.';
+
+$lang['type'][0] = 'Typ';
+$lang['type'][1] = 'Wählen Sie hier einen Typ aus.';
+
+$lang['file'][0] = 'Datei';
+$lang['file'][1] = 'Wählen Sie hier eine Datei aus.';
+
+$lang['entityTable'][0] = 'Data-Container';
+$lang['entityTable'][1] = 'Wählen Sie hier einen Data-Container aus.';
+
+$lang['entity'][0] = 'Entität';
+$lang['entity'][1] = 'Wählen Sie hier die Entität aus.';
+
 /*
  * Legends
  */
 $lang['general_legend'] = 'Allgemeine Einstellungen';
+$lang['reference_legend'] = 'Verknüpfte Daten';
+
+/*
+ * Reference
+ */
+$lang['reference'] = [
+    \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE => 'Datei',
+    \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => 'Datenbank-Entität',
+];
 
 /*
  * Buttons

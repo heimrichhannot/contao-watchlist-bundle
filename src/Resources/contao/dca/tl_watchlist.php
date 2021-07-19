@@ -11,12 +11,6 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
         'dataContainer' => 'Table',
         'ctable' => ['tl_watchlist_item'],
         'switchToEdit' => true,
-        'onsubmit_callback' => [
-            [\HeimrichHannot\UtilsBundle\Dca\DcaUtil::class, 'setDateAdded'],
-        ],
-        'oncopy_callback' => [
-            [\HeimrichHannot\UtilsBundle\Dca\DcaUtil::class, 'setDateAddedOnCopy'],
-        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -51,14 +45,12 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['editheader'],
                 'href' => 'act=edit',
                 'icon' => 'header.gif',
-                'button_callback' => [\HeimrichHannot\WatchlistBundle\DataContainer\WatchlistContainer::class, 'editHeader'],
             ],
             'delete' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['copy'],
                 'href' => 'act=delete',
                 'icon' => 'delete.svg',
                 'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
-                'button_callback' => [\HeimrichHannot\WatchlistBundle\DataContainer\WatchlistContainer::class, 'deleteArchive'],
             ],
             'show' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['show'],
@@ -69,7 +61,7 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
     ],
     'palettes' => [
         '__selector__' => [],
-        'default' => '{general_legend},name,authorType,author,uuid;',
+        'default' => '{general_legend},title,config,authorType,author,uuid;',
     ],
     'fields' => [
         'id' => [
@@ -99,8 +91,16 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             'exclude' => true,
             'search' => true,
             'inputType' => 'text',
-            'eval' => ['maxlength' => 36, 'tl_class' => 'w50', 'mandatory' => true, 'disabled' => true],
+            'eval' => ['maxlength' => 36, 'tl_class' => 'w50', 'mandatory' => true, 'readonly' => true],
             'sql' => "varchar(36) NOT NULL default ''",
+        ],
+        'config' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['config'],
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'select',
+            'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true],
+            'sql' => "varchar(64) NOT NULL default ''",
         ],
     ],
 ];

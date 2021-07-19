@@ -1,0 +1,13 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+    <a class="open-watchlist" href="#">
+        <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
+    </a>
+
+    <div class="content">
+        <div class="download">
+            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
+        </div>
+    </div>
+<?php $this->endblock(); ?>

@@ -10,12 +10,6 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
     'config' => [
         'dataContainer' => 'Table',
         'ptable' => 'tl_watchlist',
-        'onsubmit_callback' => [
-            [\HeimrichHannot\UtilsBundle\Dca\DcaUtil::class, 'setDateAdded'],
-        ],
-        'oncopy_callback' => [
-            [\HeimrichHannot\UtilsBundle\Dca\DcaUtil::class, 'setDateAddedOnCopy'],
-        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -24,14 +18,14 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
     ],
     'list' => [
         'label' => [
-            'fields' => ['id'],
+            'fields' => ['title'],
             'format' => '%s',
         ],
         'sorting' => [
-            'mode' => 1,
+            'mode' => 4,
             'fields' => ['dateAdded'],
+            'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
-            'child_record_callback' => [\HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::class, 'listChildren'],
         ],
         'global_operations' => [
             'all' => [
@@ -61,15 +55,19 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
         ],
     ],
     'palettes' => [
-        '__selector__' => [],
-        'default' => '',
+        '__selector__' => [
+            'type',
+        ],
+        'default' => '{general_legend},title,type;',
+        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE => '{general_legend},title,type;{reference_legend},file;',
+        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => '{general_legend},title,type;{reference_legend},entityTable,entity;',
     ],
     'fields' => [
         'id' => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'pid' => [
-            'foreignKey' => 'tl_watchlist.name',
+            'foreignKey' => 'tl_watchlist.title',
             'sql' => "int(10) unsigned NOT NULL default '0'",
             'relation' => ['type' => 'belongsTo', 'load' => 'eager'],
         ],
@@ -101,6 +99,36 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'reference' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql' => "varchar(64) NOT NULL default ''",
+        ],
+        'file' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['file'],
+            'exclude' => true,
+            'inputType' => 'fileTree',
+            'eval' => [
+                'tl_class' => 'clr',
+                'filesOnly' => true,
+                'fieldType' => 'radio',
+                'mandatory' => true,
+            ],
+            'sql' => 'binary(16) NULL',
+        ],
+        'entityTable' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['entityTable'],
+            'inputType' => 'select',
+            'eval' => [
+                'tl_class' => 'w50',
+                'chosen' => true,
+                'submitOnChange' => true,
+                'mandatory' => true,
+                'includeBlankOption' => true,
+            ],
+            'sql' => "varchar(128) NOT NULL default ''",
+        ],
+        'entity' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['entity'],
+            'inputType' => 'select',
+            'eval' => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'mandatory' => true],
+            'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
     ],
 ];
