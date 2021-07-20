@@ -166,7 +166,7 @@ class AjaxController
                         );
 
                         if ($existingItem->numRows > 0) {
-                            return new Response('A watchlist item of this entity is already existing in the current watchlist.', 409);
+                            return new Response($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['itemAlreadyInCurrentWatchlist'], 409);
                         }
 
                         if (null === $this->modelUtil->findModelInstanceByPk($data['entityTable'], $data['entity'])) {

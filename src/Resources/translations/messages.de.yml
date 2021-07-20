@@ -3,3 +3,5 @@ huh:
     misc:
       add_to_watchlist: Zur Merkliste hinzufügen
       delete_from_watchlist: Aus Merkliste entfernen
+      file_added_successfully: Die Datei wurde erfolgreich zu Ihrer Merkliste hinzugefügt.
+      entity_added_successfully: Der Beitrag wurde erfolgreich zu Ihrer Merkliste hinzugefügt.

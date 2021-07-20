@@ -1,3 +1,4 @@
-<a href="{{ href }}" class="watchlist-add-item" data-post-data="{{ postData|json_encode|e('html_attr') }}">
+<a href="{{ href }}" class="watchlist-add-item {% block cssClasses %}{% endblock %}" data-post-data="{{ postData|json_encode|e('html_attr') }}"
+   data-item-added-message="{{ ('huh.watchlist.misc.' ~ postData.type ~ '_added_successfully')|trans }}">
     {{ 'huh.watchlist.misc.add_to_watchlist'|trans }}
 </a>

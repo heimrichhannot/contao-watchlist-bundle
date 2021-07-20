@@ -59,8 +59,8 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'type',
         ],
         'default' => '{general_legend},title,type;',
-        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE => '{general_legend},title,type;{reference_legend},file;{context_legend},page,auto_item;',
-        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => '{general_legend},title,type;{reference_legend},entityTable,entity;{context_legend},page,auto_item;',
+        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE => '{general_legend},title,type;{reference_legend},file;{context_legend},page,autoItem;',
+        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => '{general_legend},title,type;{reference_legend},entityTable,entity;{context_legend},page,autoItem;',
     ],
     'fields' => [
         'id' => [

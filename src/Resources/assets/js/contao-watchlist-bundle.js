@@ -14,9 +14,11 @@ class WatchlistBundle {
         }
 
         utilsBundle.event.addDynamicEventListener('click', '.watchlist-add-item', (element, event) => {
+            const data = JSON.parse(element.getAttribute('data-post-data'));
+
             event.preventDefault();
 
-            utilsBundle.ajax.jsonPost(element.getAttribute('href'), JSON.parse(element.getAttribute('data-post-data')), {
+            utilsBundle.ajax.jsonPost(element.getAttribute('href'), data, {
                 onSuccess: (response) => {
                     Swal.fire({
                         icon: 'success',
@@ -24,7 +26,7 @@ class WatchlistBundle {
                         timerProgressBar: true,
                         showCloseButton: true,
                         showConfirmButton: false,
-                        html: 'Die Datei wurde erfolgreich zu Ihrer Merkliste hinzugefügt.'
+                        html: element.getAttribute('data-item-added-message')
                     });
                 },
                 onError: (response) => {
