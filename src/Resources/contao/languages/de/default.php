@@ -15,3 +15,4 @@ $lang['openWatchlist'] = 'Merkliste';
 $lang['watchlist'] = 'Merkliste';
 $lang['close'] = 'Schließen';
 $lang['download'] = 'Herunterladen';
+$lang['itemAlreadyInCurrentWatchlist'] = 'Dieses Objekt befindet sich bereits in Ihrer Merkliste.';

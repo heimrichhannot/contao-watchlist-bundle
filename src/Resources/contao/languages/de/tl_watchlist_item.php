@@ -28,11 +28,18 @@ $lang['entityTable'][1] = 'Wählen Sie hier einen Data-Container aus.';
 $lang['entity'][0] = 'Entität';
 $lang['entity'][1] = 'Wählen Sie hier die Entität aus.';
 
+$lang['page'][0] = 'Seite';
+$lang['page'][1] = 'In diesem Feld wird die Seite gespeichert, auf der das Objekt der Merkliste hinzugefügt wurde.';
+
+$lang['autoItem'][0] = 'Auto-Item';
+$lang['autoItem'][1] = 'In diesem Feld wird das Auto-Item der Seite gespeichert, auf der das Objekt der Merkliste hinzugefügt wurde.';
+
 /*
  * Legends
  */
 $lang['general_legend'] = 'Allgemeine Einstellungen';
 $lang['reference_legend'] = 'Verknüpfte Daten';
+$lang['context_legend'] = 'Kontext';
 
 /*
  * Reference

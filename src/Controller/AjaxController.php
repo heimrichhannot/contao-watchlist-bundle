@@ -128,7 +128,7 @@ class AjaxController
                         );
 
                         if ($existingItem->numRows > 0) {
-                            return new Response('A watchlist item of this file is already existing in the current watchlist.', 409);
+                            return new Response($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['itemAlreadyInCurrentWatchlist'], 409);
                         }
 
                         if (null === ($fileModel = $this->modelUtil->callModelMethod('tl_files', 'findByUuid', $data['file']))) {
@@ -136,20 +136,20 @@ class AjaxController
                         }
 
                         // get title from file
-                        if (!isset($data['title'])) {
+                        if (!isset($data['title']) || \in_array($data['title'], ['null', 'NULL', "''", '0'])) {
                             // filename is the fallback
                             $data['title'] = $fileModel->name;
 
                             // translate
                             $meta = StringUtil::deserialize($fileModel->meta, true);
 
-                            if (isset($meta[$GLOBALS['TL_LANGUAGE']['title']])) {
+                            if (isset($meta[$GLOBALS['TL_LANGUAGE']]['title'])) {
                                 $data['title'] = $meta[$GLOBALS['TL_LANGUAGE']['title']];
                             }
                         }
 
-                        $result = $this->watchlistUtil->addFileItemToWatchlist(
-                            $data['file'], $data['title'], $data['pid']
+                        $result = $this->watchlistUtil->addItemToWatchlist(
+                            $data, $data['pid']
                         );
 
                         if (null === $result) {
@@ -173,8 +173,8 @@ class AjaxController
                             return new Response('Entity with the given id couldn\'t be found in the given table.', 404);
                         }
 
-                        $result = $this->watchlistUtil->addEntityItemToWatchlist(
-                            $data['entityTable'], $data['entity'], $data['title'], $data['pid']
+                        $result = $this->watchlistUtil->addItemToWatchlist(
+                            $data, $data['pid']
                         );
 
                         if (null === $result) {
@@ -184,7 +184,7 @@ class AjaxController
                         return new Response('Item successfully added.');
                 }
 
-                break;
+                return new Response('Watchlist item type unsupported.', 500);
 
             case Request::METHOD_DELETE:
                 break;

@@ -13,6 +13,7 @@ use Contao\Input;
 use Contao\StringUtil;
 use Contao\Validator;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
+use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
@@ -28,13 +29,15 @@ class ReplaceInsertTagsListener
     protected WatchlistUtil       $watchlistUtil;
     protected TwigTemplateLocator $twigTemplateLocator;
     protected ModelUtil           $modelUtil;
+    protected DatabaseUtil        $databaseUtil;
 
-    public function __construct(Environment $twig, WatchlistUtil $watchlistUtil, TwigTemplateLocator $twigTemplateLocator, ModelUtil $modelUtil)
+    public function __construct(Environment $twig, WatchlistUtil $watchlistUtil, TwigTemplateLocator $twigTemplateLocator, ModelUtil $modelUtil, DatabaseUtil $databaseUtil)
     {
         $this->twig = $twig;
         $this->watchlistUtil = $watchlistUtil;
         $this->twigTemplateLocator = $twigTemplateLocator;
         $this->modelUtil = $modelUtil;
+        $this->databaseUtil = $databaseUtil;
     }
 
     public function __invoke(
@@ -60,7 +63,7 @@ class ReplaceInsertTagsListener
 
                 // caution: do not use Input because then it would be marked as "used" erroneously
                 if ($_GET['auto_item']) {
-                    $postData['auto_item'] = $_GET['auto_item'];
+                    $postData['autoItem'] = $_GET['auto_item'];
                 }
 
                 switch ($parts[1]) {
@@ -74,9 +77,8 @@ class ReplaceInsertTagsListener
                             return '';
                         }
 
+                        $postData['type'] = WatchlistItemContainer::TYPE_FILE;
                         $postData['file'] = $fileUuid;
-
-                        $config = $this->watchlistUtil->getCurrentWatchlistConfig();
 
                         if ($title) {
                             $postData['title'] = $title;
@@ -91,6 +93,8 @@ class ReplaceInsertTagsListener
                             'postData' => $postData,
                         ];
 
+                        $config = $this->watchlistUtil->getCurrentWatchlistConfig();
+
                         return $this->twig->render(
                             $this->twigTemplateLocator->getTemplatePath(
                                 $config->insertTagAddItemTemplate ?: '_watchlist_insert_tag_add_item_default.html.twig'
@@ -99,7 +103,40 @@ class ReplaceInsertTagsListener
                         );
 
                     case WatchlistItemContainer::TYPE_ENTITY:
-                        break;
+                        $entityTable = $parts[2];
+                        $entity = $parts[3];
+                        $title = $parts[4];
+                        $watchlistUuid = $parts[5] ?? null;
+
+                        // entity not existing?
+                        $existing = $this->databaseUtil->findResultByPk($entityTable, $entity);
+
+                        if (null === $existing || $existing->numRows < 1) {
+                            return '';
+                        }
+
+                        $postData['type'] = WatchlistItemContainer::TYPE_ENTITY;
+                        $postData['entityTable'] = $entityTable;
+                        $postData['entity'] = $entity;
+                        $postData['title'] = $title;
+
+                        if ($watchlistUuid) {
+                            $postData['pid'] = $watchlistUuid;
+                        }
+
+                        $data = [
+                            'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
+                            'postData' => $postData,
+                        ];
+
+                        $config = $this->watchlistUtil->getCurrentWatchlistConfig();
+
+                        return $this->twig->render(
+                            $this->twigTemplateLocator->getTemplatePath(
+                                $config->insertTagAddItemTemplate ?: '_watchlist_insert_tag_add_item_default.html.twig'
+                            ),
+                            $data
+                        );
 
                     default:
                         return '';

@@ -9,24 +9,27 @@
 namespace HeimrichHannot\WatchlistBundle\Util;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendUser;
 use Contao\Model;
+use Contao\System;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
-use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
 class WatchlistUtil
 {
-    protected DatabaseUtil $DatabaseUtil;
-    protected Utils        $utils;
-    protected ModelUtil    $modelUtil;
+    protected ContaoFramework $framework;
+    protected DatabaseUtil    $DatabaseUtil;
+    protected Utils           $utils;
+    protected ModelUtil       $modelUtil;
 
-    public function __construct(DatabaseUtil $databaseUtil, Utils $utils, ModelUtil $modelUtil)
+    public function __construct(ContaoFramework $framework, DatabaseUtil $databaseUtil, Utils $utils, ModelUtil $modelUtil)
     {
+        $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
         $this->utils = $utils;
         $this->modelUtil = $modelUtil;
@@ -44,9 +47,14 @@ class WatchlistUtil
             'tstamp' => $time,
             'dateAdded' => $time,
             'title' => $title,
-            'uuid' => uniqid('', true),
+            'uuid' => md5(uniqid(rand(), true)),
             'config' => $config,
         ]);
+
+        // avoid having duplicate uuids
+        while (null !== $this->modelUtil->findOneModelInstanceBy('tl_watchlist', ['tl_watchlist.uuid=?'], [$watchlist->uuid])) {
+            $watchlist->uuid = md5(uniqid(rand(), true));
+        }
 
         // set author
         if ($this->utils->container()->isBackend()) {
@@ -74,7 +82,7 @@ class WatchlistUtil
         return $watchlist;
     }
 
-    public function addItemToWatchlist(string $title, array $data, int $watchlist, array $options = []): ?Model
+    public function addItemToWatchlist(array $data, int $watchlist, array $options = []): ?Model
     {
         $watchlistItem = new WatchlistItemModel();
 
@@ -83,9 +91,7 @@ class WatchlistUtil
         $watchlistItem->setRow([
             'tstamp' => $time,
             'dateAdded' => $time,
-            'uuid' => uniqid('', true),
             'pid' => $watchlist,
-            'title' => $title,
         ]);
 
         foreach ($data as $field => $value) {
@@ -97,36 +103,13 @@ class WatchlistUtil
         return $watchlistItem;
     }
 
-    public function addFileItemToWatchlist(string $file, string $title, int $watchlist, array $options = []): ?Model
-    {
-        $data = [
-            'type' => WatchlistItemContainer::TYPE_FILE,
-            'file' => $file,
-        ];
-
-        return $this->addItemToWatchlist(
-            $title, $data, $watchlist, $options
-        );
-    }
-
-    public function addEntityItemToWatchlist(string $table, int $entity, string $title, int $watchlist, array $options = []): ?Model
-    {
-        $data = [
-            'type' => WatchlistItemContainer::TYPE_FILE,
-            'entityTable' => $table,
-            'entityId' => $entity,
-        ];
-
-        return $this->addItemToWatchlist(
-            $title, $data, $watchlist, $options
-        );
-    }
-
     /**
      * @return Model
      */
     public function getCurrentWatchlist(array $options = []): ?Model
     {
+        $this->framework->getAdapter(System::class)->loadLanguageFile('default');
+
         $createIfNotExisting = $options['createIfNotExisting'] ?? false;
         $rootPage = $options['rootPage'] ?? 0;
 
@@ -169,9 +152,11 @@ class WatchlistUtil
             }
         }
 
-        $watchlist = $this->databaseUtil->findOneResultBy('tl_watchlist', $columns, $values);
+        if (null !== ($watchlist = $this->modelUtil->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
+            return $watchlist;
+        }
 
-        if ((null === $watchlist || $watchlist->numRows < 1) && !$createIfNotExisting) {
+        if (!$createIfNotExisting) {
             return null;
         }
 
