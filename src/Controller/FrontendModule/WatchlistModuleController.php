@@ -24,6 +24,10 @@ class WatchlistModuleController extends AbstractFrontendModuleController
 
     protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
     {
+        if ($this->container->has('HeimrichHannot\EncoreBundle\Asset\FrontendAsset')) {
+            $this->container->get(\HeimrichHannot\EncoreBundle\Asset\FrontendAsset::class)->addActiveEntrypoint('contao-watchlist-bundle');
+        }
+
         return $template->getResponse();
     }
 }

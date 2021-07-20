@@ -12,8 +12,15 @@ $lang = &$GLOBALS['TL_LANG']['tl_watchlist_config'];
  * Fields
  */
 $lang['tstamp'][0] = 'Änderungsdatum';
+
 $lang['title'][0] = 'Titel';
 $lang['title'][1] = 'Geben Sie hier bitte den Titel ein.';
+
+$lang['insertTagAddItemTemplate'][0] = 'Insert-Tag-Template (Hinzufügen)';
+$lang['insertTagAddItemTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
+
+$lang['insertTagDeleteItemTemplate'][0] = 'Insert-Tag-Template (Entfernen)';
+$lang['insertTagDeleteItemTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
 
 /*
  * Legends

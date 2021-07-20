@@ -128,8 +128,9 @@ class WatchlistUtil
     public function getCurrentWatchlist(array $options = []): ?Model
     {
         $createIfNotExisting = $options['createIfNotExisting'] ?? false;
+        $rootPage = $options['rootPage'] ?? 0;
 
-        if (null === ($config = $this->getCurrentWatchlistConfig())) {
+        if (null === ($config = $this->getCurrentWatchlistConfig($rootPage))) {
             return null;
         }
 
@@ -177,11 +178,15 @@ class WatchlistUtil
         return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int) $config->id);
     }
 
-    public function getCurrentWatchlistConfig(): ?Model
+    public function getCurrentWatchlistConfig(int $rootPage = 0): ?Model
     {
-        global $objPage;
+        if (!$rootPage) {
+            global $objPage;
 
-        if (null === ($page = $this->databaseUtil->findResultByPk('tl_page', $objPage->rootId)) || $page->numRows < 1) {
+            $rootPage = $objPage->rootId;
+        }
+
+        if (null === ($page = $this->databaseUtil->findResultByPk('tl_page', $rootPage)) || $page->numRows < 1) {
             return null;
         }
 

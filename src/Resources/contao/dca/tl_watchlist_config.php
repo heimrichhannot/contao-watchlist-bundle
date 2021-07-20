@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{general_legend},title;',
+        'default' => '{general_legend},title;{template_legend},insertTagAddItemTemplate,insertTagDeleteItemTemplate;',
     ],
     'fields' => [
         'id' => [
@@ -79,6 +79,22 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'flag' => 1,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
+            'sql' => "varchar(255) NOT NULL default ''",
+        ],
+        'insertTagAddItemTemplate' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['insertTagAddItemTemplate'],
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'select',
+            'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true],
+            'sql' => "varchar(255) NOT NULL default ''",
+        ],
+        'insertTagDeleteItemTemplate' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['insertTagDeleteItemTemplate'],
+            'exclude' => true,
+            'filter' => true,
+            'inputType' => 'select',
+            'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true],
             'sql' => "varchar(255) NOT NULL default ''",
         ],
     ],
