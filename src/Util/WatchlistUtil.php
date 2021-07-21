@@ -12,11 +12,14 @@ use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\FrontendUser;
 use Contao\Model;
+use Contao\StringUtil;
 use Contao\System;
+use Contao\Validator;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
+use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
@@ -82,7 +85,7 @@ class WatchlistUtil
         return $watchlist;
     }
 
-    public function addItemToWatchlist(array $data, int $watchlist, array $options = []): ?Model
+    public function addItemToWatchlist(array $data, int $watchlist): ?Model
     {
         $watchlistItem = new WatchlistItemModel();
 
@@ -101,6 +104,33 @@ class WatchlistUtil
         $watchlistItem->save();
 
         return $watchlistItem;
+    }
+
+    public function getItemInWatchlist(array $itemData, int $watchlist): ?Model
+    {
+        switch ($itemData['type']) {
+            case WatchlistItemContainer::TYPE_FILE:
+                if (!Validator::isBinaryUuid($itemData['file'])) {
+                    $itemData['file'] = StringUtil::uuidToBin($itemData['file']);
+                }
+
+                $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
+                    ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.file=UNHEX(?)'],
+                    [WatchlistItemContainer::TYPE_FILE, $watchlist, bin2hex($itemData['file'])]
+                );
+
+                return $existingItem->numRows > 0 ? $this->modelUtil->findModelInstanceByPk('tl_watchlist_item', $existingItem->id) : null;
+
+            case WatchlistItemContainer::TYPE_ENTITY:
+                $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
+                    ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.entityTable=?', 'tl_watchlist_item.entity=?'],
+                    [WatchlistItemContainer::TYPE_ENTITY, $watchlist, $itemData['entityTable'], $itemData['entity']]
+                );
+
+                return $existingItem->numRows > 0 ? $this->modelUtil->findModelInstanceByPk('tl_watchlist_item', $existingItem->id) : null;
+        }
+
+        return null;
     }
 
     /**

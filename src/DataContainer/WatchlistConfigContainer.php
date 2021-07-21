@@ -49,14 +49,4 @@ class WatchlistConfigContainer
             '_watchlist_insert_tag_add_item_'
         );
     }
-
-    /**
-     * @Callback(table="tl_watchlist_config", target="fields.insertTagDeleteItemTemplate.options")
-     */
-    public function getInsertTagDeleteItemTemplates(DataContainer $dc)
-    {
-        return $this->twigTemplateLocator->getPrefixedFiles(
-            '_watchlist_insert_tag_delete_item_'
-        );
-    }
 }

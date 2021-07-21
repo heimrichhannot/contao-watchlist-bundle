@@ -19,9 +19,6 @@ $lang['title'][1] = 'Geben Sie hier bitte den Titel ein.';
 $lang['insertTagAddItemTemplate'][0] = 'Insert-Tag-Template (Hinzufügen)';
 $lang['insertTagAddItemTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
 
-$lang['insertTagDeleteItemTemplate'][0] = 'Insert-Tag-Template (Entfernen)';
-$lang['insertTagDeleteItemTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
-
 /*
  * Legends
  */

@@ -68,20 +68,23 @@ class AjaxController
 
                     return new JsonResponse($items);
                 }
-                    // id set -> item mode
-                    $item = $this->watchlistUtil->getWatchlistItem($id, (int) $watchlist->id);
 
-                    if (null === $item) {
-                        return new Response('No item with ID '.$id.' could be found.', 404);
-                    }
+                // id set -> item mode
+                $item = $this->watchlistUtil->getWatchlistItem($id, (int) $watchlist->id);
 
-                    return new JsonResponse($item->row());
+                if (null === $item) {
+                    return new Response('No item with ID '.$id.' could be found.', 404);
+                }
+
+                return new JsonResponse($item->row());
 
             case Request::METHOD_POST:
-                // create
+                // create/delete (couldn't use the DELETE method because it can't have a payload which is necessary to check whether a
+                // DELETE is permitted in the current context)
                 $data = json_decode($request->getContent(), true);
                 $cleanedData = [];
                 $rootPage = $data['rootPage'];
+                $deleteMode = $data['delete'];
 
                 // clean user input (avoid injection)
                 $db = Database::getInstance();
@@ -117,20 +120,32 @@ class AjaxController
 
                 $data['pid'] = $watchlist->id;
 
+                if (isset($data['file'])) {
+                    $data['file'] = StringUtil::uuidToBin($data['file']);
+                }
+
+                if ($deleteMode) {
+                    if (null === ($item = $this->watchlistUtil->getItemInWatchlist($data, $watchlist->id))) {
+                        return new Response('Watchlist item with the given id couldn\'t be found.', 404);
+                    }
+
+                    $result = $this->databaseUtil->delete('tl_watchlist_item', $item->id);
+
+                    if ($result->affectedRows > 0) {
+                        return new Response('Watchlist item deleted successfully.');
+                    }
+
+                    return new Response('Error deleting watchlist item.', 500);
+                }
+
+                // create mode
+                // already existing?
+                if (null !== $this->watchlistUtil->getItemInWatchlist($data, $watchlist->id)) {
+                    return new Response($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['itemAlreadyInCurrentWatchlist'], 409);
+                }
+
                 switch ($data['type']) {
                     case WatchlistItemContainer::TYPE_FILE:
-                        $data['file'] = StringUtil::uuidToBin($data['file']);
-
-                        // already existing?
-                        $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
-                            ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.file=UNHEX(?)'],
-                            [WatchlistItemContainer::TYPE_FILE, $data['pid'], bin2hex($data['file'])]
-                        );
-
-                        if ($existingItem->numRows > 0) {
-                            return new Response($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['itemAlreadyInCurrentWatchlist'], 409);
-                        }
-
                         if (null === ($fileModel = $this->modelUtil->callModelMethod('tl_files', 'findByUuid', $data['file']))) {
                             return new Response('File with the given uuid couldn\'t be found.', 404);
                         }
@@ -159,16 +174,6 @@ class AjaxController
                         return new Response('Item successfully added.');
 
                     case WatchlistItemContainer::TYPE_ENTITY:
-                        // already existing?
-                        $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
-                            ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.entityTable=?', 'tl_watchlist_item.entity=?'],
-                            [WatchlistItemContainer::TYPE_ENTITY, $data['pid'], $data['entityTable'], $data['entity']]
-                        );
-
-                        if ($existingItem->numRows > 0) {
-                            return new Response($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['itemAlreadyInCurrentWatchlist'], 409);
-                        }
-
                         if (null === $this->modelUtil->findModelInstanceByPk($data['entityTable'], $data['entity'])) {
                             return new Response('Entity with the given id couldn\'t be found in the given table.', 404);
                         }
@@ -185,9 +190,6 @@ class AjaxController
                 }
 
                 return new Response('Watchlist item type unsupported.', 500);
-
-            case Request::METHOD_DELETE:
-                break;
 
             default:
                 return new Response('Method not allowed', 405);

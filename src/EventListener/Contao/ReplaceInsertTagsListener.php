@@ -31,8 +31,13 @@ class ReplaceInsertTagsListener
     protected ModelUtil           $modelUtil;
     protected DatabaseUtil        $databaseUtil;
 
-    public function __construct(Environment $twig, WatchlistUtil $watchlistUtil, TwigTemplateLocator $twigTemplateLocator, ModelUtil $modelUtil, DatabaseUtil $databaseUtil)
-    {
+    public function __construct(
+        Environment $twig,
+        WatchlistUtil $watchlistUtil,
+        TwigTemplateLocator $twigTemplateLocator,
+        ModelUtil $modelUtil,
+        DatabaseUtil $databaseUtil
+    ) {
         $this->twig = $twig;
         $this->watchlistUtil = $watchlistUtil;
         $this->twigTemplateLocator = $twigTemplateLocator;
@@ -56,6 +61,8 @@ class ReplaceInsertTagsListener
 
         switch ($parts[0]) {
             case 'watchlist_add_item_link':
+                $watchlist = $this->watchlistUtil->getCurrentWatchlist();
+
                 $postData = [
                     'page' => $objPage->id,
                     'rootPage' => $objPage->rootId,
@@ -90,6 +97,7 @@ class ReplaceInsertTagsListener
 
                         $data = [
                             'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
+                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getItemInWatchlist($postData, $watchlist->id),
                             'postData' => $postData,
                         ];
 
@@ -126,6 +134,7 @@ class ReplaceInsertTagsListener
 
                         $data = [
                             'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
+                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getItemInWatchlist($postData, $watchlist->id),
                             'postData' => $postData,
                         ];
 
@@ -141,22 +150,6 @@ class ReplaceInsertTagsListener
                     default:
                         return '';
                 }
-
-                break;
-
-            case 'watchlist_delete_item_link':
-                switch ($parts[1]) {
-                    case WatchlistItemContainer::TYPE_FILE:
-                        break;
-
-                    case WatchlistItemContainer::TYPE_ENTITY:
-                        break;
-
-                    default:
-                        return '';
-                }
-
-                break;
         }
 
         return false;
