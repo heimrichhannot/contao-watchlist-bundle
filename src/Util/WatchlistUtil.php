@@ -10,6 +10,8 @@ namespace HeimrichHannot\WatchlistBundle\Util;
 
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Environment;
+use Contao\FrontendTemplate;
 use Contao\FrontendUser;
 use Contao\Model;
 use Contao\StringUtil;
@@ -17,8 +19,11 @@ use Contao\System;
 use Contao\Validator;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
+use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
+use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -29,13 +34,23 @@ class WatchlistUtil
     protected DatabaseUtil    $DatabaseUtil;
     protected Utils           $utils;
     protected ModelUtil       $modelUtil;
+    protected UrlUtil         $urlUtil;
+    protected FileUtil        $fileUtil;
 
-    public function __construct(ContaoFramework $framework, DatabaseUtil $databaseUtil, Utils $utils, ModelUtil $modelUtil)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        DatabaseUtil $databaseUtil,
+        Utils $utils,
+        ModelUtil $modelUtil,
+        UrlUtil $urlUtil,
+        FileUtil $fileUtil
+    ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
         $this->utils = $utils;
         $this->modelUtil = $modelUtil;
+        $this->urlUtil = $urlUtil;
+        $this->fileUtil = $fileUtil;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -106,7 +121,7 @@ class WatchlistUtil
         return $watchlistItem;
     }
 
-    public function getItemInWatchlist(array $itemData, int $watchlist): ?Model
+    public function getWatchlistItemByData(array $itemData, int $watchlist): ?Model
     {
         switch ($itemData['type']) {
             case WatchlistItemContainer::TYPE_FILE:
@@ -193,6 +208,53 @@ class WatchlistUtil
         return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int) $config->id);
     }
 
+    public function parseWatchlistContent(FrontendTemplate $template, int $rootPage, ?Model $watchlist = null): string
+    {
+        $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
+
+        // items
+        if (null === $watchlist) {
+            $template->items = [];
+        } else {
+            $items = [];
+
+            foreach ($this->getWatchlistItems($watchlist->id) as $item) {
+                // clean items for frontend (don't pass internal info to outside for security reasons)
+                $cleanedItem = [
+                    'rootPage' => $rootPage,
+                    'type' => $item['type'],
+                    'title' => $item['title'],
+                ];
+
+                switch ($item['type']) {
+                    case WatchlistItemContainer::TYPE_FILE:
+                        $cleanedItem['file'] = StringUtil::binToUuid($item['file']);
+
+                        $template->hasDownloadableFiles = true;
+
+                        $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$this->fileUtil->getPathFromUuid($item['file']));
+
+                        break;
+
+                    case WatchlistItemContainer::TYPE_ENTITY:
+                        $cleanedItem['entityTable'] = $item['entityTable'];
+                        $cleanedItem['entity'] = $item['entity'];
+                        $cleanedItem['entityUrl'] = $item['entityUrl'];
+
+                        break;
+                }
+
+                $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
+
+                $items[] = $cleanedItem;
+            }
+
+            $template->items = $items;
+        }
+
+        return $template->parse();
+    }
+
     public function getCurrentWatchlistConfig(int $rootPage = 0): ?Model
     {
         if (!$rootPage) {
@@ -210,11 +272,11 @@ class WatchlistUtil
 
     public function getWatchlistItems(int $watchlist): array
     {
-        if (null === ($items = $this->databaseUtil->findResultsBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlist])) || $items->numRows < 1) {
+        if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlist]))) {
             return [];
         }
 
-        return $items->fetchAllAssoc();
+        return $items->fetchAll();
     }
 
     public function getWatchlistItem(int $id, int $watchlist): ?Model

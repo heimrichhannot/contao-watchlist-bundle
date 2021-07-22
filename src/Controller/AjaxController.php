@@ -10,14 +10,15 @@ namespace HeimrichHannot\WatchlistBundle\Controller;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
+use Contao\FrontendTemplate;
 use Contao\StringUtil;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -25,59 +26,89 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AjaxController
 {
-    const WATCHLIST_ITEM_URI = '/_huh_watchlist_item';
+    const WATCHLIST_CONTENT_URI = '/_huh_watchlist/content';
+    const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
 
-    protected ContaoFramework $framework;
-    protected DatabaseUtil    $databaseUtil;
-    protected WatchlistUtil   $watchlistUtil;
-    protected ModelUtil       $modelUtil;
+    protected ContaoFramework  $framework;
+    protected DatabaseUtil     $databaseUtil;
+    protected WatchlistUtil    $watchlistUtil;
+    protected ModelUtil        $modelUtil;
+    protected SessionInterface $session;
 
     public function __construct(
         ContaoFramework $framework,
         WatchlistUtil $watchlistUtil,
         DatabaseUtil $databaseUtil,
-        ModelUtil $modelUtil
+        ModelUtil $modelUtil,
+        SessionInterface $session
     ) {
         $this->databaseUtil = $databaseUtil;
         $this->framework = $framework;
         $this->watchlistUtil = $watchlistUtil;
         $this->modelUtil = $modelUtil;
+        $this->session = $session;
     }
 
     /**
      * @return Response
      *
-     * @Route("/_huh_watchlist_item/{id}")
+     * @Route("/_huh_watchlist/content")
      */
-    public function watchlistItemAction(Request $request, int $id = 0)
+    public function watchlistContentAction(Request $request)
     {
         $this->framework->initialize();
 
         switch ($request->getMethod()) {
             case Request::METHOD_GET:
-                // read
-                $watchlist = $this->watchlistUtil->getCurrentWatchlist();
+                $rootPage = $request->get('root_page');
 
-                // no id set -> list mode
-                if (!$id) {
-                    if (!$watchlist) {
-                        return new Response('No watchlist found.', 404);
-                    }
+                $config = $this->watchlistUtil->getCurrentWatchlistConfig($rootPage);
 
-                    $items = $this->watchlistUtil->getWatchlistItems((int) $watchlist->id);
-
-                    return new JsonResponse($items);
+                if (null === $config) {
+                    return new Response('No watchlist config found. Please set it in your page root.', 500);
                 }
 
-                // id set -> item mode
-                $item = $this->watchlistUtil->getWatchlistItem($id, (int) $watchlist->id);
+                $template = new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default');
 
-                if (null === $item) {
-                    return new Response('No item with ID '.$id.' could be found.', 404);
-                }
+                $watchlist = $this->watchlistUtil->getCurrentWatchlist([
+                    'rootPage' => $rootPage,
+                ]);
 
-                return new JsonResponse($item->row());
+                return new Response($this->watchlistUtil->parseWatchlistContent($template, $rootPage, $watchlist));
 
+            default:
+                return new Response('Method not allowed', 405);
+        }
+    }
+
+    /**
+     * @return Response
+     *
+     * @Route("/_huh_watchlist/download")
+     */
+    public function watchlistDownloadAction(Request $request)
+    {
+        $this->framework->initialize();
+
+        switch ($request->getMethod()) {
+            case Request::METHOD_GET:
+                break;
+
+            default:
+                return new Response('Method not allowed', 405);
+        }
+    }
+
+    /**
+     * @return Response
+     *
+     * @Route("/_huh_watchlist/item")
+     */
+    public function watchlistItemAction(Request $request)
+    {
+        $this->framework->initialize();
+
+        switch ($request->getMethod()) {
             case Request::METHOD_POST:
                 // create/delete (couldn't use the DELETE method because it can't have a payload which is necessary to check whether a
                 // DELETE is permitted in the current context)
@@ -125,11 +156,11 @@ class AjaxController
                 }
 
                 if ($deleteMode) {
-                    if (null === ($item = $this->watchlistUtil->getItemInWatchlist($data, $watchlist->id))) {
+                    if (null === ($item = $this->watchlistUtil->getWatchlistItemByData($data, $watchlist->id))) {
                         return new Response('Watchlist item with the given id couldn\'t be found.', 404);
                     }
 
-                    $result = $this->databaseUtil->delete('tl_watchlist_item', $item->id);
+                    $result = $this->databaseUtil->delete('tl_watchlist_item', 'tl_watchlist_item.id=?', [$item->id]);
 
                     if ($result->affectedRows > 0) {
                         return new Response('Watchlist item deleted successfully.');
@@ -140,7 +171,7 @@ class AjaxController
 
                 // create mode
                 // already existing?
-                if (null !== $this->watchlistUtil->getItemInWatchlist($data, $watchlist->id)) {
+                if (null !== $this->watchlistUtil->getWatchlistItemByData($data, $watchlist->id)) {
                     return new Response($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['itemAlreadyInCurrentWatchlist'], 409);
                 }
 
@@ -194,9 +225,5 @@ class AjaxController
             default:
                 return new Response('Method not allowed', 405);
         }
-    }
-
-    public function readWatchlistItem()
-    {
     }
 }

@@ -60,7 +60,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
         ],
         'default' => '{general_legend},title,type;',
         \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE => '{general_legend},title,type;{reference_legend},file;{context_legend},page,autoItem;',
-        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => '{general_legend},title,type;{reference_legend},entityTable,entity;{context_legend},page,autoItem;',
+        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => '{general_legend},title,type;{reference_legend},entityTable,entity,entityUrl;{context_legend},page,autoItem;',
     ],
     'fields' => [
         'id' => [
@@ -129,6 +129,14 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'inputType' => 'select',
             'eval' => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'mandatory' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
+        ],
+        'entityUrl' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['entityUrl'],
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'text',
+            'eval' => ['maxlength' => 255, 'tl_class' => 'w50 long', 'rgxp' => 'url'],
+            'sql' => "varchar(255) NOT NULL default ''",
         ],
         'page' => [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['page'],

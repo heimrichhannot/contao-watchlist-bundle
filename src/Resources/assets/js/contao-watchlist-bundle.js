@@ -3,7 +3,48 @@ import Swal from "sweetalert2";
 
 class WatchlistBundle {
     static init() {
+        WatchlistBundle.initWatchlistLinks();
         WatchlistBundle.initAddItemLinks();
+    }
+
+    static updateWatchlist() {
+        let wrapper = document.querySelector('.watchlist-wrapper');
+
+        if (null === wrapper) {
+            return;
+        }
+
+        utilsBundle.ajax.get(wrapper.getAttribute('data-watchlist-update-url'), {}, {
+            onSuccess: (response) => {
+                wrapper.querySelector('.watchlist-content').innerHTML = response.responseText.trim();
+            },
+        });
+    }
+
+    static initWatchlistLinks() {
+        utilsBundle.event.addDynamicEventListener('click', '.watchlist-delete-item', (element, event) => {
+            const data = JSON.parse(element.getAttribute('data-post-data'));
+
+            event.preventDefault();
+
+            data.delete = 1;
+
+            utilsBundle.ajax.jsonPost(element.getAttribute('href'), data, {
+                onSuccess: (response) => {
+                    WatchlistBundle.updateWatchlist();
+                },
+                onError: (response) => {
+                    Swal.fire({
+                        icon: 'error',
+                        timer: 6000,
+                        timerProgressBar: true,
+                        showCloseButton: true,
+                        showConfirmButton: false,
+                        html: response.responseText
+                    });
+                }
+            });
+        });
     }
 
     static initAddItemLinks() {
@@ -32,6 +73,8 @@ class WatchlistBundle {
                         element.innerText = element.getAttribute('data-delete-item-message');
                     }
 
+                    WatchlistBundle.updateWatchlist();
+
                     if (!data.delete) {
                         Swal.fire({
                             icon: 'success',
@@ -53,7 +96,7 @@ class WatchlistBundle {
                         html: response.responseText
                     });
                 }
-            })
+            });
         });
     }
 }

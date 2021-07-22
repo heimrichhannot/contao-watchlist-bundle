@@ -20,13 +20,16 @@ $lang['type'][0] = 'Typ';
 $lang['type'][1] = 'Wählen Sie hier einen Typ aus.';
 
 $lang['file'][0] = 'Datei';
-$lang['file'][1] = 'Wählen Sie hier eine Datei aus.';
+$lang['file'][1] = 'In diesem Feld wird die UUID der Datei gespeichert.';
 
 $lang['entityTable'][0] = 'Data-Container';
-$lang['entityTable'][1] = 'Wählen Sie hier einen Data-Container aus.';
+$lang['entityTable'][1] = 'In diesem Feld wird der Data-Container der Entität gespeichert.';
 
 $lang['entity'][0] = 'Entität';
-$lang['entity'][1] = 'Wählen Sie hier die Entität aus.';
+$lang['entity'][1] = 'In diesem Feld wird die ID der Entität gespeichert.';
+
+$lang['entityUrl'][0] = 'Entitäts-URL';
+$lang['entityUrl'][1] = 'In diesem Feld wird die URL der Entität gespeichert.';
 
 $lang['page'][0] = 'Seite';
 $lang['page'][1] = 'In diesem Feld wird die Seite gespeichert, auf der das Objekt der Merkliste hinzugefügt wurde.';

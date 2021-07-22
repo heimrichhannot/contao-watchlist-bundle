@@ -5,9 +5,7 @@
         <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
     </a>
 
-    <div class="content">
-        <div class="download">
-            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
-        </div>
+    <div class="watchlist-content">
+        <?= $this->watchlistContent ?>
     </div>
 <?php $this->endblock(); ?>

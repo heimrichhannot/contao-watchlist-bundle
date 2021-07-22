@@ -1,0 +1,47 @@
+<h5>
+    <?= $this->title ?>
+</h5>
+
+<div class="items">
+    <?php if (empty($this->items)): ?>
+        <p class="alert alert-warning">
+            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['noItemsInCurrentWatchlist'] ?>
+        </p>
+    <?php else: ?>
+        <?php foreach ($this->items as $item): ?>
+            <div class="item">
+                <div class="title">
+                    <p>
+                        <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item" data-post-data="<?= $item['postData'] ?>">
+                            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['delete'] ?>
+                        </a>
+
+                        <?= $item['title'] ?>
+                    </p>
+                </div>
+
+                <?php if ($item['downloadUrl']): ?>
+                    <div class="download">
+                        <a href="<?= $item['downloadUrl'] ?>" class="download">
+                            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
+                        </a>
+                    </div>
+                <?php elseif ($item['entityUrl']): ?>
+                    <div class="show">
+                        <a href="<?= $item['entityUrl'] ?>" class="show">
+                            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['show'] ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+<?php if (!empty($this->hasDownloadableFiles)): ?>
+    <div class="actions">
+        <a href="#" class="download-all">
+            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['downloadAll'] ?>
+        </a>
+    </div>
+<?php endif; ?>

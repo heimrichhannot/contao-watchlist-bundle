@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
+use Contao\Controller;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
@@ -15,13 +17,15 @@ use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 class WatchlistConfigContainer
 {
+    protected ContaoFramework     $framework;
     protected DcaUtil             $dcaUtil;
     protected TwigTemplateLocator $twigTemplateLocator;
 
-    public function __construct(DcaUtil $dcaUtil, TwigTemplateLocator $twigTemplateLocator)
+    public function __construct(ContaoFramework $framework, DcaUtil $dcaUtil, TwigTemplateLocator $twigTemplateLocator)
     {
         $this->dcaUtil = $dcaUtil;
         $this->twigTemplateLocator = $twigTemplateLocator;
+        $this->framework = $framework;
     }
 
     /**
@@ -48,5 +52,13 @@ class WatchlistConfigContainer
         return $this->twigTemplateLocator->getPrefixedFiles(
             '_watchlist_insert_tag_add_item_'
         );
+    }
+
+    /**
+     * @Callback(table="tl_watchlist_config", target="fields.watchlistContentTemplate.options")
+     */
+    public function getWatchlistContentTemplates(DataContainer $dc)
+    {
+        return $this->framework->getAdapter(Controller::class)->getTemplateGroup('watchlist_content_');
     }
 }

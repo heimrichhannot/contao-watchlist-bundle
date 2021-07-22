@@ -1,28 +1,26 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-<a class="open-watchlist btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#watchlist-modal">
-    <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
-</a>
 
-<div class="modal fade" id="watchlist-modal" tabindex="-1" aria-labelledby="watchlist-modal-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="watchlist-modal-label">
-                    <?= $this->title ?>
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['close'] ?>"></button>
-            </div>
-            <div class="modal-body">
-                <div class="content">
-                    Content
+<div class="watchlist-wrapper" data-watchlist-update-url="<?= $this->watchlistUpdateUrl ?>">
+    <a class="open-watchlist btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#watchlist-modal">
+        <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
+    </a>
+
+    <div class="modal fade" id="watchlist-modal" tabindex="-1" aria-labelledby="watchlist-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="watchlist-modal-label">
+                        <?= $this->title ?>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['close'] ?>"></button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#" class="download btn btn-primary">
-                    <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
-                </a>
+                <div class="modal-body">
+                    <div class="watchlist-content">
+                        <?= $this->watchlistContent ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

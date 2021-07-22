@@ -16,6 +16,9 @@ $lang['tstamp'][0] = 'Änderungsdatum';
 $lang['title'][0] = 'Titel';
 $lang['title'][1] = 'Geben Sie hier bitte den Titel ein.';
 
+$lang['watchlistContentTemplate'][0] = 'Watchlist-Inhaltstemplate';
+$lang['watchlistContentTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
+
 $lang['insertTagAddItemTemplate'][0] = 'Insert-Tag-Template (Hinzufügen)';
 $lang['insertTagAddItemTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
 

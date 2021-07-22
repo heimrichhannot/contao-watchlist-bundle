@@ -97,7 +97,7 @@ class ReplaceInsertTagsListener
 
                         $data = [
                             'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
-                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getItemInWatchlist($postData, $watchlist->id),
+                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getWatchlistItemByData($postData, $watchlist->id),
                             'postData' => $postData,
                         ];
 
@@ -114,7 +114,8 @@ class ReplaceInsertTagsListener
                         $entityTable = $parts[2];
                         $entity = $parts[3];
                         $title = $parts[4];
-                        $watchlistUuid = $parts[5] ?? null;
+                        $entityUrl = $parts[5] ?? null;
+                        $watchlistUuid = $parts[6] ?? null;
 
                         // entity not existing?
                         $existing = $this->databaseUtil->findResultByPk($entityTable, $entity);
@@ -128,13 +129,17 @@ class ReplaceInsertTagsListener
                         $postData['entity'] = $entity;
                         $postData['title'] = $title;
 
+                        if ($entityUrl) {
+                            $postData['entityUrl'] = $entityUrl;
+                        }
+
                         if ($watchlistUuid) {
                             $postData['pid'] = $watchlistUuid;
                         }
 
                         $data = [
                             'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
-                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getItemInWatchlist($postData, $watchlist->id),
+                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getWatchlistItemByData($postData, $watchlist->id),
                             'postData' => $postData,
                         ];
 
