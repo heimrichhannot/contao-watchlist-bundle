@@ -32,6 +32,11 @@ class WatchlistBundle {
             utilsBundle.ajax.jsonPost(element.getAttribute('href'), data, {
                 onSuccess: (response) => {
                     WatchlistBundle.updateWatchlist();
+                    
+                    // toggle add item links (insert tags)
+                    document.querySelectorAll('.watchlist-add-item[data-hash="' + element.getAttribute('data-hash') + '"]').forEach((link) => {
+                        WatchlistBundle.toggleAddItemLink(link);
+                    })
                 },
                 onError: (response) => {
                     Swal.fire({
@@ -45,6 +50,18 @@ class WatchlistBundle {
                 }
             });
         });
+    }
+
+    static toggleAddItemLink(element) {
+        if (element.classList.contains('added')) {
+            element.classList.remove('added');
+
+            element.innerText = element.getAttribute('data-add-item-message');
+        } else {
+            element.classList.add('added');
+
+            element.innerText = element.getAttribute('data-delete-item-message');
+        }
     }
 
     static initAddItemLinks() {
@@ -63,15 +80,7 @@ class WatchlistBundle {
 
             utilsBundle.ajax.jsonPost(element.getAttribute('href'), data, {
                 onSuccess: (response) => {
-                    if (element.classList.contains('added')) {
-                        element.classList.remove('added');
-
-                        element.innerText = element.getAttribute('data-add-item-message');
-                    } else {
-                        element.classList.add('added');
-
-                        element.innerText = element.getAttribute('data-delete-item-message');
-                    }
+                    WatchlistBundle.toggleAddItemLink(element);
 
                     WatchlistBundle.updateWatchlist();
 

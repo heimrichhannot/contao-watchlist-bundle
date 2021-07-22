@@ -99,6 +99,7 @@ class ReplaceInsertTagsListener
                             'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
                             'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getWatchlistItemByData($postData, $watchlist->id),
                             'postData' => $postData,
+                            'hash' => md5(implode('_', [$postData['type'], $postData['pid'], $postData['file']])),
                         ];
 
                         $config = $this->watchlistUtil->getCurrentWatchlistConfig();
@@ -141,6 +142,7 @@ class ReplaceInsertTagsListener
                             'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
                             'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getWatchlistItemByData($postData, $watchlist->id),
                             'postData' => $postData,
+                            'hash' => md5(implode('_', [$postData['type'], $postData['pid'], $postData['entityTable'], $postData['entity']])),
                         ];
 
                         $config = $this->watchlistUtil->getCurrentWatchlistConfig();

@@ -1,4 +1,6 @@
-<a href="{{ href }}" class="watchlist-add-item{{ isAdded ? ' added' : ''}} {% block cssClasses %}{% endblock %}" data-post-data="{{ postData|json_encode|e('html_attr') }}"
+<a href="{{ href }}" class="watchlist-add-item{{ isAdded ? ' added' : ''}} {% block cssClasses %}{% endblock %}"
+   data-hash="{{ hash }}"
+   data-post-data="{{ postData|json_encode|e('html_attr') }}"
    data-item-added-message="{{ ('huh.watchlist.misc.' ~ postData.type ~ '_added_successfully')|trans }}"
    data-add-item-message="{{ 'huh.watchlist.misc.add_to_watchlist'|trans }}"
    data-delete-item-message="{{ 'huh.watchlist.misc.delete_from_watchlist'|trans }}">

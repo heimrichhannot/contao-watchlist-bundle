@@ -234,6 +234,8 @@ class WatchlistUtil
 
                         $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$this->fileUtil->getPathFromUuid($item['file']));
 
+                        $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['file']]));
+
                         break;
 
                     case WatchlistItemContainer::TYPE_ENTITY:
@@ -241,10 +243,14 @@ class WatchlistUtil
                         $cleanedItem['entity'] = $item['entity'];
                         $cleanedItem['entityUrl'] = $item['entityUrl'];
 
+                        $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['entityTable'], $cleanedItem['entity']]));
+
                         break;
                 }
 
                 $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
+
+                $cleanedItem['hash'] = $hash;
 
                 $items[] = $cleanedItem;
             }

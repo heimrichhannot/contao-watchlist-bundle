@@ -12,7 +12,7 @@
             <div class="item">
                 <div class="title">
                     <p>
-                        <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item" data-post-data="<?= $item['postData'] ?>">
+                        <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item" data-hash="<?= $item['hash'] ?>" data-post-data="<?= $item['postData'] ?>">
                             <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['delete'] ?>
                         </a>
 
