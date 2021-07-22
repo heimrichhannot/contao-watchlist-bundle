@@ -5,19 +5,43 @@ This utility bundle offers a flexible watchlist for the Contao CMS.
 ## Features
 
 - add files or arbitrary contao database entities like `tl_news` or `tl_member` to a watchlist
-- integrating the watchlist is as easy as assigning a frontend module to a layout section
+- watchlists can be viewed in the contao backend, as well
+- ajax handling for a fluent usage (data is always kept up-to-date)
+- integrating the watchlist is as easy as assigning a frontend module to a layout section and adding links by using
+  insert tags
 - download the files added to a watchlist as a ZIP archive
+- contains clean templates without css styling and templates prepared with bootstrap 5 css classes
 
 ## Impressions
+
+TODO
 
 ## Installation & configuration
 
 1. Run `composer require heimrichhannot/contao-watchlist-bundle` and update your database.
+1. Create a watchlist config (select bootstrap 5 templates if applicable).
+1. **Important**: Assign the watchlist config to your root page.
+1. Create a frontend module of type `watchlist` and add it to a layout area of your website so that it comes with each
+   and every sub page.
+1. Identify the template you'd like to integrate a link for adding this item to the watch list. Common situations are:
+    1. `ce_download.html5`
+    1. `ce_downloads.html5`
+    1. `news_full.html5`
+    1. ...
+1. Integrate the link for adding an item to the current watchlist to any template by using a simple insert tag:
+   `{{watchlist_add_item_link}}` (see section "Insert tags" for further details on the parameters)
 
-## Usage
+## Permission handling
 
-1. You can add the link for adding an item to the current watchlist to any template by using a simple insert tag:
-   `{{watchlist_add_item_link}}` (see section "Insert tags" for further details)
+A watchlist is private to its owner. Who is the owner depends on the context, the watchlist is used in:
+
+Context | Who is the watchlist's owner?
+--------|------------------------------
+Anonymous | The current PHP session ID is used as the author
+Frontend login available | The current frontend user (`member`) is used as the author
+
+**Hint:** As watchlists are currently not transferrable from session to member, consider showing the watchlist only
+after login. If you have no frontend login situation, you can ignore that, of course.
 
 ## Insert tags
 

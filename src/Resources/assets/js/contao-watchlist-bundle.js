@@ -32,7 +32,7 @@ class WatchlistBundle {
             utilsBundle.ajax.jsonPost(element.getAttribute('href'), data, {
                 onSuccess: (response) => {
                     WatchlistBundle.updateWatchlist();
-                    
+
                     // toggle add item links (insert tags)
                     document.querySelectorAll('.watchlist-add-item[data-hash="' + element.getAttribute('data-hash') + '"]').forEach((link) => {
                         WatchlistBundle.toggleAddItemLink(link);
