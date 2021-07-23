@@ -13,3 +13,6 @@ $dca = &$GLOBALS['TL_DCA']['tl_module'];
  */
 $dca['palettes'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\WatchlistModuleController::TYPE] =
     '{title_legend},name,headline,type;{config_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+
+$dca['palettes'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController::TYPE] =
+    '{title_legend},name,headline,type;{config_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';

@@ -1,0 +1,63 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+    <?php if ($this->watchlistNotFound): ?>
+        <p class="watchlist-not-found">
+            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlistNotFound'] ?>
+        </p>
+    <?php else: ?>
+        <h2>
+            <?= $this->title; ?>
+        </h2>
+
+        <div class="items">
+            <?php if (empty($this->items)): ?>
+                <p class="no-items">
+                    <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['noItemsInCurrentWatchlist'] ?>
+                </p>
+            <?php else: ?>
+                <?php foreach ($this->items as $item): ?>
+                    <div class="item">
+                        <h6 class="title">
+                            <?= $item['title'] ?>
+                        </h6>
+
+                        <?php if (!$item['existing']): ?>
+                            <div class="non-existing">
+                                <small>
+                                    <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['linked' . (ucfirst($item['type'])) . 'Missing'] ?>
+                                </small>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($item['existing']): ?>
+                            <?php if ($item['downloadUrl']): ?>
+                                <div class="download-wrapper">
+                                    <a href="<?= $item['downloadUrl'] ?>" class="download">
+                                        <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
+                                    </a>
+                                </div>
+                            <?php elseif ($item['entityUrl']): ?>
+                                <div class="show-wrapper">
+                                    <a href="<?= $item['entityUrl'] ?>" class="show">
+                                        <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['show'] ?>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <?php if (!empty($this->items)): ?>
+            <div class="actions">
+                <?php if (!empty($this->hasDownloadableFiles)): ?>
+                    <a href="<?= $this->watchlistDownloadAllUrl ?>" class="download-all">
+                        <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['downloadAll'] ?>
+                    </a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php $this->endblock(); ?>

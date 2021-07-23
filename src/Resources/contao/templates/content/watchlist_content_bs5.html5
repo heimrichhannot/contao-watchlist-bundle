@@ -1,37 +1,38 @@
-<div class="items">
+<div class="items row">
     <?php if (empty($this->items)): ?>
         <p class="no-items alert alert-warning">
             <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['noItemsInCurrentWatchlist'] ?>
         </p>
     <?php else: ?>
         <?php foreach ($this->items as $item): ?>
-            <div class="item row">
-                <div class="title col-md-8">
-                    <p>
-                        <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item btn btn-primary btn-xs" data-hash="<?= $item['hash'] ?>" data-post-data="<?= $item['postData'] ?>">
-                            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['delete'] ?>
-                        </a>
+            <div class="item col-md-6 col-lg-4 mb-5">
+                <h6 class="title">
+                    <?= $item['title'] ?>
+                </h6>
 
-                        <?= $item['title'] ?>
-
-                        <?php if (!$item['existing']): ?>
-                            <br>
-                            <small>
-                                <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['linked' . (ucfirst($item['type'])) . 'Missing'] ?>
-                            </small>
-                        <?php endif; ?>
-                    </p>
+                <div class="delete-wrapper">
+                    <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item btn btn-primary btn-xs" data-hash="<?= $item['hash'] ?>" data-post-data="<?= $item['postData'] ?>">
+                        <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['delete'] ?>
+                    </a>
                 </div>
+
+                <?php if (!$item['existing']): ?>
+                    <div class="non-existing">
+                        <small>
+                            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['linked' . (ucfirst($item['type'])) . 'Missing'] ?>
+                        </small>
+                    </div>
+                <?php endif; ?>
 
                 <?php if ($item['existing']): ?>
                     <?php if ($item['downloadUrl']): ?>
-                        <div class="download col-md-4">
+                        <div class="download-wrapper">
                             <a href="<?= $item['downloadUrl'] ?>" class="download btn btn-primary">
                                 <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
                             </a>
                         </div>
                     <?php elseif ($item['entityUrl']): ?>
-                        <div class="show col-md-4">
+                        <div class="show-wrapper">
                             <a href="<?= $item['entityUrl'] ?>" class="show btn btn-primary">
                                 <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['show'] ?>
                             </a>

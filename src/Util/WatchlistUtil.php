@@ -220,7 +220,9 @@ class WatchlistUtil
         } else {
             $items = [];
 
-            foreach ($this->getWatchlistItems($watchlist->id) as $item) {
+            foreach ($this->getWatchlistItems($watchlist->id, [
+                'modelOptions' => ['order' => 'dateAdded DESC'],
+            ]) as $item) {
                 // clean items for frontend (don't pass internal info to outside for security reasons)
                 $cleanedItem = [
                     'rootPage' => $rootPage,
@@ -292,7 +294,9 @@ class WatchlistUtil
 
     public function getWatchlistItems(int $watchlist, array $options = []): array
     {
-        if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlist]))) {
+        $modelOptions = $options['modelOptions'] ?? null;
+
+        if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlist], $modelOptions))) {
             return [];
         }
 

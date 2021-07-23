@@ -11,6 +11,7 @@ This utility bundle offers a flexible watchlist for the Contao CMS.
   insert tags
 - download the files added to a watchlist as a ZIP archive
 - contains clean templates without css styling and templates prepared with bootstrap 5 css classes
+- share watchlists via link (also to public) and copy to clipboard
 
 ## Impressions
 
