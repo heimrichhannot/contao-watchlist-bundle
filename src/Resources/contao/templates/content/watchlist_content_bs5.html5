@@ -6,12 +6,18 @@
     <?php else: ?>
         <?php foreach ($this->items as $item): ?>
             <div class="item col-md-6 col-lg-4 mb-5">
+                <?php if ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE && isset($item['picture'])): ?>
+                    <div class="image mb-3">
+                        <?php $this->insert('image', $item); ?>
+                    </div>
+                <?php endif; ?>
+
                 <h6 class="title">
                     <?= $item['title'] ?>
                 </h6>
 
                 <div class="delete-wrapper">
-                    <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item btn btn-primary btn-xs" data-hash="<?= $item['hash'] ?>" data-post-data="<?= $item['postData'] ?>">
+                    <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item btn btn-primary btn-sm" data-hash="<?= $item['hash'] ?>" data-post-data="<?= $item['postData'] ?>">
                         <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['delete'] ?>
                     </a>
                 </div>
@@ -22,9 +28,7 @@
                             <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['linked' . (ucfirst($item['type'])) . 'Missing'] ?>
                         </small>
                     </div>
-                <?php endif; ?>
-
-                <?php if ($item['existing']): ?>
+                <?php else: ?>
                     <?php if ($item['downloadUrl']): ?>
                         <div class="download-wrapper">
                             <a href="<?= $item['downloadUrl'] ?>" class="download btn btn-primary">

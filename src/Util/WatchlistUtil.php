@@ -9,6 +9,7 @@
 namespace HeimrichHannot\WatchlistBundle\Util;
 
 use Contao\BackendUser;
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Environment;
 use Contao\FrontendTemplate;
@@ -20,6 +21,7 @@ use Contao\Validator;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
+use HeimrichHannot\UtilsBundle\Image\ImageUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
@@ -36,6 +38,7 @@ class WatchlistUtil
     protected ModelUtil       $modelUtil;
     protected UrlUtil         $urlUtil;
     protected FileUtil        $fileUtil;
+    protected ImageUtil       $imageUtil;
 
     public function __construct(
         ContaoFramework $framework,
@@ -43,7 +46,8 @@ class WatchlistUtil
         Utils $utils,
         ModelUtil $modelUtil,
         UrlUtil $urlUtil,
-        FileUtil $fileUtil
+        FileUtil $fileUtil,
+        ImageUtil $imageUtil
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -51,6 +55,7 @@ class WatchlistUtil
         $this->modelUtil = $modelUtil;
         $this->urlUtil = $urlUtil;
         $this->fileUtil = $fileUtil;
+        $this->imageUtil = $imageUtil;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -208,7 +213,7 @@ class WatchlistUtil
         return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int) $config->id);
     }
 
-    public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, ?Model $watchlist = null): string
+    public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
         $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
         $template->watchlistDownloadAllUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage,
@@ -234,14 +239,32 @@ class WatchlistUtil
                     case WatchlistItemContainer::TYPE_FILE:
                         $cleanedItem['file'] = StringUtil::binToUuid($item['file']);
 
-                        $path = $this->fileUtil->getPathFromUuid($item['file']);
+                        $file = $this->fileUtil->getFileFromUuid($item['file']);
 
-                        if ($path) {
+                        if ($file->path) {
                             $cleanedItem['existing'] = true;
 
                             $template->hasDownloadableFiles = true;
 
-                            $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$path, urldecode($currentUrl));
+                            $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$file->path, urldecode($currentUrl));
+
+                            // add image if file is such
+                            if (\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
+                                // Override the default image size
+                                if ($config->imgSize) {
+                                    $imgSize = StringUtil::deserialize($config->imgSize, true);
+
+                                    if ($imgSize[0] > 0 || $imgSize[1] > 0 || is_numeric($imgSize[2])) {
+                                        $cleanedItem['size'] = $config->imgSize;
+                                    }
+                                }
+
+                                // force lightbox support
+                                $cleanedItem['fullsize'] = true;
+
+                                $this->imageUtil->addToTemplateData('file', '',
+                                    $cleanedItem, $cleanedItem, null, $watchlist->uuid);
+                            }
                         } else {
                             $cleanedItem['existing'] = false;
                         }

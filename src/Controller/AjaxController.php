@@ -85,7 +85,7 @@ class AjaxController
                     'rootPage' => $rootPage,
                 ]);
 
-                return new Response($this->watchlistUtil->parseWatchlistContent($template, $currentUrl, $rootPage, $watchlist));
+                return new Response($this->watchlistUtil->parseWatchlistContent($template, $currentUrl, $rootPage, $config, $watchlist));
 
             default:
                 return new Response('Method not allowed', 405);

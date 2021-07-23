@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{general_legend},title;{template_legend},watchlistContentTemplate,insertTagAddItemTemplate;',
+        'default' => '{general_legend},title;{image_legend},imgSize;{template_legend},watchlistContentTemplate,insertTagAddItemTemplate;',
     ],
     'fields' => [
         'id' => [
@@ -96,6 +96,16 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'inputType' => 'select',
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true],
             'sql' => "varchar(255) NOT NULL default ''",
+        ],
+        'imgSize' => [
+            'exclude' => true,
+            'inputType' => 'imageSize',
+            'reference' => &$GLOBALS['TL_LANG']['MSC'],
+            'eval' => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
+            'options_callback' => static function () {
+                return Contao\System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(Contao\BackendUser::getInstance());
+            },
+            'sql' => "varchar(128) NOT NULL default ''",
         ],
     ],
 ];

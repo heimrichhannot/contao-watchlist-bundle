@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
+use Contao\Config;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
@@ -16,6 +17,7 @@ use Contao\StringUtil;
 use Contao\Template;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
+use HeimrichHannot\UtilsBundle\Image\ImageUtil;
 use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
@@ -28,17 +30,19 @@ use Symfony\Component\HttpFoundation\Response;
 class ShareListModuleController extends AbstractFrontendModuleController
 {
     const TYPE = 'watchlist_share_list';
-    protected DatabaseUtil     $databaseUtil;
-    protected WatchlistUtil    $watchlistUtil;
-    protected UrlUtil          $urlUtil;
-    protected FileUtil         $fileUtil;
+    protected DatabaseUtil  $databaseUtil;
+    protected WatchlistUtil $watchlistUtil;
+    protected UrlUtil       $urlUtil;
+    protected FileUtil      $fileUtil;
+    protected ImageUtil     $imageUtil;
 
-    public function __construct(DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, UrlUtil $urlUtil, FileUtil $fileUtil)
+    public function __construct(DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, UrlUtil $urlUtil, FileUtil $fileUtil, ImageUtil $imageUtil)
     {
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
         $this->urlUtil = $urlUtil;
         $this->fileUtil = $fileUtil;
+        $this->imageUtil = $imageUtil;
     }
 
     protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
@@ -61,6 +65,8 @@ class ShareListModuleController extends AbstractFrontendModuleController
             return $template->getResponse();
         }
 
+        $config = $this->databaseUtil->findResultByPk('tl_watchlist_config', $watchlist->config);
+
         $currentUrl = parse_url(Environment::get('uri'), PHP_URL_PATH);
 
         $items = [];
@@ -74,14 +80,34 @@ class ShareListModuleController extends AbstractFrontendModuleController
                 case WatchlistItemContainer::TYPE_FILE:
                     $item['file'] = StringUtil::binToUuid($item['file']);
 
-                    $path = $this->fileUtil->getPathFromUuid($item['file']);
+                    $file = $this->fileUtil->getFileFromUuid($item['file']);
 
-                    if ($path) {
+                    if ($file->path) {
                         $item['existing'] = true;
 
                         $template->hasDownloadableFiles = true;
 
-                        $item['downloadUrl'] = $this->urlUtil->addQueryString('file='.$path, urldecode($currentUrl));
+                        $item['downloadUrl'] = $this->urlUtil->addQueryString('file='.$file->path, urldecode($currentUrl));
+
+                        // add image if file is such
+                        if (\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
+                            $imgSize = $module->imgSize ?: $config->imgSize ?: null;
+
+                            // Override the default image size
+                            if ($imgSize) {
+                                $size = StringUtil::deserialize($imgSize);
+
+                                if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
+                                    $item['size'] = $imgSize;
+                                }
+                            }
+
+                            // force lightbox support
+                            $item['fullsize'] = true;
+
+                            $this->imageUtil->addToTemplateData('file', '',
+                                $item, $item, null, $watchlistUuid, $watchlistUuid);
+                        }
                     } else {
                         $item['existing'] = false;
                     }

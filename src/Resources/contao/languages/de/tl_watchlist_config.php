@@ -16,6 +16,9 @@ $lang['tstamp'][0] = 'Änderungsdatum';
 $lang['title'][0] = 'Titel';
 $lang['title'][1] = 'Geben Sie hier bitte den Titel ein.';
 
+$lang['imgSize'][0] = 'Bildgröße';
+$lang['imgSize'][1] = 'Hier können Sie die Abmessungen für die Bilder und den Skalierungsmodus festlegen.';
+
 $lang['watchlistContentTemplate'][0] = 'Watchlist-Inhaltstemplate';
 $lang['watchlistContentTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
 
@@ -26,6 +29,7 @@ $lang['insertTagAddItemTemplate'][1] = 'Wählen Sie hier das gewünschte Templat
  * Legends
  */
 $lang['general_legend'] = 'Allgemeine Einstellungen';
+$lang['image_legend'] = 'Bildeinstellungen';
 
 /*
  * Buttons

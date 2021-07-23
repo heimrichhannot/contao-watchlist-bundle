@@ -15,4 +15,4 @@ $dca['palettes'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\Watch
     '{title_legend},name,headline,type;{config_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
 $dca['palettes'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController::TYPE] =
-    '{title_legend},name,headline,type;{config_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+    '{title_legend},name,headline,type;{image_legend},imgSize;{config_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
