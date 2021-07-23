@@ -9,7 +9,9 @@
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
 use Contao\Config;
+use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
 use Contao\ModuleModel;
@@ -30,14 +32,17 @@ use Symfony\Component\HttpFoundation\Response;
 class ShareListModuleController extends AbstractFrontendModuleController
 {
     const TYPE = 'watchlist_share_list';
-    protected DatabaseUtil  $databaseUtil;
-    protected WatchlistUtil $watchlistUtil;
-    protected UrlUtil       $urlUtil;
-    protected FileUtil      $fileUtil;
-    protected ImageUtil     $imageUtil;
 
-    public function __construct(DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, UrlUtil $urlUtil, FileUtil $fileUtil, ImageUtil $imageUtil)
+    protected ContaoFramework $framework;
+    protected DatabaseUtil    $databaseUtil;
+    protected WatchlistUtil   $watchlistUtil;
+    protected UrlUtil         $urlUtil;
+    protected FileUtil        $fileUtil;
+    protected ImageUtil       $imageUtil;
+
+    public function __construct(ContaoFramework $framework, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, UrlUtil $urlUtil, FileUtil $fileUtil, ImageUtil $imageUtil)
     {
+        $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
         $this->urlUtil = $urlUtil;
@@ -88,6 +93,8 @@ class ShareListModuleController extends AbstractFrontendModuleController
                         $template->hasDownloadableFiles = true;
 
                         $item['downloadUrl'] = $this->urlUtil->addQueryString('file='.$file->path, urldecode($currentUrl));
+
+                        $item['downloadUrl'] = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.StringUtil::binToUuid($file->getModel()->uuid).'}}');
 
                         // add image if file is such
                         if (\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
