@@ -17,21 +17,30 @@
                         </a>
 
                         <?= $item['title'] ?>
+
+                        <?php if (!$item['existing']): ?>
+                            <br>
+                            <small>
+                                <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['linked' . (ucfirst($item['type'])) . 'Missing'] ?>
+                            </small>
+                        <?php endif; ?>
                     </p>
                 </div>
 
-                <?php if ($item['downloadUrl']): ?>
-                    <div class="download">
-                        <a href="<?= $item['downloadUrl'] ?>" class="download">
-                            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
-                        </a>
-                    </div>
-                <?php elseif ($item['entityUrl']): ?>
-                    <div class="show">
-                        <a href="<?= $item['entityUrl'] ?>" class="show">
-                            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['show'] ?>
-                        </a>
-                    </div>
+                <?php if ($item['existing']): ?>
+                    <?php if ($item['downloadUrl']): ?>
+                        <div class="download">
+                            <a href="<?= $item['downloadUrl'] ?>" class="download">
+                                <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['download'] ?>
+                            </a>
+                        </div>
+                    <?php elseif ($item['entityUrl']): ?>
+                        <div class="show">
+                            <a href="<?= $item['entityUrl'] ?>" class="show">
+                                <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['show'] ?>
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>

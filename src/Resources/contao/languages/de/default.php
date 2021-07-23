@@ -21,3 +21,5 @@ $lang['show'] = 'Anzeigen';
 $lang['downloadAll'] = 'Alle Dateien herunterladen';
 $lang['itemAlreadyInCurrentWatchlist'] = 'Dieses Objekt befindet sich bereits in Ihrer Merkliste.';
 $lang['noItemsInCurrentWatchlist'] = 'Aktuell befindet sich keine Einträge in Ihrer Merkliste.';
+$lang['linkedEntityMissing'] = 'Der zugehörige Beitrag existiert nicht mehr.';
+$lang['linkedFileMissing'] = 'Die zugehörige Datei existiert nicht mehr.';

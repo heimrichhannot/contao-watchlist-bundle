@@ -232,9 +232,17 @@ class WatchlistUtil
                     case WatchlistItemContainer::TYPE_FILE:
                         $cleanedItem['file'] = StringUtil::binToUuid($item['file']);
 
-                        $template->hasDownloadableFiles = true;
+                        $path = $this->fileUtil->getPathFromUuid($item['file']);
 
-                        $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$this->fileUtil->getPathFromUuid($item['file']), urldecode($currentUrl));
+                        if ($path) {
+                            $cleanedItem['existing'] = true;
+
+                            $template->hasDownloadableFiles = true;
+
+                            $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$path, urldecode($currentUrl));
+                        } else {
+                            $cleanedItem['existing'] = false;
+                        }
 
                         $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['file']]));
 
@@ -244,6 +252,10 @@ class WatchlistUtil
                         $cleanedItem['entityTable'] = $item['entityTable'];
                         $cleanedItem['entity'] = $item['entity'];
                         $cleanedItem['entityUrl'] = $item['entityUrl'];
+
+                        $existing = $this->databaseUtil->findResultByPk($cleanedItem['entityTable'], $cleanedItem['entity']);
+
+                        $cleanedItem['existing'] = $existing->numRows > 0;
 
                         $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['entityTable'], $cleanedItem['entity']]));
 

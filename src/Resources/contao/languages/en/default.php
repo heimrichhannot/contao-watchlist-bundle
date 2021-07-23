@@ -21,3 +21,5 @@ $lang['show'] = 'Show';
 $lang['downloadAll'] = 'Download all files';
 $lang['itemAlreadyInCurrentWatchlist'] = 'This object is already part of your current watchlist.';
 $lang['noItemsInCurrentWatchlist'] = 'Your watch list doesn\'t contain any items currently.';
+$lang['linkedEntityMissing'] = 'The corresponding object doesn\'t exist anymore.';
+$lang['linkedFileMissing'] = 'The corresponding file doesn\'t exist anymore.';
