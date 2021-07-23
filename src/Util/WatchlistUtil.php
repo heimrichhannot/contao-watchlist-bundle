@@ -208,9 +208,11 @@ class WatchlistUtil
         return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int) $config->id);
     }
 
-    public function parseWatchlistContent(FrontendTemplate $template, int $rootPage, ?Model $watchlist = null): string
+    public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, ?Model $watchlist = null): string
     {
         $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
+        $template->watchlistDownloadAllUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage,
+            Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
 
         // items
         if (null === $watchlist) {
@@ -232,7 +234,7 @@ class WatchlistUtil
 
                         $template->hasDownloadableFiles = true;
 
-                        $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$this->fileUtil->getPathFromUuid($item['file']));
+                        $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$this->fileUtil->getPathFromUuid($item['file']), urldecode($currentUrl));
 
                         $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['file']]));
 
@@ -276,7 +278,7 @@ class WatchlistUtil
         return $this->modelUtil->findModelInstanceByPk('tl_watchlist_config', $page->watchlistConfig);
     }
 
-    public function getWatchlistItems(int $watchlist): array
+    public function getWatchlistItems(int $watchlist, array $options = []): array
     {
         if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlist]))) {
             return [];

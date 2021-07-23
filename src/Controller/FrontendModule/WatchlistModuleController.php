@@ -57,7 +57,12 @@ class WatchlistModuleController extends AbstractFrontendModuleController
         $config = $this->watchlistUtil->getCurrentWatchlistConfig();
         $watchlist = $this->watchlistUtil->getCurrentWatchlist();
 
-        $template->watchlistUpdateUrl = $this->urlUtil->addQueryString('root_page='.$objPage->rootId,
+        $currentUrl = parse_url(Environment::get('uri'), PHP_URL_PATH);
+
+        $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId,
+            Environment::get('url').AjaxController::WATCHLIST_URI);
+
+        $template->watchlistUpdateUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId.'&wl_url='.urlencode($currentUrl),
             Environment::get('url').AjaxController::WATCHLIST_CONTENT_URI);
 
         if (null === $watchlist) {
@@ -67,7 +72,7 @@ class WatchlistModuleController extends AbstractFrontendModuleController
         }
 
         $template->watchlistContent = $this->watchlistUtil->parseWatchlistContent(
-            new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $objPage->rootId, $watchlist
+            new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $watchlist
         );
 
         return $template->getResponse();

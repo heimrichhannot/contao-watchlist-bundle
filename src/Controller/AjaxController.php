@@ -13,9 +13,11 @@ use Contao\Database;
 use Contao\FrontendTemplate;
 use Contao\StringUtil;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
+use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -26,20 +28,26 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AjaxController
 {
+    const WATCHLIST_URI = '/_huh_watchlist';
+    const WATCHLIST_DOWNLOAD_ALL_URI = '/_huh_watchlist/download_all';
     const WATCHLIST_CONTENT_URI = '/_huh_watchlist/content';
     const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
 
-    protected ContaoFramework  $framework;
-    protected DatabaseUtil     $databaseUtil;
-    protected WatchlistUtil    $watchlistUtil;
-    protected ModelUtil        $modelUtil;
-    protected SessionInterface $session;
+    protected ContaoFramework    $framework;
+    protected DatabaseUtil       $databaseUtil;
+    protected WatchlistUtil      $watchlistUtil;
+    protected ModelUtil          $modelUtil;
+    protected SessionInterface   $session;
+    protected ContainerInterface $container;
+    protected FileUtil           $fileUtil;
 
     public function __construct(
+        ContainerInterface $container,
         ContaoFramework $framework,
         WatchlistUtil $watchlistUtil,
         DatabaseUtil $databaseUtil,
         ModelUtil $modelUtil,
+        FileUtil $fileUtil,
         SessionInterface $session
     ) {
         $this->databaseUtil = $databaseUtil;
@@ -47,6 +55,8 @@ class AjaxController
         $this->watchlistUtil = $watchlistUtil;
         $this->modelUtil = $modelUtil;
         $this->session = $session;
+        $this->container = $container;
+        $this->fileUtil = $fileUtil;
     }
 
     /**
@@ -60,7 +70,8 @@ class AjaxController
 
         switch ($request->getMethod()) {
             case Request::METHOD_GET:
-                $rootPage = $request->get('root_page');
+                $rootPage = $request->get('wl_root_page');
+                $currentUrl = $request->get('wl_url');
 
                 $config = $this->watchlistUtil->getCurrentWatchlistConfig($rootPage);
 
@@ -74,7 +85,7 @@ class AjaxController
                     'rootPage' => $rootPage,
                 ]);
 
-                return new Response($this->watchlistUtil->parseWatchlistContent($template, $rootPage, $watchlist));
+                return new Response($this->watchlistUtil->parseWatchlistContent($template, $currentUrl, $rootPage, $watchlist));
 
             default:
                 return new Response('Method not allowed', 405);
@@ -84,15 +95,88 @@ class AjaxController
     /**
      * @return Response
      *
-     * @Route("/_huh_watchlist/download")
+     * @Route("/_huh_watchlist")
      */
-    public function watchlistDownloadAction(Request $request)
+    public function watchlistAction(Request $request)
     {
         $this->framework->initialize();
 
+        $rootPage = $request->get('wl_root_page');
+
+        switch ($request->getMethod()) {
+            case Request::METHOD_DELETE:
+                $watchlist = $this->watchlistUtil->getCurrentWatchlist([
+                    'rootPage' => $rootPage,
+                ]);
+
+                if (null === $watchlist) {
+                    return new Response('No watchlist found.', 500);
+                }
+
+                $this->databaseUtil->delete('tl_watchlist_item', 'tl_watchlist_item.pid=?', [$watchlist->id]);
+                $this->databaseUtil->delete('tl_watchlist', 'tl_watchlist.id=?', [$watchlist->id]);
+
+                return new Response('Watchlist deleted successfully.');
+
+            default:
+                return new Response('Method not allowed', 405);
+        }
+    }
+
+    /**
+     * @return Response
+     *
+     * @Route("/_huh_watchlist/download_all")
+     */
+    public function watchlistDownloadAllAction(Request $request)
+    {
+        $this->framework->initialize();
+
+        $rootPage = $request->get('wl_root_page');
+
         switch ($request->getMethod()) {
             case Request::METHOD_GET:
-                break;
+                $projectDir = $this->container->getParameter('kernel.project_dir');
+                $watchlist = $this->watchlistUtil->getCurrentWatchlist([
+                    'rootPage' => $rootPage,
+                ]);
+
+                if (null === $watchlist) {
+                    return new Response('A watchlist couldn\'t be created or found.', 500);
+                }
+
+                // create zip file
+                $files = [];
+
+                foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id) as $item) {
+                    if (WatchlistItemContainer::TYPE_FILE !== $item['type'] || !($path = $this->fileUtil->getPathFromUuid($item['file']))) {
+                        continue;
+                    }
+
+                    $files[] = $projectDir.'/'.$path;
+                }
+
+                // Create new Zip Archive.
+                $zip = new \ZipArchive();
+
+                // The name of the Zip documents.
+                $zipName = 'watchlist.zip';
+
+                $zip->open($zipName, \ZipArchive::CREATE);
+
+                foreach ($files as $file) {
+                    $zip->addFile($file, basename($file));
+                }
+
+                $zip->close();
+
+                // send to browser
+                $response = new Response(file_get_contents($zipName));
+                $response->headers->set('Content-Type', 'application/zip');
+                $response->headers->set('Content-Disposition', 'attachment;filename="'.$zipName.'"');
+                $response->headers->set('Content-length', filesize($zipName));
+
+                return $response;
 
             default:
                 return new Response('Method not allowed', 405);

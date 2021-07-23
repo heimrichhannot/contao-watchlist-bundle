@@ -15,6 +15,7 @@ $lang['openWatchlist'] = 'Merkliste';
 $lang['watchlist'] = 'Merkliste';
 $lang['close'] = 'Schließen';
 $lang['delete'] = 'Entfernen';
+$lang['clear'] = 'Leeren';
 $lang['download'] = 'Herunterladen';
 $lang['show'] = 'Anzeigen';
 $lang['downloadAll'] = 'Alle Dateien herunterladen';

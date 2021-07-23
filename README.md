@@ -22,7 +22,7 @@ TODO
 1. Create a watchlist config (select bootstrap 5 templates if applicable).
 1. **Important**: Assign the watchlist config to your root page.
 1. Create a frontend module of type `watchlist` and add it to a layout area of your website so that it comes with each
-   and every sub page.
+   and every sub page. Select bootstrap 5 custom template if needed.
 1. Identify the template you'd like to integrate a link for adding this item to the watch list. Common situations are:
     1. `ce_download.html5`
     1. `ce_downloads.html5`

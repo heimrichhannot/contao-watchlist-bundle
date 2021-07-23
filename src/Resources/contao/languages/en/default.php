@@ -15,6 +15,7 @@ $lang['openWatchlist'] = 'Watch list';
 $lang['watchlist'] = 'Watch list';
 $lang['close'] = 'Close';
 $lang['delete'] = 'Delete';
+$lang['clear'] = 'Clear';
 $lang['download'] = 'Download';
 $lang['show'] = 'Show';
 $lang['downloadAll'] = 'Download all files';

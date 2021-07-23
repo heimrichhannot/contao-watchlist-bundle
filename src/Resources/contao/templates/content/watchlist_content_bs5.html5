@@ -1,6 +1,6 @@
 <div class="items">
     <?php if (empty($this->items)): ?>
-        <p class="alert alert-warning">
+        <p class="no-items alert alert-warning">
             <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['noItemsInCurrentWatchlist'] ?>
         </p>
     <?php else: ?>
@@ -34,10 +34,16 @@
     <?php endif; ?>
 </div>
 
-<?php if (!empty($this->hasDownloadableFiles)): ?>
+<?php if (!empty($this->items)): ?>
     <div class="actions">
-        <a href="#" class="download-all btn btn-primary">
-            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['downloadAll'] ?>
+        <a href="#" class="clear btn btn-primary">
+            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['clear'] ?>
         </a>
+
+        <?php if (!empty($this->hasDownloadableFiles)): ?>
+            <a href="<?= $this->watchlistDownloadAllUrl ?>" class="download-all btn btn-primary">
+                <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['downloadAll'] ?>
+            </a>
+        <?php endif; ?>
     </div>
 <?php endif; ?>

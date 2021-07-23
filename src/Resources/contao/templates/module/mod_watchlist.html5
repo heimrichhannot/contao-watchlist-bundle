@@ -1,11 +1,13 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-    <a class="open-watchlist" href="#">
-        <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
-    </a>
+    <div class="watchlist-wrapper" data-watchlist-url="<?= $this->watchlistUrl ?>" data-watchlist-update-url="<?= $this->watchlistUpdateUrl ?>">
+        <a class="open-watchlist" href="#">
+            <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
+        </a>
 
-    <div class="watchlist-content">
-        <?= $this->watchlistContent ?>
+        <div class="watchlist-content">
+            <?= $this->watchlistContent ?>
+        </div>
     </div>
 <?php $this->endblock(); ?>

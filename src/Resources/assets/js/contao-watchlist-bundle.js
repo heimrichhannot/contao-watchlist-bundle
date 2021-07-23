@@ -3,8 +3,23 @@ import Swal from "sweetalert2";
 
 class WatchlistBundle {
     static init() {
+        WatchlistBundle.initOpenLink();
         WatchlistBundle.initWatchlistLinks();
         WatchlistBundle.initAddItemLinks();
+    }
+
+    static initOpenLink() {
+        utilsBundle.event.addDynamicEventListener('click', '.open-watchlist:not([data-bs-toggle])', (element, event) => {
+            event.preventDefault();
+
+            let contentWrapper = element.nextElementSibling;
+
+            if (contentWrapper.classList.contains('opened')) {
+                contentWrapper.classList.remove('opened');
+            } else {
+                contentWrapper.classList.add('opened');
+            }
+        });
     }
 
     static updateWatchlist() {
@@ -16,12 +31,47 @@ class WatchlistBundle {
 
         utilsBundle.ajax.get(wrapper.getAttribute('data-watchlist-update-url'), {}, {
             onSuccess: (response) => {
-                wrapper.querySelector('.watchlist-content').innerHTML = response.responseText.trim();
-            },
+                wrapper.querySelector('.watchlist-content').innerHTML = response.responseText;
+            }
         });
     }
 
     static initWatchlistLinks() {
+        // clear watchlist
+        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .clear', (element, event) => {
+            event.preventDefault();
+
+            const url = document.querySelector('.watchlist-wrapper').getAttribute('data-watchlist-url'),
+                config = utilsBundle.ajax.setDefaults({
+                    onSuccess: (response) => {
+                        WatchlistBundle.updateWatchlist();
+
+                        document.querySelectorAll('.watchlist-add-item.added').forEach((link) => {
+                            WatchlistBundle.toggleAddItemLink(link);
+                        });
+                    },
+                    onError: (response) => {
+                        Swal.fire({
+                            icon: 'error',
+                            timer: 6000,
+                            timerProgressBar: true,
+                            showCloseButton: true,
+                            showConfirmButton: false,
+                            html: response.responseText
+                        });
+                    }
+                }),
+                request = utilsBundle.ajax.initializeRequest('DELETE', url, config),
+                submitData = {
+                    config: config,
+                    action: url,
+                    data: {}
+                };
+
+            utilsBundle.ajax.doAjaxSubmit(request, submitData);
+        });
+
+        // delete items
         utilsBundle.event.addDynamicEventListener('click', '.watchlist-delete-item', (element, event) => {
             const data = JSON.parse(element.getAttribute('data-post-data'));
 
@@ -36,7 +86,7 @@ class WatchlistBundle {
                     // toggle add item links (insert tags)
                     document.querySelectorAll('.watchlist-add-item[data-hash="' + element.getAttribute('data-hash') + '"]').forEach((link) => {
                         WatchlistBundle.toggleAddItemLink(link);
-                    })
+                    });
                 },
                 onError: (response) => {
                     Swal.fire({
