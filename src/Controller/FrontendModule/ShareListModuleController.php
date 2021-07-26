@@ -13,7 +13,6 @@ use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
-use Contao\Environment;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Contao\Template;
@@ -72,8 +71,6 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
         $config = $this->databaseUtil->findResultByPk('tl_watchlist_config', $watchlist->config);
 
-        $currentUrl = parse_url(Environment::get('uri'), PHP_URL_PATH);
-
         $items = [];
 
         foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id, [
@@ -92,9 +89,8 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
                         $template->hasDownloadableFiles = true;
 
-                        $item['downloadUrl'] = $this->urlUtil->addQueryString('file='.$file->path, urldecode($currentUrl));
-
-                        $item['downloadUrl'] = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.StringUtil::binToUuid($file->getModel()->uuid).'}}');
+                        // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
+                        $item['downloadUrl'] = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
 
                         // add image if file is such
                         if (\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {

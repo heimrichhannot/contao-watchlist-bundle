@@ -41,7 +41,7 @@ class WatchlistBundle {
         utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .clear', (element, event) => {
             event.preventDefault();
 
-            const url = document.querySelector('.watchlist-wrapper').getAttribute('data-watchlist-url'),
+            const url = element.getAttribute('href'),
                 config = utilsBundle.ajax.setDefaults({
                     onSuccess: (response) => {
                         WatchlistBundle.updateWatchlist();
@@ -100,6 +100,8 @@ class WatchlistBundle {
                 }
             });
         });
+
+        // TODO share
     }
 
     static toggleAddItemLink(element) {

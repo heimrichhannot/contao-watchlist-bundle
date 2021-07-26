@@ -25,10 +25,17 @@ $lang['watchlistContentTemplate'][1] = 'Wählen Sie hier das gewünschte Templat
 $lang['insertTagAddItemTemplate'][0] = 'Insert-Tag-Template (Hinzufügen)';
 $lang['insertTagAddItemTemplate'][1] = 'Wählen Sie hier das gewünschte Template aus.';
 
+$lang['addShare'][0] = 'Teilen aktivieren';
+$lang['addShare'][1] = 'Wählen Sie diese Option, um das Teilen von Merklisten zu erlauben.';
+
+$lang['shareJumpTo'][0] = 'Weiterleitungsseite';
+$lang['shareJumpTo'][1] = 'Wählen Sie hier die Basisseite für die Teilen-Links aus. Diese Seite muss ein Modul vom Typ "'.$GLOBALS['TL_LANG']['FMD'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController::TYPE][0].'" enthalten.';
+
 /*
  * Legends
  */
 $lang['general_legend'] = 'Allgemeine Einstellungen';
+$lang['share_legend'] = 'Teilen';
 $lang['image_legend'] = 'Bildeinstellungen';
 
 /*

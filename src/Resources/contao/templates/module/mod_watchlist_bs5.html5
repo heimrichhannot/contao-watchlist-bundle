@@ -2,7 +2,7 @@
 
 <?php $this->block('content'); ?>
 
-<div class="watchlist-wrapper" data-watchlist-url="<?= $this->watchlistUrl ?>" data-watchlist-update-url="<?= $this->watchlistUpdateUrl ?>">
+<div class="watchlist-wrapper" data-watchlist-update-url="<?= $this->watchlistUpdateUrl ?>">
     <a class="open-watchlist btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#watchlist-modal">
         <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
     </a>

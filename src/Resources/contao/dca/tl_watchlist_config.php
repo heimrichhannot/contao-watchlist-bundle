@@ -54,7 +54,13 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{general_legend},title;{image_legend},imgSize;{template_legend},watchlistContentTemplate,insertTagAddItemTemplate;',
+        '__selector__' => [
+            'addShare',
+        ],
+        'default' => '{general_legend},title;{image_legend},imgSize;{share_legend},addShare;{template_legend},watchlistContentTemplate,insertTagAddItemTemplate;',
+    ],
+    'subpalettes' => [
+        'addShare' => 'shareJumpTo',
     ],
     'fields' => [
         'id' => [
@@ -106,6 +112,22 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
                 return Contao\System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(Contao\BackendUser::getInstance());
             },
             'sql' => "varchar(128) NOT NULL default ''",
+        ],
+        'addShare' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['addShare'],
+            'exclude' => true,
+            'inputType' => 'checkbox',
+            'eval' => ['tl_class' => 'w50', 'submitOnChange' => true],
+            'sql' => "char(1) NOT NULL default ''",
+        ],
+        'shareJumpTo' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['shareJumpTo'],
+            'exclude' => true,
+            'inputType' => 'pageTree',
+            'foreignKey' => 'tl_page.title',
+            'eval' => ['fieldType' => 'radio', 'tl_class' => 'w50', 'mandatory' => true],
+            'relation' => ['type' => 'hasOne', 'load' => 'lazy'],
+            'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
     ],
 ];

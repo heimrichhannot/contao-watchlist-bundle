@@ -59,9 +59,6 @@ class WatchlistModuleController extends AbstractFrontendModuleController
 
         $currentUrl = parse_url(Environment::get('uri'), PHP_URL_PATH);
 
-        $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId,
-            Environment::get('url').AjaxController::WATCHLIST_URI);
-
         $template->watchlistUpdateUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId.'&wl_url='.urlencode($currentUrl),
             Environment::get('url').AjaxController::WATCHLIST_CONTENT_URI);
 

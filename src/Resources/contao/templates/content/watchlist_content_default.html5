@@ -50,13 +50,19 @@
 
 <?php if (!empty($this->items)): ?>
     <div class="actions">
-        <a href="#" class="clear">
+        <a href="<?= $this->watchlistUrl ?>" class="clear">
             <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['clear'] ?>
         </a>
 
         <?php if (!empty($this->hasDownloadableFiles)): ?>
             <a href="<?= $this->watchlistDownloadAllUrl ?>" class="download-all">
                 <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['downloadAll'] ?>
+            </a>
+        <?php endif; ?>
+
+        <?php if ($this->config->addShare): ?>
+            <a href="<?= $this->watchlistShareUrl ?>" class="share">
+                <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['share'] ?>
             </a>
         <?php endif; ?>
     </div>

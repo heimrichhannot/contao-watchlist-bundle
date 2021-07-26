@@ -10,6 +10,7 @@ namespace HeimrichHannot\WatchlistBundle\Util;
 
 use Contao\BackendUser;
 use Contao\Config;
+use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Environment;
 use Contao\FrontendTemplate;
@@ -219,6 +220,12 @@ class WatchlistUtil
         $template->watchlistDownloadAllUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage,
             Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
 
+        if ($config->addShare && null !== ($sharePage = $this->modelUtil->findModelInstanceByPk('tl_page', $config->shareJumpTo))) {
+            $template->watchlistShareUrl = $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, $sharePage->getFrontendUrl());
+        }
+
+        $template->config = $config;
+
         // items
         if (null === $watchlist) {
             $template->items = [];
@@ -246,7 +253,12 @@ class WatchlistUtil
 
                             $template->hasDownloadableFiles = true;
 
-                            $cleanedItem['downloadUrl'] = $this->urlUtil->addQueryString('file='.$file->path, urldecode($currentUrl));
+                            // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
+                            $url = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
+                            $query = parse_url($url, PHP_URL_QUERY);
+                            $url = $this->urlUtil->addQueryString($query, $currentUrl);
+
+                            $cleanedItem['downloadUrl'] = $this->urlUtil->removeQueryString(['wl_root_page', 'wl_url'], $url);
 
                             // add image if file is such
                             if (\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
