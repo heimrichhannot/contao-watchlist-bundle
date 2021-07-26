@@ -31,6 +31,9 @@ $lang['entity'][1] = 'In diesem Feld wird die ID der Entität gespeichert.';
 $lang['entityUrl'][0] = 'Entitäts-URL';
 $lang['entityUrl'][1] = 'In diesem Feld wird die URL der Entität gespeichert.';
 
+$lang['entityFile'][0] = 'Entitäts-Vorschaudatei';
+$lang['entityFile'][1] = 'In diesem Feld wird eine Datei gespeichert, die als Vorschau der Entität in der Merkliste dient.';
+
 $lang['page'][0] = 'Seite';
 $lang['page'][1] = 'In diesem Feld wird die Seite gespeichert, auf der das Objekt der Merkliste hinzugefügt wurde.';
 

@@ -266,7 +266,7 @@ class AjaxController
                         }
 
                         // get title from file
-                        if (!isset($data['title']) || \in_array($data['title'], ['null', 'NULL', "''", '0'])) {
+                        if (!isset($data['title'])) {
                             // filename is the fallback
                             $data['title'] = $fileModel->name;
 
@@ -291,6 +291,10 @@ class AjaxController
                     case WatchlistItemContainer::TYPE_ENTITY:
                         if (null === $this->modelUtil->findModelInstanceByPk($data['entityTable'], $data['entity'])) {
                             return new Response('Entity with the given id couldn\'t be found in the given table.', 404);
+                        }
+
+                        if (isset($data['entityFile'])) {
+                            $data['entityFile'] = StringUtil::uuidToBin($data['entityFile']);
                         }
 
                         $result = $this->watchlistUtil->addItemToWatchlist(

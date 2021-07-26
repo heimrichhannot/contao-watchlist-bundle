@@ -59,6 +59,8 @@ class ReplaceInsertTagsListener
 
         global $objPage;
 
+        $nullValues = ['null', 'NULL', "''", '0'];
+
         switch ($parts[0]) {
             case 'watchlist_add_item_link':
                 $watchlist = $this->watchlistUtil->getCurrentWatchlist();
@@ -87,11 +89,11 @@ class ReplaceInsertTagsListener
                         $postData['type'] = WatchlistItemContainer::TYPE_FILE;
                         $postData['file'] = $fileUuid;
 
-                        if ($title) {
+                        if ($title && !\in_array($title, $nullValues)) {
                             $postData['title'] = $title;
                         }
 
-                        if ($watchlistUuid) {
+                        if ($watchlistUuid && !\in_array($watchlistUuid, $nullValues)) {
                             $postData['pid'] = $watchlistUuid;
                         }
 
@@ -116,7 +118,8 @@ class ReplaceInsertTagsListener
                         $entity = $parts[3];
                         $title = $parts[4];
                         $entityUrl = $parts[5] ?? null;
-                        $watchlistUuid = $parts[6] ?? null;
+                        $entityFile = $parts[6] ?? null;
+                        $watchlistUuid = $parts[7] ?? null;
 
                         // entity not existing?
                         $existing = $this->databaseUtil->findResultByPk($entityTable, $entity);
@@ -130,11 +133,15 @@ class ReplaceInsertTagsListener
                         $postData['entity'] = $entity;
                         $postData['title'] = $title;
 
-                        if ($entityUrl) {
+                        if ($entityUrl && !\in_array($entityUrl, $nullValues)) {
                             $postData['entityUrl'] = $entityUrl;
                         }
 
-                        if ($watchlistUuid) {
+                        if ($entityFile && !\in_array($entityFile, $nullValues)) {
+                            $postData['entityFile'] = $entityFile;
+                        }
+
+                        if ($watchlistUuid && !\in_array($watchlistUuid, $nullValues)) {
                             $postData['pid'] = $watchlistUuid;
                         }
 

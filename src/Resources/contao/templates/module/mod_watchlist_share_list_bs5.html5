@@ -22,6 +22,10 @@
                             <div class="image mb-3">
                                 <?php $this->insert('image', $item); ?>
                             </div>
+                        <?php elseif ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY && isset($item['picture'])): ?>
+                            <div class="image mb-3">
+                                <?php $this->insert('image', $item); ?>
+                            </div>
                         <?php endif; ?>
 
                         <h6 class="title">

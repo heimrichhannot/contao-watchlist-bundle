@@ -10,6 +10,10 @@
                     <div class="image mb-3">
                         <?php $this->insert('image', $item); ?>
                     </div>
+                <?php elseif ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY && isset($item['picture'])): ?>
+                    <div class="image mb-3">
+                        <?php $this->insert('image', $item); ?>
+                    </div>
                 <?php endif; ?>
 
                 <h6 class="title">
@@ -17,7 +21,7 @@
                 </h6>
 
                 <div class="delete-wrapper">
-                    <a href="<?= $this->itemUrl ?>" class="watchlist-delete-item btn btn-primary btn-sm" data-hash="<?= $item['hash'] ?>" data-post-data="<?= $item['postData'] ?>">
+                    <a href="<?= $this->itemUrl ?>" class="delete-item btn btn-primary btn-sm" data-hash="<?= $item['hash'] ?>" data-post-data="<?= $item['postData'] ?>">
                         <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['delete'] ?>
                     </a>
                 </div>
@@ -61,7 +65,9 @@
         <?php endif; ?>
 
         <?php if ($this->config->addShare): ?>
-            <a href="<?= $this->watchlistShareUrl ?>" class="share btn btn-primary">
+            <a href="<?= $this->watchlistShareUrl ?>" class="share btn btn-primary"
+               data-text="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['shareText'] ?>"
+               data-copy-to-clipboard-text="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['copyToClipboard'] ?>">
                 <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['share'] ?>
             </a>
         <?php endif; ?>

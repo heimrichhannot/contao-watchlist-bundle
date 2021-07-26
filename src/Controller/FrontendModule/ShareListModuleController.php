@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
-use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -19,6 +18,7 @@ use Contao\Template;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Image\ImageUtil;
+use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
@@ -38,15 +38,24 @@ class ShareListModuleController extends AbstractFrontendModuleController
     protected UrlUtil         $urlUtil;
     protected FileUtil        $fileUtil;
     protected ImageUtil       $imageUtil;
+    protected ModelUtil       $modelUtil;
 
-    public function __construct(ContaoFramework $framework, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, UrlUtil $urlUtil, FileUtil $fileUtil, ImageUtil $imageUtil)
-    {
+    public function __construct(
+        ContaoFramework $framework,
+        DatabaseUtil $databaseUtil,
+        WatchlistUtil $watchlistUtil,
+        UrlUtil $urlUtil,
+        FileUtil $fileUtil,
+        ImageUtil $imageUtil,
+        ModelUtil $modelUtil
+    ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
         $this->urlUtil = $urlUtil;
         $this->fileUtil = $fileUtil;
         $this->imageUtil = $imageUtil;
+        $this->modelUtil = $modelUtil;
     }
 
     protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
@@ -69,9 +78,11 @@ class ShareListModuleController extends AbstractFrontendModuleController
             return $template->getResponse();
         }
 
-        $config = $this->databaseUtil->findResultByPk('tl_watchlist_config', $watchlist->config);
+        $config = $this->modelUtil->findModelInstanceByPk('tl_watchlist_config', $watchlist->config);
 
         $items = [];
+
+        $watchlist = $this->modelUtil->findModelInstanceByPk('tl_watchlist', $watchlist->id);
 
         foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id, [
             'modelOptions' => ['order' => 'title ASC'],
@@ -93,24 +104,7 @@ class ShareListModuleController extends AbstractFrontendModuleController
                         $item['downloadUrl'] = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
 
                         // add image if file is such
-                        if (\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
-                            $imgSize = $module->imgSize ?: $config->imgSize ?: null;
-
-                            // Override the default image size
-                            if ($imgSize) {
-                                $size = StringUtil::deserialize($imgSize);
-
-                                if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2])) {
-                                    $item['size'] = $imgSize;
-                                }
-                            }
-
-                            // force lightbox support
-                            $item['fullsize'] = true;
-
-                            $this->imageUtil->addToTemplateData('file', '',
-                                $item, $item, null, $watchlistUuid, $watchlistUuid);
-                        }
+                        $item = $this->watchlistUtil->addImageToItemData($item, 'file', $file, $config, $watchlist);
                     } else {
                         $item['existing'] = false;
                     }
@@ -121,6 +115,13 @@ class ShareListModuleController extends AbstractFrontendModuleController
                     $existing = $this->databaseUtil->findResultByPk($item['entityTable'], $item['entity']);
 
                     $item['existing'] = $existing->numRows > 0;
+
+                    $file = $this->fileUtil->getFileFromUuid($item['entityFile']);
+
+                    if ($file->path) {
+                        // add image if file is such
+                        $item = $this->watchlistUtil->addImageToItemData($item, 'entityFile', $file, $config, $watchlist);
+                    }
 
                     break;
             }

@@ -50,5 +50,5 @@ The following new insert tags are available. These take into account the transla
 
 Name | Example
 -----|--------
-`{{watchlist_add_item_link::file::<file uuid (binary or string)>::<optional: title>::<optional: watchlist uuid>}}` | `{{watchlist_add_item_link::file::2e6b6f54-e4af-11eb-b4fc-001e678385c6}}`
-`{{watchlist_add_item_link::entity::<entity table>::<entity id>::<title>::<optional: entity url>::<optional: watchlist uuid>}}` | `{{watchlist_add_item_link::entity::tl_news::1::My headline::https://example.org/my-entity}}`
+`{{watchlist_add_item_link::file::<file uuid (string)>::<optional: title>::<optional: watchlist uuid>}}` | `{{watchlist_add_item_link::file::2e6b6f54-e4af-11eb-b4fc-001e678385c6}}`
+`{{watchlist_add_item_link::entity::<entity table>::<entity id>::<title>::<optional: entity url>::<optional: preview file uuid (string)>::<optional: watchlist uuid>}}` | `{{watchlist_add_item_link::entity::tl_news::1::My headline::https://example.org/my-entity::2e6b6f54-e4af-11eb-b4fc-001e678385c6}}`

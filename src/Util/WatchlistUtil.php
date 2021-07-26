@@ -13,6 +13,7 @@ use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Environment;
+use Contao\File;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
 use Contao\Model;
@@ -221,7 +222,7 @@ class WatchlistUtil
             Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
 
         if ($config->addShare && null !== ($sharePage = $this->modelUtil->findModelInstanceByPk('tl_page', $config->shareJumpTo))) {
-            $template->watchlistShareUrl = $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, $sharePage->getFrontendUrl());
+            $template->watchlistShareUrl = $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, Environment::get('url').'/'.$sharePage->getFrontendUrl());
         }
 
         $template->config = $config;
@@ -251,6 +252,8 @@ class WatchlistUtil
                         if ($file->path) {
                             $cleanedItem['existing'] = true;
 
+                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
+
                             $template->hasDownloadableFiles = true;
 
                             // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
@@ -261,24 +264,11 @@ class WatchlistUtil
                             $cleanedItem['downloadUrl'] = $this->urlUtil->removeQueryString(['wl_root_page', 'wl_url'], $url);
 
                             // add image if file is such
-                            if (\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
-                                // Override the default image size
-                                if ($config->imgSize) {
-                                    $imgSize = StringUtil::deserialize($config->imgSize, true);
-
-                                    if ($imgSize[0] > 0 || $imgSize[1] > 0 || is_numeric($imgSize[2])) {
-                                        $cleanedItem['size'] = $config->imgSize;
-                                    }
-                                }
-
-                                // force lightbox support
-                                $cleanedItem['fullsize'] = true;
-
-                                $this->imageUtil->addToTemplateData('file', '',
-                                    $cleanedItem, $cleanedItem, null, $watchlist->uuid);
-                            }
+                            $cleanedItem = $this->addImageToItemData($cleanedItem, 'file', $file, $config, $watchlist);
                         } else {
                             $cleanedItem['existing'] = false;
+
+                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
                         }
 
                         $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['file']]));
@@ -289,6 +279,7 @@ class WatchlistUtil
                         $cleanedItem['entityTable'] = $item['entityTable'];
                         $cleanedItem['entity'] = $item['entity'];
                         $cleanedItem['entityUrl'] = $item['entityUrl'];
+                        $cleanedItem['entityFile'] = $item['entityFile'];
 
                         $existing = $this->databaseUtil->findResultByPk($cleanedItem['entityTable'], $cleanedItem['entity']);
 
@@ -296,10 +287,17 @@ class WatchlistUtil
 
                         $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['entityTable'], $cleanedItem['entity']]));
 
+                        $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
+
+                        $file = $this->fileUtil->getFileFromUuid($item['entityFile']);
+
+                        if ($file->path) {
+                            // add image if file is such
+                            $cleanedItem = $this->addImageToItemData($cleanedItem, 'entityFile', $file, $config, $watchlist);
+                        }
+
                         break;
                 }
-
-                $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
 
                 $cleanedItem['hash'] = $hash;
 
@@ -310,6 +308,30 @@ class WatchlistUtil
         }
 
         return $template->parse();
+    }
+
+    public function addImageToItemData(array $item, string $field, File $file, Model $config, Model $watchlist)
+    {
+        if (!\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
+            return $item;
+        }
+
+        // Override the default image size
+        if ($config->imgSize) {
+            $imgSize = StringUtil::deserialize($config->imgSize, true);
+
+            if ($imgSize[0] > 0 || $imgSize[1] > 0 || is_numeric($imgSize[2])) {
+                $item['size'] = $config->imgSize;
+            }
+        }
+
+        // force lightbox support
+        $item['fullsize'] = true;
+
+        $this->imageUtil->addToTemplateData($field, '',
+            $item, $item, null, $watchlist->uuid);
+
+        return $item;
     }
 
     public function getCurrentWatchlistConfig(int $rootPage = 0): ?Model

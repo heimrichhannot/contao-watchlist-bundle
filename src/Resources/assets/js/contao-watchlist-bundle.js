@@ -72,7 +72,7 @@ class WatchlistBundle {
         });
 
         // delete items
-        utilsBundle.event.addDynamicEventListener('click', '.watchlist-delete-item', (element, event) => {
+        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .delete-item', (element, event) => {
             const data = JSON.parse(element.getAttribute('data-post-data'));
 
             event.preventDefault();
@@ -101,7 +101,37 @@ class WatchlistBundle {
             });
         });
 
-        // TODO share
+        // share
+        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .share', (element, event) => {
+            event.preventDefault();
+
+            Swal.fire({
+                icon: 'success',
+                showCloseButton: true,
+                showConfirmButton: false,
+                html: '<div class="share-url">' +
+                    '<p>' + element.getAttribute('data-text') + '</p>' +
+                    '<p><input class="url form-control" type="text" value="' + element.getAttribute('href') + '"><br>' +
+                    '<a class="watchlist-copy-to-clipboard btn btn-primary btn-sm" href="#">' + element.getAttribute('data-copy-to-clipboard-text') + '</a></p>' +
+                    '</div>'
+            });
+        });
+
+        utilsBundle.event.addDynamicEventListener('click', '.watchlist-copy-to-clipboard', (element, event) => {
+            event.preventDefault();
+
+            if (!window.isSecureContext) {
+                console.error('Copying to clipboard is only allowed with HTTPS');
+                return;
+            }
+
+            let textInput = element.closest('.share-url').querySelector('.url');
+
+            navigator.clipboard.writeText(textInput.value).then(function() {
+                element.classList.add('added');
+                textInput.classList.add('added');
+            });
+        });
     }
 
     static toggleAddItemLink(element) {
