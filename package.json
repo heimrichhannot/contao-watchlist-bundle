@@ -7,7 +7,8 @@
   "devDependencies": {
     "@symfony/webpack-encore": "^1.5",
     "sass": "^1.32.8",
-    "sass-loader": "^11.0.0"
+    "sass-loader": "^11.0.0",
+    "@hundh/contao-utils-bundle": "^1.18"
   },
   "scripts": {
     "build-dev": "yarn encore dev",

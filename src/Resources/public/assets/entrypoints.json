@@ -1,0 +1,9 @@
+{
+  "entrypoints": {
+    "contao-watchlist-bundle": {
+      "js": [
+        "/public/assets/contao-watchlist-bundle.js"
+      ]
+    }
+  }
+}

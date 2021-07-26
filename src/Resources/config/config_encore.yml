@@ -3,4 +3,4 @@ huh_encore:
     - { name: contao-watchlist-bundle, file: vendor/heimrichhannot/contao-watchlist-bundle/src/Resources/assets/js/contao-watchlist-bundle-init.js}
   unset_global_keys:
     js:
-      - contao-filecredits-bundle
+      - contao-watchlist-bundle
