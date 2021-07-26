@@ -25,10 +25,36 @@ class LoadDataContainerListener
 
     public function __invoke($table)
     {
-        if ('tl_watchlist' !== $table) {
-            return;
-        }
+        switch ($table) {
+            case 'tl_watchlist':
+                $this->prepareWatchlistDca();
 
+                break;
+
+            case 'tl_list_config':
+                $this->prepareListConfigDcaDca();
+
+                break;
+
+            case 'tl_reader_config':
+                $this->prepareReaderConfigDcaDca();
+
+                break;
+        }
+    }
+
+    public function prepareWatchlistDca()
+    {
         $this->dcaUtil->addAuthorFieldAndCallback('tl_watchlist');
+    }
+
+    public function prepareListConfigDcaDca()
+    {
+        \HeimrichHannot\ListBundle\Backend\ListConfig::addOverridableFields();
+    }
+
+    public function prepareReaderConfigDcaDca()
+    {
+        \HeimrichHannot\ReaderBundle\Backend\ReaderConfig::addOverridableFields();
     }
 }

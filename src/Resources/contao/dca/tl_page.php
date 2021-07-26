@@ -23,7 +23,7 @@ foreach (['root', 'rootfallback'] as $palette) {
  */
 $fields = [
     'watchlistConfig' => [
-        'label' => &$GLOBALS['TL_LANG']['tl_watchlistConfig']['watchlistConfig'],
+        'label' => &$GLOBALS['TL_LANG']['tl_page']['watchlistConfig'],
         'exclude' => true,
         'filter' => true,
         'inputType' => 'select',

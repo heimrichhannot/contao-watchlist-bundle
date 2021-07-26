@@ -30,6 +30,8 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
     public function getBundles(ParserInterface $parser)
     {
         return [BundleConfig::create(HeimrichHannotWatchlistBundle::class)->setLoadAfter([
+            'HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle',
+            'HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle',
             ContaoCoreBundle::class,
         ])];
     }

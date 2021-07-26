@@ -351,7 +351,7 @@ class WatchlistUtil
 
     public function getWatchlistItems(int $watchlist, array $options = []): array
     {
-        $modelOptions = $options['modelOptions'] ?? null;
+        $modelOptions = $options['modelOptions'] ?? [];
 
         if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlist], $modelOptions))) {
             return [];

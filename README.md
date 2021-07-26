@@ -45,9 +45,12 @@ A watch list in the context of this bundle can have multiple types of items:
 1. Create a target page for shared watch lists.
 1. In your watch list config activate the sharing feature.
 1. Create the list module for the share page. You have 2 options:
-    1. For simpler needs and file-only watch lists: Create a frontend module of the type "watchlist_share_list". This module fulfills simple needs. Image watch list
-       items are downloadable, entity items are reachable by link.
-    1. For more complex needs (like internal areas, filtering, ...): Create a list using [heimrichhannot/contao-list-bundle](https://github.com/heimrichhannot/contao-list-bundle) and a reader using [heimrichhannot/contao-reader-bundle](https://github.com/heimrichhannot/contao-reader-bundle). Activate the option `actAsWatchlistShareTarget` in the list and reader configs.
+    1. For simpler needs and file-only watch lists: Create a frontend module of the type "watchlist_share_list". This
+       module fulfills simple needs. Image watch list items are downloadable, entity items are reachable by link.
+    1. For more complex needs (like internal areas, filtering, ...): Create a list
+       using [heimrichhannot/contao-list-bundle](https://github.com/heimrichhannot/contao-list-bundle) and a reader
+       using [heimrichhannot/contao-reader-bundle](https://github.com/heimrichhannot/contao-reader-bundle). Activate the
+       option `actAsWatchlistShareTarget` in the list and reader configs.
 1. Place the module created in the previous step on the page created in the second page.
 
 ## Permission handling
