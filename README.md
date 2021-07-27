@@ -49,8 +49,16 @@ A watch list in the context of this bundle can have multiple types of items:
        module fulfills simple needs. Image watch list items are downloadable, entity items are reachable by link.
     1. For more complex needs (like internal areas, filtering, ...): Create a list
        using [heimrichhannot/contao-list-bundle](https://github.com/heimrichhannot/contao-list-bundle) and a reader
-       using [heimrichhannot/contao-reader-bundle](https://github.com/heimrichhannot/contao-reader-bundle). Activate the
-       option `actAsWatchlistShareTarget` in the list and reader configs.
+       using [heimrichhannot/contao-reader-bundle](https://github.com/heimrichhannot/contao-reader-bundle).
+        1. Activate the option `actAsWatchlistShareTarget` in the list and reader configs.
+        1. Make sure, the `detailsUrl` in the list item template contains the `watchlist` GET parameter. For example,
+           you could create a block for the `detailsUrl`, extend your default template and override the `detailsUrl`:
+           
+           ```twig
+           {% block detailsUrl %}
+           {{ detailsUrl }}?watchlist={{ app.request.get('watchlist') }}
+           {% endblock %}
+           ```
 1. Place the module created in the previous step on the page created in the second page.
 
 ## Permission handling

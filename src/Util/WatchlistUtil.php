@@ -264,7 +264,7 @@ class WatchlistUtil
                             $cleanedItem['downloadUrl'] = $this->urlUtil->removeQueryString(['wl_root_page', 'wl_url'], $url);
 
                             // add image if file is such
-                            $cleanedItem = $this->addImageToItemData($cleanedItem, 'file', $file, $config, $watchlist);
+                            $this->addImageToItemData($cleanedItem, 'file', $file, $config, $watchlist);
                         } else {
                             $cleanedItem['existing'] = false;
 
@@ -293,7 +293,7 @@ class WatchlistUtil
 
                         if ($file->path) {
                             // add image if file is such
-                            $cleanedItem = $this->addImageToItemData($cleanedItem, 'entityFile', $file, $config, $watchlist);
+                            $this->addImageToItemData($cleanedItem, 'entityFile', $file, $config, $watchlist);
                         }
 
                         break;
@@ -310,10 +310,10 @@ class WatchlistUtil
         return $template->parse();
     }
 
-    public function addImageToItemData(array $item, string $field, File $file, Model $config, Model $watchlist)
+    public function addImageToItemData(array &$item, string $field, File $file, Model $config, Model $watchlist)
     {
         if (!\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
-            return $item;
+            return;
         }
 
         // Override the default image size
@@ -328,10 +328,11 @@ class WatchlistUtil
         // force lightbox support
         $item['fullsize'] = true;
 
-        $this->imageUtil->addToTemplateData($field, '',
-            $item, $item, null, $watchlist->uuid);
-
-        return $item;
+        $item['imageData_'.$field] = $this->imageUtil->prepareImage($item, [
+            'imageField' => $field,
+            'imageSelectorField' => null,
+            'lightboxId' => $watchlist->uuid,
+        ]);
     }
 
     public function getCurrentWatchlistConfig(int $rootPage = 0): ?Model

@@ -73,9 +73,9 @@ class WatchlistBundle {
 
         // delete items
         utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .delete-item', (element, event) => {
-            const data = JSON.parse(element.getAttribute('data-post-data'));
-
             event.preventDefault();
+
+            const data = JSON.parse(element.getAttribute('data-post-data'));
 
             data.delete = 1;
 

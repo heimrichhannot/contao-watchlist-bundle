@@ -104,7 +104,7 @@ class ShareListModuleController extends AbstractFrontendModuleController
                         $item['downloadUrl'] = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
 
                         // add image if file is such
-                        $item = $this->watchlistUtil->addImageToItemData($item, 'file', $file, $config, $watchlist);
+                        $this->watchlistUtil->addImageToItemData($item, 'file', $file, $config, $watchlist);
                     } else {
                         $item['existing'] = false;
                     }
@@ -120,7 +120,7 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
                     if ($file->path) {
                         // add image if file is such
-                        $item = $this->watchlistUtil->addImageToItemData($item, 'entityFile', $file, $config, $watchlist);
+                        $this->watchlistUtil->addImageToItemData($item, 'entityFile', $file, $config, $watchlist);
                     }
 
                     break;

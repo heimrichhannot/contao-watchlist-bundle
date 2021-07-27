@@ -50,7 +50,7 @@ class WatchlistModuleController extends AbstractFrontendModuleController
         if ($this->container->has('HeimrichHannot\EncoreBundle\Asset\FrontendAsset')) {
             $this->container->get(\HeimrichHannot\EncoreBundle\Asset\FrontendAsset::class)->addActiveEntrypoint('contao-watchlist-bundle');
         } else {
-            $GLOBALS['TL_JAVASCRIPT']['contao-watchlist-bundle'] = 'bundles/heimrichhannoteatchlistbundle/assets/contao-watchlist-bundle.js|static';
+            $GLOBALS['TL_JAVASCRIPT']['contao-watchlist-bundle'] = 'bundles/heimrichhannotwatchlistbundle/assets/contao-watchlist-bundle.js|static';
         }
 
         global $objPage;
