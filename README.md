@@ -15,7 +15,9 @@ This utility bundle offers a flexible watch list for the Contao CMS.
 
 ## Impressions
 
-TODO
+![Watch list in frontend](docs/img/watchlist.png)
+
+Watch list in frontend (here: bootstrap 5 template with modal integration)
 
 ## Installation & configuration
 
