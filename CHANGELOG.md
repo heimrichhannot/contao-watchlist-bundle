@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.2] - 2021-08-17
+
+- Fixed: clear action
+
 ## [3.0.1] - 2021-07-27
 
 - added symfony dependencies

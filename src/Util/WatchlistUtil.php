@@ -217,6 +217,9 @@ class WatchlistUtil
 
     public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
+        global $objPage;
+
+        $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId, Environment::get('url').AjaxController::WATCHLIST_URI);
         $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
         $template->watchlistDownloadAllUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage,
             Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
