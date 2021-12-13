@@ -16,14 +16,18 @@ use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 
 /**
- * @ServiceTag("kernel.event_listener", event="huh.list.event.list_modify_query_builder_for_count")
+ * ServiceTag("kernel.event_listener", event="huh.list.event.list_modify_query_builder_for_count")
  */
 class ListModifyQueryBuilderForCountEventListener
 {
-    protected ModelUtil     $modelUtil;
-    protected Request       $request;
-    protected DatabaseUtil  $databaseUtil;
-    protected WatchlistUtil $watchlistUtil;
+    /** @var ModelUtil */
+    protected $modelUtil;
+    /** @var Request */
+    protected $request;
+    /** @var DatabaseUtil */
+    protected $databaseUtil;
+    /** @var WatchlistUtil */
+    protected $watchlistUtil;
 
     public function __construct(ModelUtil $modelUtil, Request $request, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil)
     {

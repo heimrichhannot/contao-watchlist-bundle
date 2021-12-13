@@ -28,12 +28,18 @@ class WatchlistItemContainer
         self::TYPE_ENTITY,
     ];
 
-    protected ContaoFramework     $framework;
-    protected DcaUtil             $dcaUtil;
-    protected DataContainerChoice $dataContainerChoice;
-    protected ModelUtil           $modelUtil;
-    protected ModelInstanceChoice $modelInstanceChoice;
-    protected FileUtil            $fileUtil;
+    /** @var ContaoFramework */
+    protected $framework;
+    /** @var DcaUtil */
+    protected $dcaUtil;
+    /** @var DataContainerChoice */
+    protected $dataContainerChoice;
+    /** @var ModelUtil */
+    protected $modelUtil;
+    /** @var ModelInstanceChoice */
+    protected $modelInstanceChoice;
+    /** @var FileUtil */
+    protected $fileUtil;
 
     public function __construct(ContaoFramework $framework, DataContainerChoice $dataContainerChoice, ModelInstanceChoice $modelInstanceChoice, DcaUtil $dcaUtil, ModelUtil $modelUtil, FileUtil $fileUtil)
     {

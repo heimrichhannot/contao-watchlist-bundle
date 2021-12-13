@@ -17,9 +17,12 @@ use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 class WatchlistConfigContainer
 {
-    protected ContaoFramework     $framework;
-    protected DcaUtil             $dcaUtil;
-    protected TwigTemplateLocator $twigTemplateLocator;
+    /** @var ContaoFramework */
+    protected $framework;
+    /** @var DcaUtil */
+    protected $dcaUtil;
+    /** @var TwigTemplateLocator */
+    protected $twigTemplateLocator;
 
     public function __construct(ContaoFramework $framework, DcaUtil $dcaUtil, TwigTemplateLocator $twigTemplateLocator)
     {

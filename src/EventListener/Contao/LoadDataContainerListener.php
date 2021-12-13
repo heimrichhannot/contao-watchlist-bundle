@@ -12,11 +12,12 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 /**
- * @Hook("loadDataContainer")
+ * Hook("loadDataContainer")
  */
 class LoadDataContainerListener
 {
-    protected DcaUtil $dcaUtil;
+    /** @var DcaUtil  */
+    protected $dcaUtil;
 
     public function __construct(DcaUtil $dcaUtil)
     {

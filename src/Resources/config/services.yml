@@ -10,3 +10,11 @@ services:
     resource: '../../Migration/*'
     tags:
       - { name: contao.migration }
+
+  HeimrichHannot\WatchlistBundle\EventListener\ListModifyQueryBuilderForCountEventListener:
+    tags:
+      - { name: kernel.event_listener, event: huh.list.event.list_modify_query_builder_for_count, method: __invoke }
+
+  HeimrichHannot\WatchlistBundle\EventListener\ReaderModifyQueryBuilderEventListener:
+    tags:
+      - { name: kernel.event_listener, event: huh.reader.event.reader_modify_query_builder, method: __invoke }

@@ -21,15 +21,20 @@ use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Twig\Environment;
 
 /**
- * @Hook("replaceInsertTags")
+ * Hook("replaceInsertTags")
  */
 class ReplaceInsertTagsListener
 {
-    protected Environment         $twig;
-    protected WatchlistUtil       $watchlistUtil;
-    protected TwigTemplateLocator $twigTemplateLocator;
-    protected ModelUtil           $modelUtil;
-    protected DatabaseUtil        $databaseUtil;
+    /** @var Environment */
+    protected $twig;
+    /** @var WatchlistUtil */
+    protected $watchlistUtil;
+    /** @var TwigTemplateLocator */
+    protected $twigTemplateLocator;
+    /** @var ModelUtil */
+    protected $modelUtil;
+    /** @var DatabaseUtil */
+    protected $databaseUtil;
 
     public function __construct(
         Environment $twig,

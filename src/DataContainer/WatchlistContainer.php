@@ -15,8 +15,10 @@ use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 class WatchlistContainer
 {
-    protected DcaUtil             $dcaUtil;
-    protected ModelInstanceChoice $modelInstanceChoice;
+    /** @var DcaUtil */
+    protected $dcaUtil;
+    /** @var ModelInstanceChoice */
+    protected $modelInstanceChoice;
 
     public function __construct(DcaUtil $dcaUtil, ModelInstanceChoice $modelInstanceChoice)
     {

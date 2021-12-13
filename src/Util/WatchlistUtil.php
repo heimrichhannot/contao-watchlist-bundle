@@ -34,13 +34,20 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 
 class WatchlistUtil
 {
-    protected ContaoFramework $framework;
-    protected DatabaseUtil    $DatabaseUtil;
-    protected Utils           $utils;
-    protected ModelUtil       $modelUtil;
-    protected UrlUtil         $urlUtil;
-    protected FileUtil        $fileUtil;
-    protected ImageUtil       $imageUtil;
+    /** @var ContaoFramework */
+    protected $framework;
+    /** @var DatabaseUtil */
+    protected $DatabaseUtil;
+    /** @var Utils */
+    protected $utils;
+    /** @var ModelUtil */
+    protected $modelUtil;
+    /** @var UrlUtil */
+    protected $urlUtil;
+    /** @var FileUtil */
+    protected $fileUtil;
+    /** @var ImageUtil */
+    protected $imageUtil;
 
     public function __construct(
         ContaoFramework $framework,

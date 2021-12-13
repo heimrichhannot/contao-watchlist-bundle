@@ -33,13 +33,26 @@ class AjaxController
     const WATCHLIST_CONTENT_URI = '/_huh_watchlist/content';
     const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
 
-    protected ContaoFramework    $framework;
-    protected DatabaseUtil       $databaseUtil;
-    protected WatchlistUtil      $watchlistUtil;
-    protected ModelUtil          $modelUtil;
-    protected SessionInterface   $session;
-    protected ContainerInterface $container;
-    protected FileUtil           $fileUtil;
+    /** @var ContaoFramework */
+    protected $framework;
+
+    /** @var DatabaseUtil */
+    protected $databaseUtil;
+
+    /** @var WatchlistUtil */
+    protected $watchlistUtil;
+
+    /** @var ModelUtil */
+    protected $modelUtil;
+
+    /** @var SessionInterface */
+    protected $session;
+
+    /** @var ContainerInterface */
+    protected $container;
+
+    /** @var FileUtil */
+    protected $fileUtil;
 
     public function __construct(
         ContainerInterface $container,

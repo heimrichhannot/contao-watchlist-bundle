@@ -13,7 +13,9 @@ use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
 use Contao\FrontendTemplate;
 use Contao\ModuleModel;
+use Contao\System;
 use Contao\Template;
+use HeimrichHannot\EncoreBundle\Asset\FrontendAsset;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Url\UrlUtil;
@@ -24,16 +26,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @FrontendModule(WatchlistModuleController::TYPE,category="miscellaneous")
+ * FrontendModule(WatchlistModuleController::TYPE,category="miscellaneous")
  */
-class WatchlistModuleController extends AbstractFrontendModuleController
+class WatchlistModuleController
 {
     const TYPE = 'watchlist';
-    protected DatabaseUtil     $databaseUtil;
-    protected WatchlistUtil    $watchlistUtil;
-    protected UrlUtil          $urlUtil;
-    protected FileUtil         $fileUtil;
-    protected SessionInterface $session;
+
+    /** @var DatabaseUtil */
+    protected $databaseUtil;
+    /** @var WatchlistUtil */
+    protected $watchlistUtil;
+    /** @var UrlUtil */
+    protected $urlUtil;
+    /** @var FileUtil */
+    protected $fileUtil;
+    /** @var SessionInterface */
+    protected $session;
 
     public function __construct(DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, UrlUtil $urlUtil, FileUtil $fileUtil, SessionInterface $session)
     {
@@ -47,8 +55,8 @@ class WatchlistModuleController extends AbstractFrontendModuleController
     protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
     {
         // load js assets
-        if ($this->container->has('HeimrichHannot\EncoreBundle\Asset\FrontendAsset')) {
-            $this->container->get(\HeimrichHannot\EncoreBundle\Asset\FrontendAsset::class)->addActiveEntrypoint('contao-watchlist-bundle');
+        if (System::getContainer()->has('HeimrichHannot\EncoreBundle\Asset\FrontendAsset')) {
+            System::getContainer()->get(FrontendAsset::class)->addActiveEntrypoint('contao-watchlist-bundle');
         } else {
             $GLOBALS['TL_JAVASCRIPT']['contao-watchlist-bundle'] = 'bundles/heimrichhannotwatchlistbundle/assets/contao-watchlist-bundle.js|static';
         }
@@ -74,6 +82,6 @@ class WatchlistModuleController extends AbstractFrontendModuleController
             new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $config, $watchlist
         );
 
-        return $template->getResponse();
+//        return $template->getResponse();
     }
 }
