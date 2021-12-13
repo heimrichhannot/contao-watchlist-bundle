@@ -52,7 +52,7 @@ class WatchlistModuleController
         $this->session = $session;
     }
 
-    protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
+    public function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
     {
         // load js assets
         if (System::getContainer()->has('HeimrichHannot\EncoreBundle\Asset\FrontendAsset')) {
@@ -81,6 +81,8 @@ class WatchlistModuleController
         $template->watchlistContent = $this->watchlistUtil->parseWatchlistContent(
             new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $config, $watchlist
         );
+
+        return null;
 
 //        return $template->getResponse();
     }
