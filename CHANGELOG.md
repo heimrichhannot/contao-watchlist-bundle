@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2021-12-14
+- Added: WatchlistItemDataEvent
+- Changed: migrated code to be compatible with contao 4.4 / Symfony 3.4
+- Changed: migrated code to be compatible with php 7.3
+- Changed: added some template blocks
+- Fixed: getCurrentWatchlist()
+- Fixed: foxy not enabled
+
 ## [3.0.2] - 2021-08-17
 
 - Fixed: clear action
