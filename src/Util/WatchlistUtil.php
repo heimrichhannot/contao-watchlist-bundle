@@ -29,8 +29,12 @@ use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+use HeimrichHannot\WatchlistBundle\Event\WatchlistItemDataEvent;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Security;
 
 class WatchlistUtil
@@ -53,6 +57,10 @@ class WatchlistUtil
      * @var Security
      */
     private $security;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function __construct(
         ContaoFramework $framework,
@@ -62,7 +70,8 @@ class WatchlistUtil
         UrlUtil $urlUtil,
         FileUtil $fileUtil,
         ImageUtil $imageUtil,
-        Security $security
+        Security $security,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -72,6 +81,7 @@ class WatchlistUtil
         $this->fileUtil = $fileUtil;
         $this->imageUtil = $imageUtil;
         $this->security = $security;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -224,6 +234,15 @@ class WatchlistUtil
         return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int) $config->id);
     }
 
+    /**
+     * @param FrontendTemplate $template
+     * @param string $currentUrl
+     * @param int $rootPage
+     * @param WatchlistConfigModel $config
+     * @param Model|null $watchlist
+     * @return string
+     * @throws \Exception
+     */
     public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
         global $objPage;
@@ -313,7 +332,12 @@ class WatchlistUtil
 
                 $cleanedItem['hash'] = $hash;
 
-                $items[] = $cleanedItem;
+                $event = $this->eventDispatcher->dispatch(
+                    WatchlistItemDataEvent::class,
+                    new WatchlistItemDataEvent($cleanedItem, $config)
+                );
+
+                $items[] = $event->getItem();
             }
 
             $template->items = $items;
