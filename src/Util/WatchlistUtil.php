@@ -291,7 +291,7 @@ class WatchlistUtil
                         $cleanedItem['entityTable'] = $item['entityTable'];
                         $cleanedItem['entity'] = $item['entity'];
                         $cleanedItem['entityUrl'] = $item['entityUrl'];
-                        $cleanedItem['entityFile'] = StringUtil::binToUuid($item['entityFile']);
+                        $cleanedItem['entityFile'] = $item['entityFile'] ? StringUtil::binToUuid($item['entityFile']) : '';
 
                         $existing = $this->databaseUtil->findResultByPk($cleanedItem['entityTable'], $cleanedItem['entity']);
 
