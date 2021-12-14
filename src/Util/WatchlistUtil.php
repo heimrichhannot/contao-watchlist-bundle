@@ -31,6 +31,7 @@ use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use Symfony\Component\Security\Core\Security;
 
 class WatchlistUtil
 {
@@ -48,6 +49,10 @@ class WatchlistUtil
     protected $fileUtil;
     /** @var ImageUtil */
     protected $imageUtil;
+    /**
+     * @var Security
+     */
+    private $security;
 
     public function __construct(
         ContaoFramework $framework,
@@ -56,7 +61,8 @@ class WatchlistUtil
         ModelUtil $modelUtil,
         UrlUtil $urlUtil,
         FileUtil $fileUtil,
-        ImageUtil $imageUtil
+        ImageUtil $imageUtil,
+        Security $security
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -65,6 +71,7 @@ class WatchlistUtil
         $this->urlUtil = $urlUtil;
         $this->fileUtil = $fileUtil;
         $this->imageUtil = $imageUtil;
+        $this->security = $security;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -88,21 +95,16 @@ class WatchlistUtil
             $watchlist->uuid = md5(uniqid(rand(), true));
         }
 
-        // set author
-        if ($this->utils->container()->isBackend()) {
-            // bind to user
+        $user = $this->security->getUser();
+        if ($user && $user instanceof BackendUser) {
             $watchlist->authorType = DcaUtil::AUTHOR_TYPE_USER;
-            $watchlist->author = BackendUser::getInstance()->id;
+            $watchlist->author = $user->id;
+        } elseif ($user && $user instanceof FrontendUser) {
+            $watchlist->authorType = DcaUtil::AUTHOR_TYPE_MEMBER;
+            $watchlist->author = $user->id;
         } else {
-            if (FE_USER_LOGGED_IN) {
-                // bind to member
-                $watchlist->authorType = DcaUtil::AUTHOR_TYPE_MEMBER;
-                $watchlist->author = FrontendUser::getInstance()->id;
-            } else {
-                // session
-                $watchlist->authorType = DcaUtil::AUTHOR_TYPE_SESSION;
-                $watchlist->author = session_id();
-            }
+            $watchlist->authorType = DcaUtil::AUTHOR_TYPE_SESSION;
+            $watchlist->author = session_id();
         }
 
         foreach ($data as $field => $value) {
@@ -177,7 +179,9 @@ class WatchlistUtil
         }
 
         // create search criteria
-        if ($this->utils->container()->isBackend()) {
+
+        $user = $this->security->getUser();
+        if ($user && $user instanceof BackendUser) {
             $columns = [
                 'tl_watchlist.authorType=?',
                 'tl_watchlist.author=?',
@@ -185,30 +189,28 @@ class WatchlistUtil
 
             $values = [
                 DcaUtil::AUTHOR_TYPE_USER,
-                BackendUser::getInstance()->id,
+                $user->id,
+            ];
+        } elseif ($user && $user instanceof FrontendUser) {
+            $columns = [
+                'tl_watchlist.authorType=?',
+                'tl_watchlist.author=?',
+            ];
+
+            $values = [
+                DcaUtil::AUTHOR_TYPE_MEMBER,
+                $user->id,
             ];
         } else {
-            if (FE_USER_LOGGED_IN) {
-                $columns = [
-                    'tl_watchlist.authorType=?',
-                    'tl_watchlist.author=?',
-                ];
+            $columns = [
+                'tl_watchlist.authorType=?',
+                'tl_watchlist.author=?',
+            ];
 
-                $values = [
-                    DcaUtil::AUTHOR_TYPE_MEMBER,
-                    FrontendUser::getInstance()->id,
-                ];
-            } else {
-                $columns = [
-                    'tl_watchlist.authorType=?',
-                    'tl_watchlist.author=?',
-                ];
-
-                $values = [
-                    DcaUtil::AUTHOR_TYPE_SESSION,
-                    session_id(),
-                ];
-            }
+            $values = [
+                DcaUtil::AUTHOR_TYPE_SESSION,
+                session_id(),
+            ];
         }
 
         if (null !== ($watchlist = $this->modelUtil->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
