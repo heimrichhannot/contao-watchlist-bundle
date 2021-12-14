@@ -83,3 +83,11 @@ Name | Example
 -----|--------
 `{{watchlist_add_item_link::file::<file uuid (string)>::<optional: title>::<optional: watch list uuid>}}` | `{{watchlist_add_item_link::file::2e6b6f54-e4af-11eb-b4fc-001e678385c6}}`
 `{{watchlist_add_item_link::entity::<entity table>::<entity id>::<title>::<optional: entity url>::<optional: preview file uuid (string)>::<optional: watch list uuid>}}` | `{{watchlist_add_item_link::entity::tl_news::1::My headline::https://example.org/my-entity::2e6b6f54-e4af-11eb-b4fc-001e678385c6}}`
+
+## Developers
+
+### Events
+
+| Event                   | Description                                                      |
+|-------------------------|------------------------------------------------------------------|
+| WatchlistItemDataEvent | Modify the watchlist item before output to the watchlist module. |

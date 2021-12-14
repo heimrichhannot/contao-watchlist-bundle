@@ -8,15 +8,16 @@
 
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use HeimrichHannot\UtilsBundle\Choice\ModelInstanceChoice;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 class WatchlistContainer
 {
-    protected DcaUtil             $dcaUtil;
-    protected ModelInstanceChoice $modelInstanceChoice;
+    /** @var DcaUtil */
+    protected $dcaUtil;
+    /** @var ModelInstanceChoice */
+    protected $modelInstanceChoice;
 
     public function __construct(DcaUtil $dcaUtil, ModelInstanceChoice $modelInstanceChoice)
     {
@@ -25,7 +26,7 @@ class WatchlistContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist", target="config.onsubmit")
+     * Callback(table="tl_watchlist", target="config.onsubmit")
      */
     public function setDateAdded(DataContainer $dc)
     {
@@ -33,7 +34,7 @@ class WatchlistContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist", target="config.oncopy")
+     * Callback(table="tl_watchlist", target="config.oncopy")
      */
     public function setDateAddedOnCopy($insertId, DataContainer $dc)
     {
@@ -41,7 +42,7 @@ class WatchlistContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist", target="fields.config.options")
+     * Callback(table="tl_watchlist", target="fields.config.options")
      */
     public function getWatchlistConfigs(DataContainer $dc)
     {

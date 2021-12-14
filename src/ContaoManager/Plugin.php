@@ -46,6 +46,10 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
         if (class_exists('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
             $loader->load('@HeimrichHannotWatchlistBundle/Resources/config/config_encore.yml');
         }
+
+        if (class_exists('Contao\CoreBundle\Migration\AbstractMigration')) {
+            $loader->load('@HeimrichHannotWatchlistBundle/Resources/config/services_migration.yml');
+        }
     }
 
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)

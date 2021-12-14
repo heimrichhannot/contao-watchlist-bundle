@@ -4,9 +4,12 @@ services:
     autowire: true
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../../{Controller,DataContainer,EventListener,Migration,Util}/*'
+    resource: '../../{Controller,DataContainer,EventListener,Util}/*'
 
-  HeimrichHannot\WatchlistBundle\Migration\:
-    resource: '../../Migration/*'
+  HeimrichHannot\WatchlistBundle\EventListener\ListModifyQueryBuilderForCountEventListener:
     tags:
-      - { name: contao.migration }
+      - { name: kernel.event_listener, event: huh.list.event.list_modify_query_builder_for_count, method: __invoke }
+
+  HeimrichHannot\WatchlistBundle\EventListener\ReaderModifyQueryBuilderEventListener:
+    tags:
+      - { name: kernel.event_listener, event: huh.reader.event.reader_modify_query_builder, method: __invoke }

@@ -26,19 +26,32 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @FrontendModule(ShareListModuleController::TYPE,category="miscellaneous")
+ * FrontendModule(ShareListModuleController::TYPE,category="miscellaneous")
  */
-class ShareListModuleController extends AbstractFrontendModuleController
+class ShareListModuleController
 {
     const TYPE = 'watchlist_share_list';
 
-    protected ContaoFramework $framework;
-    protected DatabaseUtil    $databaseUtil;
-    protected WatchlistUtil   $watchlistUtil;
-    protected UrlUtil         $urlUtil;
-    protected FileUtil        $fileUtil;
-    protected ImageUtil       $imageUtil;
-    protected ModelUtil       $modelUtil;
+    /** @var ContaoFramework */
+    protected $framework;
+
+    /** @var DatabaseUtil */
+    protected $databaseUtil;
+
+    /** @var WatchlistUtil */
+    protected $watchlistUtil;
+
+    /** @var UrlUtil */
+    protected $urlUtil;
+
+    /** @var FileUtil */
+    protected $fileUtil;
+
+    /** @var ImageUtil */
+    protected $imageUtil;
+
+    /** @var ModelUtil */
+    protected $modelUtil;
 
     public function __construct(
         ContaoFramework $framework,
@@ -58,7 +71,7 @@ class ShareListModuleController extends AbstractFrontendModuleController
         $this->modelUtil = $modelUtil;
     }
 
-    protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
+    public function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
     {
         if (!($watchlistUuid = $request->get('watchlist'))) {
             $template->watchlistNotFound = true;
@@ -131,6 +144,8 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
         $template->items = $items;
 
-        return $template->getResponse();
+        return null;
+
+//        return $template->getResponse();
     }
 }

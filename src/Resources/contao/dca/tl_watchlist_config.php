@@ -6,6 +6,8 @@
  * @license LGPL-3.0-or-later
  */
 
+use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer;
+
 $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
     'config' => [
         'dataContainer' => 'Table',
@@ -13,6 +15,12 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'keys' => [
                 'id' => 'primary',
             ],
+        ],
+        'onsubmit_callback' => [
+            [WatchlistConfigContainer::class, 'setDateAdded']
+        ],
+        'oncopy_callback' => [
+            [WatchlistConfigContainer::class, 'setDateAddedOnCopy']
         ],
     ],
     'list' => [
@@ -92,6 +100,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
+            'options_callback' => [WatchlistConfigContainer::class, 'getInsertTagAddItemTemplates'],
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true],
             'sql' => "varchar(255) NOT NULL default ''",
         ],
@@ -100,6 +109,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
+            'options_callback' => [WatchlistConfigContainer::class, 'getWatchlistContentTemplates'],
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true],
             'sql' => "varchar(255) NOT NULL default ''",
         ],

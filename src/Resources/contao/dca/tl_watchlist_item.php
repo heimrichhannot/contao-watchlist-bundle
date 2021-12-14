@@ -6,6 +6,8 @@
  * @license LGPL-3.0-or-later
  */
 
+use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+
 $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
     'config' => [
         'dataContainer' => 'Table',
@@ -14,6 +16,12 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'keys' => [
                 'id' => 'primary',
             ],
+        ],
+        'onsubmit_callback' => [
+            [WatchlistItemContainer::class, 'setDateAdded']
+        ],
+        'oncopy_callback' => [
+            [WatchlistItemContainer::class, 'setDateAddedOnCopy']
         ],
     ],
     'list' => [
@@ -26,6 +34,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'fields' => ['dateAdded'],
             'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
+            'child_record_callback' => [WatchlistItemContainer::class, 'listChildren']
         ],
         'global_operations' => [
             'all' => [
@@ -59,8 +68,8 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'type',
         ],
         'default' => '{general_legend},title,type;',
-        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE => '{general_legend},title,type;{reference_legend},file;{context_legend},page,autoItem;',
-        \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => '{general_legend},title,type;{reference_legend},entityTable,entity,entityUrl,entityFile;{context_legend},page,autoItem;',
+        WatchlistItemContainer::TYPE_FILE => '{general_legend},title,type;{reference_legend},file;{context_legend},page,autoItem;',
+        WatchlistItemContainer::TYPE_ENTITY => '{general_legend},title,type;{reference_legend},entityTable,entity,entityUrl,entityFile;{context_legend},page,autoItem;',
     ],
     'fields' => [
         'id' => [
@@ -95,7 +104,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options' => \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPES,
+            'options' => WatchlistItemContainer::TYPES,
             'reference' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['reference'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'submitOnChange' => true],
             'sql' => "varchar(64) NOT NULL default ''",
@@ -115,6 +124,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
         'entityTable' => [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['entityTable'],
             'inputType' => 'select',
+            'options_callback' => [WatchlistItemContainer::class, 'getDataContainers'],
             'eval' => [
                 'tl_class' => 'w50',
                 'chosen' => true,
@@ -127,6 +137,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
         'entity' => [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['entity'],
             'inputType' => 'select',
+            'options_callback' => [WatchlistItemContainer::class, 'getEntities'],
             'eval' => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'mandatory' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],

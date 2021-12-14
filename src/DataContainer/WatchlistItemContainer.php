@@ -9,7 +9,6 @@
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\System;
 use HeimrichHannot\UtilsBundle\Choice\DataContainerChoice;
@@ -28,12 +27,18 @@ class WatchlistItemContainer
         self::TYPE_ENTITY,
     ];
 
-    protected ContaoFramework     $framework;
-    protected DcaUtil             $dcaUtil;
-    protected DataContainerChoice $dataContainerChoice;
-    protected ModelUtil           $modelUtil;
-    protected ModelInstanceChoice $modelInstanceChoice;
-    protected FileUtil            $fileUtil;
+    /** @var ContaoFramework */
+    protected $framework;
+    /** @var DcaUtil */
+    protected $dcaUtil;
+    /** @var DataContainerChoice */
+    protected $dataContainerChoice;
+    /** @var ModelUtil */
+    protected $modelUtil;
+    /** @var ModelInstanceChoice */
+    protected $modelInstanceChoice;
+    /** @var FileUtil */
+    protected $fileUtil;
 
     public function __construct(ContaoFramework $framework, DataContainerChoice $dataContainerChoice, ModelInstanceChoice $modelInstanceChoice, DcaUtil $dcaUtil, ModelUtil $modelUtil, FileUtil $fileUtil)
     {
@@ -46,7 +51,7 @@ class WatchlistItemContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_item", target="list.sorting.child_record")
+     * Callback(table="tl_watchlist_item", target="list.sorting.child_record")
      */
     public function listChildren(array $row)
     {
@@ -81,7 +86,7 @@ class WatchlistItemContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_item", target="config.onsubmit")
+     * Callback(table="tl_watchlist_item", target="config.onsubmit")
      */
     public function setDateAdded(DataContainer $dc)
     {
@@ -89,7 +94,7 @@ class WatchlistItemContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_item", target="config.oncopy")
+     * Callback(table="tl_watchlist_item", target="config.oncopy")
      */
     public function setDateAddedOnCopy($insertId, DataContainer $dc)
     {
@@ -97,7 +102,7 @@ class WatchlistItemContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_item", target="fields.entityTable.options")
+     * Callback(table="tl_watchlist_item", target="fields.entityTable.options")
      */
     public function getDataContainers()
     {
@@ -105,7 +110,7 @@ class WatchlistItemContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_item", target="fields.entity.options")
+     * Callback(table="tl_watchlist_item", target="fields.entity.options")
      */
     public function getEntities(DataContainer $dc)
     {

@@ -20,17 +20,17 @@
         "issues": "https://github.com/heimrichhannot/contao-watchlist-bundle/issues"
     },
     "require": {
-        "php": "^7.4",
+        "php": "^7.3 || ^8.0",
         "ext-zip": "*",
-        "contao/core-bundle": "^4.9",
+        "contao/core-bundle": "^4.4",
         "heimrichhannot/contao-utils-bundle": "^2.199",
         "heimrichhannot/contao-inserttagcollection-bundle": "^1.1",
         "heimrichhannot/contao-request-bundle": "^1.2",
-        "symfony/config": "^4.4",
-        "symfony/dependency-injection": "^4.4",
-        "symfony/http-foundation": "^4.4",
-        "symfony/http-kernel": "^4.4",
-        "symfony/routing": "^4.4"
+        "symfony/config": "^3.4 || ^4.4",
+        "symfony/dependency-injection": "^3.4 || ^4.4",
+        "symfony/http-foundation": "^3.4 || ^4.4",
+        "symfony/http-kernel": "^3.4 || ^4.4",
+        "symfony/routing": "^3.4 || ^4.4"
     },
     "require-dev": {
         "contao/test-case": "1.1.*",
@@ -61,6 +61,7 @@
         "preferred-install": "dist"
     },
     "extra": {
-        "contao-manager-plugin": "HeimrichHannot\\WatchlistBundle\\ContaoManager\\Plugin"
+        "contao-manager-plugin": "HeimrichHannot\\WatchlistBundle\\ContaoManager\\Plugin",
+        "foxy": true
     }
 }

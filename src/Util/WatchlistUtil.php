@@ -29,18 +29,38 @@ use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+use HeimrichHannot\WatchlistBundle\Event\WatchlistItemDataEvent;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\Security;
 
 class WatchlistUtil
 {
-    protected ContaoFramework $framework;
-    protected DatabaseUtil    $DatabaseUtil;
-    protected Utils           $utils;
-    protected ModelUtil       $modelUtil;
-    protected UrlUtil         $urlUtil;
-    protected FileUtil        $fileUtil;
-    protected ImageUtil       $imageUtil;
+    /** @var ContaoFramework */
+    protected $framework;
+    /** @var DatabaseUtil */
+    protected $DatabaseUtil;
+    /** @var Utils */
+    protected $utils;
+    /** @var ModelUtil */
+    protected $modelUtil;
+    /** @var UrlUtil */
+    protected $urlUtil;
+    /** @var FileUtil */
+    protected $fileUtil;
+    /** @var ImageUtil */
+    protected $imageUtil;
+    /**
+     * @var Security
+     */
+    private $security;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     public function __construct(
         ContaoFramework $framework,
@@ -49,7 +69,9 @@ class WatchlistUtil
         ModelUtil $modelUtil,
         UrlUtil $urlUtil,
         FileUtil $fileUtil,
-        ImageUtil $imageUtil
+        ImageUtil $imageUtil,
+        Security $security,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -58,6 +80,8 @@ class WatchlistUtil
         $this->urlUtil = $urlUtil;
         $this->fileUtil = $fileUtil;
         $this->imageUtil = $imageUtil;
+        $this->security = $security;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -81,21 +105,16 @@ class WatchlistUtil
             $watchlist->uuid = md5(uniqid(rand(), true));
         }
 
-        // set author
-        if ($this->utils->container()->isBackend()) {
-            // bind to user
+        $user = $this->security->getUser();
+        if ($user && $user instanceof BackendUser) {
             $watchlist->authorType = DcaUtil::AUTHOR_TYPE_USER;
-            $watchlist->author = BackendUser::getInstance()->id;
+            $watchlist->author = $user->id;
+        } elseif ($user && $user instanceof FrontendUser) {
+            $watchlist->authorType = DcaUtil::AUTHOR_TYPE_MEMBER;
+            $watchlist->author = $user->id;
         } else {
-            if (FE_USER_LOGGED_IN) {
-                // bind to member
-                $watchlist->authorType = DcaUtil::AUTHOR_TYPE_MEMBER;
-                $watchlist->author = FrontendUser::getInstance()->id;
-            } else {
-                // session
-                $watchlist->authorType = DcaUtil::AUTHOR_TYPE_SESSION;
-                $watchlist->author = session_id();
-            }
+            $watchlist->authorType = DcaUtil::AUTHOR_TYPE_SESSION;
+            $watchlist->author = session_id();
         }
 
         foreach ($data as $field => $value) {
@@ -170,7 +189,9 @@ class WatchlistUtil
         }
 
         // create search criteria
-        if ($this->utils->container()->isBackend()) {
+
+        $user = $this->security->getUser();
+        if ($user && $user instanceof BackendUser) {
             $columns = [
                 'tl_watchlist.authorType=?',
                 'tl_watchlist.author=?',
@@ -178,30 +199,28 @@ class WatchlistUtil
 
             $values = [
                 DcaUtil::AUTHOR_TYPE_USER,
-                BackendUser::getInstance()->id,
+                $user->id,
+            ];
+        } elseif ($user && $user instanceof FrontendUser) {
+            $columns = [
+                'tl_watchlist.authorType=?',
+                'tl_watchlist.author=?',
+            ];
+
+            $values = [
+                DcaUtil::AUTHOR_TYPE_MEMBER,
+                $user->id,
             ];
         } else {
-            if (FE_USER_LOGGED_IN) {
-                $columns = [
-                    'tl_watchlist.authorType=?',
-                    'tl_watchlist.author=?',
-                ];
+            $columns = [
+                'tl_watchlist.authorType=?',
+                'tl_watchlist.author=?',
+            ];
 
-                $values = [
-                    DcaUtil::AUTHOR_TYPE_MEMBER,
-                    FrontendUser::getInstance()->id,
-                ];
-            } else {
-                $columns = [
-                    'tl_watchlist.authorType=?',
-                    'tl_watchlist.author=?',
-                ];
-
-                $values = [
-                    DcaUtil::AUTHOR_TYPE_SESSION,
-                    session_id(),
-                ];
-            }
+            $values = [
+                DcaUtil::AUTHOR_TYPE_SESSION,
+                session_id(),
+            ];
         }
 
         if (null !== ($watchlist = $this->modelUtil->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
@@ -215,6 +234,15 @@ class WatchlistUtil
         return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int) $config->id);
     }
 
+    /**
+     * @param FrontendTemplate $template
+     * @param string $currentUrl
+     * @param int $rootPage
+     * @param WatchlistConfigModel $config
+     * @param Model|null $watchlist
+     * @return string
+     * @throws \Exception
+     */
     public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
         global $objPage;
@@ -282,7 +310,7 @@ class WatchlistUtil
                         $cleanedItem['entityTable'] = $item['entityTable'];
                         $cleanedItem['entity'] = $item['entity'];
                         $cleanedItem['entityUrl'] = $item['entityUrl'];
-                        $cleanedItem['entityFile'] = StringUtil::binToUuid($item['entityFile']);
+                        $cleanedItem['entityFile'] = $item['entityFile'] ? StringUtil::binToUuid($item['entityFile']) : '';
 
                         $existing = $this->databaseUtil->findResultByPk($cleanedItem['entityTable'], $cleanedItem['entity']);
 
@@ -304,7 +332,12 @@ class WatchlistUtil
 
                 $cleanedItem['hash'] = $hash;
 
-                $items[] = $cleanedItem;
+                $event = $this->eventDispatcher->dispatch(
+                    WatchlistItemDataEvent::class,
+                    new WatchlistItemDataEvent($cleanedItem, $config)
+                );
+
+                $items[] = $event->getItem();
             }
 
             $template->items = $items;

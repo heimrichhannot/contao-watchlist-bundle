@@ -10,16 +10,18 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 class WatchlistConfigContainer
 {
-    protected ContaoFramework     $framework;
-    protected DcaUtil             $dcaUtil;
-    protected TwigTemplateLocator $twigTemplateLocator;
+    /** @var ContaoFramework */
+    protected $framework;
+    /** @var DcaUtil */
+    protected $dcaUtil;
+    /** @var TwigTemplateLocator */
+    protected $twigTemplateLocator;
 
     public function __construct(ContaoFramework $framework, DcaUtil $dcaUtil, TwigTemplateLocator $twigTemplateLocator)
     {
@@ -29,7 +31,7 @@ class WatchlistConfigContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_config", target="config.onsubmit")
+     * Callback(table="tl_watchlist_config", target="config.onsubmit")
      */
     public function setDateAdded(DataContainer $dc)
     {
@@ -37,7 +39,7 @@ class WatchlistConfigContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_config", target="config.oncopy")
+     * Callback(table="tl_watchlist_config", target="config.oncopy")
      */
     public function setDateAddedOnCopy($insertId, DataContainer $dc)
     {
@@ -45,7 +47,7 @@ class WatchlistConfigContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_config", target="fields.insertTagAddItemTemplate.options")
+     * Callback(table="tl_watchlist_config", target="fields.insertTagAddItemTemplate.options")
      */
     public function getInsertTagAddItemTemplates(DataContainer $dc)
     {
@@ -55,7 +57,7 @@ class WatchlistConfigContainer
     }
 
     /**
-     * @Callback(table="tl_watchlist_config", target="fields.watchlistContentTemplate.options")
+     * Callback(table="tl_watchlist_config", target="fields.watchlistContentTemplate.options")
      */
     public function getWatchlistContentTemplates(DataContainer $dc)
     {
