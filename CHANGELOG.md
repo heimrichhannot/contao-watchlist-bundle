@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.1] - 2021-12-15
+- Fixed: namespace in services_migration.yml
+
 ## [3.1.0] - 2021-12-14
 - Added: WatchlistItemDataEvent
 - Changed: migrated code to be compatible with contao 4.4 / Symfony 3.4
