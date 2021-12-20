@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.2] - 2021-12-20
+- Fixed: clear watchlist button not working after changing watchlist content
+
 ## [3.1.1] - 2021-12-15
 - Fixed: namespace in services_migration.yml
 
