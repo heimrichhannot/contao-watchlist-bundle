@@ -6,16 +6,20 @@
  * @license LGPL-3.0-or-later
  */
 
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
 $dca = &$GLOBALS['TL_DCA']['tl_page'];
 
 /*
  * Palettes
  */
-foreach (['root', 'rootfallback'] as $palette) {
-    \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-        ->addLegend('watchlist_legend', 'sitemap_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_BEFORE)
-        ->addField('watchlistConfig', 'watchlist_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-        ->applyToPalette($palette, 'tl_page');
+
+$pm = PaletteManipulator::create()
+    ->addLegend('watchlist_legend', 'sitemap_legend', PaletteManipulator::POSITION_BEFORE)
+    ->addField('watchlistConfig', 'watchlist_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('root', 'tl_page');
+if (isset($GLOBALS['TL_DCA']['tl_page']['palettes']['rootfallback'])) {
+    $pm->applyToPalette('rootfallback', 'tl_page');
 }
 
 /**

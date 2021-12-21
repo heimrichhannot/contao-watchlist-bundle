@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.3] - 2021-12-21
+- Fixed: manipulate rootfallback palette in contao 4.4
+
 ## [3.1.2] - 2021-12-20
 - Fixed: clear watchlist button not working after changing watchlist content
 
