@@ -146,48 +146,46 @@ class WatchlistBundle {
         }
     }
 
-    static initAddItemLinks() {
-        const links = document.querySelectorAll('.watchlist-add-item');
+    static initAddItemLinks(scope = null) {
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('watchlist-add-item')) {
+                let element = event.target;
 
-        if (links.length < 1) {
-            return;
-        }
+                const data = JSON.parse(element.getAttribute('data-post-data'));
 
-        utilsBundle.event.addDynamicEventListener('click', '.watchlist-add-item', (element, event) => {
-            const data = JSON.parse(element.getAttribute('data-post-data'));
+                event.preventDefault();
 
-            event.preventDefault();
+                data.delete = element.classList.contains('added') ? 1 : 0;
 
-            data.delete = element.classList.contains('added') ? 1 : 0;
+                utilsBundle.ajax.jsonPost(element.getAttribute('href'), data, {
+                    onSuccess: (response) => {
+                        WatchlistBundle.toggleAddItemLink(element);
 
-            utilsBundle.ajax.jsonPost(element.getAttribute('href'), data, {
-                onSuccess: (response) => {
-                    WatchlistBundle.toggleAddItemLink(element);
+                        WatchlistBundle.updateWatchlist();
 
-                    WatchlistBundle.updateWatchlist();
-
-                    if (!data.delete) {
+                        if (!data.delete) {
+                            Swal.fire({
+                                icon: 'success',
+                                timer: 4000,
+                                timerProgressBar: true,
+                                showCloseButton: true,
+                                showConfirmButton: false,
+                                html: element.getAttribute('data-item-added-message')
+                            });
+                        }
+                    },
+                    onError: (response) => {
                         Swal.fire({
-                            icon: 'success',
-                            timer: 4000,
+                            icon: 'error',
+                            timer: 6000,
                             timerProgressBar: true,
                             showCloseButton: true,
                             showConfirmButton: false,
-                            html: element.getAttribute('data-item-added-message')
+                            html: response.responseText
                         });
                     }
-                },
-                onError: (response) => {
-                    Swal.fire({
-                        icon: 'error',
-                        timer: 6000,
-                        timerProgressBar: true,
-                        showCloseButton: true,
-                        showConfirmButton: false,
-                        html: response.responseText
-                    });
-                }
-            });
+                });
+            }
         });
     }
 }

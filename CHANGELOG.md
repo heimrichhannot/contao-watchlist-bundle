@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.4] - 2022-01-13
+- Fixed: add to list button not working for asynchronious loaded dom elements if not add to list button was on the page before
+
 ## [3.1.3] - 2021-12-21
 - Fixed: manipulate rootfallback palette in contao 4.4
 
