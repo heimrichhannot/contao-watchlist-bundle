@@ -31,14 +31,14 @@ class WatchlistBundle {
 
         utilsBundle.ajax.get(wrapper.getAttribute('data-watchlist-update-url'), {}, {
             onSuccess: (response) => {
-                wrapper.querySelector('.watchlist-content').innerHTML = response.responseText;
+                document.querySelector('.watchlist-content').innerHTML = response.responseText;
             }
         });
     }
 
     static initWatchlistLinks() {
         // clear watchlist
-        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .clear', (element, event) => {
+        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .clear, .watchlist-content .clear', (element, event) => {
             event.preventDefault();
 
             const url = element.getAttribute('href'),
@@ -53,7 +53,7 @@ class WatchlistBundle {
                     onError: (response) => {
                         Swal.fire({
                             icon: 'error',
-                            timer: 6000,
+                            timer: 0,
                             timerProgressBar: true,
                             showCloseButton: true,
                             showConfirmButton: false,
@@ -72,7 +72,7 @@ class WatchlistBundle {
         });
 
         // delete items
-        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .delete-item', (element, event) => {
+        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .delete-item, .watchlist-content .delete-item', (element, event) => {
             event.preventDefault();
 
             const data = JSON.parse(element.getAttribute('data-post-data'));
@@ -91,7 +91,7 @@ class WatchlistBundle {
                 onError: (response) => {
                     Swal.fire({
                         icon: 'error',
-                        timer: 6000,
+                        timer: 0,
                         timerProgressBar: true,
                         showCloseButton: true,
                         showConfirmButton: false,
@@ -102,7 +102,7 @@ class WatchlistBundle {
         });
 
         // share
-        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .share', (element, event) => {
+        utilsBundle.event.addDynamicEventListener('click', '.mod_watchlist .share, .watchlist-content .share', (element, event) => {
             event.preventDefault();
 
             Swal.fire({
@@ -166,7 +166,7 @@ class WatchlistBundle {
                         if (!data.delete) {
                             Swal.fire({
                                 icon: 'success',
-                                timer: 4000,
+                                timer: 0,
                                 timerProgressBar: true,
                                 showCloseButton: true,
                                 showConfirmButton: false,
@@ -177,7 +177,7 @@ class WatchlistBundle {
                     onError: (response) => {
                         Swal.fire({
                             icon: 'error',
-                            timer: 6000,
+                            timer: 0,
                             timerProgressBar: true,
                             showCloseButton: true,
                             showConfirmButton: false,

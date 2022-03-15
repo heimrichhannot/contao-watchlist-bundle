@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.5] - 2021-03-15
+
+- Changed: remove alert timer for the sake of accessibility
+- Changed: modal content selector not stricted to .mod_watchlist or wrapper anymore
+
 ## [3.1.4] - 2022-01-13
 - Fixed: add to list button not working for asynchronious loaded dom elements if not add to list button was on the page before
 
