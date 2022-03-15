@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.1] - 2021-03-15
+
+- Changed: remove alert timer for the sake of accessibility
+
 ## [3.0.0] - 2021-07-27
 
 - major refactoring (migration from v2 included) -> see README.md for details (not all functions have been or will be

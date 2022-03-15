@@ -53,7 +53,7 @@ class WatchlistBundle {
                     onError: (response) => {
                         Swal.fire({
                             icon: 'error',
-                            timer: 6000,
+                            timer: 0,
                             timerProgressBar: true,
                             showCloseButton: true,
                             showConfirmButton: false,
@@ -91,7 +91,7 @@ class WatchlistBundle {
                 onError: (response) => {
                     Swal.fire({
                         icon: 'error',
-                        timer: 6000,
+                        timer: 0,
                         timerProgressBar: true,
                         showCloseButton: true,
                         showConfirmButton: false,
@@ -169,7 +169,7 @@ class WatchlistBundle {
                     if (!data.delete) {
                         Swal.fire({
                             icon: 'success',
-                            timer: 4000,
+                            timer: 0,
                             timerProgressBar: true,
                             showCloseButton: true,
                             showConfirmButton: false,
@@ -180,7 +180,7 @@ class WatchlistBundle {
                 onError: (response) => {
                     Swal.fire({
                         icon: 'error',
-                        timer: 6000,
+                        timer: 0,
                         timerProgressBar: true,
                         showCloseButton: true,
                         showConfirmButton: false,
