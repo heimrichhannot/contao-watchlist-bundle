@@ -20,7 +20,7 @@
         "issues": "https://github.com/heimrichhannot/contao-watchlist-bundle/issues"
     },
     "require": {
-        "php": "^7.3 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "ext-zip": "*",
         "contao/core-bundle": "^4.4",
         "heimrichhannot/contao-utils-bundle": "^2.199",

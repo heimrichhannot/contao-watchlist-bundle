@@ -2,9 +2,10 @@ services:
   _defaults:
     public: true
     autowire: true
+    autoconfigure: true
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../../{Controller,DataContainer,EventListener,Util}/*'
+    resource: '../../{Controller,DataContainer,EventListener,Generator,Util}/*'
 
   HeimrichHannot\WatchlistBundle\EventListener\ListModifyQueryBuilderForCountEventListener:
     tags:
