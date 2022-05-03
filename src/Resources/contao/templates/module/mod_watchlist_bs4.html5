@@ -3,21 +3,20 @@
 <?php $this->block('content'); ?>
 
 <div class="watchlist-wrapper" data-watchlist-update-url="<?= $this->watchlistUpdateUrl ?>">
-    <a class="open-watchlist btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#watchlist-modal">
+    <a class="open-watchlist btn btn-primary" href="#" data-toggle="modal" data-target="#watchlist-modal">
         <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['openWatchlist'] ?>
     </a>
 
-    <?php $this->block('modal'); ?>
     <div class="modal fade" id="watchlist-modal" tabindex="-1" aria-labelledby="watchlist-modal-label" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <?php $this->block('title'); ?>
                     <h5 class="modal-title" id="watchlist-modal-label">
                         <?= $this->title ?>
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['close'] ?>"></button>
-                    <?php $this->endblock(); ?>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['close'] ?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="watchlist-content">
@@ -27,7 +26,6 @@
             </div>
         </div>
     </div>
-    <?php $this->endblock(); ?>
 </div>
 
 <?php $this->endblock(); ?>
