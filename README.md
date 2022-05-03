@@ -31,8 +31,7 @@ Watch list in frontend (here: bootstrap 5 template with modal integration)
     1. `ce_downloads.html5`
     1. `news_full.html5`
     1. ...
-1. Integrate the link for adding an item to the current watch list to any template by using a simple insert tag:
-   `{{watchlist_add_item_link}}` (see section "Insert tags" for further details on the parameters)
+1. Integrate the link for adding an item to the current watch list to any template by using inserttag or WatchlistLinkGenerator service.
 
 ## Item types
 
@@ -85,6 +84,19 @@ Name | Example
 `{{watchlist_add_item_link::entity::<entity table>::<entity id>::<title>::<optional: entity url>::<optional: preview file uuid (string)>::<optional: watch list uuid>}}` | `{{watchlist_add_item_link::entity::tl_news::1::My headline::https://example.org/my-entity::2e6b6f54-e4af-11eb-b4fc-001e678385c6}}`
 
 ## Developers
+
+### WatchlistLinkGenerator
+
+Add the "Add to watchlist" button from your code:
+
+```php
+use Contao\Template;
+use HeimrichHannot\WatchlistBundle\Generator\WatchlistLinkGenerator;
+
+function templateListener(Template $template, WatchlistLinkGenerator $linkGenerator) {
+    $template->addButton = $linkGenerator->generateAddFileLink($template->singleSrc, $template->fileTitle);
+}
+```
 
 ### Events
 
