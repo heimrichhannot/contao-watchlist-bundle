@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -33,7 +33,6 @@ use HeimrichHannot\WatchlistBundle\Event\WatchlistItemDataEvent;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -106,6 +105,7 @@ class WatchlistUtil
         }
 
         $user = $this->security->getUser();
+
         if ($user && $user instanceof BackendUser) {
             $watchlist->authorType = DcaUtil::AUTHOR_TYPE_USER;
             $watchlist->author = $user->id;
@@ -191,6 +191,7 @@ class WatchlistUtil
         // create search criteria
 
         $user = $this->security->getUser();
+
         if ($user && $user instanceof BackendUser) {
             $columns = [
                 'tl_watchlist.authorType=?',
@@ -235,12 +236,8 @@ class WatchlistUtil
     }
 
     /**
-     * @param FrontendTemplate $template
-     * @param string $currentUrl
-     * @param int $rootPage
      * @param WatchlistConfigModel $config
-     * @param Model|null $watchlist
-     * @return string
+     *
      * @throws \Exception
      */
     public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
@@ -250,8 +247,8 @@ class WatchlistUtil
         $template->watchlistDownloadAllUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage,
             Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
 
-        if ($config->addShare && null !== ($sharePage = $this->modelUtil->findModelInstanceByPk('tl_page', $config->shareJumpTo))) {
-            $template->watchlistShareUrl = $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, Environment::get('url').'/'.$sharePage->getFrontendUrl());
+        if ($watchlist && $config->addShare) {
+            $template->watchlistShareUrl = $this->getWatchlistShareUrl($watchlist, $config);
         }
 
         $template->config = $config;
@@ -281,13 +278,13 @@ class WatchlistUtil
                         if ($file->path) {
                             $cleanedItem['existing'] = true;
 
-                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
+                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
 
                             $template->hasDownloadableFiles = true;
 
                             // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
                             $url = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
-                            $query = parse_url($url, PHP_URL_QUERY);
+                            $query = parse_url($url, \PHP_URL_QUERY);
                             $url = $this->urlUtil->addQueryString($query, $currentUrl);
 
                             $cleanedItem['downloadUrl'] = $this->urlUtil->removeQueryString(['wl_root_page', 'wl_url'], $url);
@@ -297,7 +294,7 @@ class WatchlistUtil
                         } else {
                             $cleanedItem['existing'] = false;
 
-                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
+                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
                         }
 
                         $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['file']]));
@@ -316,7 +313,7 @@ class WatchlistUtil
 
                         $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['entityTable'], $cleanedItem['entity']]));
 
-                        $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), ENT_QUOTES, 'UTF-8');
+                        $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
 
                         $file = $this->fileUtil->getFileFromUuid($item['entityFile']);
 
@@ -403,5 +400,28 @@ class WatchlistUtil
         }
 
         return $item;
+    }
+
+    public function getWatchlistShareUrl(Model $watchlist = null, Model $config = null): string
+    {
+        if (null === $watchlist) {
+            $watchlist = $this->getCurrentWatchlist();
+        }
+
+        if (null === $config) {
+            $config = $this->getCurrentWatchlistConfig();
+        }
+
+        if (!$watchlist || !$config) {
+            return '';
+        }
+
+        $sharePage = $this->modelUtil->findModelInstanceByPk('tl_page', $config->shareJumpTo);
+
+        if (!$sharePage) {
+            return '';
+        }
+
+        return $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, Environment::get('url').'/'.$sharePage->getFrontendUrl());
     }
 }

@@ -3,7 +3,9 @@
    data-post-data="{{ postData|json_encode|e('html_attr') }}"
    data-item-added-message="{% block item_added_message %}{{ ('huh.watchlist.misc.' ~ postData.type ~ '_added_successfully')|trans }}{% endblock %}"
    data-add-item-message="{% block add_item_message %}{{ 'huh.watchlist.misc.add_to_watchlist'|trans }}{% endblock %}"
-   data-delete-item-message="{% block delete_item_message %}{{ 'huh.watchlist.misc.delete_from_watchlist'|trans }}{% endblock %}">
+   data-delete-item-message="{% block delete_item_message %}{{ 'huh.watchlist.misc.delete_from_watchlist'|trans }}{% endblock %}"
+   role="button"
+>
     {%- block text -%}
     {{ ('huh.watchlist.misc.' ~ (isAdded ? 'delete_from_watchlist' : 'add_to_watchlist'))|trans }}
     {%- endblock -%}

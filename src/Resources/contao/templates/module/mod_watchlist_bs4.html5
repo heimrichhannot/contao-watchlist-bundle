@@ -1,6 +1,7 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
+<?php \Contao\Controller::loadLanguageFile('default'); ?>
 
 <div class="watchlist-wrapper" data-watchlist-update-url="<?= $this->watchlistUpdateUrl ?>">
     <a class="open-watchlist btn btn-primary" href="#" data-toggle="modal" data-target="#watchlist-modal">
@@ -14,7 +15,7 @@
                     <h5 class="modal-title" id="watchlist-modal-label">
                         <?= $this->title ?>
                     </h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['close'] ?>">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['close'] ?>">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
