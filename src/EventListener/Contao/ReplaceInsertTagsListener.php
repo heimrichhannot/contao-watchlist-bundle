@@ -1,27 +1,23 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\WatchlistBundle\EventListener\Contao;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Contao\Input;
-use Contao\StringUtil;
-use Contao\Validator;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
-use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+use HeimrichHannot\WatchlistBundle\Generator\WatchlistLinkGenerator;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Twig\Environment;
 
 /**
- * Hook("replaceInsertTags")
+ * Hook("replaceInsertTags").
  */
 class ReplaceInsertTagsListener
 {
@@ -35,19 +31,22 @@ class ReplaceInsertTagsListener
     protected $modelUtil;
     /** @var DatabaseUtil */
     protected $databaseUtil;
+    private WatchlistLinkGenerator $linkGenerator;
 
     public function __construct(
         Environment $twig,
         WatchlistUtil $watchlistUtil,
         TwigTemplateLocator $twigTemplateLocator,
         ModelUtil $modelUtil,
-        DatabaseUtil $databaseUtil
+        DatabaseUtil $databaseUtil,
+        WatchlistLinkGenerator $linkGenerator
     ) {
         $this->twig = $twig;
         $this->watchlistUtil = $watchlistUtil;
         $this->twigTemplateLocator = $twigTemplateLocator;
         $this->modelUtil = $modelUtil;
         $this->databaseUtil = $databaseUtil;
+        $this->linkGenerator = $linkGenerator;
     }
 
     public function __invoke(
@@ -68,55 +67,21 @@ class ReplaceInsertTagsListener
 
         switch ($parts[0]) {
             case 'watchlist_add_item_link':
-                $watchlist = $this->watchlistUtil->getCurrentWatchlist();
-
-                $postData = [
-                    'page' => $objPage->id,
-                    'rootPage' => $objPage->rootId,
-                ];
-
-                // caution: do not use Input because then it would be marked as "used" erroneously
-                if ($_GET['auto_item']) {
-                    $postData['autoItem'] = $_GET['auto_item'];
-                }
-
                 switch ($parts[1]) {
                     case WatchlistItemContainer::TYPE_FILE:
-                        $fileUuid = Validator::isBinaryUuid($parts[2]) ? StringUtil::binToUuid($parts[2]) : $parts[2];
-                        $title = $parts[3] ?? null;
-                        $watchlistUuid = $parts[4] ?? null;
+                        $title = null;
 
-                        // file not existing?
-                        if (null === $this->modelUtil->callModelMethod('tl_files', 'findByUuid', $fileUuid)) {
-                            return '';
+                        if (isset($parts[3]) && !\in_array($parts[3], $nullValues)) {
+                            $title = $parts[3];
                         }
 
-                        $postData['type'] = WatchlistItemContainer::TYPE_FILE;
-                        $postData['file'] = $fileUuid;
+                        $watchlistUuid = null;
 
-                        if ($title && !\in_array($title, $nullValues)) {
-                            $postData['title'] = $title;
+                        if (isset($parts[4]) && !\in_array($parts[4], $nullValues)) {
+                            $watchlistUuid = $parts[4];
                         }
 
-                        if ($watchlistUuid && !\in_array($watchlistUuid, $nullValues)) {
-                            $postData['pid'] = $watchlistUuid;
-                        }
-
-                        $data = [
-                            'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
-                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getWatchlistItemByData($postData, $watchlist->id),
-                            'postData' => $postData,
-                            'hash' => md5(implode('_', [$postData['type'], $postData['pid'], $postData['file']])),
-                        ];
-
-                        $config = $this->watchlistUtil->getCurrentWatchlistConfig();
-
-                        return $this->twig->render(
-                            $this->twigTemplateLocator->getTemplatePath(
-                                $config->insertTagAddItemTemplate ?: '_watchlist_insert_tag_add_item_default.html.twig'
-                            ),
-                            $data
-                        );
+                        return $this->linkGenerator->generateAddFileLink($parts[2], $title, $watchlistUuid);
 
                     case WatchlistItemContainer::TYPE_ENTITY:
                         $entityTable = $parts[2];
@@ -126,45 +91,19 @@ class ReplaceInsertTagsListener
                         $entityFile = $parts[6] ?? null;
                         $watchlistUuid = $parts[7] ?? null;
 
-                        // entity not existing?
-                        $existing = $this->databaseUtil->findResultByPk($entityTable, $entity);
-
-                        if (null === $existing || $existing->numRows < 1) {
-                            return '';
+                        if ($entityUrl && \in_array($entityUrl, $nullValues)) {
+                            $entityUrl = null;
                         }
 
-                        $postData['type'] = WatchlistItemContainer::TYPE_ENTITY;
-                        $postData['entityTable'] = $entityTable;
-                        $postData['entity'] = $entity;
-                        $postData['title'] = $title;
-
-                        if ($entityUrl && !\in_array($entityUrl, $nullValues)) {
-                            $postData['entityUrl'] = $entityUrl;
+                        if ($entityFile && \in_array($entityFile, $nullValues)) {
+                            $entityFile = null;
                         }
 
-                        if ($entityFile && !\in_array($entityFile, $nullValues)) {
-                            $postData['entityFile'] = $entityFile;
+                        if ($watchlistUuid && \in_array($watchlistUuid, $nullValues)) {
+                            $watchlistUuid = null;
                         }
 
-                        if ($watchlistUuid && !\in_array($watchlistUuid, $nullValues)) {
-                            $postData['pid'] = $watchlistUuid;
-                        }
-
-                        $data = [
-                            'href' => \Contao\Environment::get('url').AjaxController::WATCHLIST_ITEM_URI,
-                            'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getWatchlistItemByData($postData, $watchlist->id),
-                            'postData' => $postData,
-                            'hash' => md5(implode('_', [$postData['type'], $postData['pid'], $postData['entityTable'], $postData['entity']])),
-                        ];
-
-                        $config = $this->watchlistUtil->getCurrentWatchlistConfig();
-
-                        return $this->twig->render(
-                            $this->twigTemplateLocator->getTemplatePath(
-                                $config->insertTagAddItemTemplate ?: '_watchlist_insert_tag_add_item_default.html.twig'
-                            ),
-                            $data
-                        );
+                        return $this->linkGenerator->generateEntityLink($entityTable, $entity, $title, $entityUrl, $entityFile, $watchlistUuid);
 
                     default:
                         return '';
