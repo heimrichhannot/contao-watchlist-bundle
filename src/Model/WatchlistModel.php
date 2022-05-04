@@ -10,12 +10,6 @@ namespace HeimrichHannot\WatchlistBundle\Model;
 
 use Contao\Model;
 
-/**
- * @property int    $id
- * @property string $title
- * @property string $watchlistContentTemplate
- * @property string $insertTagAddItemTemplate
- */
 class WatchlistModel extends Model
 {
     protected static $strTable = 'tl_watchlist';

@@ -1,14 +1,13 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
-use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
 use Contao\FrontendTemplate;
@@ -26,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * FrontendModule(WatchlistModuleController::TYPE,category="miscellaneous")
+ * FrontendModule(WatchlistModuleController::TYPE,category="miscellaneous").
  */
 class WatchlistModuleController
 {
@@ -67,7 +66,11 @@ class WatchlistModuleController
         $config = $this->watchlistUtil->getCurrentWatchlistConfig();
         $watchlist = $this->watchlistUtil->getCurrentWatchlist();
 
-        $currentUrl = parse_url(Environment::get('uri'), PHP_URL_PATH);
+        if (!$config) {
+            return null;
+        }
+
+        $currentUrl = parse_url(Environment::get('uri'), \PHP_URL_PATH);
 
         $template->watchlistUpdateUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId.'&wl_url='.urlencode($currentUrl),
             Environment::get('url').AjaxController::WATCHLIST_CONTENT_URI);
