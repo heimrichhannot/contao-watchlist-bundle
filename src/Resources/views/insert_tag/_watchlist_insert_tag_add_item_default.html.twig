@@ -1,4 +1,6 @@
-<a href="{{ href }}" class="watchlist-add-item{{ isAdded ? ' added' : ''}} {% block cssClasses %}{% endblock %}"
+{% block before %}
+{% endblock -%}
+<{{element_type|default('a')}} href="{{ href }}" class="watchlist-add-item{{ isAdded ? ' added' : ''}} {% block cssClasses %}{% endblock %}"
    data-hash="{{ hash }}"
    data-post-data="{{ postData|json_encode|e('html_attr') }}"
    data-item-added-message="{% block item_added_message %}{{ ('huh.watchlist.misc.' ~ postData.type ~ '_added_successfully')|trans }}{% endblock %}"
@@ -9,4 +11,7 @@
     {%- block text -%}
     {{ ('huh.watchlist.misc.' ~ (isAdded ? 'delete_from_watchlist' : 'add_to_watchlist'))|trans }}
     {%- endblock -%}
-</a>
+</{{element_type|default('a')}}>
+
+{%- block after %}
+{% endblock %}
