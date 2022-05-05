@@ -328,8 +328,8 @@ class WatchlistUtil
                 $cleanedItem['hash'] = $hash;
 
                 $event = $this->eventDispatcher->dispatch(
-                    WatchlistItemDataEvent::class,
-                    new WatchlistItemDataEvent($cleanedItem, $config)
+                    new WatchlistItemDataEvent($cleanedItem, $config),
+                    WatchlistItemDataEvent::class
                 );
 
                 $items[] = $event->getItem();
