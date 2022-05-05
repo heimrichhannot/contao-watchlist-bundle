@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - 2021-05-04
 - Changed: updated add item template
-
+- Changed: allow symfony 5
+- Fixed: class autoloading
 
 ## [3.2.0] - 2021-05-03
 - Added: mod_watchlist_bs4.html5 template
