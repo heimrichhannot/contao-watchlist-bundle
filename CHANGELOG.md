@@ -2,7 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.2.1] - 2021-05-05
+## [3.3.0] - 2021-05-05
+- Changed: dropped symfony 3 and contao 4.4 support
 - Changed: updated add item template
 - Changed: allow symfony 5
 - Fixed: class autoloading
