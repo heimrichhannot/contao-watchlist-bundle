@@ -22,15 +22,16 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-zip": "*",
-        "contao/core-bundle": "^4.4",
+        "contao/core-bundle": "^4.9",
         "heimrichhannot/contao-utils-bundle": "^2.199",
         "heimrichhannot/contao-inserttagcollection-bundle": "^1.1",
         "heimrichhannot/contao-request-bundle": "^1.2",
-        "symfony/config": "^3.4 || ^4.4 || ^5.4",
-        "symfony/dependency-injection": "^3.4 || ^4.4 || ^5.4",
-        "symfony/http-foundation": "^3.4 || ^4.4 || ^5.4",
-        "symfony/http-kernel": "^3.4 || ^4.4 || ^5.4",
-        "symfony/routing": "^3.4 || ^4.4 || ^5.4"
+        "symfony/config": "^4.4 || ^5.4",
+        "symfony/dependency-injection": "^4.4 || ^5.4",
+        "symfony/event-dispatcher-contracts": "^1.0 || ^2.0 || ^3.0",
+        "symfony/http-foundation": "^4.4 || ^5.4",
+        "symfony/http-kernel": "^4.4 || ^5.4",
+        "symfony/routing": "^4.4 || ^5.4"
     },
     "autoload": {
         "psr-4": {

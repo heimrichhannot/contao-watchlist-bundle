@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2021-05-04
+## [3.2.1] - 2021-05-05
 - Changed: updated add item template
 - Changed: allow symfony 5
 - Fixed: class autoloading

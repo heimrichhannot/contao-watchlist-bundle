@@ -1,13 +1,18 @@
 <?php
 
+/*
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
+ *
+ * @license LGPL-3.0-or-later
+ */
+
 namespace HeimrichHannot\WatchlistBundle\Event;
 
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class WatchlistItemDataEvent extends Event
 {
-
     /**
      * @var array
      */
@@ -23,25 +28,16 @@ class WatchlistItemDataEvent extends Event
         $this->configModel = $configModel;
     }
 
-    /**
-     * @return array
-     */
     public function getItem(): array
     {
         return $this->item;
     }
 
-    /**
-     * @param array $item
-     */
     public function setItem(array $item): void
     {
         $this->item = $item;
     }
 
-    /**
-     * @return WatchlistConfigModel
-     */
     public function getConfigModel(): WatchlistConfigModel
     {
         return $this->configModel;
