@@ -11,6 +11,7 @@ namespace HeimrichHannot\WatchlistBundle\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\FrontendTemplate;
+use Contao\PageModel;
 use Contao\StringUtil;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
@@ -20,7 +21,6 @@ use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -45,9 +45,6 @@ class AjaxController
     /** @var ModelUtil */
     protected $modelUtil;
 
-    /** @var SessionInterface */
-    protected $session;
-
     /** @var ContainerInterface */
     protected $container;
 
@@ -60,14 +57,12 @@ class AjaxController
         WatchlistUtil $watchlistUtil,
         DatabaseUtil $databaseUtil,
         ModelUtil $modelUtil,
-        FileUtil $fileUtil,
-        SessionInterface $session
+        FileUtil $fileUtil
     ) {
         $this->databaseUtil = $databaseUtil;
         $this->framework = $framework;
         $this->watchlistUtil = $watchlistUtil;
         $this->modelUtil = $modelUtil;
-        $this->session = $session;
         $this->container = $container;
         $this->fileUtil = $fileUtil;
     }
@@ -85,6 +80,14 @@ class AjaxController
             case Request::METHOD_GET:
                 $rootPage = $request->get('wl_root_page');
                 $currentUrl = $request->get('wl_url');
+
+                if ($rootPage && !$request->attributes->has('pageModel')) {
+                    $page = PageModel::findByPk((int) $rootPage);
+
+                    if ($page && $page->id == $rootPage) {
+                        $request->attributes->set('pageModel', $page);
+                    }
+                }
 
                 $config = $this->watchlistUtil->getCurrentWatchlistConfig($rootPage);
 

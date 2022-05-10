@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.0] - 2021-05-10
+- Added: pageModel request attribute to ajax request
+
 ## [3.3.1] - 2021-05-05
 - Fixed: symfony 5 support
 
