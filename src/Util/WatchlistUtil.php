@@ -34,6 +34,7 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
 
 class WatchlistUtil
@@ -60,6 +61,7 @@ class WatchlistUtil
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+    private RouterInterface $router;
 
     public function __construct(
         ContaoFramework $framework,
@@ -70,7 +72,8 @@ class WatchlistUtil
         FileUtil $fileUtil,
         ImageUtil $imageUtil,
         Security $security,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        RouterInterface $router
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -81,6 +84,7 @@ class WatchlistUtil
         $this->imageUtil = $imageUtil;
         $this->security = $security;
         $this->eventDispatcher = $eventDispatcher;
+        $this->router = $router;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -244,8 +248,7 @@ class WatchlistUtil
     {
         $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage, Environment::get('url').AjaxController::WATCHLIST_URI);
         $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
-        $template->watchlistDownloadAllUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage,
-            Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
+        $template->watchlistDownloadAllUrl = $this->getDownloadAllUrl($rootPage);
 
         if ($watchlist && $config->addShare) {
             $template->watchlistShareUrl = $this->getWatchlistShareUrl($watchlist, $config);
@@ -423,5 +426,11 @@ class WatchlistUtil
         }
 
         return $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, Environment::get('url').'/'.$sharePage->getFrontendUrl());
+    }
+
+    public function getDownloadAllUrl(int $rootPageId): string
+    {
+        return $this->urlUtil->addQueryString('wl_root_page='.$rootPageId,
+            Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
     }
 }

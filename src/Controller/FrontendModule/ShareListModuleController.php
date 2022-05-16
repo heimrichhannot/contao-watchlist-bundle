@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -24,34 +24,23 @@ use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
- * FrontendModule(ShareListModuleController::TYPE,category="miscellaneous")
+ * @FrontendModule(ShareListModuleController::TYPE,category="miscellaneous")
  */
-class ShareListModuleController
+class ShareListModuleController extends AbstractFrontendModuleController
 {
     const TYPE = 'watchlist_share_list';
 
-    /** @var ContaoFramework */
-    protected $framework;
-
-    /** @var DatabaseUtil */
-    protected $databaseUtil;
-
-    /** @var WatchlistUtil */
-    protected $watchlistUtil;
-
-    /** @var UrlUtil */
-    protected $urlUtil;
-
-    /** @var FileUtil */
-    protected $fileUtil;
-
-    /** @var ImageUtil */
-    protected $imageUtil;
-
-    /** @var ModelUtil */
-    protected $modelUtil;
+    protected ContaoFramework $framework;
+    protected DatabaseUtil    $databaseUtil;
+    protected WatchlistUtil   $watchlistUtil;
+    protected UrlUtil         $urlUtil;
+    protected FileUtil        $fileUtil;
+    protected ImageUtil       $imageUtil;
+    protected ModelUtil       $modelUtil;
+    private RouterInterface   $router;
 
     public function __construct(
         ContaoFramework $framework,
@@ -60,7 +49,8 @@ class ShareListModuleController
         UrlUtil $urlUtil,
         FileUtil $fileUtil,
         ImageUtil $imageUtil,
-        ModelUtil $modelUtil
+        ModelUtil $modelUtil,
+        RouterInterface $router
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -69,9 +59,10 @@ class ShareListModuleController
         $this->fileUtil = $fileUtil;
         $this->imageUtil = $imageUtil;
         $this->modelUtil = $modelUtil;
+        $this->router = $router;
     }
 
-    public function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
     {
         if (!($watchlistUuid = $request->get('watchlist'))) {
             $template->watchlistNotFound = true;
@@ -144,8 +135,8 @@ class ShareListModuleController
 
         $template->items = $items;
 
-        return null;
+        $template->watchlistDownloadAllUrl = $this->router->generate('huh_watchlist_downlad_all', ['watchlist' => $watchlist->id]);
 
-//        return $template->getResponse();
+        return $template->getResponse();
     }
 }

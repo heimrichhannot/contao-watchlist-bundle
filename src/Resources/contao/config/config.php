@@ -1,19 +1,17 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2022 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
 
-use HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController;
 use HeimrichHannot\WatchlistBundle\Controller\FrontendModule\WatchlistModuleController;
 use HeimrichHannot\WatchlistBundle\EventListener\Contao\LoadDataContainerListener;
 use HeimrichHannot\WatchlistBundle\EventListener\Contao\ReplaceInsertTagsListener;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
-use HeimrichHannot\WatchlistBundle\Module\ShareListModule;
 use HeimrichHannot\WatchlistBundle\Module\WatchlistModule;
 
 $GLOBALS['BE_MOD']['system']['watchlist'] = [
@@ -34,7 +32,6 @@ $GLOBALS['TL_MODELS']['tl_watchlist_config'] = WatchlistConfigModel::class;
 /*
  * Frontend modules
  */
-$GLOBALS['FE_MOD']['miscellaneous'][ShareListModuleController::TYPE] = ShareListModule::class;
 $GLOBALS['FE_MOD']['miscellaneous'][WatchlistModuleController::TYPE] = WatchlistModule::class;
 
 /*
