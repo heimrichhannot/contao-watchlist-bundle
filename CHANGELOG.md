@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.5.0] - 2021-05-16
+- Changed: store generated zip files in system tmp folder ([#5])
+- Changed: use unique names for generated zip files ([#5])
+- Changed: ShareList ist now FrontendModuleController again ([#5])
+- Changed: drop php 7.3 support again ([#5])
+- Fixed: now working in ShareList ([#5])
+
 ## [3.4.0] - 2021-05-10
 - Added: pageModel request attribute to ajax request
 
@@ -60,4 +67,5 @@ All notable changes to this project will be documented in this file.
 
 
 
+[#5]: https://github.com/heimrichhannot/contao-watchlist-bundle/pull/5
 [#4]: https://github.com/heimrichhannot/contao-watchlist-bundle/pull/4
