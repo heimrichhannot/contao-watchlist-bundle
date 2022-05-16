@@ -3,9 +3,11 @@ services:
     public: true
     autowire: true
     autoconfigure: true
+    bind:
+      $projectDir: '%kernel.project_dir%'
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../../{Controller,DataContainer,EventListener,Generator,Util}/*'
+    resource: '../../{Controller,DataContainer,EventListener,Generator,Migration,Util}/*'
 
   HeimrichHannot\WatchlistBundle\EventListener\ListModifyQueryBuilderForCountEventListener:
     tags:

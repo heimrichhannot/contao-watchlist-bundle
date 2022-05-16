@@ -16,9 +16,11 @@ use Contao\StringUtil;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,38 +35,30 @@ class AjaxController
     const WATCHLIST_CONTENT_URI = '/_huh_watchlist/content';
     const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
 
-    /** @var ContaoFramework */
-    protected $framework;
-
-    /** @var DatabaseUtil */
-    protected $databaseUtil;
-
-    /** @var WatchlistUtil */
-    protected $watchlistUtil;
-
-    /** @var ModelUtil */
-    protected $modelUtil;
-
-    /** @var ContainerInterface */
-    protected $container;
-
-    /** @var FileUtil */
-    protected $fileUtil;
+    private ContaoFramework $framework;
+    private DatabaseUtil    $databaseUtil;
+    private WatchlistUtil   $watchlistUtil;
+    private ModelUtil       $modelUtil;
+    private FileUtil        $fileUtil;
+    private Utils           $utils;
+    private string          $projectDir;
 
     public function __construct(
-        ContainerInterface $container,
         ContaoFramework $framework,
         WatchlistUtil $watchlistUtil,
         DatabaseUtil $databaseUtil,
         ModelUtil $modelUtil,
-        FileUtil $fileUtil
+        FileUtil $fileUtil,
+        Utils $utils,
+        string $projectDir
     ) {
         $this->databaseUtil = $databaseUtil;
         $this->framework = $framework;
         $this->watchlistUtil = $watchlistUtil;
         $this->modelUtil = $modelUtil;
-        $this->container = $container;
         $this->fileUtil = $fileUtil;
+        $this->utils = $utils;
+        $this->projectDir = $projectDir;
     }
 
     /**
@@ -140,63 +134,73 @@ class AjaxController
     }
 
     /**
-     * @return Response
-     *
-     * @Route("/_huh_watchlist/download_all")
+     * @Route("/_huh_watchlist/download_all", name="huh_watchlist_downlad_all", methods={"GET"})
      */
-    public function watchlistDownloadAllAction(Request $request)
+    public function watchlistDownloadAllAction(Request $request): Response
     {
         $this->framework->initialize();
 
-        $rootPage = $request->get('wl_root_page');
+        $watchlist = null;
 
-        switch ($request->getMethod()) {
-            case Request::METHOD_GET:
-                $projectDir = $this->container->getParameter('kernel.project_dir');
-                $watchlist = $this->watchlistUtil->getCurrentWatchlist([
-                    'rootPage' => $rootPage,
-                ]);
-
-                if (null === $watchlist) {
-                    return new Response('A watchlist couldn\'t be created or found.', 500);
-                }
-
-                // create zip file
-                $files = [];
-
-                foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id) as $item) {
-                    if (WatchlistItemContainer::TYPE_FILE !== $item['type'] || !($path = $this->fileUtil->getPathFromUuid($item['file']))) {
-                        continue;
-                    }
-
-                    $files[] = $projectDir.'/'.$path;
-                }
-
-                // Create new Zip Archive.
-                $zip = new \ZipArchive();
-
-                // The name of the Zip documents.
-                $zipName = 'watchlist.zip';
-
-                $zip->open($zipName, \ZipArchive::CREATE);
-
-                foreach ($files as $file) {
-                    $zip->addFile($file, basename($file));
-                }
-
-                $zip->close();
-
-                // send to browser
-                $response = new Response(file_get_contents($zipName));
-                $response->headers->set('Content-Type', 'application/zip');
-                $response->headers->set('Content-Disposition', 'attachment;filename="'.$zipName.'"');
-                $response->headers->set('Content-length', filesize($zipName));
-
-                return $response;
-
-            default:
-                return new Response('Method not allowed', 405);
+        if ($request->query->has('watchlist')) {
+            $watchlistId = (int) $request->query->get('watchlist');
+            $watchlist = $this->utils->model()->findModelInstanceByPk(WatchlistModel::getTable(), $watchlistId);
         }
+
+        if (!$watchlist && $request->query->has('wl_root_page')) {
+            $rootPageId = (int) $request->query->get('wl_root_page');
+            $watchlist = $this->watchlistUtil->getCurrentWatchlist([
+                'rootPage' => $rootPageId,
+            ]);
+        }
+
+        if (null === $watchlist) {
+            return new Response('A watchlist couldn\'t be created or found.', 500);
+        }
+
+        // create zip file
+        $files = [];
+
+        foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id) as $item) {
+            if (WatchlistItemContainer::TYPE_FILE !== $item['type'] || !($path = $this->fileUtil->getPathFromUuid($item['file']))) {
+                continue;
+            }
+
+            $files[] = $this->projectDir.'/'.$path;
+        }
+
+        $cacheDir = sys_get_temp_dir().'/huh_watchlist';
+
+        $fileSystem = new Filesystem();
+
+        if (!$fileSystem->exists($cacheDir)) {
+            $fileSystem->mkdir($cacheDir);
+        }
+
+        $hash = md5($watchlist->id.' '.implode(',', $files));
+        $fileName = 'watchlist_'.$hash.'.zip';
+        $filePath = $cacheDir.\DIRECTORY_SEPARATOR.$fileName;
+
+        if (!$fileSystem->exists($filePath)) {
+            // Create new Zip Archive.
+            $zip = new \ZipArchive();
+
+            $zip->open($filePath, \ZipArchive::CREATE);
+
+            foreach ($files as $file) {
+                $zip->addFile($file, basename($file));
+            }
+
+            $zip->close();
+        }
+
+        // send to browser
+        $response = new Response(file_get_contents($filePath));
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->headers->set('Content-Disposition', 'attachment;filename="watchlist.zip"');
+        $response->headers->set('Content-length', filesize($filePath));
+
+        return $response;
     }
 
     /**
