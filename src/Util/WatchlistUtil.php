@@ -248,7 +248,7 @@ class WatchlistUtil
     {
         $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage, Environment::get('url').AjaxController::WATCHLIST_URI);
         $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
-        $template->watchlistDownloadAllUrl = $this->getDownloadAllUrl($rootPage);
+        $template->watchlistDownloadAllUrl = $this->router->generate('huh_watchlist_downlad_all', ['wl_root_page' => $rootPage]);
 
         if ($watchlist && $config->addShare) {
             $template->watchlistShareUrl = $this->getWatchlistShareUrl($watchlist, $config);
@@ -426,11 +426,5 @@ class WatchlistUtil
         }
 
         return $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, Environment::get('url').'/'.$sharePage->getFrontendUrl());
-    }
-
-    public function getDownloadAllUrl(int $rootPageId): string
-    {
-        return $this->urlUtil->addQueryString('wl_root_page='.$rootPageId,
-            Environment::get('url').AjaxController::WATCHLIST_DOWNLOAD_ALL_URI);
     }
 }
