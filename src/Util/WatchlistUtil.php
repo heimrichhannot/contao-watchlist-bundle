@@ -384,11 +384,25 @@ class WatchlistUtil
         return $this->modelUtil->findModelInstanceByPk('tl_watchlist_config', $page->watchlistConfig);
     }
 
-    public function getWatchlistItems(int $watchlist, array $options = []): array
+    /**
+     * Get watchlist items from watchlist id.
+     *
+     * @param int   $watchlistId The watchlist ist. If not set, the watchlist is automatically loaded
+     * @param array $options     Additional options. Options: modelOptions
+     */
+    public function getWatchlistItems(int $watchlistId = 0, array $options = []): array
     {
+        if (0 === $watchlistId) {
+            $watchlistModel = $this->getCurrentWatchlist();
+
+            if ($watchlistModel) {
+                $watchlistId = (int) $watchlistModel->id;
+            }
+        }
+
         $modelOptions = $options['modelOptions'] ?? [];
 
-        if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlist], $modelOptions))) {
+        if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlistId], $modelOptions))) {
             return [];
         }
 

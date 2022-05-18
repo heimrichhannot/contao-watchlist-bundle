@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.6.0] - 2021-05-18
+- Added: huh_watchlist_list_updated js event
+- Changed: enhanced WatchlistUtil::getWatchlistItems()
+
 ## [3.5.0] - 2021-05-16
 - Changed: store generated zip files in system tmp folder ([#5])
 - Changed: use unique names for generated zip files ([#5])

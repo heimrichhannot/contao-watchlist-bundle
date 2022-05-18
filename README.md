@@ -98,8 +98,14 @@ function templateListener(Template $template, WatchlistLinkGenerator $linkGenera
 }
 ```
 
-### Events
+### Symfony Events
 
 | Event                   | Description                                                      |
 |-------------------------|------------------------------------------------------------------|
 | WatchlistItemDataEvent | Modify the watchlist item before output to the watchlist module. |
+
+### JavaScript events
+
+| Event                      | Description                                           |
+|----------------------------|-------------------------------------------------------|
+| huh_watchlist_list_updated | Is dispatched after the watchlist content is updated. |

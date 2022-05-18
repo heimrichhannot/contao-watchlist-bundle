@@ -32,6 +32,9 @@ class WatchlistBundle {
         utilsBundle.ajax.get(wrapper.getAttribute('data-watchlist-update-url'), {}, {
             onSuccess: (response) => {
                 document.querySelector('.watchlist-content').innerHTML = response.responseText;
+                wrapper.dispatchEvent(new CustomEvent('huh_watchlist_list_updated', {
+                    bubbles: true
+                }));
             }
         });
     }
