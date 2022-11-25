@@ -55,11 +55,11 @@ class Version303Migration extends AbstractMigration
                 file = uuid
         ');
 
-        $stmt->executeQuery();
+        $result = $stmt->executeQuery();
 
         return $this->createResult(
             true,
-            'Moved tl_watchlist_item.uuid to tl_watchlist_item.file for '.$stmt->rowCount().' records.'
+            'Moved tl_watchlist_item.uuid to tl_watchlist_item.file for '.$result->rowCount().' records.'
         );
     }
 }

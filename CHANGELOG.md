@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.7.0] - 2022-11-25
+- Updated: dependency to doctrine/DBAL ^3.5
+
 ## [3.6.0] - 2021-05-18
 - Added: huh_watchlist_list_updated js event
 - Changed: enhanced WatchlistUtil::getWatchlistItems()

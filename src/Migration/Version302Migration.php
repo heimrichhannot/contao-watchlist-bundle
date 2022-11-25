@@ -55,11 +55,11 @@ class Version302Migration extends AbstractMigration
                 entity = parentTableId
         ');
 
-        $stmt->executeQuery();
+        $result = $stmt->executeQuery();
 
         return $this->createResult(
             true,
-            'Moved tl_watchlist_item.parentTableId to tl_watchlist_item.entity for '.$stmt->rowCount().' records.'
+            'Moved tl_watchlist_item.parentTableId to tl_watchlist_item.entity for '.$result->rowCount().' records.'
         );
     }
 }

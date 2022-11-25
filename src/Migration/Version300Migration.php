@@ -55,11 +55,11 @@ class Version300Migration extends AbstractMigration
                 title = name
         ');
 
-        $stmt->executeQuery();
+        $result = $stmt->executeQuery();
 
         return $this->createResult(
             true,
-            'Moved tl_watchlist.name to tl_watchlist.title for '.$stmt->rowCount().' records.'
+            'Moved tl_watchlist.name to tl_watchlist.title for '.$result->rowCount().' records.'
         );
     }
 }
