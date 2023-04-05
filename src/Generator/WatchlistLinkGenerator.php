@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -10,8 +10,6 @@ namespace HeimrichHannot\WatchlistBundle\Generator;
 
 use Contao\FilesModel;
 use Contao\Input;
-use Contao\StringUtil;
-use Contao\Validator;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
@@ -44,8 +42,6 @@ class WatchlistLinkGenerator
      */
     public function generateAddFileLink(string $fileUuid, string $title = null, string $watchlistUuid = null): string
     {
-        $fileUuid = Validator::isBinaryUuid($fileUuid) ? StringUtil::binToUuid($fileUuid) : $fileUuid;
-
         // file not existing?
         if (null === FilesModel::findByUuid($fileUuid)) {
             return '';
@@ -60,11 +56,10 @@ class WatchlistLinkGenerator
             $postData['title'] = $title;
         }
 
-        if ($watchlistUuid) {
-            $postData['pid'] = $watchlistUuid;
-        }
-
         $watchlist = $this->watchlistUtil->getCurrentWatchlist();
+
+        $postData['pid'] = $watchlistUuid ?? ($watchlist ? $watchlist->uuid : '');
+
         $url = $this->router->generate('huh_watchlist_item');
 
         $data = [

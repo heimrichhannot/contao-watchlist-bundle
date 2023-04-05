@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.7.1] - 2023-04-05
+- Fixed: warning 
+
 ## [3.7.0] - 2022-11-25
 - Updated: dependency to doctrine/DBAL ^3.5
 
