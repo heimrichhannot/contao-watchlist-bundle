@@ -7,7 +7,7 @@ services:
       $projectDir: '%kernel.project_dir%'
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../../{Controller,DataContainer,EventListener,Generator,Migration,Util}/*'
+    resource: '../../{Asset,Controller,DataContainer,EventListener,Generator,Migration,Util}/*'
 
   HeimrichHannot\WatchlistBundle\EventListener\ListModifyQueryBuilderForCountEventListener:
     tags:

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -42,10 +42,6 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
     public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
     {
         $loader->load('@HeimrichHannotWatchlistBundle/Resources/config/services.yml');
-
-        if (class_exists('HeimrichHannot\EncoreBundle\HeimrichHannotContaoEncoreBundle')) {
-            $loader->load('@HeimrichHannotWatchlistBundle/Resources/config/config_encore.yml');
-        }
     }
 
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
