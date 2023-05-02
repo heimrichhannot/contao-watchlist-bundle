@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -18,10 +18,10 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             ],
         ],
         'onsubmit_callback' => [
-            [WatchlistItemContainer::class, 'setDateAdded']
+            [WatchlistItemContainer::class, 'setDateAdded'],
         ],
         'oncopy_callback' => [
-            [WatchlistItemContainer::class, 'setDateAddedOnCopy']
+            [WatchlistItemContainer::class, 'setDateAddedOnCopy'],
         ],
     ],
     'list' => [
@@ -34,7 +34,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'fields' => ['dateAdded'],
             'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
-            'child_record_callback' => [WatchlistItemContainer::class, 'listChildren']
+            'child_record_callback' => [WatchlistItemContainer::class, 'listChildren'],
         ],
         'global_operations' => [
             'all' => [
@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '').'\'))return false;Backend.getScrollOffset()"',
             ],
             'show' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['show'],

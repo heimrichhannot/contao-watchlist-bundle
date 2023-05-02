@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (c) 2021 Heimrich & Hannot GmbH
+ * Copyright (c) 2023 Heimrich & Hannot GmbH
  *
  * @license LGPL-3.0-or-later
  */
@@ -17,10 +17,10 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             ],
         ],
         'onsubmit_callback' => [
-            [WatchlistConfigContainer::class, 'setDateAdded']
+            [WatchlistConfigContainer::class, 'setDateAdded'],
         ],
         'oncopy_callback' => [
-            [WatchlistConfigContainer::class, 'setDateAddedOnCopy']
+            [WatchlistConfigContainer::class, 'setDateAddedOnCopy'],
         ],
     ],
     'list' => [
@@ -57,7 +57,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '').'\'))return false;Backend.getScrollOffset()"',
             ],
         ],
     ],
