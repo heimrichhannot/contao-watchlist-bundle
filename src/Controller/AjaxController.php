@@ -24,6 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route(defaults={"_scope" = "frontend"})
@@ -35,13 +36,14 @@ class AjaxController
     const WATCHLIST_CONTENT_URI = '/_huh_watchlist/content';
     const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
 
-    private ContaoFramework $framework;
-    private DatabaseUtil    $databaseUtil;
-    private WatchlistUtil   $watchlistUtil;
-    private ModelUtil       $modelUtil;
-    private FileUtil        $fileUtil;
-    private Utils           $utils;
-    private string          $projectDir;
+    private ContaoFramework     $framework;
+    private DatabaseUtil        $databaseUtil;
+    private WatchlistUtil       $watchlistUtil;
+    private ModelUtil           $modelUtil;
+    private FileUtil            $fileUtil;
+    private Utils               $utils;
+    private string              $projectDir;
+    private TranslatorInterface $translator;
 
     public function __construct(
         ContaoFramework $framework,
@@ -50,7 +52,8 @@ class AjaxController
         ModelUtil $modelUtil,
         FileUtil $fileUtil,
         Utils $utils,
-        string $projectDir
+        string $projectDir,
+        TranslatorInterface $translator
     ) {
         $this->databaseUtil = $databaseUtil;
         $this->framework = $framework;
@@ -59,6 +62,7 @@ class AjaxController
         $this->fileUtil = $fileUtil;
         $this->utils = $utils;
         $this->projectDir = $projectDir;
+        $this->translator = $translator;
     }
 
     /**
@@ -276,7 +280,8 @@ class AjaxController
                 // create mode
                 // already existing?
                 if (null !== $this->watchlistUtil->getWatchlistItemByData($data, $watchlist->id)) {
-                    return new Response($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['itemAlreadyInCurrentWatchlist'], 409);
+                    return new Response(
+                        $this->translator->trans('MSC.watchlistBundle.itemAlreadyInCurrentWatchlist', [], 'contao_default'), 409);
                 }
 
                 switch ($data['type']) {
