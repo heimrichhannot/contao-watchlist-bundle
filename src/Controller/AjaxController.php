@@ -294,7 +294,7 @@ class AjaxController
                             $meta = StringUtil::deserialize($fileModel->meta, true);
 
                             if (isset($meta[$GLOBALS['TL_LANGUAGE']]['title'])) {
-                                $data['title'] = $meta[$GLOBALS['TL_LANGUAGE']['title']];
+                                $data['title'] = $meta[$GLOBALS['TL_LANGUAGE']]['title'];
                             }
                         }
 

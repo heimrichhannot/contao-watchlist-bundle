@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2023-05-02
+## [3.8.0] - 2023-05-02
 - Added: encore contracts support
 - Fixed: warnings
+- Fixed: type error
 
 ## [3.7.1] - 2023-04-05
 - Fixed: warning 
