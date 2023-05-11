@@ -10,6 +10,8 @@ namespace HeimrichHannot\WatchlistBundle\Generator;
 
 use Contao\FilesModel;
 use Contao\Input;
+use Contao\StringUtil;
+use Contao\Validator;
 use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
@@ -48,6 +50,10 @@ class WatchlistLinkGenerator
         }
 
         $postData = $this->createDefaultPostData();
+
+        if (Validator::isBinaryUuid($fileUuid)) {
+            $fileUuid = StringUtil::binToUuid($fileUuid);
+        }
 
         $postData['type'] = WatchlistItemContainer::TYPE_FILE;
         $postData['file'] = $fileUuid;

@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2023-05-11
+- Fixed: watchlist links not working when using binary uuid for link generation
+
 ## [3.8.1] - 2023-05-02
 - Fixed: warning
 
