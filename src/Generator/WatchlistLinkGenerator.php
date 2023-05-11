@@ -64,7 +64,11 @@ class WatchlistLinkGenerator
 
         $watchlist = $this->watchlistUtil->getCurrentWatchlist();
 
-        $postData['pid'] = $watchlistUuid ?? ($watchlist ? $watchlist->uuid : '');
+        if ($watchlistUuid) {
+            $postData['pid'] = $watchlistUuid;
+        } elseif ($watchlist) {
+            $postData['pid'] = $watchlist->uuid;
+        }
 
         $url = $this->router->generate('huh_watchlist_item');
 

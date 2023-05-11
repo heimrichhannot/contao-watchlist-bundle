@@ -239,7 +239,7 @@ class AjaxController
                 $data = $cleanedData;
 
                 // get or create watchlist
-                if (isset($data['pid'])) {
+                if (!empty($data['pid'])) {
                     $watchlist = $this->databaseUtil->findOneResultBy('tl_watchlist', ['tl_watchlist.uuid=?'], [$data['pid']]);
 
                     if ($watchlist->numRows < 1) {
