@@ -83,7 +83,17 @@ class AjaxController
                     $page = PageModel::findByPk((int) $rootPage);
 
                     if ($page && $page->id == $rootPage) {
+                        // needed to fix warning in contao:
+                        if (!$page->trail) {
+                            $page->trail = [];
+                        }
+
+                        // add page model to request and global to make it available in dependent code
                         $request->attributes->set('pageModel', $page);
+
+                        if (!isset($GLOBALS['objPage'])) {
+                            $GLOBALS['objPage'] = $page;
+                        }
                     }
                 }
 
