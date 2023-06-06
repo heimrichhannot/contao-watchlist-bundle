@@ -76,7 +76,7 @@ class WatchlistLinkGenerator
             'href' => $url,
             'isAdded' => null !== $watchlist && null !== $this->watchlistUtil->getWatchlistItemByData($postData, $watchlist->id),
             'postData' => $postData,
-            'hash' => md5(implode('_', [$postData['type'], $postData['pid'], $postData['file']])),
+            'hash' => md5(implode('_', array_filter([$postData['type'] ?? [], $postData['pid'] ?? [], $postData['file'] ?? []]))),
         ];
 
         $config = $this->watchlistUtil->getCurrentWatchlistConfig();

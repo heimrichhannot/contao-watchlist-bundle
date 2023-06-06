@@ -300,7 +300,7 @@ class WatchlistUtil
                             $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
                         }
 
-                        $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['file']]));
+                        $hash = md5(implode('_', array_filter([$cleanedItem['type'] ?? [], $cleanedItem['pid'] ?? [], $cleanedItem['file'] ?? []])));
 
                         break;
 
