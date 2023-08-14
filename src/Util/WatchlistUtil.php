@@ -12,6 +12,7 @@ use Contao\BackendUser;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\Database\Result;
 use Contao\Environment;
 use Contao\File;
 use Contao\FrontendTemplate;
@@ -159,6 +160,7 @@ class WatchlistUtil
                     $itemData['file'] = StringUtil::uuidToBin($itemData['file']);
                 }
 
+                /** @var Result $existingItem */
                 $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
                     ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.file=UNHEX(?)'],
                     [WatchlistItemContainer::TYPE_FILE, $watchlist, bin2hex($itemData['file'])]

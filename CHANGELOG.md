@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.8.5] - 2023-08-14
+- Fixed: wrong template loaded in some ajax contexts
+
 ## [3.8.4] - 2023-06-06
 - Fixed: items not added async to watchlist in dev mode
 

@@ -144,6 +144,7 @@ class WatchlistLinkGenerator
         $postData = [];
 
         if ($page = $this->utils->request()->getCurrentPageModel()) {
+            $page->loadDetails();
             $postData['page'] = $page->id;
             $postData['rootPage'] = $page->rootId;
         }
