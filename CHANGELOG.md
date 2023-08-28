@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.8.6] - 2023-08-28
+- Fixed: issues with contao 4.9
+
 ## [3.8.5] - 2023-08-14
 - Fixed: wrong template loaded in some ajax contexts
 

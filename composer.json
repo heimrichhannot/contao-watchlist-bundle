@@ -24,6 +24,7 @@
         "ext-zip": "*",
         "ext-json": "*",
         "contao/core-bundle": "^4.9",
+        "doctrine/dbal": " ^2.10 || ^3.0",
         "heimrichhannot/contao-encore-contracts": "^1.0",
         "heimrichhannot/contao-utils-bundle": "^2.199",
         "heimrichhannot/contao-inserttagcollection-bundle": "^1.1",
@@ -34,8 +35,7 @@
         "symfony/http-foundation": "^4.4 || ^5.4",
         "symfony/http-kernel": "^4.4 || ^5.4",
         "symfony/routing": "^4.4 || ^5.4",
-        "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0",
-        "doctrine/dbal": "^3.5"
+        "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -43,7 +43,6 @@
         }
     },
     "extra": {
-        "contao-manager-plugin": "HeimrichHannot\\WatchlistBundle\\ContaoManager\\Plugin",
-        "foxy": true
+        "contao-manager-plugin": "HeimrichHannot\\WatchlistBundle\\ContaoManager\\Plugin"
     }
 }
