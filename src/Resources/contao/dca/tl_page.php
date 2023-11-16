@@ -15,7 +15,7 @@ $dca = &$GLOBALS['TL_DCA']['tl_page'];
  */
 
 $pm = PaletteManipulator::create()
-    ->addLegend('watchlist_legend', 'sitemap_legend', PaletteManipulator::POSITION_BEFORE)
+    ->addLegend('watchlist_legend', 'protected_legend')
     ->addField('watchlistConfig', 'watchlist_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('root', 'tl_page');
 if (isset($GLOBALS['TL_DCA']['tl_page']['palettes']['rootfallback'])) {
