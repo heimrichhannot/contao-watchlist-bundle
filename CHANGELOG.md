@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.9.0] - 2023-1-17
+- Changed: removed request bundle
+- Changed: add opened class to watchlist_wrapper element on watchlist open
+- Changed: added template blocks to watchlist_content template
+- Changed: add icon and size attribute to watchlist item
+- Fixed: empty watchlist item title for download items in some cases
+- Fixed: missing dependencies
+- Fixed: hard dependency on list and reader bundle
+- Fixed: page palette issue in contao 4.13
+
 ## [3.8.6] - 2023-08-28
 - Fixed: issues with contao 4.9
 
