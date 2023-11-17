@@ -14,11 +14,8 @@ class WatchlistBundle {
 
             let contentWrapper = element.nextElementSibling;
 
-            if (contentWrapper.classList.contains('opened')) {
-                contentWrapper.classList.remove('opened');
-            } else {
-                contentWrapper.classList.add('opened');
-            }
+            contentWrapper.classList.toggle('opened');
+            contentWrapper.parentElement.classList.toggle('opened');
         });
     }
 

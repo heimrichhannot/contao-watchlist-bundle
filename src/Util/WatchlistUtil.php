@@ -17,6 +17,7 @@ use Contao\Environment;
 use Contao\File;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
+use Contao\Image;
 use Contao\Model;
 use Contao\StringUtil;
 use Contao\System;
@@ -294,8 +295,17 @@ class WatchlistUtil
 
                             $cleanedItem['downloadUrl'] = $this->urlUtil->removeQueryString(['wl_root_page', 'wl_url'], $url);
 
+                            if (empty($cleanedItem['title'])) {
+                                $cleanedItem['title'] = $file->name;
+                            }
+
+                            $cleanedItem['filesize'] = System::getReadableSize($file->filesize);
+                            $cleanedItem['icon'] = Image::getPath($file->icon);
+
                             // add image if file is such
                             $this->addImageToItemData($cleanedItem, 'file', $file, $config, $watchlist);
+
+
                         } else {
                             $cleanedItem['existing'] = false;
 
