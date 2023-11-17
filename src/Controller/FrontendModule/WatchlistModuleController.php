@@ -15,6 +15,7 @@ use Contao\ModuleModel;
 use Contao\System;
 use Contao\Template;
 use HeimrichHannot\EncoreBundle\Asset\FrontendAsset;
+use HeimrichHannot\EncoreContracts\PageAssetsTrait;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Url\UrlUtil;
@@ -29,7 +30,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  */
 class WatchlistModuleController
 {
-    const TYPE = 'watchlist';
+    use PageAssetsTrait;
+
+    public const TYPE = 'watchlist';
 
     /** @var DatabaseUtil */
     protected $databaseUtil;
@@ -53,12 +56,11 @@ class WatchlistModuleController
 
     public function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
     {
-        // load js assets
-        if (System::getContainer()->has('HeimrichHannot\EncoreBundle\Asset\FrontendAsset')) {
-            System::getContainer()->get(FrontendAsset::class)->addActiveEntrypoint('contao-watchlist-bundle');
-        } else {
-            $GLOBALS['TL_JAVASCRIPT']['contao-watchlist-bundle'] = 'bundles/heimrichhannotwatchlistbundle/assets/contao-watchlist-bundle.js|static';
-        }
+        $this->addPageEntrypoint('contao-watchlist-bundle', [
+            'TL_JAVASCRIPT' => [
+                'contao-watchlist-bundle' => 'bundles/heimrichhannotwatchlistbundle/assets/contao-watchlist-bundle.js|static',
+            ],
+        ]);
 
         global $objPage;
 

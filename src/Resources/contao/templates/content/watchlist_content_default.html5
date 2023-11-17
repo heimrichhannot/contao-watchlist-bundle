@@ -1,11 +1,15 @@
 <div class="items">
     <?php if (empty($this->items)): ?>
+        <?php $this->block('no-items'); ?>
         <p class="no-items">
             <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['noItemsInCurrentWatchlist'] ?>
         </p>
+        <?php $this->endblock(); ?>
     <?php else: ?>
+        <?php $this->block('item'); ?>
         <?php foreach ($this->items as $item): ?>
             <div class="item">
+
                 <?php if ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE && isset($item['imageData_file'])): ?>
                     <div class="image">
                         <?php $this->insert('image', $item['imageData_file']); ?>
@@ -47,12 +51,15 @@
                         </div>
                     <?php endif; ?>
                 <?php endif; ?>
+
             </div>
         <?php endforeach; ?>
+        <?php $this->endblock(); ?>
     <?php endif; ?>
 </div>
 
 <?php if (!empty($this->items)): ?>
+    <?php $this->block('actions'); ?>
     <div class="actions">
         <a href="<?= $this->watchlistUrl ?>" class="clear">
             <?= $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['clear'] ?>
@@ -72,4 +79,5 @@
             </a>
         <?php endif; ?>
     </div>
+    <?php $this->endblock(); ?>
 <?php endif; ?>

@@ -13,6 +13,7 @@ use HeimrichHannot\RequestBundle\Component\HttpFoundation\Request;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 
 /**
@@ -22,31 +23,32 @@ class ReaderModifyQueryBuilderEventListener
 {
     /** @var ModelUtil */
     protected $modelUtil;
-    /** @var Request */
-    protected $request;
     /** @var DatabaseUtil */
     protected $databaseUtil;
     /** @var WatchlistUtil */
-    protected $watchlistUtil;
+    protected            $watchlistUtil;
+    private RequestStack $requestStack;
 
-    public function __construct(ModelUtil $modelUtil, Request $request, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil)
+    public function __construct(ModelUtil $modelUtil, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, RequestStack $requestStack)
     {
         $this->modelUtil = $modelUtil;
         $this->request = $request;
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
+        $this->requestStack = $requestStack;
     }
 
     public function __invoke(ReaderModifyQueryBuilderEvent $event): void
     {
         $qp = $event->getQueryBuilder();
         $readerConfig = $event->getReaderConfig();
+        $request = $this->requestStack->getCurrentRequest();
 
-        if (!$readerConfig->actAsWatchlistShareTarget) {
+        if (!$request || !$readerConfig->actAsWatchlistShareTarget) {
             return;
         }
 
-        if (!($watchlistUuid = $this->request->getGet('watchlist'))) {
+        if (!($watchlistUuid = $request->query->get('watchlist'))) {
             // hide any items if for security reasons
             $qp->andWhere($qp->expr()->eq(1, 0));
 

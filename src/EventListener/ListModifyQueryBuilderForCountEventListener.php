@@ -9,10 +9,10 @@
 namespace HeimrichHannot\WatchlistBundle\EventListener;
 
 use HeimrichHannot\ListBundle\Event\ListModifyQueryBuilderForCountEvent;
-use HeimrichHannot\RequestBundle\Component\HttpFoundation\Request;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 
 /**
@@ -22,31 +22,35 @@ class ListModifyQueryBuilderForCountEventListener
 {
     /** @var ModelUtil */
     protected $modelUtil;
-    /** @var Request */
-    protected $request;
     /** @var DatabaseUtil */
     protected $databaseUtil;
     /** @var WatchlistUtil */
     protected $watchlistUtil;
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
 
-    public function __construct(ModelUtil $modelUtil, Request $request, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil)
+    public function __construct(ModelUtil $modelUtil, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, RequestStack $requestStack)
     {
         $this->modelUtil = $modelUtil;
         $this->request = $request;
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
+        $this->requestStack = $requestStack;
     }
 
     public function __invoke(ListModifyQueryBuilderForCountEvent $event): void
     {
         $qp = $event->getQueryBuilder();
         $listConfig = $event->getListConfig();
+        $request = $this->requestStack->getCurrentRequest();
 
-        if (!$listConfig->actAsWatchlistShareTarget) {
+        if (!$request || !$listConfig->actAsWatchlistShareTarget) {
             return;
         }
 
-        if (!($watchlistUuid = $this->request->getGet('watchlist')) ||
+        if (!($watchlistUuid = $request->query->get('watchlist')) ||
             null === ($filter = $this->modelUtil->findModelInstanceByPk('tl_filter_config', $listConfig->filter))) {
             // hide any items if for security reasons
             $qp->andWhere($qp->expr()->eq(1, 0));
