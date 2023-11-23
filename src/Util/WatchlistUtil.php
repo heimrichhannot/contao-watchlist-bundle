@@ -353,7 +353,7 @@ class WatchlistUtil
             $template->items = $items;
         }
 
-        return $template->parse();
+        return Controller::replaceInsertTags($template->parse());
     }
 
     public function addImageToItemData(array &$item, string $field, File $file, Model $config, Model $watchlist)

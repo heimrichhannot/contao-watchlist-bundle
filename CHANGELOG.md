@@ -2,7 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.9.0] - 2023-1-17
+## [3.9.1] - 2023-11-23
+- Fixed: inserttags not replaced when updating watchlist content
+
+## [3.9.0] - 2023-11-17
 - Changed: removed request bundle
 - Changed: add opened class to watchlist_wrapper element on watchlist open
 - Changed: added template blocks to watchlist_content template
