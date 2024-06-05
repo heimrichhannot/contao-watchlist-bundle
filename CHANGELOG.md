@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.9.2] - 2024-06-05
+- Fixed: php8 warning: Undefined variable $request
+
 ## [3.9.1] - 2023-11-23
 - Fixed: inserttags not replaced when updating watchlist content
 
