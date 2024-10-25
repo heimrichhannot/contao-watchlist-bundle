@@ -32,7 +32,6 @@ class ReaderModifyQueryBuilderEventListener
     public function __construct(ModelUtil $modelUtil, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, RequestStack $requestStack)
     {
         $this->modelUtil = $modelUtil;
-        $this->request = $request;
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
         $this->requestStack = $requestStack;
