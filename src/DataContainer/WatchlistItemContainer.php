@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
+use Contao\Date;
+use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\System;
@@ -82,7 +84,7 @@ class WatchlistItemContainer
         }
 
         return '<div class="tl_content_left">'.$label.' <span style="color:#b3b3b3; padding-left:3px">['.
-            \Contao\Date::parse(\Contao\Config::get('datimFormat'), trim($row['dateAdded'])).']</span></div>';
+            Date::parse(Config::get('datimFormat'), trim($row['dateAdded'])).']</span></div>';
     }
 
     /**

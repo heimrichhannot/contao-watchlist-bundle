@@ -1,5 +1,8 @@
 <?php
 
+use HeimrichHannot\WatchlistBundle\Controller\FrontendModule\WatchlistModuleController;
+use HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController;
+
 /*
  * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
@@ -11,8 +14,8 @@ $dca = &$GLOBALS['TL_DCA']['tl_module'];
 /*
  * Palettes
  */
-$dca['palettes'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\WatchlistModuleController::TYPE] =
+$dca['palettes'][WatchlistModuleController::TYPE] =
     '{title_legend},name,headline,type;{config_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 
-$dca['palettes'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController::TYPE] =
+$dca['palettes'][ShareListModuleController::TYPE] =
     '{title_legend},name,headline,type;{image_legend},imgSize;{config_legend},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';

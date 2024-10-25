@@ -13,7 +13,6 @@ use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 
 /**
  * ServiceTag("kernel.event_listener", event="huh.list.event.list_modify_query_builder_for_count")

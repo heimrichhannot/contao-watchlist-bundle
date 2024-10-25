@@ -1,5 +1,7 @@
 <?php
 
+use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+
 /*
  * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
@@ -51,8 +53,8 @@ $lang['context_legend'] = 'Kontext';
  * Reference
  */
 $lang['reference'] = [
-    \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE => 'Datei',
-    \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY => 'Datenbank-Entität',
+    WatchlistItemContainer::TYPE_FILE => 'Datei',
+    WatchlistItemContainer::TYPE_ENTITY => 'Datenbank-Entität',
 ];
 
 /*

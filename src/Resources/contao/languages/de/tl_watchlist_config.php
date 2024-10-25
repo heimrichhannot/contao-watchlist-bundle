@@ -1,5 +1,7 @@
 <?php
 
+use HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController;
+
 /*
  * Copyright (c) 2021 Heimrich & Hannot GmbH
  *
@@ -29,7 +31,7 @@ $lang['addShare'][0] = 'Teilen aktivieren';
 $lang['addShare'][1] = 'Wählen Sie diese Option, um das Teilen von Merklisten zu erlauben.';
 
 $lang['shareJumpTo'][0] = 'Weiterleitungsseite';
-$lang['shareJumpTo'][1] = 'Wählen Sie hier die Basisseite für die Teilen-Links aus. Diese Seite muss ein Modul vom Typ "'.$GLOBALS['TL_LANG']['FMD'][\HeimrichHannot\WatchlistBundle\Controller\FrontendModule\ShareListModuleController::TYPE][0].'" enthalten.';
+$lang['shareJumpTo'][1] = 'Wählen Sie hier die Basisseite für die Teilen-Links aus. Diese Seite muss ein Modul vom Typ "'.$GLOBALS['TL_LANG']['FMD'][ShareListModuleController::TYPE][0].'" enthalten.';
 
 /*
  * Legends

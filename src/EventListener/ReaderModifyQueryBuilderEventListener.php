@@ -9,12 +9,10 @@
 namespace HeimrichHannot\WatchlistBundle\EventListener;
 
 use HeimrichHannot\ReaderBundle\Event\ReaderModifyQueryBuilderEvent;
-use HeimrichHannot\RequestBundle\Component\HttpFoundation\Request;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 
 /**
  * ServiceTag("kernel.event_listener", event="huh.reader.event.reader_modify_query_builder")

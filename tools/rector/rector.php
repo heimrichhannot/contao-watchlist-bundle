@@ -16,8 +16,11 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
     // ->withPhpSets()
+    ->withImportNames(true, true,false, true)
+//    ->withCodeQualityLevel()
     ->withRules([
         AddVoidReturnTypeWhereNoReturnRector::class,
+//        \Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector::class,
     ])
     ->withSets([
         SetList::PHP_74,

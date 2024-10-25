@@ -8,7 +8,6 @@
 
 namespace HeimrichHannot\WatchlistBundle\EventListener\Contao;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 
 /**

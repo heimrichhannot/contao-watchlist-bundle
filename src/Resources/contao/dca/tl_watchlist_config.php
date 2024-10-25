@@ -5,7 +5,8 @@
  *
  * @license LGPL-3.0-or-later
  */
-
+use Contao\System;
+use Contao\BackendUser;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer;
 
 $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
@@ -118,7 +119,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'inputType' => 'imageSize',
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'eval' => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
-            'options_callback' => static fn() => Contao\System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(Contao\BackendUser::getInstance()),
+            'options_callback' => static fn() => System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance()),
             'sql' => "varchar(128) NOT NULL default ''",
         ],
         'addShare' => [

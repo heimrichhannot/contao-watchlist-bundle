@@ -8,13 +8,10 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\Environment;
 use Contao\FrontendTemplate;
 use Contao\ModuleModel;
-use Contao\System;
 use Contao\Template;
-use HeimrichHannot\EncoreBundle\Asset\FrontendAsset;
 use HeimrichHannot\EncoreContracts\PageAssetsTrait;
 use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
