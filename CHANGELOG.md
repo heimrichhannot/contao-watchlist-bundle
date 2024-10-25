@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.9.3] - 2024-10-25
+- Fixed: warning 
+- Changed: code quality adjustments
+
 ## [3.9.2] - 2024-06-05
 - Fixed: php8 warning: Undefined variable $request
 

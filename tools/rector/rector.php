@@ -9,20 +9,18 @@ use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
+use Rector\TypeDeclaration\Rector\Property\AddPropertyTypeDeclarationRector;
 
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/../../src',
     ])
-    // uncomment to reach your current PHP version
-    // ->withPhpSets()
     ->withImportNames(true, true,false, true)
-//    ->withCodeQualityLevel()
     ->withRules([
         AddVoidReturnTypeWhereNoReturnRector::class,
-//        \Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector::class,
     ])
     ->withSets([
+//        SetList::TYPE_DECLARATION,
         SetList::PHP_74,
         LevelSetList::UP_TO_PHP_74,
         SymfonySetList::SYMFONY_44,
