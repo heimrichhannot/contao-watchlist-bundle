@@ -82,13 +82,13 @@ class WatchlistItemContainer
         }
 
         return '<div class="tl_content_left">'.$label.' <span style="color:#b3b3b3; padding-left:3px">['.
-            \Date::parse(\Contao\Config::get('datimFormat'), trim($row['dateAdded'])).']</span></div>';
+            \Contao\Date::parse(\Contao\Config::get('datimFormat'), trim($row['dateAdded'])).']</span></div>';
     }
 
     /**
      * Callback(table="tl_watchlist_item", target="config.onsubmit")
      */
-    public function setDateAdded(DataContainer $dc)
+    public function setDateAdded(DataContainer $dc): void
     {
         $this->dcaUtil->setDateAdded($dc);
     }
@@ -96,7 +96,7 @@ class WatchlistItemContainer
     /**
      * Callback(table="tl_watchlist_item", target="config.oncopy")
      */
-    public function setDateAddedOnCopy($insertId, DataContainer $dc)
+    public function setDateAddedOnCopy($insertId, DataContainer $dc): void
     {
         $this->dcaUtil->setDateAddedOnCopy($insertId, $dc);
     }

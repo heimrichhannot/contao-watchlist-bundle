@@ -39,7 +39,7 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
     /**
      * Allows a plugin to load container configuration.
      */
-    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig)
+    public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig): void
     {
         $loader->load('@HeimrichHannotWatchlistBundle/Resources/config/services.yml');
     }

@@ -24,7 +24,7 @@ class LoadDataContainerListener
         $this->dcaUtil = $dcaUtil;
     }
 
-    public function __invoke($table)
+    public function __invoke($table): void
     {
         switch ($table) {
             case 'tl_watchlist':
@@ -34,7 +34,7 @@ class LoadDataContainerListener
         }
     }
 
-    public function prepareWatchlistDca()
+    public function prepareWatchlistDca(): void
     {
         $this->dcaUtil->addAuthorFieldAndCallback('tl_watchlist');
     }

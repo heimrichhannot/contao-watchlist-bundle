@@ -101,13 +101,13 @@ class WatchlistUtil
             'tstamp' => $time,
             'dateAdded' => $time,
             'title' => $title,
-            'uuid' => md5(uniqid(rand(), true)),
+            'uuid' => md5(uniqid(random_int(0, mt_getrandmax()), true)),
             'config' => $config,
         ]);
 
         // avoid having duplicate uuids
         while (null !== $this->modelUtil->findOneModelInstanceBy('tl_watchlist', ['tl_watchlist.uuid=?'], [$watchlist->uuid])) {
-            $watchlist->uuid = md5(uniqid(rand(), true));
+            $watchlist->uuid = md5(uniqid(random_int(0, mt_getrandmax()), true));
         }
 
         $user = $this->security->getUser();
@@ -356,7 +356,7 @@ class WatchlistUtil
         return Controller::replaceInsertTags($template->parse());
     }
 
-    public function addImageToItemData(array &$item, string $field, File $file, Model $config, Model $watchlist)
+    public function addImageToItemData(array &$item, string $field, File $file, Model $config, Model $watchlist): void
     {
         if (!\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
             return;

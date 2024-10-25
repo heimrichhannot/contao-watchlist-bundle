@@ -33,7 +33,7 @@ class WatchlistConfigContainer
     /**
      * Callback(table="tl_watchlist_config", target="config.onsubmit")
      */
-    public function setDateAdded(DataContainer $dc)
+    public function setDateAdded(DataContainer $dc): void
     {
         $this->dcaUtil->setDateAdded($dc);
     }
@@ -41,7 +41,7 @@ class WatchlistConfigContainer
     /**
      * Callback(table="tl_watchlist_config", target="config.oncopy")
      */
-    public function setDateAddedOnCopy($insertId, DataContainer $dc)
+    public function setDateAddedOnCopy($insertId, DataContainer $dc): void
     {
         $this->dcaUtil->setDateAddedOnCopy($insertId, $dc);
     }
