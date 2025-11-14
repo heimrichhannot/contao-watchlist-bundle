@@ -12,6 +12,8 @@ use Contao\BackendUser;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Image\Studio\Figure;
+use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\Database\Result;
 use Contao\Environment;
 use Contao\File;
@@ -70,7 +72,8 @@ class WatchlistUtil
         ImageUtil $imageUtil,
         Security $security,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly RouterInterface $router
+        private readonly RouterInterface $router,
+        private readonly Studio $studio,
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -349,29 +352,52 @@ class WatchlistUtil
         return System::getContainer()->get('contao.insert_tag.parser')->replace($template->parse());
     }
 
-    public function addImageToItemData(array &$item, string $field, File $file, Model $config, Model $watchlist): void
+    public function addImageToItemData(array &$item, string $field, File|string $uuid, Model $config, Model $watchlist): ?Figure
     {
-        if (!\in_array($file->extension, explode(',', (string) Config::get('validImageTypes')))) {
-            return;
+        if ($uuid instanceof File) {
+            $uuid = $uuid->getModel()->uuid;
+        }
+        if (Validator::isBinaryUuid($uuid) ) {
+            $uuid = StringUtil::binToUuid($uuid);
         }
 
-        // Override the default image size
+        $figureBuilder = $this->studio->createFigureBuilder()
+            ->fromUuid($uuid)
+            ->enableLightbox();
+        ;
+
         if ($config->imgSize) {
-            $imgSize = StringUtil::deserialize($config->imgSize, true);
-
-            if ($imgSize[0] > 0 || $imgSize[1] > 0 || is_numeric($imgSize[2])) {
-                $item['size'] = $config->imgSize;
-            }
+            $figureBuilder->setSize($config->imgSize);
         }
 
-        // force lightbox support
-        $item['fullsize'] = true;
+        return $figureBuilder->buildIfResourceExists();
 
-        $item['imageData_'.$field] = $this->imageUtil->prepareImage($item, [
-            'imageField' => $field,
-            'imageSelectorField' => null,
-            'lightboxId' => $watchlist->uuid,
-        ]);
+        $item['figure_'.$field] = $figureBuilder->buildIfResourceExists();
+
+//
+//        if (!\in_array($uuid->extension, explode(',', (string) Config::get('validImageTypes')))) {
+//            return;
+//        }
+//
+//
+//
+//        // Override the default image size
+//        if ($config->imgSize) {
+//            $imgSize = StringUtil::deserialize($config->imgSize, true);
+//
+//            if ($imgSize[0] > 0 || $imgSize[1] > 0 || is_numeric($imgSize[2])) {
+//                $item['size'] = $config->imgSize;
+//            }
+//        }
+//
+//        // force lightbox support
+//        $item['fullsize'] = true;
+//
+//        $item['imageData_'.$field] = $this->imageUtil->prepareImage($item, [
+//            'imageField' => $field,
+//            'imageSelectorField' => null,
+//            'lightboxId' => $watchlist->uuid,
+//        ]);
     }
 
     public function getCurrentWatchlistConfig(int $rootPage = 0): ?Model

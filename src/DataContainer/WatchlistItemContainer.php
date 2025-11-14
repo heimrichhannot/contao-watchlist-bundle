@@ -8,6 +8,8 @@
 
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
+use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\Database;
 use Contao\Date;
 use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -18,6 +20,7 @@ use HeimrichHannot\UtilsBundle\Choice\ModelInstanceChoice;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
 use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class WatchlistItemContainer
 {
@@ -31,97 +34,60 @@ class WatchlistItemContainer
 
     /** @var ContaoFramework */
     protected $framework;
-    /** @var DcaUtil */
-    protected $dcaUtil;
     /** @var DataContainerChoice */
     protected $dataContainerChoice;
     /** @var ModelUtil */
     protected $modelUtil;
     /** @var ModelInstanceChoice */
     protected $modelInstanceChoice;
-    /** @var FileUtil */
-    protected $fileUtil;
 
-    public function __construct(ContaoFramework $framework, DataContainerChoice $dataContainerChoice, ModelInstanceChoice $modelInstanceChoice, DcaUtil $dcaUtil, ModelUtil $modelUtil, FileUtil $fileUtil)
+    public function __construct(
+        private readonly Utils $utils,
+        ContaoFramework $framework
+    )
     {
         $this->framework = $framework;
-        $this->dataContainerChoice = $dataContainerChoice;
-        $this->modelInstanceChoice = $modelInstanceChoice;
-        $this->dcaUtil = $dcaUtil;
-        $this->modelUtil = $modelUtil;
-        $this->fileUtil = $fileUtil;
     }
 
     /**
-     * Callback(table="tl_watchlist_item", target="list.sorting.child_record")
-     */
-    public function listChildren(array $row)
-    {
-        $label = $row['title'];
-
-        switch ($row['type']) {
-            case static::TYPE_FILE:
-                if (null !== ($path = $this->fileUtil->getPathFromUuid($row['file']))) {
-                    $label .= " ($path)";
-                }
-
-                break;
-
-            case static::TYPE_ENTITY:
-                $this->framework->getAdapter(System::class)->loadLanguageFile($row['entityTable']);
-
-                if (null !== ($entity = $this->modelUtil->findOneModelInstanceBy($row['entityTable'], [$row['entityTable'].'.id=?'], [$row['entity']]))) {
-                    foreach (ModelInstanceChoice::TITLE_FIELDS as $titleField) {
-                        if (isset($GLOBALS['TL_DCA'][$row['entityTable']]['fields'][$titleField])) {
-                            $label .= ' ('.($entity->{$titleField} ? $entity->{$titleField}.', ' : '').'ID '.$entity->id.')';
-
-                            break;
-                        }
-                    }
-                }
-
-                break;
-        }
-
-        return '<div class="tl_content_left">'.$label.' <span style="color:#b3b3b3; padding-left:3px">['.
-            Date::parse(Config::get('datimFormat'), trim((string) $row['dateAdded'])).']</span></div>';
-    }
-
-    /**
-     * Callback(table="tl_watchlist_item", target="config.onsubmit")
-     */
-    public function setDateAdded(DataContainer $dc): void
-    {
-        $this->dcaUtil->setDateAdded($dc);
-    }
-
-    /**
-     * Callback(table="tl_watchlist_item", target="config.oncopy")
-     */
-    public function setDateAddedOnCopy($insertId, DataContainer $dc): void
-    {
-        $this->dcaUtil->setDateAddedOnCopy($insertId, $dc);
-    }
-
-    /**
-     * Callback(table="tl_watchlist_item", target="fields.entityTable.options")
+     * @Callback(table="tl_watchlist_item", target="fields.entityTable.options")
      */
     public function getDataContainers()
     {
-        return $this->dataContainerChoice->getCachedChoices();
+        $arrTables = Database::getInstance()->listTables();
+        return array_values($arrTables);
     }
 
     /**
-     * Callback(table="tl_watchlist_item", target="fields.entity.options")
+     * @Callback(table="tl_watchlist_item", target="fields.entity.options")
      */
     public function getEntities(DataContainer $dc)
     {
-        if (null === ($item = $this->modelUtil->findModelInstanceByPk('tl_watchlist_item', $dc->id)) || !$item->entityTable) {
+        if (null === ($item = $this->utils->model()->findModelInstanceByPk('tl_watchlist_item', $dc->id)) || !$item->entityTable) {
             return [];
         }
 
-        return $this->modelInstanceChoice->getChoices([
-            'dataContainer' => $item->entityTable,
-        ]);
+        $models = $this->utils->model()->findModelInstancesBy(
+            $item->entityTable,
+            null,
+            null
+        );
+
+        if (null === $models) {
+            return [];
+        }
+
+        $options = [];
+        foreach ($models as $model) {
+            $label = $model->name ?: $model->title ?: $model->headline ?: null;
+            if (null === $label) {
+                $label = 'ID '.$model->id;
+            } else {
+                $label .= ' (ID '.$model->id.')';
+            }
+            $options[$model->id] = $label;
+        }
+
+        return $options;
     }
 }

@@ -17,4 +17,10 @@ use Contao\Model;
 class WatchlistModel extends Model
 {
     protected static $strTable = 'tl_watchlist';
+
+    public static function findByUuid(string $uuid, array $options = []): ?self
+    {
+        $t = static::$strTable;
+        return static::findOneBy(["$t.uuid=?"], [$uuid], $options);
+    }
 }

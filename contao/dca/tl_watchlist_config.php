@@ -9,7 +9,10 @@ use Contao\DC_Table;
 use Contao\DataContainer;
 use Contao\System;
 use Contao\BackendUser;
+use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer;
+
+DateAddedField::register('tl_watchlist_config');
 
 $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
     'config' => [
@@ -18,12 +21,6 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'keys' => [
                 'id' => 'primary',
             ],
-        ],
-        'onsubmit_callback' => [
-            [WatchlistConfigContainer::class, 'setDateAdded'],
-        ],
-        'oncopy_callback' => [
-            [WatchlistConfigContainer::class, 'setDateAddedOnCopy'],
         ],
     ],
     'list' => [
@@ -81,13 +78,6 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['tstamp'],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'dateAdded' => [
-            'label' => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
-            'sorting' => true,
-            'flag' => DataContainer::SORT_DAY_DESC,
-            'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
-            'sql' => "int(10) unsigned NOT NULL default '0'",
-        ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['title'],
             'exclude' => true,
@@ -99,20 +89,16 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'insertTagAddItemTemplate' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['insertTagAddItemTemplate'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => [WatchlistConfigContainer::class, 'getInsertTagAddItemTemplates'],
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true],
             'sql' => "varchar(255) NOT NULL default ''",
         ],
         'watchlistContentTemplate' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['watchlistContentTemplate'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => [WatchlistConfigContainer::class, 'getWatchlistContentTemplates'],
             'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'chosen' => true],
             'sql' => "varchar(255) NOT NULL default ''",
         ],

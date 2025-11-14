@@ -18,6 +18,11 @@
             <?php else: ?>
                 <?php foreach ($this->items as $item): ?>
                     <div class="item col-md-6 col-lg-4 mb-5">
+                        <?php if ($item['figure'] ?? false): ?>
+                            <div class="figure mb-3">
+                                <?= $item['figure'] ?>
+                            </div>
+
                         <?php if ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE && isset($item['imageData_file'])): ?>
                             <div class="image mb-3">
                                 <?php $this->insert('image', $item['imageData_file']); ?>

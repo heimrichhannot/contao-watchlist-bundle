@@ -10,12 +10,11 @@ namespace HeimrichHannot\WatchlistBundle\Controller;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
+use Contao\FilesModel;
 use Contao\FrontendTemplate;
 use Contao\PageModel;
 use Contao\StringUtil;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use HeimrichHannot\UtilsBundle\File\FileUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use Doctrine\DBAL\Connection;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -35,23 +34,16 @@ class AjaxController
     const WATCHLIST_DOWNLOAD_ALL_URI = '/_huh_watchlist/download_all';
     const WATCHLIST_CONTENT_URI = '/_huh_watchlist/content';
     const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
-    private readonly DatabaseUtil        $databaseUtil;
-    private readonly ModelUtil           $modelUtil;
-    private readonly FileUtil            $fileUtil;
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly WatchlistUtil $watchlistUtil,
-        DatabaseUtil $databaseUtil,
-        ModelUtil $modelUtil,
-        FileUtil $fileUtil,
         private readonly Utils $utils,
         private readonly string $projectDir,
-        private readonly TranslatorInterface $translator
-    ) {
-        $this->databaseUtil = $databaseUtil;
-        $this->modelUtil = $modelUtil;
-        $this->fileUtil = $fileUtil;
+        private readonly TranslatorInterface $translator,
+        private readonly Connection $connection,
+    )
+    {
     }
 
     /**
@@ -69,7 +61,7 @@ class AjaxController
                 $currentUrl = $request->get('wl_url');
 
                 if ($rootPage && !$request->attributes->has('pageModel')) {
-                    $page = PageModel::findByPk((int) $rootPage);
+                    $page = PageModel::findByPk((int)$rootPage);
 
                     if ($page && $page->id == $rootPage) {
                         // needed to fix warning in contao:
@@ -126,8 +118,8 @@ class AjaxController
                     return new Response('No watchlist found.', 500);
                 }
 
-                $this->databaseUtil->delete('tl_watchlist_item', 'tl_watchlist_item.pid=?', [$watchlist->id]);
-                $this->databaseUtil->delete('tl_watchlist', 'tl_watchlist.id=?', [$watchlist->id]);
+                $this->connection->delete('tl_watchlist_item', ['pid' => $watchlist->id]);
+                $watchlist->delete();
 
                 return new Response('Watchlist deleted successfully.');
 
@@ -146,12 +138,12 @@ class AjaxController
         $watchlist = null;
 
         if ($request->query->has('watchlist')) {
-            $watchlistId = (int) $request->query->get('watchlist');
+            $watchlistId = (int)$request->query->get('watchlist');
             $watchlist = $this->utils->model()->findModelInstanceByPk(WatchlistModel::getTable(), $watchlistId);
         }
 
         if (!$watchlist && $request->query->has('wl_root_page')) {
-            $rootPageId = (int) $request->query->get('wl_root_page');
+            $rootPageId = (int)$request->query->get('wl_root_page');
             $watchlist = $this->watchlistUtil->getCurrentWatchlist([
                 'rootPage' => $rootPageId,
             ]);
@@ -165,14 +157,14 @@ class AjaxController
         $files = [];
 
         foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id) as $item) {
-            if (WatchlistItemContainer::TYPE_FILE !== $item['type'] || !($path = $this->fileUtil->getPathFromUuid($item['file']))) {
+            if (WatchlistItemContainer::TYPE_FILE !== $item['type'] || !($path = $this->utils->file()->getPathFromUuid($item['file']))) {
                 continue;
             }
 
-            $files[] = $this->projectDir.'/'.$path;
+            $files[] = $this->projectDir . '/' . $path;
         }
 
-        $cacheDir = sys_get_temp_dir().'/huh_watchlist';
+        $cacheDir = sys_get_temp_dir() . '/huh_watchlist';
 
         $fileSystem = new Filesystem();
 
@@ -180,9 +172,9 @@ class AjaxController
             $fileSystem->mkdir($cacheDir);
         }
 
-        $hash = md5($watchlist->id.' '.implode(',', $files));
-        $fileName = 'watchlist_'.$hash.'.zip';
-        $filePath = $cacheDir.\DIRECTORY_SEPARATOR.$fileName;
+        $hash = md5($watchlist->id . ' ' . implode(',', $files));
+        $fileName = 'watchlist_' . $hash . '.zip';
+        $filePath = $cacheDir . \DIRECTORY_SEPARATOR . $fileName;
 
         if (!$fileSystem->exists($filePath)) {
             // Create new Zip Archive.
@@ -239,11 +231,7 @@ class AjaxController
 
                 // get or create watchlist
                 if (!empty($data['pid'])) {
-                    $watchlist = $this->databaseUtil->findOneResultBy('tl_watchlist', ['tl_watchlist.uuid=?'], [$data['pid']]);
-
-                    if ($watchlist->numRows < 1) {
-                        $watchlist = null;
-                    }
+                    $watchlist = WatchlistModel::findByUuid($data['pid']);
                 } else {
                     $watchlist = $this->watchlistUtil->getCurrentWatchlist([
                         'rootPage' => $rootPage,
@@ -267,9 +255,10 @@ class AjaxController
                         return new Response('Watchlist item with the given id couldn\'t be found.', 404);
                     }
 
-                    $result = $this->databaseUtil->delete('tl_watchlist_item', 'tl_watchlist_item.id=?', [$item->id]);
+                    $result = $item->delete();
 
-                    if ($result->affectedRows > 0) {
+
+                    if ($result > 0) {
                         return new Response('Watchlist item deleted successfully.');
                     }
 
@@ -285,7 +274,9 @@ class AjaxController
 
                 switch ($data['type']) {
                     case WatchlistItemContainer::TYPE_FILE:
-                        if (null === ($fileModel = $this->modelUtil->callModelMethod('tl_files', 'findByUuid', $data['file']))) {
+                        $fileModel = FilesModel::findByUuid($data['file']);
+
+                        if (null === $fileModel) {
                             return new Response('File with the given uuid couldn\'t be found.', 404);
                         }
 
@@ -313,7 +304,7 @@ class AjaxController
                         return new Response('Item successfully added.');
 
                     case WatchlistItemContainer::TYPE_ENTITY:
-                        if (null === $this->modelUtil->findModelInstanceByPk($data['entityTable'], $data['entity'])) {
+                        if (null === $this->utils->model()->findModelInstanceByPk($data['entityTable'], $data['entity'])) {
                             return new Response('Entity with the given id couldn\'t be found in the given table.', 404);
                         }
 

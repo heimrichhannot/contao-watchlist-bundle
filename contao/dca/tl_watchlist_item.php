@@ -7,7 +7,10 @@
  */
 use Contao\DC_Table;
 use Contao\DataContainer;
+use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+
+DateAddedField::register('tl_watchlist_item');
 
 $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
     'config' => [
@@ -17,12 +20,6 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'keys' => [
                 'id' => 'primary',
             ],
-        ],
-        'onsubmit_callback' => [
-            [WatchlistItemContainer::class, 'setDateAdded'],
-        ],
-        'oncopy_callback' => [
-            [WatchlistItemContainer::class, 'setDateAddedOnCopy'],
         ],
     ],
     'list' => [
@@ -35,7 +32,6 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'fields' => ['dateAdded'],
             'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
-            'child_record_callback' => [WatchlistItemContainer::class, 'listChildren'],
         ],
         'global_operations' => [
             'all' => [
@@ -85,13 +81,6 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['tstamp'],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
-        'dateAdded' => [
-            'label' => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
-            'sorting' => true,
-            'flag' => DataContainer::SORT_DAY_DESC,
-            'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
-            'sql' => "int(10) unsigned NOT NULL default '0'",
-        ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['title'],
             'exclude' => true,
@@ -123,9 +112,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'sql' => 'binary(16) NULL',
         ],
         'entityTable' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['entityTable'],
             'inputType' => 'select',
-            'options_callback' => [WatchlistItemContainer::class, 'getDataContainers'],
             'eval' => [
                 'tl_class' => 'w50',
                 'chosen' => true,
@@ -136,9 +123,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_item'] = [
             'sql' => "varchar(128) NOT NULL default ''",
         ],
         'entity' => [
-            'label' => &$GLOBALS['TL_LANG']['tl_watchlist_item']['entity'],
             'inputType' => 'select',
-            'options_callback' => [WatchlistItemContainer::class, 'getEntities'],
             'eval' => ['tl_class' => 'w50', 'chosen' => true, 'includeBlankOption' => true, 'mandatory' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],

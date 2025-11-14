@@ -4,3 +4,10 @@ huh.watchlist:
     delete_from_watchlist: Aus Merkliste entfernen
     file_added_successfully: Die Datei wurde erfolgreich zu Ihrer Merkliste hinzugefügt.
     entity_added_successfully: Der Beitrag wurde erfolgreich zu Ihrer Merkliste hinzugefügt.
+    watchlistNotFound: Die Merkliste wurde nicht gefunden.
+    noItemsInCurrentWatchlist: Die Merkliste ist leer.
+    linkedFileMissing: Die verknüpfte Datei wurde nicht gefunden.
+    linkedEntityMissing: Der verknüpfte Beitrag wurde nicht gefunden.
+    download: Herunterladen
+    show: Anzeigen
+    downloadAll: Alle herunterladen

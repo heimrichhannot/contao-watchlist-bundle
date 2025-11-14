@@ -1,0 +1,80 @@
+{% extends "@Contao/frontend_module/watchlist_share_list.html.twig" %}
+
+{% block content %}
+    {% if watchlistNotFound %}
+        <p class="watchlist-not-found alert alert-danger">
+            {{ 'huh.watchlist.misc.watchlistNotFound'|trans }}
+        </p>
+    {% else %}
+        {% if title %}
+            <h2>
+                {{ title }}
+            </h2>
+        {% endif %}
+
+        <div class="items row">
+            {% if items is empty %}
+                <p class="no-items alert alert-warning">
+                    {{ 'huh.watchlist.misc.noItemsInCurrentWatchlist'|trans }}
+                </p>
+            {% else %}
+                {% for item in items %}
+                    <div class="item col-md-6 col-lg-4 mb-5">
+                        {% if item.figure ?? false %}
+                            <div class="figure mb-3">
+                                {{ item.figure|raw }}
+                            </div>
+                        {% endif %}
+
+                        {% if item.type == constant('HeimrichHannot\\WatchlistBundle\\DataContainer\\WatchlistItemContainer::TYPE_FILE') and item.imageData_file is defined %}
+                            <div class="image mb-3">
+                                {{ include('@Contao/image.html.twig', item.imageData_file) }}
+                            </div>
+                        {% elseif item.type == constant('HeimrichHannot\\WatchlistBundle\\DataContainer\\WatchlistItemContainer::TYPE_ENTITY') and item.imageData_entityFile is defined %}
+                            <div class="image mb-3">
+                                {{ include('@Contao/image.html.twig', item.imageData_entityFile) }}
+                            </div>
+                        {% endif %}
+
+                        <h6 class="title">
+                            {{ item.title }}
+                        </h6>
+
+                        {% if not item.existing %}
+                            <div class="non-existing">
+                                <small>
+                                    {{ ('huh.watchlist.misc.linked' ~ item.type|capitalize ~ 'Missing')|trans }}
+                                </small>
+                            </div>
+                        {% else %}
+                            {% if item.downloadUrl %}
+                                <div class="download-wrapper col-md-4">
+                                    <a href="{{ item.downloadUrl }}" class="download btn btn-primary">
+                                        {{ 'huh.watchlist.misc.download'|trans }}
+                                    </a>
+                                </div>
+                            {% elseif item.entityUrl %}
+                                <div class="show-wrapper col-md-4">
+                                    <a href="{{ item.entityUrl }}" class="show btn btn-primary">
+                                        {{ 'huh.watchlist.misc.show'|trans }}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% if items is not empty %}
+            <div class="actions">
+                {% if hasDownloadableFiles %}
+                    <a href="{{ watchlistDownloadAllUrl }}" class="download-all btn btn-primary">
+                        {{ 'huh.watchlist.misc.downloadAll'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+

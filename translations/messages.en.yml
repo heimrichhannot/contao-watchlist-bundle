@@ -1,0 +1,14 @@
+huh.watchlist:
+  misc:
+    add_to_watchlist: Add to watchlist
+    delete_from_watchlist: Remove from watchlist
+    file_added_successfully: The file was added to your watchlist successfully.
+    entity_added_successfully: The entry was added to your watchlist successfully.
+    watchlistNotFound: The watchlist couldn't be found.
+    noItemsInCurrentWatchlist: Your watchlist doesn't contain any items currently.
+    linkedFileMissing: The corresponding file doesn't exist anymore.
+    linkedEntityMissing: The corresponding object doesn't exist anymore.
+    download: Download
+    show: Show
+    downloadAll: Download all files
+

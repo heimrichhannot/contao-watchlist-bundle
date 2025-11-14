@@ -9,51 +9,37 @@
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
-use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
+use Contao\Model;
 use Contao\ModuleModel;
-use Contao\StringUtil;
 use Contao\Template;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use HeimrichHannot\UtilsBundle\File\FileUtil;
-use HeimrichHannot\UtilsBundle\Image\ImageUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
-use HeimrichHannot\UtilsBundle\Url\UrlUtil;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
+use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 
-#[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous')]
+#[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous', template: 'frontend_modules/watchlist_share_list')]
 class ShareListModuleController extends AbstractFrontendModuleController
 {
     const TYPE = 'watchlist_share_list';
-    protected DatabaseUtil    $databaseUtil;
-    protected UrlUtil         $urlUtil;
-    protected FileUtil        $fileUtil;
-    protected ImageUtil       $imageUtil;
-    protected ModelUtil       $modelUtil;
 
     public function __construct(
         protected ContaoFramework $framework,
-        DatabaseUtil $databaseUtil,
         protected WatchlistUtil $watchlistUtil,
-        UrlUtil $urlUtil,
-        FileUtil $fileUtil,
-        ImageUtil $imageUtil,
-        ModelUtil $modelUtil,
-        private readonly RouterInterface $router
-    ) {
-        $this->databaseUtil = $databaseUtil;
-        $this->urlUtil = $urlUtil;
-        $this->fileUtil = $fileUtil;
-        $this->imageUtil = $imageUtil;
-        $this->modelUtil = $modelUtil;
+        private readonly RouterInterface $router,
+        private readonly Utils $utils,
+        private readonly InsertTagParser $insertTagParser,
+    )
+    {
     }
 
-    protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $module, Request $request): Response
     {
         if (!($watchlistUuid = $request->get('watchlist'))) {
             $template->watchlistNotFound = true;
@@ -61,23 +47,16 @@ class ShareListModuleController extends AbstractFrontendModuleController
             return $template->getResponse();
         }
 
-        $watchlist = $this->databaseUtil->findOneResultBy('tl_watchlist', [
-            'tl_watchlist.uuid=?',
-        ], [
-            $watchlistUuid,
-        ]);
+        $watchlist = WatchlistModel::findByUuid($watchlistUuid);
 
-        if ($watchlist->numRows < 1) {
+        if (!$watchlist) {
             $template->watchlistNotFound = true;
-
             return $template->getResponse();
         }
 
-        $config = $this->modelUtil->findModelInstanceByPk('tl_watchlist_config', $watchlist->config);
+        $config = WatchlistConfigModel::findByPk($watchlist->config);
 
         $items = [];
-
-        $watchlist = $this->modelUtil->findModelInstanceByPk('tl_watchlist', $watchlist->id);
 
         foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id, [
             'modelOptions' => ['order' => 'title ASC'],
@@ -86,37 +65,50 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
             switch ($item['type']) {
                 case WatchlistItemContainer::TYPE_FILE:
-                    $item['file'] = StringUtil::binToUuid($item['file']);
-
-                    $file = $this->fileUtil->getFileFromUuid($item['file']);
-
-                    if ($file->path) {
-                        $item['existing'] = true;
-
+                    $figure = $this->watchlistUtil->addImageToItemData($item, 'file', $item['file'], $config, $watchlist);
+                    $item['existing'] = false;
+                    if ($figure !== null) {
                         $template->hasDownloadableFiles = true;
-
-                        // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
-                        $item['downloadUrl'] = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
-
-                        // add image if file is such
-                        $this->watchlistUtil->addImageToItemData($item, 'file', $file, $config, $watchlist);
-                    } else {
-                        $item['existing'] = false;
+                        $item['figure'] = $figure;
+                        $item['existing'] = true;
+                        $item['downloadUrl'] = $this->insertTagParser->replace('{{download_link::' . $figure->getImage()->getFilePath() . '}}');
                     }
+
+
+//
+//                    $item['file'] = StringUtil::binToUuid($item['file']);
+//
+//                    $file = $this->fileUtil->getFileFromUuid($item['file']);
+//
+//                    if ($file->path) {
+//                        $item['existing'] = true;
+//
+//                        $template->hasDownloadableFiles = true;
+//
+//                        // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
+//                        $item['downloadUrl'] = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
+//
+//                        // add image if file is such
+//                        $this->watchlistUtil->addImageToItemData($item, 'file', $item['file'], $config, $watchlist);
+//                    } else {
+//                        $item['existing'] = false;
+//                    }
 
                     break;
 
                 case WatchlistItemContainer::TYPE_ENTITY:
-                    $existing = $this->databaseUtil->findResultByPk($item['entityTable'], $item['entity']);
+                    $existing = $this->utils->model()->findModelInstanceByPk($item['entityTable'], $item['entity']);
 
-                    $item['existing'] = $existing->numRows > 0;
+                    $item['existing'] = $existing instanceof Model;
 
-                    $file = $this->fileUtil->getFileFromUuid($item['entityFile']);
+                    $item['figure'] = $this->watchlistUtil->addImageToItemData($item, 'entityFile', $item['entityFile'], $config, $watchlist);
 
-                    if ($file->path) {
-                        // add image if file is such
-                        $this->watchlistUtil->addImageToItemData($item, 'entityFile', $file, $config, $watchlist);
-                    }
+//                    $file = $this->fileUtil->getFileFromUuid($item['entityFile']);
+//
+//                    if ($file->path) {
+//                        // add image if file is such
+//                        $this->watchlistUtil->addImageToItemData($item, 'entityFile', $file, $config, $watchlist);
+//                    }
 
                     break;
             }

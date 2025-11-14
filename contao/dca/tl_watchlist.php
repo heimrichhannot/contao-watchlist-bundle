@@ -9,6 +9,8 @@ use Contao\DC_Table;
 use Contao\DataContainer;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistContainer;
 
+\HeimrichHannot\UtilsBundle\Dca\DateAddedField::register('tl_watchlist');
+
 $GLOBALS['TL_DCA']['tl_watchlist'] = [
     'config' => [
         'dataContainer' => DC_Table::class,
@@ -18,12 +20,6 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             'keys' => [
                 'id' => 'primary',
             ],
-        ],
-        'onsubmit_callback' => [
-            [WatchlistContainer::class, 'setDateAdded'],
-        ],
-        'oncopy_callback' => [
-            [WatchlistContainer::class, 'setDateAddedOnCopy'],
         ],
     ],
     'list' => [
@@ -78,13 +74,6 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
         ],
         'tstamp' => [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['tstamp'],
-            'sql' => "int(10) unsigned NOT NULL default '0'",
-        ],
-        'dateAdded' => [
-            'label' => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
-            'sorting' => true,
-            'flag' => DataContainer::SORT_DAY_DESC,
-            'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
         'title' => [
