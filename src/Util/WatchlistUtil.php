@@ -59,11 +59,6 @@ class WatchlistUtil
      * @var Security
      */
     private $security;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-    private RouterInterface $router;
 
     public function __construct(
         ContaoFramework $framework,
@@ -74,8 +69,8 @@ class WatchlistUtil
         FileUtil $fileUtil,
         ImageUtil $imageUtil,
         Security $security,
-        EventDispatcherInterface $eventDispatcher,
-        RouterInterface $router
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly RouterInterface $router
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -85,8 +80,6 @@ class WatchlistUtil
         $this->fileUtil = $fileUtil;
         $this->imageUtil = $imageUtil;
         $this->security = $security;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->router = $router;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -164,7 +157,7 @@ class WatchlistUtil
                 /** @var Result $existingItem */
                 $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
                     ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.file=UNHEX(?)'],
-                    [WatchlistItemContainer::TYPE_FILE, $watchlist, bin2hex($itemData['file'])]
+                    [WatchlistItemContainer::TYPE_FILE, $watchlist, bin2hex((string) $itemData['file'])]
                 );
 
                 return $existingItem->numRows > 0 ? $this->modelUtil->findModelInstanceByPk('tl_watchlist_item', $existingItem->id) : null;
@@ -290,7 +283,7 @@ class WatchlistUtil
 
                             // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
                             $url = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
-                            $query = parse_url($url, \PHP_URL_QUERY);
+                            $query = parse_url((string) $url, \PHP_URL_QUERY);
                             $url = $this->urlUtil->addQueryString($query, $currentUrl);
 
                             $cleanedItem['downloadUrl'] = $this->urlUtil->removeQueryString(['wl_root_page', 'wl_url'], $url);
@@ -353,12 +346,12 @@ class WatchlistUtil
             $template->items = $items;
         }
 
-        return Controller::replaceInsertTags($template->parse());
+        return System::getContainer()->get('contao.insert_tag.parser')->replace($template->parse());
     }
 
     public function addImageToItemData(array &$item, string $field, File $file, Model $config, Model $watchlist): void
     {
-        if (!\in_array($file->extension, explode(',', Config::get('validImageTypes')))) {
+        if (!\in_array($file->extension, explode(',', (string) Config::get('validImageTypes')))) {
             return;
         }
 

@@ -5,13 +5,15 @@
  *
  * @license LGPL-3.0-or-later
  */
+use Contao\DC_Table;
+use Contao\DataContainer;
 use Contao\System;
 use Contao\BackendUser;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer;
 
 $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -30,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'format' => '%s',
         ],
         'sorting' => [
-            'mode' => 1,
+            'mode' => DataContainer::MODE_SORTED,
             'fields' => ['title'],
             'headerFields' => ['title'],
             'panelLayout' => 'filter;sort,search,limit',
@@ -82,7 +84,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
         'dateAdded' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
             'sorting' => true,
-            'flag' => 6,
+            'flag' => DataContainer::SORT_DAY_DESC,
             'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],
@@ -91,7 +93,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'exclude' => true,
             'search' => true,
             'sorting' => true,
-            'flag' => 1,
+            'flag' => DataContainer::SORT_INITIAL_LETTER_ASC,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
             'sql' => "varchar(255) NOT NULL default ''",
@@ -119,7 +121,7 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             'inputType' => 'imageSize',
             'reference' => &$GLOBALS['TL_LANG']['MSC'],
             'eval' => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
-            'options_callback' => static fn() => System::getContainer()->get('contao.image.image_sizes')->getOptionsForUser(BackendUser::getInstance()),
+            'options_callback' => static fn() => System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance()),
             'sql' => "varchar(128) NOT NULL default ''",
         ],
         'addShare' => [

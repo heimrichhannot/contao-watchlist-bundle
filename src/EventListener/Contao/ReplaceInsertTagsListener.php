@@ -31,7 +31,6 @@ class ReplaceInsertTagsListener
     protected $modelUtil;
     /** @var DatabaseUtil */
     protected $databaseUtil;
-    private WatchlistLinkGenerator $linkGenerator;
 
     public function __construct(
         Environment $twig,
@@ -39,14 +38,13 @@ class ReplaceInsertTagsListener
         TwigTemplateLocator $twigTemplateLocator,
         ModelUtil $modelUtil,
         DatabaseUtil $databaseUtil,
-        WatchlistLinkGenerator $linkGenerator
+        private readonly WatchlistLinkGenerator $linkGenerator
     ) {
         $this->twig = $twig;
         $this->watchlistUtil = $watchlistUtil;
         $this->twigTemplateLocator = $twigTemplateLocator;
         $this->modelUtil = $modelUtil;
         $this->databaseUtil = $databaseUtil;
-        $this->linkGenerator = $linkGenerator;
     }
 
     public function __invoke(

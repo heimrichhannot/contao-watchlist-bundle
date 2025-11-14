@@ -35,34 +35,23 @@ class AjaxController
     const WATCHLIST_DOWNLOAD_ALL_URI = '/_huh_watchlist/download_all';
     const WATCHLIST_CONTENT_URI = '/_huh_watchlist/content';
     const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
-
-    private ContaoFramework     $framework;
-    private DatabaseUtil        $databaseUtil;
-    private WatchlistUtil       $watchlistUtil;
-    private ModelUtil           $modelUtil;
-    private FileUtil            $fileUtil;
-    private Utils               $utils;
-    private string              $projectDir;
-    private TranslatorInterface $translator;
+    private readonly DatabaseUtil        $databaseUtil;
+    private readonly ModelUtil           $modelUtil;
+    private readonly FileUtil            $fileUtil;
 
     public function __construct(
-        ContaoFramework $framework,
-        WatchlistUtil $watchlistUtil,
+        private readonly ContaoFramework $framework,
+        private readonly WatchlistUtil $watchlistUtil,
         DatabaseUtil $databaseUtil,
         ModelUtil $modelUtil,
         FileUtil $fileUtil,
-        Utils $utils,
-        string $projectDir,
-        TranslatorInterface $translator
+        private readonly Utils $utils,
+        private readonly string $projectDir,
+        private readonly TranslatorInterface $translator
     ) {
         $this->databaseUtil = $databaseUtil;
-        $this->framework = $framework;
-        $this->watchlistUtil = $watchlistUtil;
         $this->modelUtil = $modelUtil;
         $this->fileUtil = $fileUtil;
-        $this->utils = $utils;
-        $this->projectDir = $projectDir;
-        $this->translator = $translator;
     }
 
     /**

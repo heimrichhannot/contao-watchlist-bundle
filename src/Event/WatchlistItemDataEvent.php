@@ -13,19 +13,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class WatchlistItemDataEvent extends Event
 {
-    /**
-     * @var array
-     */
-    private $item;
-    /**
-     * @var WatchlistConfigModel
-     */
-    private $configModel;
-
-    public function __construct(array $item, WatchlistConfigModel $configModel)
+    public function __construct(private array $item, private readonly WatchlistConfigModel $configModel)
     {
-        $this->item = $item;
-        $this->configModel = $configModel;
     }
 
     public function getItem(): array

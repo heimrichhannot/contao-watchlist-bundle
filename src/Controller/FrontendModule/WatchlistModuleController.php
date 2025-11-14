@@ -69,7 +69,7 @@ class WatchlistModuleController
             return null;
         }
 
-        $currentUrl = parse_url(Environment::get('uri'), \PHP_URL_PATH);
+        $currentUrl = parse_url((string) Environment::get('uri'), \PHP_URL_PATH);
 
         $template->watchlistUpdateUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId.'&wl_url='.urlencode($currentUrl),
             Environment::get('url').AjaxController::WATCHLIST_CONTENT_URI);

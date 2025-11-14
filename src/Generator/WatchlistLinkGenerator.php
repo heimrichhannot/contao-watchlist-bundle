@@ -22,21 +22,13 @@ use Symfony\Component\Routing\RouterInterface;
 
 class WatchlistLinkGenerator
 {
-    private RouterInterface      $router;
-    private WatchlistUtil        $watchlistUtil;
-    private TwigTemplateRenderer $templateRenderer;
-    private DatabaseUtil         $databaseUtil;
-    private Utils                $utils;
-    private RequestStack         $requestStack;
+    private readonly TwigTemplateRenderer $templateRenderer;
+    private readonly DatabaseUtil         $databaseUtil;
 
-    public function __construct(RouterInterface $router, WatchlistUtil $watchlistUtil, TwigTemplateRenderer $templateRenderer, DatabaseUtil $databaseUtil, Utils $utils, RequestStack $requestStack)
+    public function __construct(private readonly RouterInterface $router, private readonly WatchlistUtil $watchlistUtil, TwigTemplateRenderer $templateRenderer, DatabaseUtil $databaseUtil, private readonly Utils $utils, private readonly RequestStack $requestStack)
     {
-        $this->router = $router;
-        $this->watchlistUtil = $watchlistUtil;
         $this->templateRenderer = $templateRenderer;
         $this->databaseUtil = $databaseUtil;
-        $this->utils = $utils;
-        $this->requestStack = $requestStack;
     }
 
     /**

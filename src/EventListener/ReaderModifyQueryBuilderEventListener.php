@@ -25,14 +25,12 @@ class ReaderModifyQueryBuilderEventListener
     protected $databaseUtil;
     /** @var WatchlistUtil */
     protected            $watchlistUtil;
-    private RequestStack $requestStack;
 
-    public function __construct(ModelUtil $modelUtil, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, RequestStack $requestStack)
+    public function __construct(ModelUtil $modelUtil, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, private readonly RequestStack $requestStack)
     {
         $this->modelUtil = $modelUtil;
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
-        $this->requestStack = $requestStack;
     }
 
     public function __invoke(ReaderModifyQueryBuilderEvent $event): void

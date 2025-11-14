@@ -84,7 +84,7 @@ class WatchlistItemContainer
         }
 
         return '<div class="tl_content_left">'.$label.' <span style="color:#b3b3b3; padding-left:3px">['.
-            Date::parse(Config::get('datimFormat'), trim($row['dateAdded'])).']</span></div>';
+            Date::parse(Config::get('datimFormat'), trim((string) $row['dateAdded'])).']</span></div>';
     }
 
     /**

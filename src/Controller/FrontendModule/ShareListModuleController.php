@@ -30,34 +30,27 @@ use Symfony\Component\Routing\RouterInterface;
 class ShareListModuleController extends AbstractFrontendModuleController
 {
     const TYPE = 'watchlist_share_list';
-
-    protected ContaoFramework $framework;
     protected DatabaseUtil    $databaseUtil;
-    protected WatchlistUtil   $watchlistUtil;
     protected UrlUtil         $urlUtil;
     protected FileUtil        $fileUtil;
     protected ImageUtil       $imageUtil;
     protected ModelUtil       $modelUtil;
-    private RouterInterface   $router;
 
     public function __construct(
-        ContaoFramework $framework,
+        protected ContaoFramework $framework,
         DatabaseUtil $databaseUtil,
-        WatchlistUtil $watchlistUtil,
+        protected WatchlistUtil $watchlistUtil,
         UrlUtil $urlUtil,
         FileUtil $fileUtil,
         ImageUtil $imageUtil,
         ModelUtil $modelUtil,
-        RouterInterface $router
+        private readonly RouterInterface $router
     ) {
-        $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
-        $this->watchlistUtil = $watchlistUtil;
         $this->urlUtil = $urlUtil;
         $this->fileUtil = $fileUtil;
         $this->imageUtil = $imageUtil;
         $this->modelUtil = $modelUtil;
-        $this->router = $router;
     }
 
     protected function getResponse(Template $template, ModuleModel $module, Request $request): ?Response

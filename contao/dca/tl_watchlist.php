@@ -5,12 +5,13 @@
  *
  * @license LGPL-3.0-or-later
  */
-
+use Contao\DC_Table;
+use Contao\DataContainer;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistContainer;
 
 $GLOBALS['TL_DCA']['tl_watchlist'] = [
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ctable' => ['tl_watchlist_item'],
         'switchToEdit' => true,
         'sql' => [
@@ -31,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             'format' => '%s',
         ],
         'sorting' => [
-            'mode' => 1,
+            'mode' => DataContainer::MODE_SORTED,
             'fields' => ['dateAdded'],
             'panelLayout' => 'filter;search,limit',
         ],
@@ -82,7 +83,7 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
         'dateAdded' => [
             'label' => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
             'sorting' => true,
-            'flag' => 6,
+            'flag' => DataContainer::SORT_DAY_DESC,
             'eval' => ['rgxp' => 'datim', 'doNotCopy' => true],
             'sql' => "int(10) unsigned NOT NULL default '0'",
         ],

@@ -25,17 +25,12 @@ class ListModifyQueryBuilderForCountEventListener
     protected $databaseUtil;
     /** @var WatchlistUtil */
     protected $watchlistUtil;
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
 
-    public function __construct(ModelUtil $modelUtil, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, RequestStack $requestStack)
+    public function __construct(ModelUtil $modelUtil, DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, private readonly RequestStack $requestStack)
     {
         $this->modelUtil = $modelUtil;
         $this->databaseUtil = $databaseUtil;
         $this->watchlistUtil = $watchlistUtil;
-        $this->requestStack = $requestStack;
     }
 
     public function __invoke(ListModifyQueryBuilderForCountEvent $event): void
