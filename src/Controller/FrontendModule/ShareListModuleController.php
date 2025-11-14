@@ -8,10 +8,10 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Contao\Template;
@@ -26,9 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 
-/**
- * @FrontendModule(ShareListModuleController::TYPE,category="miscellaneous")
- */
+#[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous')]
 class ShareListModuleController extends AbstractFrontendModuleController
 {
     const TYPE = 'watchlist_share_list';

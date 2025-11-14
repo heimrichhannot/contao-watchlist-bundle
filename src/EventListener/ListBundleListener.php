@@ -2,16 +2,14 @@
 
 namespace HeimrichHannot\WatchlistBundle\EventListener;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use HeimrichHannot\ListBundle\Backend\ListConfig;
 use HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle;
 
 class ListBundleListener
 {
-    /**
-     * @Hook("loadDataContainer")
-     */
+    #[AsHook('loadDataContainer')]
     public function onLoadDataContainer(string $table): void
     {
         if ('tl_list_config' !== $table || !class_exists(HeimrichHannotContaoListBundle::class)) {

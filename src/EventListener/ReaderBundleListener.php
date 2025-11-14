@@ -2,16 +2,14 @@
 
 namespace HeimrichHannot\WatchlistBundle\EventListener;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use HeimrichHannot\ReaderBundle\Backend\ReaderConfig;
 use HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle;
 
 class ReaderBundleListener
 {
-    /**
-     * @Hook("loadDataContainer")
-     */
+    #[AsHook('loadDataContainer')]
     public function onLoadDataContainer(string $table): void
     {
         if ('tl_reader_config' !== $table || !class_exists(HeimrichHannotContaoReaderBundle::class)) {

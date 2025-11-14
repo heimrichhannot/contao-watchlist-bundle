@@ -42,7 +42,7 @@ class WatchlistLinkGenerator
     /**
      * @param string $file The file uuid
      */
-    public function generateAddFileLink(string $fileUuid, string $title = null, string $watchlistUuid = null): string
+    public function generateAddFileLink(string $fileUuid, ?string $title = null, ?string $watchlistUuid = null): string
     {
         // file not existing?
         if (null === FilesModel::findByUuid($fileUuid)) {
@@ -91,9 +91,9 @@ class WatchlistLinkGenerator
         string $table,
         int $id,
         string $title,
-        string $entityUrl = null,
-        string $entityFile = null,
-        string $watchlistUuid = null
+        ?string $entityUrl = null,
+        ?string $entityFile = null,
+        ?string $watchlistUuid = null
     ): string {
         // entity not existing?
         $existing = $this->databaseUtil->findResultByPk($table, $id);

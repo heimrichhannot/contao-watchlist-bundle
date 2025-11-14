@@ -431,7 +431,7 @@ class WatchlistUtil
         return $item;
     }
 
-    public function getWatchlistShareUrl(Model $watchlist = null, Model $config = null): string
+    public function getWatchlistShareUrl(?Model $watchlist = null, ?Model $config = null): string
     {
         if (null === $watchlist) {
             $watchlist = $this->getCurrentWatchlist();
