@@ -1,0 +1,44 @@
+tl_watchlist:
+  tstamp:
+    - 'Änderungsdatum'
+  title:
+    - 'Titel'
+    - 'Geben Sie hier einen Titel ein.'
+  config:
+    - 'Merklistenkonfiguration'
+    - 'Wählen Sie hier die Merklistenkonfiguration aus.'
+  uuid:
+    - 'Eindeutige ID (UUID)'
+    - 'In diesem Feld wird die eindeutige ID gespeichert.'
+  author:
+    - 'Autor'
+    - 'In diesem Feld wird der Autor der Merkliste gespeichert.'
+  authorType:
+    - 'Autor Typ'
+    - 'In diesem Feld wird der Autor Typ der Merkliste gespeichert.'
+
+  # Legends
+
+  general_legend: 'Allgemeine Einstellungen'
+
+  # Operations
+
+  new:
+    - 'Neue Merkliste'
+    - 'Merkliste erstellen'
+  edit:
+    - 'Merkliste bearbeiten'
+    - 'Merkliste ID %s bearbeiten'
+  delete:
+    - 'Merkliste löschen'
+    - 'Merkliste ID %s löschen'
+  show:
+    - 'Merkliste Details'
+    - 'Merkliste-Details ID %s anzeigen'
+
+# References
+
+  member: 'Mitglied'
+  user: 'Benutzer'
+  session: 'Sitzung'
+  none: 'Keine'

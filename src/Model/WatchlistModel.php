@@ -11,8 +11,15 @@ namespace HeimrichHannot\WatchlistBundle\Model;
 use Contao\Model;
 
 /**
+ * @property int $id
+ * @property int $tstamp
  * @property string $title
  * @property string $uuid
+ * @property int $config
+ * @property string $authorType
+ * @property string $author
+ *
+ * @method static WatchlistModel|null findByPk($varValue, array $arrOptions = [])
  */
 class WatchlistModel extends Model
 {

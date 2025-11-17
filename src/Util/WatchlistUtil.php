@@ -14,6 +14,7 @@ use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Image\Studio\Figure;
 use Contao\CoreBundle\Image\Studio\Studio;
+use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\Database\Result;
 use Contao\Environment;
 use Contao\File;
@@ -21,6 +22,8 @@ use Contao\FrontendTemplate;
 use Contao\FrontendUser;
 use Contao\Image;
 use Contao\Model;
+use Contao\Model\Collection;
+use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Validator;
@@ -34,6 +37,8 @@ use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Event\WatchlistItemDataEvent;
+use HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory;
+use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -43,46 +48,22 @@ use Symfony\Component\Security\Core\Security;
 
 class WatchlistUtil
 {
-    /** @var ContaoFramework */
-    protected $framework;
-    /** @var DatabaseUtil */
-    protected $DatabaseUtil;
-    /** @var Utils */
-    protected $utils;
-    /** @var ModelUtil */
-    protected $modelUtil;
-    /** @var UrlUtil */
-    protected $urlUtil;
-    /** @var FileUtil */
-    protected $fileUtil;
-    /** @var ImageUtil */
-    protected $imageUtil;
+
     /**
      * @var Security
      */
-    private $security;
+    private Security $security;
 
     public function __construct(
-        ContaoFramework $framework,
-        DatabaseUtil $databaseUtil,
-        Utils $utils,
-        ModelUtil $modelUtil,
-        UrlUtil $urlUtil,
-        FileUtil $fileUtil,
-        ImageUtil $imageUtil,
+        private readonly ContaoFramework $framework,
+        private readonly Utils $utils,
         Security $security,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly RouterInterface $router,
-        private readonly Studio $studio,
-    ) {
-        $this->framework = $framework;
-        $this->databaseUtil = $databaseUtil;
-        $this->utils = $utils;
-        $this->modelUtil = $modelUtil;
-        $this->urlUtil = $urlUtil;
-        $this->fileUtil = $fileUtil;
-        $this->imageUtil = $imageUtil;
-        $this->security = $security;
+        private readonly InsertTagParser $insertTagParser,
+        private readonly WatchlistItemFactory $watchlistItemFactory,
+    )
+    {
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -102,7 +83,7 @@ class WatchlistUtil
         ]);
 
         // avoid having duplicate uuids
-        while (null !== $this->modelUtil->findOneModelInstanceBy('tl_watchlist', ['tl_watchlist.uuid=?'], [$watchlist->uuid])) {
+        while (null !== $this->utils->model()->findOneModelInstanceBy('tl_watchlist', ['tl_watchlist.uuid=?'], [$watchlist->uuid])) {
             $watchlist->uuid = md5(uniqid(random_int(0, mt_getrandmax()), true));
         }
 
@@ -157,21 +138,16 @@ class WatchlistUtil
                     $itemData['file'] = StringUtil::uuidToBin($itemData['file']);
                 }
 
-                /** @var Result $existingItem */
-                $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
+                return WatchlistItemModel::findOneBy(
                     ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.file=UNHEX(?)'],
-                    [WatchlistItemContainer::TYPE_FILE, $watchlist, bin2hex((string) $itemData['file'])]
+                    [WatchlistItemContainer::TYPE_FILE, $watchlist, bin2hex((string)$itemData['file'])]
                 );
 
-                return $existingItem->numRows > 0 ? $this->modelUtil->findModelInstanceByPk('tl_watchlist_item', $existingItem->id) : null;
-
             case WatchlistItemContainer::TYPE_ENTITY:
-                $existingItem = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
+                return WatchlistItemModel::findOneBy(
                     ['tl_watchlist_item.type=?', 'tl_watchlist_item.pid=?', 'tl_watchlist_item.entityTable=?', 'tl_watchlist_item.entity=?'],
                     [WatchlistItemContainer::TYPE_ENTITY, $watchlist, $itemData['entityTable'], $itemData['entity']]
                 );
-
-                return $existingItem->numRows > 0 ? $this->modelUtil->findModelInstanceByPk('tl_watchlist_item', $existingItem->id) : null;
         }
 
         return null;
@@ -227,7 +203,7 @@ class WatchlistUtil
             ];
         }
 
-        if (null !== ($watchlist = $this->modelUtil->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
+        if (null !== ($watchlist = $this->utils->model()->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
             return $watchlist;
         }
 
@@ -235,7 +211,7 @@ class WatchlistUtil
             return null;
         }
 
-        return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int) $config->id);
+        return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int)$config->id);
     }
 
     /**
@@ -245,8 +221,8 @@ class WatchlistUtil
      */
     public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
-        $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage, Environment::get('url').AjaxController::WATCHLIST_URI);
-        $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
+        $template->watchlistUrl = $this->utils->url()->addQueryStringParameterToUrl('wl_root_page=' . $rootPage, Environment::get('url') . AjaxController::WATCHLIST_URI);
+        $template->itemUrl = Environment::get('url') . AjaxController::WATCHLIST_ITEM_URI;
         $template->watchlistDownloadAllUrl = $this->router->generate('huh_watchlist_downlad_all', ['wl_root_page' => $rootPage]);
 
         if ($watchlist && $config->addShare) {
@@ -261,9 +237,12 @@ class WatchlistUtil
         } else {
             $items = [];
 
-            foreach ($this->getWatchlistItems($watchlist->id, [
+            $watchlistItemModels = $this->getWatchlistItems($watchlist->id, [
                 'modelOptions' => ['order' => 'dateAdded DESC'],
-            ]) as $item) {
+            ]);
+            foreach ($watchlistItemModels as $model) {
+                $item = $model->row();
+
                 // clean items for frontend (don't pass internal info to outside for security reasons)
                 $cleanedItem = [
                     'rootPage' => $rootPage,
@@ -271,72 +250,18 @@ class WatchlistUtil
                     'title' => $item['title'],
                 ];
 
-                switch ($item['type']) {
-                    case WatchlistItemContainer::TYPE_FILE:
-                        $cleanedItem['file'] = StringUtil::binToUuid($item['file']);
+                $wlItem = $this->watchlistItemFactory->build($model);
+                $cleanedItem = $wlItem->applyToTemplateData($cleanedItem);
 
-                        $file = $this->fileUtil->getFileFromUuid($item['file']);
-
-                        if ($file->path) {
-                            $cleanedItem['existing'] = true;
-
-                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
-
-                            $template->hasDownloadableFiles = true;
-
-                            // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
-                            $url = $this->framework->getAdapter(Controller::class)->replaceInsertTags('{{download_link::'.$file->path.'}}');
-                            $query = parse_url((string) $url, \PHP_URL_QUERY);
-                            $url = $this->urlUtil->addQueryString($query, $currentUrl);
-
-                            $cleanedItem['downloadUrl'] = $this->urlUtil->removeQueryString(['wl_root_page', 'wl_url'], $url);
-
-                            if (empty($cleanedItem['title'])) {
-                                $cleanedItem['title'] = $file->name;
-                            }
-
-                            $cleanedItem['filesize'] = System::getReadableSize($file->filesize);
-                            $cleanedItem['icon'] = Image::getPath($file->icon);
-
-                            // add image if file is such
-                            $this->addImageToItemData($cleanedItem, 'file', $file, $config, $watchlist);
-
-
-                        } else {
-                            $cleanedItem['existing'] = false;
-
-                            $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
-                        }
-
-                        $hash = md5(implode('_', array_filter([$cleanedItem['type'] ?? [], $cleanedItem['pid'] ?? [], $cleanedItem['file'] ?? []])));
-
-                        break;
-
-                    case WatchlistItemContainer::TYPE_ENTITY:
-                        $cleanedItem['entityTable'] = $item['entityTable'];
-                        $cleanedItem['entity'] = $item['entity'];
-                        $cleanedItem['entityUrl'] = $item['entityUrl'];
-                        $cleanedItem['entityFile'] = $item['entityFile'] ? StringUtil::binToUuid($item['entityFile']) : '';
-
-                        $existing = $this->databaseUtil->findResultByPk($cleanedItem['entityTable'], $cleanedItem['entity']);
-
-                        $cleanedItem['existing'] = $existing->numRows > 0;
-
-                        $hash = md5(implode('_', [$cleanedItem['type'], $cleanedItem['pid'], $cleanedItem['entityTable'], $cleanedItem['entity']]));
-
-                        $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
-
-                        $file = $this->fileUtil->getFileFromUuid($item['entityFile']);
-
-                        if ($file->path) {
-                            // add image if file is such
-                            $this->addImageToItemData($cleanedItem, 'entityFile', $file, $config, $watchlist);
-                        }
-
-                        break;
+                if ($wlItem->getType() === WatchlistItemType::ENTITY && $wlItem->fileExist()) {
+                    $template->hasDownloadableFiles = true;
                 }
 
-                $cleanedItem['hash'] = $hash;
+                $cleanedItem['postData'] = htmlspecialchars(
+                    json_encode(array_filter($cleanedItem, 'is_scalar')),
+                    \ENT_QUOTES,
+                    'UTF-8'
+                );
 
                 $event = $this->eventDispatcher->dispatch(
                     new WatchlistItemDataEvent($cleanedItem, $config),
@@ -349,55 +274,7 @@ class WatchlistUtil
             $template->items = $items;
         }
 
-        return System::getContainer()->get('contao.insert_tag.parser')->replace($template->parse());
-    }
-
-    public function addImageToItemData(array &$item, string $field, File|string $uuid, Model $config, Model $watchlist): ?Figure
-    {
-        if ($uuid instanceof File) {
-            $uuid = $uuid->getModel()->uuid;
-        }
-        if (Validator::isBinaryUuid($uuid) ) {
-            $uuid = StringUtil::binToUuid($uuid);
-        }
-
-        $figureBuilder = $this->studio->createFigureBuilder()
-            ->fromUuid($uuid)
-            ->enableLightbox();
-        ;
-
-        if ($config->imgSize) {
-            $figureBuilder->setSize($config->imgSize);
-        }
-
-        return $figureBuilder->buildIfResourceExists();
-
-        $item['figure_'.$field] = $figureBuilder->buildIfResourceExists();
-
-//
-//        if (!\in_array($uuid->extension, explode(',', (string) Config::get('validImageTypes')))) {
-//            return;
-//        }
-//
-//
-//
-//        // Override the default image size
-//        if ($config->imgSize) {
-//            $imgSize = StringUtil::deserialize($config->imgSize, true);
-//
-//            if ($imgSize[0] > 0 || $imgSize[1] > 0 || is_numeric($imgSize[2])) {
-//                $item['size'] = $config->imgSize;
-//            }
-//        }
-//
-//        // force lightbox support
-//        $item['fullsize'] = true;
-//
-//        $item['imageData_'.$field] = $this->imageUtil->prepareImage($item, [
-//            'imageField' => $field,
-//            'imageSelectorField' => null,
-//            'lightboxId' => $watchlist->uuid,
-//        ]);
+        return $this->insertTagParser->replace($template->parse());
     }
 
     public function getCurrentWatchlistConfig(int $rootPage = 0): ?WatchlistConfigModel
@@ -408,18 +285,21 @@ class WatchlistUtil
             $rootPage = $objPage->rootId;
         }
 
-        if (null === ($page = $this->databaseUtil->findResultByPk('tl_page', $rootPage)) || $page->numRows < 1) {
+        $rootPage = PageModel::findByPk($rootPage);
+
+        if (!$rootPage) {
             return null;
         }
 
-        return $this->modelUtil->findModelInstanceByPk('tl_watchlist_config', $page->watchlistConfig);
+        return WatchlistConfigModel::findByPk($rootPage->watchlistConfig);
     }
 
     /**
      * Get watchlist items from watchlist id.
      *
-     * @param int   $watchlistId The watchlist ist. If not set, the watchlist is automatically loaded
-     * @param array $options     Additional options. Options: modelOptions
+     * @param int $watchlistId The watchlist ist. If not set, the watchlist is automatically loaded
+     * @param array $options Additional options. Options: modelOptions
+     * @return WatchlistItemModel[] The watchlist items collection
      */
     public function getWatchlistItems(int $watchlistId = 0, array $options = []): array
     {
@@ -427,27 +307,24 @@ class WatchlistUtil
             $watchlistModel = $this->getCurrentWatchlist();
 
             if ($watchlistModel) {
-                $watchlistId = (int) $watchlistModel->id;
+                $watchlistId = (int)$watchlistModel->id;
             }
         }
 
         $modelOptions = $options['modelOptions'] ?? [];
 
-        if (null === ($items = $this->modelUtil->findModelInstancesBy('tl_watchlist_item', ['tl_watchlist_item.pid=?'], [$watchlistId], $modelOptions))) {
-            return [];
-        }
-
-        return $items->fetchAll();
+        return WatchlistItemModel::findBy(
+            ['tl_watchlist_item.pid=?'],
+            [$watchlistId],
+            $modelOptions
+        )?->getModels() ?? [];
     }
 
     public function getWatchlistItem(int $id, int $watchlist): ?Model
     {
-        if (null === ($item = $this->databaseUtil->findOneResultBy('tl_watchlist_item',
-                ['tl_watchlist_item.pid=?', 'tl_watchlist_item.id=?'], [$watchlist, $id])) || $item->numRows < 1) {
-            return null;
-        }
-
-        return $item;
+        return WatchlistItemModel::findOneBy(
+            ['tl_watchlist_item.pid=?', 'tl_watchlist_item.id=?'],
+            [$watchlist, $id]);
     }
 
     public function getWatchlistShareUrl(?Model $watchlist = null, ?Model $config = null): string
@@ -464,12 +341,15 @@ class WatchlistUtil
             return '';
         }
 
-        $sharePage = $this->modelUtil->findModelInstanceByPk('tl_page', $config->shareJumpTo);
+        $sharePage = $this->utils->model()->findModelInstanceByPk('tl_page', $config->shareJumpTo);
 
         if (!$sharePage) {
             return '';
         }
 
-        return $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, Environment::get('url').'/'.$sharePage->getFrontendUrl());
+        return $this->utils->url()->addQueryStringParameterToUrl(
+            'watchlist=' . $watchlist->uuid,
+            Environment::get('url') . '/' . $sharePage->getFrontendUrl()
+        );
     }
 }

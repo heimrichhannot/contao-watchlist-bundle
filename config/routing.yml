@@ -1,3 +1,0 @@
-huh_watchlist:
-  resource: "@HeimrichHannotWatchlistBundle/Controller/"
-  type: annotation

@@ -10,6 +10,18 @@ namespace HeimrichHannot\WatchlistBundle\Model;
 
 use Contao\Model;
 
+/**
+ * @property int $id
+ * @property int $pid
+ * @property string $tstamp
+ * @property string $type
+ * @property string $title
+ * @property string $file
+ * @property string $entityTable
+ * @property int $entity
+ * @property string $entityUrl
+ * @property string $entityFile
+ */
 class WatchlistItemModel extends Model
 {
     protected static $strTable = 'tl_watchlist_item';

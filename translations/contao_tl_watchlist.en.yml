@@ -1,0 +1,44 @@
+tl_watchlist:
+  tstamp:
+    - 'Revision date'
+  title:
+    - 'Title'
+    - 'Enter a title here.'
+  config:
+    - 'Watchlist configuration'
+    - 'Select the watchlist configuration here.'
+  uuid:
+    - 'Unique ID (UUID)'
+    - 'This field stores the unique ID.'
+  author:
+    - 'Author'
+    - 'This field stores the author of the watchlist.'
+  authorType:
+    - 'Author type'
+    - 'This field stores the author type of the watchlist.'
+
+  # Legends
+
+  general_legend: 'General settings'
+
+  # Operations
+
+  new:
+    - 'New watchlist'
+    - 'Create watchlist'
+  edit:
+    - 'Edit watchlist'
+    - 'Edit watchlist ID %s'
+  delete:
+    - 'Delete watchlist'
+    - 'Delete watchlist ID %s'
+  show:
+    - 'Watchlist details'
+    - 'Show the details of watchlist ID %s'
+
+  # References
+
+  member: 'Member'
+  user: 'User'
+  session: 'Session'
+  none: 'None'

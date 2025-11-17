@@ -19,6 +19,7 @@ use Contao\Model;
  * @property string $insertTagAddItemTemplate
  * @property string $addShare
  * @property string $shareJumpTo
+ * @property string $imgSize
  */
 class WatchlistConfigModel extends Model
 {

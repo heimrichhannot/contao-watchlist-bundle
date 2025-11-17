@@ -29,11 +29,10 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
      */
     public function getBundles(ParserInterface $parser): array
     {
-        return [BundleConfig::create(HeimrichHannotWatchlistBundle::class)->setLoadAfter([
-            'HeimrichHannot\ListBundle\HeimrichHannotContaoListBundle',
-            'HeimrichHannot\ReaderBundle\HeimrichHannotContaoReaderBundle',
-            ContaoCoreBundle::class,
-        ])];
+        return [
+            BundleConfig::create(HeimrichHannotWatchlistBundle::class)->setLoadAfter([
+                ContaoCoreBundle::class,
+            ])];
     }
 
     /**
@@ -41,12 +40,12 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface, RoutingPlu
      */
     public function registerContainerConfiguration(LoaderInterface $loader, array $managerConfig): void
     {
-        $loader->load('@HeimrichHannotWatchlistBundle/config/services.yml');
+        $loader->load('@HeimrichHannotWatchlistBundle/config/services.yaml');
     }
 
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel)
     {
-        $file = __DIR__.'/../config/routing.yml';
+        $file = __DIR__ . '/../../config/routing.yaml';
 
         return $resolver->resolve($file)->load($file);
     }

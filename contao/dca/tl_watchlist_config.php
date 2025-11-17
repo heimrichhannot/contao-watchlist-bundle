@@ -10,7 +10,6 @@ use Contao\DataContainer;
 use Contao\System;
 use Contao\BackendUser;
 use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
-use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistConfigContainer;
 
 DateAddedField::register('tl_watchlist_config');
 
@@ -43,22 +42,9 @@ $GLOBALS['TL_DCA']['tl_watchlist_config'] = [
             ],
         ],
         'operations' => [
-            'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.gif',
-            ],
-            'copy' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['copy'],
-                'href' => 'act=copy',
-                'icon' => 'copy.gif',
-            ],
-            'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_watchlist_config']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '').'\'))return false;Backend.getScrollOffset()"',
-            ],
+            'edit',
+            'copy',
+            'delete',
         ],
     ],
     'palettes' => [

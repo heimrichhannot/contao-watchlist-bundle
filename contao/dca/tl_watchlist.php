@@ -10,9 +10,9 @@ use Contao\DataContainer;
 use HeimrichHannot\UtilsBundle\Dca\AuthorField;
 use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistContainer;
+use HeimrichHannot\WatchlistBundle\Watchlist\AuthorType;
 
 DateAddedField::register('tl_watchlist');
-AuthorField::register('tl_watchlist');
 
 $GLOBALS['TL_DCA']['tl_watchlist'] = [
     'config' => [
@@ -44,27 +44,10 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             ],
         ],
         'operations' => [
-            'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['edit'],
-                'href' => 'table=tl_watchlist_item',
-                'icon' => 'edit.gif',
-            ],
-            'editheader' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['editheader'],
-                'href' => 'act=edit',
-                'icon' => 'header.gif',
-            ],
-            'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['copy'],
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '').'\'))return false;Backend.getScrollOffset()"',
-            ],
-            'show' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['show'],
-                'href' => 'act=show',
-                'icon' => 'show.gif',
-            ],
+            'edit',
+            'children',
+            'delete',
+            'show',
         ],
     ],
     'palettes' => [
@@ -87,6 +70,42 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             'eval' => ['maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true],
             'sql' => "varchar(255) NOT NULL default ''",
         ],
+        'authorType' => [
+            'exclude' => true,
+            'filter' => true,
+            'default' => AuthorType::NONE->value,
+            'inputType' => 'select',
+//            'options' => [
+//                AuthorType::NONE,
+//                AuthorType::MEMBER,
+//                AuthorType::USER,
+//                // session is only added if it's already set in the dca
+//            ],
+            'enum' => AuthorType::class,
+            'eval' => ['doNotCopy' => true, 'submitOnChange' => true, 'mandatory' => true, 'tl_class' => 'w50 clr'],
+            'sql' => "varchar(8) NOT NULL default 'none'",
+        ],
+        'author' => [
+//            'exclude' => true,
+//            'search' => true,
+//            'filter' => true,
+            'inputType' => 'select',
+            'default' => '0',
+//            'save_callback' => [function ($value, $dc) {
+//                if (!$value) {
+//                    return 0;
+//                }
+//
+//                return $value;
+//            }],
+            'eval' => [
+                'doNotCopy' => true,
+                'chosen' => true,
+                'includeBlankOption' => true,
+                'tl_class' => 'w50',
+            ],
+            'sql' => "varchar(64) NOT NULL default '0'",
+        ],
         'uuid' => [
             'label' => &$GLOBALS['TL_LANG']['tl_watchlist']['uuid'],
             'exclude' => true,
@@ -100,7 +119,6 @@ $GLOBALS['TL_DCA']['tl_watchlist'] = [
             'exclude' => true,
             'filter' => true,
             'inputType' => 'select',
-            'options_callback' => [WatchlistContainer::class, 'getWatchlistConfigs'],
             'eval' => ['tl_class' => 'w50', 'mandatory' => true, 'includeBlankOption' => true, 'chosen' => true],
             'sql' => "varchar(64) NOT NULL default ''",
         ],

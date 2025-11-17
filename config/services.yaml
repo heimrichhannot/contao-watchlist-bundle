@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    bind:
+      $projectDir: '%kernel.project_dir%'
+
+  HeimrichHannot\WatchlistBundle\:
+    resource: '../src/{Asset,Controller,DataContainer,EventListener,Generator,InsertTag,Migration,Util}/*'
+
+  HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory: ~

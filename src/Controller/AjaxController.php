@@ -17,6 +17,8 @@ use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
+use HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory;
+use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\Filesystem\Filesystem;
@@ -42,6 +44,7 @@ class AjaxController
         private readonly string $projectDir,
         private readonly TranslatorInterface $translator,
         private readonly Connection $connection,
+        private readonly WatchlistItemFactory $watchlistItemFactory,
     )
     {
     }
@@ -157,11 +160,12 @@ class AjaxController
         $files = [];
 
         foreach ($this->watchlistUtil->getWatchlistItems($watchlist->id) as $item) {
-            if (WatchlistItemContainer::TYPE_FILE !== $item['type'] || !($path = $this->utils->file()->getPathFromUuid($item['file']))) {
+            $wlItem = $this->watchlistItemFactory->build($item);
+            if (WatchlistItemType::FILE !== $wlItem->getType() || !$wlItem->fileExist()) {
                 continue;
             }
 
-            $files[] = $this->projectDir . '/' . $path;
+            $files[] = $this->projectDir.'/'.$wlItem->getFile()->getPath();
         }
 
         $cacheDir = sys_get_temp_dir() . '/huh_watchlist';

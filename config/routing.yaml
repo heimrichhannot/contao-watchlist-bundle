@@ -1,0 +1,3 @@
+huh_watchlist:
+  resource: "../src/Controller"
+  type: attribute
