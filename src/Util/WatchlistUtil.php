@@ -400,7 +400,7 @@ class WatchlistUtil
 //        ]);
     }
 
-    public function getCurrentWatchlistConfig(int $rootPage = 0): ?Model
+    public function getCurrentWatchlistConfig(int $rootPage = 0): ?WatchlistConfigModel
     {
         if (!$rootPage) {
             global $objPage;

@@ -19,21 +19,19 @@ use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 
 class WatchlistLinkGenerator
 {
-    private readonly TwigTemplateRenderer $templateRenderer;
-    private readonly DatabaseUtil         $databaseUtil;
-
-    public function __construct(private readonly RouterInterface $router, private readonly WatchlistUtil $watchlistUtil, TwigTemplateRenderer $templateRenderer, DatabaseUtil $databaseUtil, private readonly Utils $utils, private readonly RequestStack $requestStack)
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly WatchlistUtil $watchlistUtil,
+        private readonly Utils $utils,
+        private readonly Environment $twig,
+    )
     {
-        $this->templateRenderer = $templateRenderer;
-        $this->databaseUtil = $databaseUtil;
     }
 
-    /**
-     * @param string $file The file uuid
-     */
     public function generateAddFileLink(string $fileUuid, ?string $title = null, ?string $watchlistUuid = null): string
     {
         // file not existing?
@@ -73,10 +71,9 @@ class WatchlistLinkGenerator
 
         $config = $this->watchlistUtil->getCurrentWatchlistConfig();
 
-        return $this->templateRenderer->render(
-            $config->insertTagAddItemTemplate ?: '_watchlist_insert_tag_add_item_default.html.twig',
-            $data
-        );
+        $template = '@Contao/' . ($config->insertTagAddItemTemplate ?: 'watchlist_add_item') . '.html.twig';
+
+        return $this->twig->render($template, $data);
     }
 
     public function generateEntityLink(
@@ -86,11 +83,12 @@ class WatchlistLinkGenerator
         ?string $entityUrl = null,
         ?string $entityFile = null,
         ?string $watchlistUuid = null
-    ): string {
+    ): string
+    {
         // entity not existing?
-        $existing = $this->databaseUtil->findResultByPk($table, $id);
+        $existing = $this->utils->model()->findModelInstanceByPk($table, $id);
 
-        if (null === $existing || $existing->numRows < 1) {
+        if (!$existing) {
             return '';
         }
 
@@ -125,10 +123,9 @@ class WatchlistLinkGenerator
 
         $config = $this->watchlistUtil->getCurrentWatchlistConfig();
 
-        return $this->templateRenderer->render(
-            $config->insertTagAddItemTemplate ?: '_watchlist_insert_tag_add_item_default.html.twig',
-            $data
-        );
+        $template = '@Contao/' . ($config->insertTagAddItemTemplate ?: 'watchlist_add_item') . '.html.twig';
+
+        return $this->twig->render($template, $data);
     }
 
     protected function createDefaultPostData(): array

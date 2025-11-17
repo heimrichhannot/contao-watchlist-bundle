@@ -11,6 +11,7 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\CoreBundle\Twig\Finder\FinderFactory;
 use Contao\DataContainer;
 use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
 use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
@@ -20,6 +21,7 @@ class WatchlistConfigContainer
 
     public function __construct(
         protected readonly ContaoFramework $framework,
+        private readonly FinderFactory $finderFactory,
     )
     {
     }
@@ -29,7 +31,10 @@ class WatchlistConfigContainer
      */
     public function getInsertTagAddItemTemplates(DataContainer $dc)
     {
-        return $this->framework->getAdapter(Controller::class)->getTemplateGroup('_watchlist_insert_tag_add_item_');
+        return $this->finderFactory->create()->identifier('insert_tag/watchlist_add_item')
+            ->extension('html.twig')
+            ->withVariants()
+            ->asTemplateOptions();
     }
 
     /**

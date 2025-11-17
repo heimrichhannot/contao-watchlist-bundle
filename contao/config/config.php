@@ -33,9 +33,3 @@ $GLOBALS['TL_MODELS']['tl_watchlist_config'] = WatchlistConfigModel::class;
  * Frontend modules
  */
 $GLOBALS['FE_MOD']['miscellaneous'][WatchlistModuleController::TYPE] = WatchlistModule::class;
-
-/*
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['loadDataContainer'][] = [LoadDataContainerListener::class, '__invoke'];
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = [ReplaceInsertTagsListener::class, '__invoke'];

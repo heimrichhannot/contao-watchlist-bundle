@@ -7,9 +7,12 @@
  */
 use Contao\DC_Table;
 use Contao\DataContainer;
+use HeimrichHannot\UtilsBundle\Dca\AuthorField;
+use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistContainer;
 
-\HeimrichHannot\UtilsBundle\Dca\DateAddedField::register('tl_watchlist');
+DateAddedField::register('tl_watchlist');
+AuthorField::register('tl_watchlist');
 
 $GLOBALS['TL_DCA']['tl_watchlist'] = [
     'config' => [

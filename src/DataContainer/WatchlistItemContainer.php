@@ -10,16 +10,8 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\Database;
-use Contao\Date;
-use Contao\Config;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
-use Contao\System;
-use HeimrichHannot\UtilsBundle\Choice\DataContainerChoice;
-use HeimrichHannot\UtilsBundle\Choice\ModelInstanceChoice;
-use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
-use HeimrichHannot\UtilsBundle\File\FileUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class WatchlistItemContainer
@@ -32,18 +24,9 @@ class WatchlistItemContainer
         self::TYPE_ENTITY,
     ];
 
-    /** @var ContaoFramework */
-    protected $framework;
-    /** @var DataContainerChoice */
-    protected $dataContainerChoice;
-    /** @var ModelUtil */
-    protected $modelUtil;
-    /** @var ModelInstanceChoice */
-    protected $modelInstanceChoice;
-
     public function __construct(
         private readonly Utils $utils,
-        ContaoFramework $framework
+        private readonly ContaoFramework $framework
     )
     {
         $this->framework = $framework;

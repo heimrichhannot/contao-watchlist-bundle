@@ -21,31 +21,31 @@ use Twig\Environment;
  */
 class ReplaceInsertTagsListener
 {
-    /** @var Environment */
-    protected $twig;
-    /** @var WatchlistUtil */
-    protected $watchlistUtil;
-    /** @var TwigTemplateLocator */
-    protected $twigTemplateLocator;
-    /** @var ModelUtil */
-    protected $modelUtil;
-    /** @var DatabaseUtil */
-    protected $databaseUtil;
+//    /** @var Environment */
+//    protected $twig;
+//    /** @var WatchlistUtil */
+//    protected $watchlistUtil;
+//    /** @var TwigTemplateLocator */
+//    protected $twigTemplateLocator;
+//    /** @var ModelUtil */
+//    protected $modelUtil;
+//    /** @var DatabaseUtil */
+//    protected $databaseUtil;
 
-    public function __construct(
-        Environment $twig,
-        WatchlistUtil $watchlistUtil,
-        TwigTemplateLocator $twigTemplateLocator,
-        ModelUtil $modelUtil,
-        DatabaseUtil $databaseUtil,
-        private readonly WatchlistLinkGenerator $linkGenerator
-    ) {
-        $this->twig = $twig;
-        $this->watchlistUtil = $watchlistUtil;
-        $this->twigTemplateLocator = $twigTemplateLocator;
-        $this->modelUtil = $modelUtil;
-        $this->databaseUtil = $databaseUtil;
-    }
+//    public function __construct(
+//        Environment $twig,
+//        WatchlistUtil $watchlistUtil,
+//        TwigTemplateLocator $twigTemplateLocator,
+//        ModelUtil $modelUtil,
+//        DatabaseUtil $databaseUtil,
+//        private readonly WatchlistLinkGenerator $linkGenerator
+//    ) {
+//        $this->twig = $twig;
+//        $this->watchlistUtil = $watchlistUtil;
+//        $this->twigTemplateLocator = $twigTemplateLocator;
+//        $this->modelUtil = $modelUtil;
+//        $this->databaseUtil = $databaseUtil;
+//    }
 
     public function __invoke(
         string $insertTag,
@@ -57,6 +57,7 @@ class ReplaceInsertTagsListener
         int $_rit,
         int $_cnt
     ) {
+
         $parts = explode('::', $insertTag);
 
         global $objPage;

@@ -7,12 +7,4 @@ services:
       $projectDir: '%kernel.project_dir%'
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../src/{Asset,Controller,DataContainer,EventListener,Generator,Migration,Util}/*'
-
-  HeimrichHannot\WatchlistBundle\EventListener\ListModifyQueryBuilderForCountEventListener:
-    tags:
-      - { name: kernel.event_listener, event: huh.list.event.list_modify_query_builder_for_count, method: __invoke }
-
-  HeimrichHannot\WatchlistBundle\EventListener\ReaderModifyQueryBuilderEventListener:
-    tags:
-      - { name: kernel.event_listener, event: huh.reader.event.reader_modify_query_builder, method: __invoke }
+    resource: '../src/{Asset,Controller,DataContainer,EventListener,Generator,InsertTag,Migration,Util}/*'
