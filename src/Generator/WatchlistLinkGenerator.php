@@ -71,7 +71,7 @@ class WatchlistLinkGenerator
 
         $config = $this->watchlistUtil->getCurrentWatchlistConfig();
 
-        $template = '@Contao/' . ($config->insertTagAddItemTemplate ?: 'watchlist_add_item') . '.html.twig';
+        $template = '@Contao/' . ($config->insertTagAddItemTemplate ?: 'insert_tag/watchlist_add_item') . '.html.twig';
 
         return $this->twig->render($template, $data);
     }

@@ -1,3 +1,6 @@
 {% extends '@Contao/insert_tag/watchlist_add_item.html.twig' %}
 
-{% block cssClasses %}btn btn-primary{% endblock %}
+{% set attributes = attrs()
+    .addClass(['btn', 'btn-primary'])
+    .mergeWith(attributes|default)
+%}
