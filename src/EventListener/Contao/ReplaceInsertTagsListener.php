@@ -8,13 +8,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\EventListener\Contao;
 
-use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
-use HeimrichHannot\WatchlistBundle\Generator\WatchlistLinkGenerator;
-use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
-use Twig\Environment;
 
 /**
  * Hook("replaceInsertTags").

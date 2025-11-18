@@ -7,9 +7,7 @@
  */
 use Contao\DC_Table;
 use Contao\DataContainer;
-use HeimrichHannot\UtilsBundle\Dca\AuthorField;
 use HeimrichHannot\UtilsBundle\Dca\DateAddedField;
-use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistContainer;
 use HeimrichHannot\WatchlistBundle\Watchlist\AuthorType;
 
 DateAddedField::register('tl_watchlist');

@@ -12,12 +12,9 @@ use Contao\FilesModel;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\Validator;
-use HeimrichHannot\TwigSupportBundle\Renderer\TwigTemplateRenderer;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 

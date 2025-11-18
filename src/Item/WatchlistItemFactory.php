@@ -9,7 +9,7 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 class WatchlistItemFactory
 {
     public function __construct(
-        private VirtualFilesystemInterface $filesStorage,
+        private readonly VirtualFilesystemInterface $filesStorage,
         private readonly Studio $studio,
     )
     {

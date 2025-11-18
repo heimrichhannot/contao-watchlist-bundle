@@ -8,8 +8,8 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Environment;
 use Contao\FrontendTemplate;
@@ -22,9 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @FrontendModule(WatchlistModuleController::TYPE,category="miscellaneous").
- */
+#[AsFrontendModule(WatchlistModuleController::TYPE, category: 'miscellaneous')]
 class WatchlistModuleController extends AbstractFrontendModuleController
 {
     use PageAssetsTrait;

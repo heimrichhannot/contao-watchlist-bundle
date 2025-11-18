@@ -8,7 +8,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
-use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Database;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
@@ -32,18 +32,14 @@ class WatchlistItemContainer
         $this->framework = $framework;
     }
 
-    /**
-     * @Callback(table="tl_watchlist_item", target="fields.entityTable.options")
-     */
+    #[AsCallback(table: 'tl_watchlist_item', target: 'fields.entityTable.options')]
     public function getDataContainers()
     {
         $arrTables = Database::getInstance()->listTables();
         return array_values($arrTables);
     }
 
-    /**
-     * @Callback(table="tl_watchlist_item", target="fields.entity.options")
-     */
+    #[AsCallback(table: 'tl_watchlist_item', target: 'fields.entity.options')]
     public function getEntities(DataContainer $dc)
     {
         if (null === ($item = $this->utils->model()->findModelInstanceByPk('tl_watchlist_item', $dc->id)) || !$item->entityTable) {
