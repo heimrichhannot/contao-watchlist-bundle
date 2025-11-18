@@ -6,13 +6,14 @@
     <?php else: ?>
         <?php foreach ($this->items as $item): ?>
             <div class="item col-md-6 col-lg-4 mb-5">
-                <?php if ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE && isset($item['imageData_file'])): ?>
+                <?php if ($item['figure'] ?? null): ?>
                     <div class="image mb-3">
-                        <?php $this->insert('image', $item['imageData_file']); ?>
-                    </div>
-                <?php elseif ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_ENTITY && isset($item['imageData_entityFile'])): ?>
-                    <div class="image mb-3">
-                        <?php $this->insert('image', $item['imageData_entityFile']); ?>
+                        <?php
+                        echo \Contao\System::getContainer()->get('twig')->render(
+                                '@ContaoCore/Image/Studio/figure.html.twig',
+                                ['figure' => $item['figure']]
+                        );
+                        ?>
                     </div>
                 <?php endif; ?>
 
