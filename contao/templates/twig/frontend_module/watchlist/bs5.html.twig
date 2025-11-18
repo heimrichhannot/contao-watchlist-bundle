@@ -1,0 +1,30 @@
+{% extends '@Contao/frontend_module/watchlist.html.twig' %}
+
+{% set toggleAttributes = attrs()
+    .addClass(['btn', 'btn-primary'])
+    .set('data-bs-toggle', 'modal')
+    .set('data-bs-target', '#watchlist-modal')
+    .mergeWith(toggleAttributes|default)
+%}
+
+{% block content_container %}
+    <div class="watchlist-content">
+        {{ watchlistContent|default }}
+    </div>
+
+    <div class="modal fade" id="watchlist-modal" tabindex="-1" aria-labelledby="watchlist-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="watchlist-modal-label">
+                        {{ title }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'MSC.watchlistBundle.close'|trans([], 'contao_default') }}"></button>
+                </div>
+                <div class="modal-body">
+                    {{ parent() }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

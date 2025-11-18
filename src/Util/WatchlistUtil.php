@@ -9,30 +9,16 @@
 namespace HeimrichHannot\WatchlistBundle\Util;
 
 use Contao\BackendUser;
-use Contao\Config;
-use Contao\Controller;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Image\Studio\Figure;
-use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
-use Contao\Database\Result;
 use Contao\Environment;
-use Contao\File;
 use Contao\FrontendTemplate;
 use Contao\FrontendUser;
-use Contao\Image;
 use Contao\Model;
-use Contao\Model\Collection;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\Validator;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use HeimrichHannot\UtilsBundle\Dca\DcaUtil;
-use HeimrichHannot\UtilsBundle\File\FileUtil;
-use HeimrichHannot\UtilsBundle\Image\ImageUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
-use HeimrichHannot\UtilsBundle\Url\UrlUtil;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
@@ -42,26 +28,22 @@ use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use HeimrichHannot\WatchlistBundle\Watchlist\AuthorType;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class WatchlistUtil
 {
-
-    /**
-     * @var Security
-     */
-    private Security $security;
-
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Utils $utils,
-        Security $security,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly RouterInterface $router,
         private readonly InsertTagParser $insertTagParser,
         private readonly WatchlistItemFactory $watchlistItemFactory,
+        private readonly TokenStorageInterface $tokenStorage,
     )
     {
     }
@@ -87,17 +69,11 @@ class WatchlistUtil
             $watchlist->uuid = md5(uniqid(random_int(0, mt_getrandmax()), true));
         }
 
-        $user = $this->security->getUser();
-
-        if ($user && $user instanceof BackendUser) {
-            $watchlist->authorType = DcaUtil::AUTHOR_TYPE_USER;
-            $watchlist->author = $user->id;
-        } elseif ($user && $user instanceof FrontendUser) {
-            $watchlist->authorType = DcaUtil::AUTHOR_TYPE_MEMBER;
-            $watchlist->author = $user->id;
+        $user = $this->tokenStorage->getToken()?->getUser();
+        if ($user instanceof UserInterface) {
+            $watchlist->setUser($user);
         } else {
-            $watchlist->authorType = DcaUtil::AUTHOR_TYPE_SESSION;
-            $watchlist->author = session_id();
+            $watchlist->setUser(session_id());
         }
 
         foreach ($data as $field => $value) {
@@ -169,7 +145,7 @@ class WatchlistUtil
 
         // create search criteria
 
-        $user = $this->security->getUser();
+        $user = $this->tokenStorage->getToken()?->getUser();
 
         if ($user && $user instanceof BackendUser) {
             $columns = [
@@ -178,7 +154,7 @@ class WatchlistUtil
             ];
 
             $values = [
-                DcaUtil::AUTHOR_TYPE_USER,
+                AuthorType::USER->value,
                 $user->id,
             ];
         } elseif ($user && $user instanceof FrontendUser) {
@@ -188,7 +164,7 @@ class WatchlistUtil
             ];
 
             $values = [
-                DcaUtil::AUTHOR_TYPE_MEMBER,
+                AuthorType::MEMBER->value,
                 $user->id,
             ];
         } else {
@@ -198,7 +174,7 @@ class WatchlistUtil
             ];
 
             $values = [
-                DcaUtil::AUTHOR_TYPE_SESSION,
+                AuthorType::SESSION->value,
                 session_id(),
             ];
         }

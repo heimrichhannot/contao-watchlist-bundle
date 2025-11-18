@@ -8,7 +8,10 @@
 
 namespace HeimrichHannot\WatchlistBundle\Model;
 
+use Contao\BackendUser;
+use Contao\FrontendUser;
 use Contao\Model;
+use HeimrichHannot\WatchlistBundle\Watchlist\AuthorType;
 
 /**
  * @property int $id
@@ -29,5 +32,25 @@ class WatchlistModel extends Model
     {
         $t = static::$strTable;
         return static::findOneBy(["$t.uuid=?"], [$uuid], $options);
+    }
+
+    public function setUser(BackendUser|FrontendUser|string|bool|null $user): void
+    {
+        $authorType = AuthorType::NONE;
+        $author = '';
+        if ($user instanceof BackendUser) {
+            $authorType = AuthorType::USER;
+            $author = $user->id;
+        } elseif ($user instanceof FrontendUser) {
+            $authorType = AuthorType::MEMBER;
+            $author = $user->id;
+        } elseif (is_string($user) && !empty($user)) {
+            $authorType = AuthorType::SESSION;
+            $author = $user;
+        }
+
+        $this->authorType = $authorType->value;
+        $this->author = $author;
+        $this->save();
     }
 }

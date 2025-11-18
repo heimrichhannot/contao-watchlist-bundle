@@ -28,8 +28,3 @@ $GLOBALS['BE_MOD']['system']['watchlist_config'] = [
 $GLOBALS['TL_MODELS']['tl_watchlist'] = WatchlistModel::class;
 $GLOBALS['TL_MODELS']['tl_watchlist_item'] = WatchlistItemModel::class;
 $GLOBALS['TL_MODELS']['tl_watchlist_config'] = WatchlistConfigModel::class;
-
-/*
- * Frontend modules
- */
-$GLOBALS['FE_MOD']['miscellaneous'][WatchlistModuleController::TYPE] = WatchlistModule::class;

@@ -28,7 +28,7 @@ class EncoreExtension implements EncoreExtensionInterface
     public function getEntries(): array
     {
         return [
-            EncoreEntry::create('contao-watchlist-bundle', 'src/Resources/assets/js/contao-watchlist-bundle-init.js')
+            EncoreEntry::create('contao-watchlist-bundle', 'assets/js/contao-watchlist-bundle-init.js')
                 ->addJsEntryToRemoveFromGlobals('contao-watchlist-bundle'),
         ];
     }

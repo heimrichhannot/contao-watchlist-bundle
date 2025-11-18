@@ -1,0 +1,28 @@
+{% extends "@Contao/frontend_module/_base.html.twig" %}
+
+{% set attributes = attrs()
+    .addClass("mod_watchlist")
+    .mergeWith(attributes|default)
+%}
+
+{% set toggleAttributes = attrs()
+    .addClass("open-watchlist")
+    .set('href', '#')
+    .mergeWith(toggleAttributes|default)
+%}
+
+{% block content %}
+    <div class="watchlist-wrapper" data-watchlist-update-url="{{ watchlistUpdateUrl|default }}">
+        {% block toggle %}
+        <a {{ toggleAttributes }}>
+            {{ 'MSC.watchlistBundle.openWatchlist'|trans([], 'contao_default') }}
+        </a>
+        {% endblock %}
+
+        {% block content_container %}
+        <div class="watchlist-content">
+            {{ watchlistContent|default }}
+        </div>
+        {% endblock %}
+    </div>
+{% endblock %}
