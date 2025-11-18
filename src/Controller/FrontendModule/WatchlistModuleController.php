@@ -77,9 +77,12 @@ class WatchlistModuleController extends AbstractFrontendModuleController
             $template->set('title', $watchlist->title);
         }
 
-        $template->set('watchlistContent', $this->watchlistUtil->parseWatchlistContent(
-            new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $config, $watchlist
-        ));
+        $template->set(
+            'watchlistContent',
+            $this->watchlistUtil->parseWatchlistContent(
+                new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $config, $watchlist
+            )
+        );
 
         return $template->getResponse();
     }
