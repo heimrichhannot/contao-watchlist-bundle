@@ -10,6 +10,15 @@
         <?php foreach ($this->items as $item): ?>
             <div class="item">
 
+                <?php
+                    if ($item['figure'] ?? null) {
+                        echo \Contao\System::getContainer()->get('twig')->render(
+                                '@ContaoCore/Image/Studio/figure.html.twig',
+                                ['figure' => $item['figure']]
+                        );
+                    }
+                ?>
+
                 <?php if ($item['type'] === \HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer::TYPE_FILE && isset($item['imageData_file'])): ?>
                     <div class="image">
                         <?php $this->insert('image', $item['imageData_file']); ?>

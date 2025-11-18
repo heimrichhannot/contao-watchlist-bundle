@@ -8,6 +8,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller;
 
+use Contao\CoreBundle\Controller\AbstractController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\FilesModel;
@@ -30,7 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @Route(defaults={"_scope" = "frontend"})
  */
-class AjaxController
+class AjaxController extends AbstractController
 {
     const WATCHLIST_URI = '/_huh_watchlist';
     const WATCHLIST_DOWNLOAD_ALL_URI = '/_huh_watchlist/download_all';

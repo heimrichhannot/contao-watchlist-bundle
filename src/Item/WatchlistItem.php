@@ -71,7 +71,7 @@ class WatchlistItem
         }
 
         $figureBuilder = $this->studio->createFigureBuilder()
-            ->fromUuid($this->file->getUuid()->toString())
+            ->fromUuid($this->file->getUuid())
             ->enableLightbox();;
 
         if ($this->getConfig()?->imgSize) {
@@ -128,7 +128,7 @@ class WatchlistItem
 
         $data['existing'] = true;
         $data['fileItem'] = $this->file;
-        $data['file'] = $this->file->getUuid()->toString();
+        $data['file'] = (string)$this->file->getUuid();
 
         // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
 //        $url = $this->insertTagParser->replace('{{download_link::' . $file->path . '}}');
@@ -158,7 +158,7 @@ class WatchlistItem
         $data['entityUrl'] = $this->model->entityUrl;
 
 
-        $data['entityFile'] = $this->getFile()?->getUuid()->toString() ?: '';
+        $data['entityFile'] = (string)$this->getFile()?->getUuid() ?: '';
         $data['existing'] = $this->fileExist();
         $data['hash'] = md5(implode('_', [$this->getType()->value, $this->model->pid, $this->model->entityTable, $this->model->entity]));
 
