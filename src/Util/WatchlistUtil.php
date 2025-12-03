@@ -190,11 +190,15 @@ class WatchlistUtil
                 return $this->returnCurrentWatchlist();
             }
 
-            if (!$request->getSession()->isStarted()) {
+            if (!$request->getSession()->isStarted() && $createIfNotExisting) {
                 $request->getSession()->start();
-                $request->getSession()->set('wl_init', true);
             }
-            $request->getSession()->remove('wl_init');
+
+            if ($request->getSession()->isStarted() && !$request->cookies->has('PHPSESSID')) {
+                $request->getSession()->set('wl_init', true);
+            } else {
+                $request->getSession()->remove('wl_init');
+            }
 
             $columns = [
                 'tl_watchlist.authorType=?',
