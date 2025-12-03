@@ -30,12 +30,16 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Watchlist\AuthorType;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class WatchlistUtil
 {
+    private ?WatchlistModel $currentWatchlist = null;
+    private bool $currentWatchlistLoaded = false;
+
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Utils $utils,
@@ -44,6 +48,7 @@ class WatchlistUtil
         private readonly InsertTagParser $insertTagParser,
         private readonly WatchlistItemFactory $watchlistItemFactory,
         private readonly TokenStorageInterface $tokenStorage,
+        private readonly RequestStack $requestStack,
     )
     {
     }
@@ -129,18 +134,30 @@ class WatchlistUtil
         return null;
     }
 
-    /**
-     * @return WatchlistModel|null
-     */
-    public function getCurrentWatchlist(array $options = []): ?Model
+    private function returnCurrentWatchlist(?WatchlistModel $watchlistModel = null): ?WatchlistModel
     {
+        $this->currentWatchlist = $watchlistModel;
+        $this->currentWatchlistLoaded = true;
+
+        return $this->currentWatchlist;
+    }
+
+    public function getCurrentWatchlist(array $options = []): ?WatchlistModel
+    {
+        $createIfNotExisting = $options['createIfNotExisting'] ?? false;
+
+        if ($this->currentWatchlistLoaded) {
+            if (!$createIfNotExisting || null !== $this->currentWatchlist) {
+                return $this->currentWatchlist;
+            }
+        }
+
         $this->framework->getAdapter(System::class)->loadLanguageFile('default');
 
-        $createIfNotExisting = $options['createIfNotExisting'] ?? false;
         $rootPage = $options['rootPage'] ?? 0;
 
         if (null === ($config = $this->getCurrentWatchlistConfig($rootPage))) {
-            return null;
+            return $this->returnCurrentWatchlist();
         }
 
         // create search criteria
@@ -168,6 +185,17 @@ class WatchlistUtil
                 $user->id,
             ];
         } else {
+            $request = $this->requestStack->getCurrentRequest();
+            if (!$request) {
+                return $this->returnCurrentWatchlist();
+            }
+
+            if (!$request->getSession()->isStarted()) {
+                $request->getSession()->start();
+                $request->getSession()->set('wl_init', true);
+            }
+            $request->getSession()->remove('wl_init');
+
             $columns = [
                 'tl_watchlist.authorType=?',
                 'tl_watchlist.author=?',
@@ -175,19 +203,22 @@ class WatchlistUtil
 
             $values = [
                 AuthorType::SESSION->value,
-                session_id(),
+                $request->getSession()->getId(),
             ];
         }
 
-        if (null !== ($watchlist = $this->utils->model()->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
-            return $watchlist;
+         if (null !== ($watchlist = $this->utils->model()->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
+            return $this->returnCurrentWatchlist($watchlist);
         }
 
         if (!$createIfNotExisting) {
-            return null;
+            return $this->returnCurrentWatchlist();
         }
 
-        return $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'], (int)$config->id);
+        return $this->returnCurrentWatchlist(
+            $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'],
+                (int)$config->id)
+        );
     }
 
     /**

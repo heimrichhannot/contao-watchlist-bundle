@@ -21,6 +21,7 @@ use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Markup;
 
 #[AsFrontendModule(WatchlistModuleController::TYPE, category: 'miscellaneous')]
 class WatchlistModuleController extends AbstractFrontendModuleController
@@ -77,9 +78,9 @@ class WatchlistModuleController extends AbstractFrontendModuleController
 
         $template->set(
             'watchlistContent',
-            $this->watchlistUtil->parseWatchlistContent(
+            new Markup($this->watchlistUtil->parseWatchlistContent(
                 new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $config, $watchlist
-            )
+            ), 'UTF-8')
         );
 
         return $template->getResponse();
