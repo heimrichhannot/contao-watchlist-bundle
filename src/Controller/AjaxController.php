@@ -166,7 +166,7 @@ class AjaxController extends AbstractController
                 continue;
             }
 
-            $files[] = $this->projectDir.'/'.$wlItem->getFile()->getPath();
+            $files[] = $this->projectDir.'/files/'.$wlItem->getFile()->getPath();
         }
 
         $cacheDir = sys_get_temp_dir() . '/huh_watchlist';
@@ -185,10 +185,14 @@ class AjaxController extends AbstractController
             // Create new Zip Archive.
             $zip = new \ZipArchive();
 
-            $zip->open($filePath, \ZipArchive::CREATE);
+            if (true !== $zip->open($filePath, \ZipArchive::CREATE)) {
+                throw new \RuntimeException(sprintf('Failed to create zip archive at "%s".', $filePath));
+            }
 
             foreach ($files as $file) {
-                $zip->addFile($file, basename($file));
+                if (!$zip->addFile($file, basename($file))) {
+                    throw new \RuntimeException(sprintf('Failed to add file "%s" to the zip archive.', $file));
+                }
             }
 
             $zip->close();
