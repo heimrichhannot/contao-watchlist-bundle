@@ -190,14 +190,11 @@ class WatchlistUtil
                 return $this->returnCurrentWatchlist();
             }
 
-            if (!$request->getSession()->isStarted() && $createIfNotExisting) {
-                $request->getSession()->start();
-            }
 
-            if ($request->getSession()->isStarted() && !$request->cookies->has('PHPSESSID')) {
+
+            if (!$request->getSession()->isStarted()) {
+                $request->getSession()->start();
                 $request->getSession()->set('wl_init', true);
-            } else {
-                $request->getSession()->remove('wl_init');
             }
 
             $columns = [
