@@ -90,7 +90,7 @@ class WatchlistUtil
         return $watchlist;
     }
 
-    public function addItemToWatchlist(array $data, int $watchlist): ?Model
+    public function addItemToWatchlist(array $data, WatchlistModel $watchlist): ?Model
     {
         $watchlistItem = new WatchlistItemModel();
 
@@ -99,7 +99,7 @@ class WatchlistUtil
         $watchlistItem->setRow([
             'tstamp' => $time,
             'dateAdded' => $time,
-            'pid' => $watchlist,
+            'pid' => $watchlist->id,
         ]);
 
         foreach ($data as $field => $value) {
@@ -107,6 +107,9 @@ class WatchlistUtil
         }
 
         $watchlistItem->save();
+
+        $watchlist->tstamp = $time;
+        $watchlist->save();
 
         return $watchlistItem;
     }

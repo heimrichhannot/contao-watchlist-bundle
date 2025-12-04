@@ -268,6 +268,8 @@ class AjaxController extends AbstractController
 
 
                     if ($result > 0) {
+                        $watchlist->tstamp = time();
+                        $watchlist->save();
                         return new Response('Watchlist item deleted successfully.');
                     }
 
@@ -303,7 +305,7 @@ class AjaxController extends AbstractController
                         }
 
                         $result = $this->watchlistUtil->addItemToWatchlist(
-                            $data, $data['pid']
+                            $data, $watchlist
                         );
 
                         if (null === $result) {
@@ -322,7 +324,7 @@ class AjaxController extends AbstractController
                         }
 
                         $result = $this->watchlistUtil->addItemToWatchlist(
-                            $data, $data['pid']
+                            $data, $watchlist
                         );
 
                         if (null === $result) {
