@@ -20,10 +20,10 @@
         "issues": "https://github.com/heimrichhannot/contao-watchlist-bundle/issues"
     },
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.2",
         "ext-zip": "*",
         "ext-json": "*",
-        "contao/core-bundle": "^4.9",
+        "contao/core-bundle": "^4.13",
         "doctrine/dbal": " ^2.10 || ^3.0",
         "heimrichhannot/contao-encore-contracts": "^1.0",
         "heimrichhannot/contao-utils-bundle": "^2.199",

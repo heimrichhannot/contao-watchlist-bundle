@@ -1,63 +1,40 @@
 <?php
 
-/*
- * Copyright (c) 2022 Heimrich & Hannot GmbH
- *
- * @license LGPL-3.0-or-later
- */
-
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
+use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\Environment;
 use Contao\FrontendTemplate;
 use Contao\ModuleModel;
 use Contao\Template;
 use HeimrichHannot\EncoreContracts\PageAssetsTrait;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use HeimrichHannot\UtilsBundle\File\FileUtil;
 use HeimrichHannot\UtilsBundle\Url\UrlUtil;
+use HeimrichHannot\UtilsBundle\Util\Utils;
+use HeimrichHannot\WatchlistBundle\Asset\AssetManager;
 use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-/**
- * FrontendModule(WatchlistModuleController::TYPE,category="miscellaneous").
- */
-class WatchlistModuleController
+#[AsFrontendModule(type: WatchlistModuleController::TYPE, category: 'miscellaneous')]
+class WatchlistModuleController extends AbstractFrontendModuleController implements ServiceSubscriberInterface
 {
     use PageAssetsTrait;
 
     public const TYPE = 'watchlist';
 
-    /** @var DatabaseUtil */
-    protected $databaseUtil;
-    /** @var WatchlistUtil */
-    protected $watchlistUtil;
-    /** @var UrlUtil */
-    protected $urlUtil;
-    /** @var FileUtil */
-    protected $fileUtil;
-    /** @var SessionInterface */
-    protected $session;
+    public function __construct(
+        private readonly AssetManager $assetManager,
+        private readonly UrlUtil $urlUtil,
+        private readonly Utils $utils,
+        private readonly WatchlistUtil $watchlistUtil,
+    ) {}
 
-    public function __construct(DatabaseUtil $databaseUtil, WatchlistUtil $watchlistUtil, UrlUtil $urlUtil, FileUtil $fileUtil, SessionInterface $session)
+    public function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        $this->databaseUtil = $databaseUtil;
-        $this->watchlistUtil = $watchlistUtil;
-        $this->urlUtil = $urlUtil;
-        $this->fileUtil = $fileUtil;
-        $this->session = $session;
-    }
-
-    public function getResponse(Template $template, ModuleModel $module, Request $request): ?Response
-    {
-        $this->addPageEntrypoint('contao-watchlist-bundle', [
-            'TL_JAVASCRIPT' => [
-                'contao-watchlist-bundle' => 'bundles/heimrichhannotwatchlistbundle/assets/contao-watchlist-bundle.js|static',
-            ],
-        ]);
+        $this->assetManager->attachAssets();
 
         global $objPage;
 
@@ -71,21 +48,27 @@ class WatchlistModuleController
 
         $currentUrl = parse_url(Environment::get('uri'), \PHP_URL_PATH);
 
-        $template->watchlistUpdateUrl = $this->urlUtil->addQueryString('wl_root_page='.$objPage->rootId.'&wl_url='.urlencode($currentUrl),
-            Environment::get('url').AjaxController::WATCHLIST_CONTENT_URI);
+        $template->watchlistUpdateUrl = $this->utils->url()->addQueryStringParameterToUrl(
+            parameter: \sprintf('wl_root_page=%s&wl_url=%s', $objPage->rootId, \urlencode($currentUrl)),
+            url: Environment::get('url') . AjaxController::WATCHLIST_CONTENT_URI
+        );
 
         if (null === $watchlist) {
-            $template->title = $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'];
+            $template->title = $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'] ?? 'Watchlist';
         } else {
             $template->title = $watchlist->title;
         }
 
+        $contentTemplate = new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default');
+
         $template->watchlistContent = $this->watchlistUtil->parseWatchlistContent(
-            new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $config, $watchlist
+            template: $contentTemplate,
+            currentUrl: $currentUrl,
+            rootPage: $objPage->rootId,
+            config: $config,
+            watchlist: $watchlist
         );
 
         return null;
-
-//        return $template->getResponse();
     }
 }

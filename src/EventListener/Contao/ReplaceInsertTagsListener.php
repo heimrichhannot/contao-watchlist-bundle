@@ -8,46 +8,22 @@
 
 namespace HeimrichHannot\WatchlistBundle\EventListener\Contao;
 
-use HeimrichHannot\TwigSupportBundle\Filesystem\TwigTemplateLocator;
-use HeimrichHannot\UtilsBundle\Database\DatabaseUtil;
-use HeimrichHannot\UtilsBundle\Model\ModelUtil;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use HeimrichHannot\EncoreContracts\PageAssetsTrait;
+use HeimrichHannot\WatchlistBundle\Asset\AssetManager;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Generator\WatchlistLinkGenerator;
-use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
-use Twig\Environment;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
-/**
- * Hook("replaceInsertTags").
- */
-class ReplaceInsertTagsListener
+#[AsHook('replaceInsertTags')]
+class ReplaceInsertTagsListener implements ServiceSubscriberInterface
 {
-    /** @var Environment */
-    protected $twig;
-    /** @var WatchlistUtil */
-    protected $watchlistUtil;
-    /** @var TwigTemplateLocator */
-    protected $twigTemplateLocator;
-    /** @var ModelUtil */
-    protected $modelUtil;
-    /** @var DatabaseUtil */
-    protected $databaseUtil;
-    private WatchlistLinkGenerator $linkGenerator;
+    use PageAssetsTrait;
 
     public function __construct(
-        Environment $twig,
-        WatchlistUtil $watchlistUtil,
-        TwigTemplateLocator $twigTemplateLocator,
-        ModelUtil $modelUtil,
-        DatabaseUtil $databaseUtil,
-        WatchlistLinkGenerator $linkGenerator
-    ) {
-        $this->twig = $twig;
-        $this->watchlistUtil = $watchlistUtil;
-        $this->twigTemplateLocator = $twigTemplateLocator;
-        $this->modelUtil = $modelUtil;
-        $this->databaseUtil = $databaseUtil;
-        $this->linkGenerator = $linkGenerator;
-    }
+        private readonly AssetManager $assetManager,
+        private readonly WatchlistLinkGenerator $linkGenerator,
+    ) {}
 
     public function __invoke(
         string $insertTag,
@@ -58,58 +34,83 @@ class ReplaceInsertTagsListener
         array $cache,
         int $_rit,
         int $_cnt
-    ) {
-        $parts = explode('::', $insertTag);
-
-        global $objPage;
-
-        $nullValues = ['null', 'NULL', "''", '0'];
-
-        switch ($parts[0]) {
-            case 'watchlist_add_item_link':
-                switch ($parts[1]) {
-                    case WatchlistItemContainer::TYPE_FILE:
-                        $title = null;
-
-                        if (isset($parts[3]) && !\in_array($parts[3], $nullValues)) {
-                            $title = $parts[3];
-                        }
-
-                        $watchlistUuid = null;
-
-                        if (isset($parts[4]) && !\in_array($parts[4], $nullValues)) {
-                            $watchlistUuid = $parts[4];
-                        }
-
-                        return $this->linkGenerator->generateAddFileLink($parts[2], $title, $watchlistUuid);
-
-                    case WatchlistItemContainer::TYPE_ENTITY:
-                        $entityTable = $parts[2];
-                        $entity = $parts[3];
-                        $title = $parts[4];
-                        $entityUrl = $parts[5] ?? null;
-                        $entityFile = $parts[6] ?? null;
-                        $watchlistUuid = $parts[7] ?? null;
-
-                        if ($entityUrl && \in_array($entityUrl, $nullValues)) {
-                            $entityUrl = null;
-                        }
-
-                        if ($entityFile && \in_array($entityFile, $nullValues)) {
-                            $entityFile = null;
-                        }
-
-                        if ($watchlistUuid && \in_array($watchlistUuid, $nullValues)) {
-                            $watchlistUuid = null;
-                        }
-
-                        return $this->linkGenerator->generateEntityLink($entityTable, $entity, $title, $entityUrl, $entityFile, $watchlistUuid);
-
-                    default:
-                        return '';
-                }
+    ): false|string {
+        if (!\str_starts_with($insertTag, 'watchlist')) {
+            return false;
         }
 
-        return false;
+        $this->assetManager->attachAssets();
+
+        $parts = \explode('::', $insertTag);
+
+        return match($parts[0] ?? null) {
+            'watchlist_assets' => '',
+            'watchlist_add_item_link' => $this->tagAddItemLink($parts),
+            default => false,
+        };
+    }
+
+    private function tagAddItemLink(array $parts): string
+    {
+        switch ($parts[1])
+        {
+            case WatchlistItemContainer::TYPE_FILE:
+                if (\count($parts) < 3) {
+                    throw new \InvalidArgumentException('Invalid number of parameters for watchlist_add_item_link tag.');
+                }
+
+                $fileUuid = $parts[2];
+                $title = self::filterValue($parts[3] ?? null);
+                $watchlistUuid = self::filterValue($parts[4] ?? null);
+
+                return $this->linkGenerator->generateAddFileLink(
+                    fileUuid: $fileUuid,
+                    title: $title,
+                    watchlistUuid: $watchlistUuid
+                );
+
+            case WatchlistItemContainer::TYPE_ENTITY:
+                if (\count($parts) < 5) {
+                    throw new \InvalidArgumentException('Invalid number of parameters for watchlist_add_item_link tag.');
+                }
+
+                [
+                    2 => $entityTable,
+                    3 => $entity,
+                    4 => $title,
+                ] = $parts;
+
+                $entityUrl = self::filterValue($parts[5] ?? null);
+                $entityFile = self::filterValue($parts[6] ?? null);
+                $watchlistUuid = self::filterValue($parts[7] ?? null);
+
+                return $this->linkGenerator->generateEntityLink(
+                    table: $entityTable,
+                    id: $entity,
+                    title: $title,
+                    entityUrl: $entityUrl,
+                    entityFile: $entityFile,
+                    watchlistUuid: $watchlistUuid
+                );
+        }
+
+        return '';
+    }
+
+    private static function filterValue(mixed $value): mixed
+    {
+        if (\is_null($value)) {
+            return null;
+        }
+
+        if (!\is_string($value)) {
+            return $value ?: null;
+        }
+
+        if (!$value && \in_array(\strtolower($value), ['null', 'none', '0'])) {
+            return null;
+        }
+
+        return $value;
     }
 }
