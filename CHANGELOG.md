@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.10.0] - 2025-12-17
+- Refactored: frontend module and replaceInsertTags hook
+- Refactored: now using Symfony Service Attributes
+- Fixed: now attaching assets when using insert tags
+- Chore: Versions bumped to PHP 8.2 and Contao 4.13
+
 ## [3.9.3] - 2024-10-25
 - Fixed: warning 
 - Changed: code quality adjustments
