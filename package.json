@@ -1,14 +1,11 @@
 {
   "name": "contao-watchlist-bundle",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "dependencies": {
     "sweetalert2": "^11.0"
   },
   "devDependencies": {
-    "@symfony/webpack-encore": "^1.5",
-    "sass": "^1.32.8",
-    "sass-loader": "^11.0.0",
-    "@hundh/contao-utils-bundle": "^1.18"
+    "@symfony/webpack-encore": "^1.6"
   },
   "scripts": {
     "build-dev": "yarn encore dev",
