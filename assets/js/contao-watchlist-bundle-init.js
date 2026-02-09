@@ -1,3 +1,3 @@
-import { WatchlistBundle } from './contao-watchlist-bundle';
+import initWatchlistBundle from './contao-watchlist-bundle';
 
-document.addEventListener('DOMContentLoaded', WatchlistBundle.init);
+document.addEventListener('DOMContentLoaded', () => initWatchlistBundle());

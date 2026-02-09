@@ -31,12 +31,10 @@ class WatchlistModuleController extends AbstractFrontendModuleController
     public const TYPE = 'watchlist';
 
     public function __construct(
-        protected WatchlistUtil $watchlistUtil,
-        private readonly Utils $utils,
+        protected WatchlistUtil              $watchlistUtil,
+        private readonly Utils               $utils,
         private readonly TranslatorInterface $translator,
-    )
-    {
-    }
+    ) {}
 
     public function getResponse(FragmentTemplate $template, ModuleModel $module, Request $request): Response
     {
@@ -65,8 +63,8 @@ class WatchlistModuleController extends AbstractFrontendModuleController
         $template->set(
             'watchlistUpdateUrl',
             $this->utils->url()->addQueryStringParameterToUrl(
-                'wl_root_page=' . $objPage->rootId . '&wl_url=' . urlencode($currentUrl),
-                Environment::get('url') . AjaxController::WATCHLIST_CONTENT_URI
+                parameter: 'wl_root_page=' . $objPage->rootId . '&wl_url=' . urlencode($currentUrl),
+                url: Environment::get('url') . AjaxController::WATCHLIST_CONTENT_URI
             )
         );
 
@@ -76,12 +74,15 @@ class WatchlistModuleController extends AbstractFrontendModuleController
             $template->set('title', $watchlist->title);
         }
 
-        $template->set(
-            'watchlistContent',
-            new Markup($this->watchlistUtil->parseWatchlistContent(
-                new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default'), $currentUrl, $objPage->rootId, $config, $watchlist
-            ), 'UTF-8')
+        $contentTemplate = new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default');
+        $content = $this->watchlistUtil->parseWatchlistContent(
+            template: $contentTemplate,
+            currentUrl: $currentUrl,
+            rootPage: $objPage->rootId,
+            config: $config,
+            watchlist: $watchlist
         );
+        $template->set('watchlistContent', new Markup($content, 'UTF-8'));
 
         return $template->getResponse();
     }

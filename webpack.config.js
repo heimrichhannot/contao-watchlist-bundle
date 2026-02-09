@@ -1,11 +1,10 @@
-var Encore = require('@symfony/webpack-encore');
+import Encore from '@symfony/webpack-encore';
 
 Encore
-    .setOutputPath('src/Resources/public/assets/')
-    .addEntry('contao-watchlist-bundle', './src/Resources/assets/js/contao-watchlist-bundle.js')
+    .setOutputPath('public/assets/')
+    .addEntry('contao-watchlist-bundle', './assets/js/contao-watchlist-bundle.js')
     .setPublicPath('/public/assets/')
     .disableSingleRuntimeChunk()
-    .enableSassLoader()
     .configureBabel(function (babelConfig) {
     }, {
         // include to babel processing
@@ -14,4 +13,4 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
 ;
 
-module.exports = Encore.getWebpackConfig();
+export default Encore.getWebpackConfig();
