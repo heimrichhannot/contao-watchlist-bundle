@@ -113,15 +113,14 @@ class WatchlistModuleController extends AbstractFrontendModuleController
 
     protected function handleDownload(Request $request): void
     {
-        $watchlist = $this->watchlistUtil->getCurrentWatchlist();
-        if (!$watchlist) {
-            throw new \RuntimeException();
-        }
-
         $response = $this->fileDownloadHelper->handle(
             $request,
             $this->filesStorage,
-            function (FilesystemItem $item, array $context) use ($watchlist, $request): Response|null {
+            function (FilesystemItem $item, array $context) use ($request): Response|null {
+                $watchlist = $this->watchlistUtil->getCurrentWatchlist();
+                if (!$watchlist) {
+                    return new Response('', Response::HTTP_NO_CONTENT);
+                }
                 // Do not handle downloads from other DownloadController elements on the same
                 // page (see #5568)
                 if ($watchlist->id !== ($context['watchlist'] ?? null)) {
