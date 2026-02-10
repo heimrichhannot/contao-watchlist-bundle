@@ -19,11 +19,16 @@ class WatchlistItem
     private ?FilesystemItem $file;
     private ?WatchlistConfigModel $config;
     private ?Figure $figure;
+    private string $downloadUrl;
 
+    /**
+     * @internal Use factory to create new instances
+     */
     public function __construct(
         private readonly WatchlistItemModel $model,
         private readonly VirtualFilesystemInterface $filesystem,
         private readonly Studio $studio,
+        private readonly \Closure $downloadUrlCallback,
     )
     {
         $this->type = WatchlistItemType::from($this->model->type ?? WatchlistItemType::FILE->value);
@@ -88,6 +93,14 @@ class WatchlistItem
         return $this->file;
     }
 
+    public function getDownloadUrl()
+    {
+        if (!isset($this->downloadUrl)) {
+            $this->downloadUrl =  ($this->downloadUrlCallback)($this);
+        }
+        return $this->downloadUrl;
+    }
+
     private function resolveFile(): void
     {
         if (isset($this->file)) {
@@ -137,7 +150,7 @@ class WatchlistItem
 //
 //        $cleanedItem['downloadUrl'] = $this->utils->url()->removeQueryStringParameterFromUrl(['wl_root_page', 'wl_url'], $url);
 
-        $data['downloadUrl'] = $this->filesystem->generatePublicUri($this->file->getUuid());
+        $data['downloadUrl'] = $this->getDownloadUrl();
 
         if (empty($data['title'])) {
             $data['title'] = $this->file->getName();

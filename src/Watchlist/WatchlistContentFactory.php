@@ -2,6 +2,7 @@
 
 namespace HeimrichHannot\WatchlistBundle\Watchlist;
 
+use Contao\CoreBundle\Filesystem\FileDownloadHelper;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\CoreBundle\Routing\PageFinder;
@@ -15,6 +16,7 @@ use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
+use HeimrichHannot\WatchlistBundle\Routing\PageFinder as WatchlistPageFinder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -29,6 +31,8 @@ class WatchlistContentFactory
         private readonly ContentUrlGenerator      $contentUrlGenerator,
         private readonly WatchlistItemFactory     $itemFactory,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly WatchlistPageFinder      $wlPageFinder,
+
     ) {}
 
     public function build(
@@ -90,16 +94,7 @@ class WatchlistContentFactory
 
         $request = $this->requestStack->getCurrentRequest();
         if (!$request) {
-            $t = PageModel::getTable();
-            $time = Date::floorToMinute();
-            return PageModel::findOneBy(
-                [
-                    "$t.watchlistConfig=?",
-                    "$t.published=1 AND ($t.start='' OR $t.start<=$time) AND ($t.stop='' OR $t.stop>$time)",
-
-                ],
-                [$config->id]
-            );
+            return $this->wlPageFinder->findByConfig($config, 1);
         }
 
         return $this->pageFinder->findRootPageForRequest($request);

@@ -6,7 +6,7 @@ services:
       $projectDir: '%kernel.project_dir%'
 
   HeimrichHannot\WatchlistBundle\:
-    resource: '../src/{Asset,Controller,DataContainer,EventListener,Generator,InsertTag,Migration,Twig,Util}/*'
+    resource: '../src/{Asset,Controller,DataContainer,EventListener,Generator,InsertTag,Migration,Routing,Twig,Util}/*'
 
   HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory: ~
   HeimrichHannot\WatchlistBundle\Watchlist\WatchlistContentFactory: ~
