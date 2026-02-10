@@ -81,7 +81,7 @@ class WatchlistItemFactory
         }
 
         $watchlist = WatchlistModel::findByPk($item->pid);
-        $config = WatchlistConfigModel::findByPk($watchlist->pid ?: 0);
+        $config = WatchlistConfigModel::findByPk($watchlist->config ?: 0);
         if (!$config) {
             throw new \RuntimeException(sprintf('Could not find watchlist config with id %s', $watchlist->pid));
         }

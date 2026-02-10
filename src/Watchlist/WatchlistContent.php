@@ -43,7 +43,7 @@ class WatchlistContent implements \Stringable
         $this->legacyTemplate->itemUrl = $this->itemUrl;
         $this->legacyTemplate->watchlistDownloadAllUrl = $this->downloadAllUrl;
         $this->legacyTemplate->shareUrl = $this->shareUrl;
-        $this->legacyTemplate->config = $this->config->id;
+        $this->legacyTemplate->config = $this->config;
 
 
         $this->applyItemDataToLegacyTemplate($this->legacyTemplate);

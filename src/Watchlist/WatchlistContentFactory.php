@@ -2,23 +2,17 @@
 
 namespace HeimrichHannot\WatchlistBundle\Watchlist;
 
-use Contao\CoreBundle\Filesystem\FileDownloadHelper;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\CoreBundle\Routing\PageFinder;
-use Contao\Date;
 use Contao\FrontendTemplate;
 use Contao\PageModel;
-use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
-use HeimrichHannot\WatchlistBundle\Event\WatchlistItemDataEvent;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory;
-use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Routing\PageFinder as WatchlistPageFinder;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 

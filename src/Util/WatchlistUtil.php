@@ -233,9 +233,9 @@ class WatchlistUtil
      * @throws \Exception
      * @deprecated Use WatchlistContentFactory::build() instead
      */
-    public function parseWatchlistContent(FrontendTemplate $template, int $rootPage, Model $config, ?Model $watchlist = null): WatchlistContent
+    public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
-        return $this->watchlistContentFactory->build(
+        return (string)$this->watchlistContentFactory->build(
             watchlistModel: $watchlist ?: $config,
             pageModel: PageModel::findByPk($rootPage),
             legacyTemplate: $template,
