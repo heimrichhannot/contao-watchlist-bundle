@@ -13,8 +13,10 @@ use Contao\Input;
 use Contao\StringUtil;
 use Contao\Validator;
 use HeimrichHannot\UtilsBundle\Util\Utils;
+use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 

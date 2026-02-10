@@ -12,16 +12,15 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\Environment;
-use Contao\FrontendTemplate;
 use Contao\ModuleModel;
 use HeimrichHannot\EncoreContracts\PageAssetsTrait;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 use HeimrichHannot\WatchlistBundle\Controller\AjaxController;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
+use HeimrichHannot\WatchlistBundle\Watchlist\WatchlistContentFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Markup;
 
 #[AsFrontendModule(WatchlistModuleController::TYPE, category: 'miscellaneous')]
 class WatchlistModuleController extends AbstractFrontendModuleController
@@ -34,6 +33,7 @@ class WatchlistModuleController extends AbstractFrontendModuleController
         protected WatchlistUtil              $watchlistUtil,
         private readonly Utils               $utils,
         private readonly TranslatorInterface $translator,
+        private readonly WatchlistContentFactory $watchlistContentFactory,
     ) {}
 
     public function getResponse(FragmentTemplate $template, ModuleModel $module, Request $request): Response
@@ -74,15 +74,22 @@ class WatchlistModuleController extends AbstractFrontendModuleController
             $template->set('title', $watchlist->title);
         }
 
-        $contentTemplate = new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default');
-        $content = $this->watchlistUtil->parseWatchlistContent(
-            template: $contentTemplate,
-            currentUrl: $currentUrl,
-            rootPage: $objPage->rootId,
-            config: $config,
-            watchlist: $watchlist
-        );
-        $template->set('watchlistContent', new Markup($content, 'UTF-8'));
+
+
+//        $contentTemplate = new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default');
+
+
+//        $template->set('watchlistContent', $this->watchlistUtil->parseWatchlistContent(
+//            template: $contentTemplate,
+//            rootPage: $objPage->rootId,
+//            config: $config,
+//            watchlist: $watchlist
+//        ));
+
+        $template->set('watchlistContent', $this->watchlistContentFactory->build(
+            $watchlist ?: $config,
+            pageModel: $objPage,
+        ));
 
         return $template->getResponse();
     }

@@ -4,6 +4,7 @@ namespace HeimrichHannot\WatchlistBundle\Item;
 
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Image\Studio\Studio;
+use Contao\Model\Collection;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 
 class WatchlistItemFactory
@@ -26,5 +27,23 @@ class WatchlistItemFactory
             $this->filesStorage,
             $this->studio,
         );
+    }
+
+    /**
+     * @param Collection<WatchlistItemModel>|null $collection
+     * @return array<WatchlistItem>
+     */
+    public function buildForCollection(Collection|null $collection = null): array
+    {
+        if (null === $collection) {
+            return [];
+        }
+
+        $items = [];
+        foreach ($collection as $item) {
+            $items[] = $this->build($item);
+        }
+
+        return $items;
     }
 }

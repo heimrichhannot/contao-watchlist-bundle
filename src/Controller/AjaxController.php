@@ -22,6 +22,7 @@ use HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
+use HeimrichHannot\WatchlistBundle\Watchlist\WatchlistContentFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,16 +40,15 @@ class AjaxController extends AbstractController
     const WATCHLIST_ITEM_URI = '/_huh_watchlist/item';
 
     public function __construct(
-        private readonly ContaoFramework $framework,
-        private readonly WatchlistUtil $watchlistUtil,
-        private readonly Utils $utils,
-        private readonly string $projectDir,
-        private readonly TranslatorInterface $translator,
-        private readonly Connection $connection,
-        private readonly WatchlistItemFactory $watchlistItemFactory,
-    )
-    {
-    }
+        private readonly ContaoFramework         $framework,
+        private readonly WatchlistUtil           $watchlistUtil,
+        private readonly Utils                   $utils,
+        private readonly string                  $projectDir,
+        private readonly TranslatorInterface     $translator,
+        private readonly Connection              $connection,
+        private readonly WatchlistItemFactory    $watchlistItemFactory,
+        private readonly WatchlistContentFactory $watchlistContentFactory,
+    ) {}
 
     /**
      * @return Response
@@ -88,25 +88,24 @@ class AjaxController extends AbstractController
                     return new Response('No watchlist config found. Please set it in your page root.', 500);
                 }
 
-                $template = new FrontendTemplate($config->watchlistContentTemplate ?: 'watchlist_content_default');
-
                 $watchlist = $this->watchlistUtil->getCurrentWatchlist([
                     'rootPage' => $rootPage,
                 ]);
 
-                return new Response($this->watchlistUtil->parseWatchlistContent($template, $currentUrl, $rootPage, $config, $watchlist));
+                return new Response(
+                    $this->watchlistContentFactory->build(
+                        $watchlist ?: $config,
+                        $page
+                    )
+                );
 
             default:
                 return new Response('Method not allowed', 405);
         }
     }
 
-    /**
-     * @return Response
-     *
-     * @Route("/_huh_watchlist")
-     */
-    public function watchlistAction(Request $request)
+    #[Route("/_huh_watchlist", name: "huh_watchlist", methods: ["DELETE"])]
+    public function watchlistAction(Request $request): Response
     {
         $this->framework->initialize();
 
@@ -132,9 +131,7 @@ class AjaxController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/_huh_watchlist/download_all", name="huh_watchlist_downlad_all", methods={"GET"})
-     */
+    #[Route("/_huh_watchlist/download_all", name: "huh_watchlist_downlad_all", methods: ["GET"])]
     public function watchlistDownloadAllAction(Request $request): Response
     {
         $this->framework->initialize();
@@ -166,7 +163,7 @@ class AjaxController extends AbstractController
                 continue;
             }
 
-            $files[] = $this->projectDir.'/files/'.$wlItem->getFile()->getPath();
+            $files[] = $this->projectDir . '/files/' . $wlItem->getFile()->getPath();
         }
 
         $cacheDir = sys_get_temp_dir() . '/huh_watchlist';
@@ -207,12 +204,8 @@ class AjaxController extends AbstractController
         return $response;
     }
 
-    /**
-     * @return Response
-     *
-     * @Route("/_huh_watchlist/item", name="huh_watchlist_item")
-     */
-    public function watchlistItemAction(Request $request)
+    #[Route("/_huh_watchlist/item", name: "huh_watchlist_item", methods: ["POST"])]
+    public function watchlistItemAction(Request $request): Response
     {
         $this->framework->initialize();
 
@@ -280,7 +273,8 @@ class AjaxController extends AbstractController
                 // already existing?
                 if (null !== $this->watchlistUtil->getWatchlistItemByData($data, $watchlist->id)) {
                     return new Response(
-                        $this->translator->trans('MSC.watchlistBundle.itemAlreadyInCurrentWatchlist', [], 'contao_default'), 409);
+                        $this->translator->trans('MSC.watchlistBundle.itemAlreadyInCurrentWatchlist', [], 'contao_default'), 409
+                    );
                 }
 
                 switch ($data['type']) {
