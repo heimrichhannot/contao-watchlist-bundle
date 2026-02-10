@@ -62,7 +62,7 @@ class AjaxController extends AbstractController
         switch ($request->getMethod()) {
             case Request::METHOD_GET:
                 $rootPage = $request->get('wl_root_page');
-                $currentUrl = $request->get('wl_url');
+                $page = null;
 
                 if ($rootPage && !$request->attributes->has('pageModel')) {
                     $page = PageModel::findByPk((int)$rootPage);

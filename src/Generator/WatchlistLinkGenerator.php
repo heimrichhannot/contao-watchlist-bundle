@@ -24,25 +24,29 @@ class WatchlistLinkGenerator
 {
     public function __construct(
         private readonly RouterInterface $router,
-        private readonly WatchlistUtil $watchlistUtil,
-        private readonly Utils $utils,
-        private readonly Environment $twig,
-    )
-    {
-    }
+        private readonly WatchlistUtil   $watchlistUtil,
+        private readonly Utils           $utils,
+        private readonly Environment     $twig,
+    ) {}
 
-    public function generateAddFileLink(string $fileUuid, ?string $title = null, ?string $watchlistUuid = null): string
+    public function generateAddFileLink(string|FilesModel $file, ?string $title = null, ?string $watchlistUuid = null): string
     {
-        // file not existing?
-        if (null === FilesModel::findByUuid($fileUuid)) {
-            return '';
+        if ($file instanceof FilesModel) {
+            $fileUuid = $file->uuid;
+        } else {
+            // file not existing?
+            if (null === FilesModel::findByUuid($file)) {
+                return '';
+            }
+            $fileUuid = $file;
         }
-
-        $postData = $this->createDefaultPostData();
 
         if (Validator::isBinaryUuid($fileUuid)) {
             $fileUuid = StringUtil::binToUuid($fileUuid);
         }
+
+
+        $postData = $this->createDefaultPostData();
 
         $postData['type'] = WatchlistItemContainer::TYPE_FILE;
         $postData['file'] = $fileUuid;
@@ -76,9 +80,9 @@ class WatchlistLinkGenerator
     }
 
     public function generateEntityLink(
-        string $table,
-        int $id,
-        string $title,
+        string  $table,
+        int     $id,
+        string  $title,
         ?string $entityUrl = null,
         ?string $entityFile = null,
         ?string $watchlistUuid = null
