@@ -18,6 +18,7 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Routing\PageFinder as WatchlistPageFinder;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -32,7 +33,6 @@ class WatchlistContentFactory
         private readonly WatchlistItemFactory     $itemFactory,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly WatchlistPageFinder      $wlPageFinder,
-
     ) {}
 
     public function build(
@@ -58,6 +58,12 @@ class WatchlistContentFactory
         $rootPage = $this->getRootPageModel($pageModel, $config);
         $sharePage = $config->addShare ? PageModel::findByPk($config->shareJumpTo) : null;
 
+        $downloadAllUrl = $rootPage
+            ? $this->router->generate(
+                'huh_watchlist_downlad_all',
+                ['wl_root_page' => $rootPage->id]
+            )
+            : null;
         return new WatchlistContent(
             config: $config,
             items: $watchlistModel === null ? [] : $this->fetchItems($watchlistModel),
@@ -65,7 +71,7 @@ class WatchlistContentFactory
             eventDispatcher: $this->eventDispatcher,
             watchlistUrl: $rootPage ? $this->router->generate('huh_watchlist', ['wl_root_page' => $rootPage->id]) : null,
             itemUrl: $rootPage ? $this->router->generate('huh_watchlist_item') : null,
-            downloadAllUrl: $rootPage ? $this->router->generate('huh_watchlist_downlad_all', ['wl_root_page' => $rootPage]) : null,
+            downloadAllUrl: $downloadAllUrl,
             legacyTemplate: $legacyTemplate,
             shareUrl: $sharePage ? $this->contentUrlGenerator->generate($sharePage, ['watchlist' => $watchlistModel->uuid]) : null,
             rootPage: $rootPage,
