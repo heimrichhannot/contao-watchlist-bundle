@@ -29,6 +29,8 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use HeimrichHannot\WatchlistBundle\Watchlist\AuthorType;
+use HeimrichHannot\WatchlistBundle\Watchlist\WatchlistContent;
+use HeimrichHannot\WatchlistBundle\Watchlist\WatchlistContentFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -41,17 +43,16 @@ class WatchlistUtil
     private bool $currentWatchlistLoaded = false;
 
     public function __construct(
-        private readonly ContaoFramework $framework,
-        private readonly Utils $utils,
+        private readonly ContaoFramework          $framework,
+        private readonly Utils                    $utils,
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly RouterInterface $router,
-        private readonly InsertTagParser $insertTagParser,
-        private readonly WatchlistItemFactory $watchlistItemFactory,
-        private readonly TokenStorageInterface $tokenStorage,
-        private readonly RequestStack $requestStack,
-    )
-    {
-    }
+        private readonly RouterInterface          $router,
+        private readonly InsertTagParser          $insertTagParser,
+        private readonly WatchlistItemFactory     $watchlistItemFactory,
+        private readonly TokenStorageInterface    $tokenStorage,
+        private readonly RequestStack             $requestStack,
+        private readonly WatchlistContentFactory  $watchlistContentFactory,
+    ) {}
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
     {
@@ -194,7 +195,6 @@ class WatchlistUtil
             }
 
 
-
             if (!$request->getSession()->isStarted()) {
                 $request->getSession()->start();
                 $request->getSession()->set('wl_init', true);
@@ -211,7 +211,7 @@ class WatchlistUtil
             ];
         }
 
-         if (null !== ($watchlist = $this->utils->model()->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
+        if (null !== ($watchlist = $this->utils->model()->findOneModelInstanceBy('tl_watchlist', $columns, $values))) {
             return $this->returnCurrentWatchlist($watchlist);
         }
 
@@ -220,8 +220,10 @@ class WatchlistUtil
         }
 
         return $this->returnCurrentWatchlist(
-            $this->createWatchlist($GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'],
-                (int)$config->id)
+            $this->createWatchlist(
+                $GLOBALS['TL_LANG']['MSC']['watchlistBundle']['watchlist'],
+                (int)$config->id
+            )
         );
     }
 
@@ -229,63 +231,15 @@ class WatchlistUtil
      * @param WatchlistConfigModel $config
      *
      * @throws \Exception
+     * @deprecated Use WatchlistContentFactory::build() instead
      */
     public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
-        $template->watchlistUrl = $this->utils->url()->addQueryStringParameterToUrl('wl_root_page=' . $rootPage, Environment::get('url') . AjaxController::WATCHLIST_URI);
-        $template->itemUrl = Environment::get('url') . AjaxController::WATCHLIST_ITEM_URI;
-        $template->watchlistDownloadAllUrl = $this->router->generate('huh_watchlist_downlad_all', ['wl_root_page' => $rootPage]);
-
-        if ($watchlist && $config->addShare) {
-            $template->watchlistShareUrl = $this->getWatchlistShareUrl($watchlist, $config);
-        }
-
-        $template->config = $config;
-
-        // items
-        if (null === $watchlist) {
-            $template->items = [];
-        } else {
-            $items = [];
-
-            $watchlistItemModels = $this->getWatchlistItems($watchlist->id, [
-                'modelOptions' => ['order' => 'dateAdded DESC'],
-            ]);
-            foreach ($watchlistItemModels as $model) {
-                $item = $model->row();
-
-                // clean items for frontend (don't pass internal info to outside for security reasons)
-                $cleanedItem = [
-                    'rootPage' => $rootPage,
-                    'type' => $item['type'],
-                    'title' => $item['title'],
-                ];
-
-                $wlItem = $this->watchlistItemFactory->build($model);
-                $cleanedItem = $wlItem->applyToTemplateData($cleanedItem);
-
-                if ($wlItem->getType() === WatchlistItemType::ENTITY && $wlItem->fileExist()) {
-                    $template->hasDownloadableFiles = true;
-                }
-
-                $cleanedItem['postData'] = htmlspecialchars(
-                    json_encode(array_filter($cleanedItem, 'is_scalar')),
-                    \ENT_QUOTES,
-                    'UTF-8'
-                );
-
-                $event = $this->eventDispatcher->dispatch(
-                    new WatchlistItemDataEvent($cleanedItem, $config),
-                    WatchlistItemDataEvent::class
-                );
-
-                $items[] = $event->getItem();
-            }
-
-            $template->items = $items;
-        }
-
-        return $this->insertTagParser->replace($template->parse());
+        return (string)$this->watchlistContentFactory->build(
+            watchlistModel: $watchlist ?: $config,
+            pageModel: PageModel::findByPk($rootPage),
+            legacyTemplate: $template,
+        );
     }
 
     public function getCurrentWatchlistConfig(int $rootPage = 0): ?WatchlistConfigModel
@@ -335,7 +289,8 @@ class WatchlistUtil
     {
         return WatchlistItemModel::findOneBy(
             ['tl_watchlist_item.pid=?', 'tl_watchlist_item.id=?'],
-            [$watchlist, $id]);
+            [$watchlist, $id]
+        );
     }
 
     public function getWatchlistShareUrl(?Model $watchlist = null, ?Model $config = null): string

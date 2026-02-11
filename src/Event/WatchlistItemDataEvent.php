@@ -8,25 +8,37 @@
 
 namespace HeimrichHannot\WatchlistBundle\Event;
 
+use HeimrichHannot\WatchlistBundle\Item\WatchlistItem;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class WatchlistItemDataEvent extends Event
 {
-    public function __construct(private array $item, private readonly WatchlistConfigModel $configModel)
-    {
-    }
+    public function __construct(
+        public array                         $itemData,
+        public readonly WatchlistConfigModel $configModel,
+        public readonly WatchlistItem        $item,
+    ) {}
 
+    /**
+     * @deprecated Use property access instead
+     */
     public function getItem(): array
     {
-        return $this->item;
+        return $this->itemData;
     }
 
-    public function setItem(array $item): void
+    /**
+     * @deprecated Use property access instead
+     */
+    public function setItem(array $itemData): void
     {
-        $this->item = $item;
+        $this->itemData = $itemData;
     }
 
+    /**
+     * @deprecated Use property access instead
+     */
     public function getConfigModel(): WatchlistConfigModel
     {
         return $this->configModel;
