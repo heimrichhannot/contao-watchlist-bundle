@@ -74,6 +74,14 @@ Frontend login available | The current frontend user (`member`) is used as the a
 **Hint:** As watch lists are currently not transferable from session to member, consider showing the watch list only
 after login. If you have no frontend login situation, you can ignore that, of course.
 
+## Twig functions
+
+The following twig functions are available:
+
+| Function                                                                                                                   | Description             |
+|----------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| `watchlist_add_file(FilesModel\|string\|Uuid\|FilesystemItem $file, ?string $title = null, ?string $watchlistUuid = null)` | Add a file to watchlist |
+
 ## Insert tags
 
 The following new insert tags are available. These take into account the translated jumpTo url and alias.
