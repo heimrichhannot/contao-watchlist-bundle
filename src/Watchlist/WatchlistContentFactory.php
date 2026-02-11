@@ -67,7 +67,7 @@ class WatchlistContentFactory
             itemUrl: $rootPage ? $this->router->generate('huh_watchlist_item') : null,
             downloadAllUrl: $downloadAllUrl,
             legacyTemplate: $legacyTemplate,
-            shareUrl: $sharePage ? $this->contentUrlGenerator->generate($sharePage, ['watchlist' => $watchlistModel->uuid]) : null,
+            shareUrl: ($sharePage && $watchlistModel) ? $this->contentUrlGenerator->generate($sharePage, ['watchlist' => $watchlistModel->uuid]) : null,
             rootPage: $rootPage,
         );
     }

@@ -77,6 +77,17 @@ class WatchlistItemFactory
     {
         $request = $this->requestStack->getCurrentRequest();
         if (null !== $request) {
+            $wlUrl = $request->query->get('wl_url');
+            if (is_string($wlUrl)) {
+                if (str_starts_with($wlUrl, 'http')) {
+                    return $wlUrl;
+                }
+                if (!str_starts_with($wlUrl, '/')) {
+                    $wlUrl = '/'.$wlUrl;
+                }
+                return $request->getSchemeAndHttpHost().$wlUrl;
+            }
+
             return $request->getUri();
         }
 
@@ -85,7 +96,7 @@ class WatchlistItemFactory
         if (!$config) {
             throw new \RuntimeException(sprintf('Could not find watchlist config with id %s', $watchlist->pid));
         }
-        $page = $this->pageFinder->findByConfig($config);
+        $page = $this->pageFinder->findByConfig($config, 1);
         if (!$page) {
             throw new \RuntimeException(sprintf('Could not find page for watchlist config with id %s', $config->id));
         }
