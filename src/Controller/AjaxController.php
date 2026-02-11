@@ -93,7 +93,7 @@ class AjaxController extends AbstractController
                 ]);
 
                 return new Response(
-                    $this->watchlistContentFactory->build(
+                    (string)$this->watchlistContentFactory->build(
                         $watchlist ?: $config,
                         $page
                     )
@@ -273,7 +273,8 @@ class AjaxController extends AbstractController
                 // already existing?
                 if (null !== $this->watchlistUtil->getWatchlistItemByData($data, $watchlist->id)) {
                     return new Response(
-                        $this->translator->trans('MSC.watchlistBundle.itemAlreadyInCurrentWatchlist', [], 'contao_default'), 409
+                        $this->translator->trans('MSC.watchlistBundle.itemAlreadyInCurrentWatchlist', [], 'contao_default'),
+                        409
                     );
                 }
 
