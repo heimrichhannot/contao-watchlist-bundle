@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.11.0] - 2025-01-30
+- Refactored: migrated JavaScript bundle class to ES module
+- Fixed: minor spelling mistake in `de/default.php`
+
 ## [3.10.0] - 2025-12-17
 - Refactored: frontend module and replaceInsertTags hook
 - Refactored: now using Symfony Service Attributes
