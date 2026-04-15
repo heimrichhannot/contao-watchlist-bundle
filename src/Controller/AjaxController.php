@@ -72,31 +72,13 @@ class AjaxController
      */
     public function watchlistContentAction(Request $request)
     {
+        $page = $this->setPageFromRequest($request);
         $this->framework->initialize();
 
         switch ($request->getMethod()) {
             case Request::METHOD_GET:
                 $rootPage = $request->get('wl_root_page');
                 $currentUrl = $request->get('wl_url');
-
-                if ($rootPage && !$request->attributes->has('pageModel')) {
-                    $page = PageModel::findByPk((int) $rootPage);
-
-                    if ($page && $page->id == $rootPage) {
-                        // needed to fix warning in contao:
-                        if (!$page->trail) {
-                            $page->trail = [];
-                        }
-
-                        // add page model to request and global to make it available in dependent code
-                        $request->attributes->set('pageModel', $page);
-
-                        if (!isset($GLOBALS['objPage'])) {
-                            $GLOBALS['objPage'] = $page;
-                        }
-                    }
-                }
-
                 $config = $this->watchlistUtil->getCurrentWatchlistConfig($rootPage);
 
                 if (null === $config) {
@@ -349,4 +331,59 @@ class AjaxController
                 return new Response('Method not allowed', 405);
         }
     }
+
+    private function setPageFromRequest(Request $request): ?PageModel
+    {
+        $page = $this->getPageFromRequest($request);
+        if (!$page) {
+            return null;
+        }
+
+        if (!$page->trail) {
+            $page->trail = [];
+        }
+
+        // add page model to request and global to make it available in dependent code
+        $request->attributes->set('pageModel', $page);
+
+        if (!isset($GLOBALS['objPage'])) {
+            $GLOBALS['objPage'] = $page;
+        }
+
+        $this->setLocaleFromPageModel($page, $request);
+
+
+
+        return $page;
+    }
+
+    private function getPageFromRequest(Request $request): ?PageModel
+    {
+        if ($request->attributes->has('pageModel')) {
+            $pageModel = $request->attributes->get('pageModel');
+            if (is_int($pageModel)) {
+                $pageModel = PageModel::findById($pageModel);
+            }
+            if ($pageModel instanceof PageModel) {
+                return $pageModel;
+            }
+        }
+
+        $rootPage = $request->get('wl_root_page', null);
+        if (!$rootPage) {
+            return null;
+        }
+
+        return PageModel::findByPk((int) $rootPage);
+    }
+
+
+
+    private function setLocaleFromPageModel(PageModel $pageModel, Request $request): void
+    {
+        $request->setLocale($pageModel->language);
+        $GLOBALS['TL_LANGUAGE'] = $pageModel->language;
+        $this->translator->setLocale($pageModel->language);
+    }
+
 }
