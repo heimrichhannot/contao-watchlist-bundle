@@ -36,11 +36,14 @@ use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
 
 class WatchlistUtil
 {
+    private const SESSION_IDENTIFIER_KEY = 'huh_watchlist_session_identifier';
+
     /** @var ContaoFramework */
     protected $framework;
     /** @var DatabaseUtil */
@@ -64,6 +67,7 @@ class WatchlistUtil
      */
     private $eventDispatcher;
     private RouterInterface $router;
+    private RequestStack $requestStack;
 
     public function __construct(
         ContaoFramework $framework,
@@ -75,7 +79,8 @@ class WatchlistUtil
         ImageUtil $imageUtil,
         Security $security,
         EventDispatcherInterface $eventDispatcher,
-        RouterInterface $router
+        RouterInterface $router,
+        RequestStack $requestStack
     ) {
         $this->framework = $framework;
         $this->databaseUtil = $databaseUtil;
@@ -87,6 +92,7 @@ class WatchlistUtil
         $this->security = $security;
         $this->eventDispatcher = $eventDispatcher;
         $this->router = $router;
+        $this->requestStack = $requestStack;
     }
 
     public function createWatchlist(string $title, int $config, array $options = []): ?Model
@@ -119,8 +125,21 @@ class WatchlistUtil
             $watchlist->authorType = DcaUtil::AUTHOR_TYPE_MEMBER;
             $watchlist->author = $user->id;
         } else {
+            $session = $this->requestStack->getCurrentRequest()->getSession();
+
+            if (!$session->isStarted()) {
+                $session->start();
+            }
+
+            $author = $session->get(self::SESSION_IDENTIFIER_KEY);
+
+            if (!$author) {
+                $author = $session->getId();
+                $session->set(self::SESSION_IDENTIFIER_KEY, $author);
+            }
+
             $watchlist->authorType = DcaUtil::AUTHOR_TYPE_SESSION;
-            $watchlist->author = session_id();
+            $watchlist->author = $author;
         }
 
         foreach ($data as $field => $value) {
@@ -220,6 +239,19 @@ class WatchlistUtil
                 $user->id,
             ];
         } else {
+            $session = $this->requestStack->getCurrentRequest()->getSession();
+
+            if (!$session->isStarted()) {
+                $session->start();
+            }
+
+            $author = $session->get(self::SESSION_IDENTIFIER_KEY);
+
+            if (!$author) {
+                $author = $session->getId();
+                $session->set(self::SESSION_IDENTIFIER_KEY, $author);
+            }
+
             $columns = [
                 'tl_watchlist.authorType=?',
                 'tl_watchlist.author=?',
@@ -227,7 +259,7 @@ class WatchlistUtil
 
             $values = [
                 DcaUtil::AUTHOR_TYPE_SESSION,
-                session_id(),
+                $author,
             ];
         }
 
@@ -249,8 +281,8 @@ class WatchlistUtil
      */
     public function parseWatchlistContent(FrontendTemplate $template, string $currentUrl, int $rootPage, Model $config, ?Model $watchlist = null): string
     {
-        $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage, Environment::get('url').AjaxController::WATCHLIST_URI);
-        $template->itemUrl = Environment::get('url').AjaxController::WATCHLIST_ITEM_URI;
+        $template->watchlistUrl = $this->urlUtil->addQueryString('wl_root_page='.$rootPage, AjaxController::WATCHLIST_URI);
+        $template->itemUrl = AjaxController::WATCHLIST_ITEM_URI;
         $template->watchlistDownloadAllUrl = $this->router->generate('huh_watchlist_downlad_all', ['wl_root_page' => $rootPage]);
 
         if ($watchlist && $config->addShare) {

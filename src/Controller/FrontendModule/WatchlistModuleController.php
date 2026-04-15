@@ -50,7 +50,7 @@ class WatchlistModuleController extends AbstractFrontendModuleController impleme
 
         $template->watchlistUpdateUrl = $this->utils->url()->addQueryStringParameterToUrl(
             parameter: \sprintf('wl_root_page=%s&wl_url=%s', $objPage->rootId, \urlencode($currentUrl)),
-            url: Environment::get('url') . AjaxController::WATCHLIST_CONTENT_URI
+            url: AjaxController::WATCHLIST_CONTENT_URI
         );
 
         if (null === $watchlist) {
