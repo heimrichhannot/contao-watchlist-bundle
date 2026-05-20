@@ -17,7 +17,7 @@ class WatchlistRuntime implements RuntimeExtensionInterface
     public function watchlistAddFile(FilesModel|string|Uuid|FilesystemItem $file, ?string $title = null, ?string $watchlistUuid = null): string
     {
         if ($file instanceof FilesystemItem) {
-            $file = $file->getUuid()->toString();
+            $file = $file->getUuid();
         }
 
         return $this->watchlistLinkGenerator->generateAddFileLink($file, $title, $watchlistUuid);

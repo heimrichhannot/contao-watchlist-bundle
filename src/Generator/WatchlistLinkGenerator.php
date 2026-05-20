@@ -18,6 +18,7 @@ use HeimrichHannot\WatchlistBundle\DataContainer\WatchlistItemContainer;
 use HeimrichHannot\WatchlistBundle\Util\WatchlistUtil;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Uid\Uuid;
 use Twig\Environment;
 
 class WatchlistLinkGenerator
@@ -29,10 +30,12 @@ class WatchlistLinkGenerator
         private readonly Environment     $twig,
     ) {}
 
-    public function generateAddFileLink(string|FilesModel $file, ?string $title = null, ?string $watchlistUuid = null): string
+    public function generateAddFileLink(string|FilesModel|Uuid $file, ?string $title = null, ?string $watchlistUuid = null): string
     {
         if ($file instanceof FilesModel) {
             $fileUuid = $file->uuid;
+        } elseif ($file instanceof Uuid) {
+            $fileUuid = $file->toRfc4122();
         } else {
             // file not existing?
             if (null === FilesModel::findByUuid($file)) {
@@ -44,7 +47,6 @@ class WatchlistLinkGenerator
         if (Validator::isBinaryUuid($fileUuid)) {
             $fileUuid = StringUtil::binToUuid($fileUuid);
         }
-
 
         $postData = $this->createDefaultPostData();
 
