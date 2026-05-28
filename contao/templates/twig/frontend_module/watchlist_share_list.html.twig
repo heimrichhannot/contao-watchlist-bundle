@@ -1,74 +1,87 @@
-{% extends "@Contao/block_unsearchable" %}
+{% extends "@Contao/content_element/_base.html.twig" %}
+{% import "@ContaoCore/Image/Studio/_macros.html.twig" as studio %}
 
 {% block content %}
-    {% if watchlistNotFound %}
-        <p class="watchlist-not-found">
-            {{ 'huh.watchlist.misc.watchlistNotFound'|trans }}
-        </p>
+    {% if watchlistNotFound|default %}
+        {{ block('not_found') }}
     {% else %}
-        {% if title %}
-            <h2>
-                {{ title }}
-            </h2>
+        {% if items is empty %}
+            {{ block('no_items') }}
+        {% else %}
+            {% block items %}
+                <div{{ attrs().addClass('items').mergeWith(items_wrapper_attributes|default) }}>
+                    {% for item in items %}
+                        {{ block('item') }}
+                    {% endfor %}
+                </div>
+            {% endblock %}
         {% endif %}
-
-        <div class="items">
-            {% if items is empty %}
-                <p class="no-items">
-                    {{ 'huh.watchlist.misc.noItemsInCurrentWatchlist'|trans }}
-                </p>
-            {% else %}
-                {% for item in items %}
-                    <div class="item">
-                        {% if item.type == constant('HeimrichHannot\\WatchlistBundle\\DataContainer\\WatchlistItemContainer::TYPE_FILE') and item.imageData_file is defined %}
-                            <div class="image">
-                                {{ include('@Contao/image.html.twig', item.imageData_file) }}
-                            </div>
-                        {% elseif item.type == constant('HeimrichHannot\\WatchlistBundle\\DataContainer\\WatchlistItemContainer::TYPE_ENTITY') and item.imageData_entityFile is defined %}
-                            <div class="image">
-                                {{ include('@Contao/image.html.twig', item.imageData_entityFile) }}
-                            </div>
-                        {% endif %}
-
-                        <h6 class="title">
-                            {{ item.title }}
-                        </h6>
-
-                        {% if not item.existing %}
-                            <div class="non-existing">
-                                <small>
-                                    {{ ('huh.watchlist.misc.linked' ~ item.type|capitalize ~ 'Missing')|trans }}
-                                </small>
-                            </div>
-                        {% else %}
-                            {% if item.downloadUrl %}
-                                <div class="download-wrapper">
-                                    <a href="{{ item.downloadUrl }}" class="download">
-                                        {{ 'huh.watchlist.misc.download'|trans }}
-                                    </a>
-                                </div>
-                            {% elseif item.entityUrl %}
-                                <div class="show-wrapper">
-                                    <a href="{{ item.entityUrl }}" class="show">
-                                        {{ 'huh.watchlist.misc.show'|trans }}
-                                    </a>
-                                </div>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
 
         {% if items is not empty %}
             <div class="actions">
-                {% if hasDownloadableFiles %}
-                    <a href="{{ watchlistDownloadAllUrl }}" class="download-all">
-                        {{ 'huh.watchlist.misc.downloadAll'|trans }}
-                    </a>
+                {% if has_downloads|default %}
+                    {{ block('download_all') }}
                 {% endif %}
             </div>
         {% endif %}
     {% endif %}
+{% endblock %}
+
+{% block not_found %}
+    <p{{ attrs().addClass("watchlist-not-found").mergeWith(watchlist_not_found_attributes|default) }}>
+        {{ 'huh.watchlist.misc.watchlistNotFound'|trans }}
+    </p>
+{% endblock %}
+
+{% block no_items %}
+    <p{{ attrs().addClass('no-items').mergeWith(no_items_attributes|default) }}>
+        {{ 'huh.watchlist.misc.noItemsInCurrentWatchlist'|trans }}
+    </p>
+{% endblock %}
+
+{% block item %}
+    {# @var HeimrichHannot\WatchlistBundle\Item\WatchlistItem item #}
+    <div{{ attrs().addClass('item').mergeWith(item_wrapper_attributes|default) }}>
+        {# Image rendering with fallback chain #}
+        {% block item_figure %}
+            {% if item.getImage()|default %}
+                {{ studio.figure(item.getImage()) }}
+            {% endif %}
+        {% endblock %}
+
+        {% block item_title %}
+            <h6 class="title">
+                {{ item.title }}
+            </h6>
+        {% endblock %}
+
+        {% if not item.fileExist %}
+            <div class="non-existing">
+                <small>
+                    {{ ('huh.watchlist.misc.linked' ~ item.type|capitalize ~ 'Missing')|trans }}
+                </small>
+            </div>
+        {% else %}
+            {% if item.downloadUrl %}
+                <div class="download-wrapper">
+                    <a{{ attrs().addClass('download').set('href', item.downloadUrl).mergeWith(link_attributes|default) }}>
+                        {{ 'huh.watchlist.misc.download'|trans }}
+                    </a>
+                </div>
+            {% elseif item.entityUrl %}
+                <div class="show-wrapper">
+                    <a{{ attrs().addClass('show').set('href', item.model.entityUrl).mergeWith(link_attributes|default) }}>
+                        {{ 'huh.watchlist.misc.show'|trans }}
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block download_all %}
+    <a{{ attrs().addClass('download-all').set('href', download_all).mergeWith(link_attributes|default) }}>
+        {{ 'huh.watchlist.misc.downloadAll'|trans }}
+    </a>
 {% endblock %}
 

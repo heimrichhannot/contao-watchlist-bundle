@@ -16,6 +16,7 @@ use Contao\CoreBundle\Filesystem\FilesystemItem;
 use Contao\CoreBundle\Filesystem\FilesystemItemIterator;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
 use Contao\Template;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItem;
@@ -30,7 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\RouterInterface;
 
-#[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous', template: 'frontend_modules/watchlist_share_list')]
+#[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous', template: 'frontend_module/watchlist_share_list')]
 class ShareListModuleController extends AbstractFrontendModuleController
 {
     const TYPE = 'watchlist_share_list';
@@ -53,7 +54,7 @@ class ShareListModuleController extends AbstractFrontendModuleController
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    protected function getResponse(Template $template, ModuleModel $module, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         if (!($watchlistUuid = $request->get('watchlist'))) {
             $template->watchlistNotFound = true;
@@ -68,29 +69,26 @@ class ShareListModuleController extends AbstractFrontendModuleController
             return $template->getResponse();
         }
 
-        $items = [];
-
         $watchlistItemModels = $this->watchlistUtil->getWatchlistItems(
             $watchlist->id,
             ['modelOptions' => ['order' => 'title ASC'],],
         );
-        foreach ($watchlistItemModels as $model) {
-            $item = $model->row();
-            $wlItem = $this->watchlistItemFactory->build($model);
-            $item = $wlItem->applyToTemplateData($item);
+        $items = $this->watchlistItemFactory->buildForCollection($watchlistItemModels);
+        $template->set('items', $items);
 
-            if (WatchlistItemType::FILE === $wlItem->getType() && $wlItem->fileExist()) {
+
+
+        foreach ($items as $item) {
+            if (WatchlistItemType::FILE === $item->getType() && $item->fileExist()) {
                 $template->hasDownloadableFiles = true;
+                $template->set('has_downloads', true);
+
+                $downloadAll = $this->router->generate('huh_watchlist_downlad_all', ['watchlist' => $watchlist->id]);
+                $template->watchlistDownloadAllUrl = $downloadAll;
+                $template->set('download_all', $downloadAll);
+                break;
             }
-
-            $item['watchlistConfig'] = $watchlist->config;
-
-            $items[] = $item;
         }
-
-        $template->items = $items;
-
-        $template->watchlistDownloadAllUrl = $this->router->generate('huh_watchlist_downlad_all', ['watchlist' => $watchlist->id]);
 
         return $template->getResponse();
     }

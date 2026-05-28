@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0-beta2.0] - 2026-05-28
+
+
 ## [4.0.0-beta1.2] - 2026-05-28
 - Fixed: download links in shared watchlist not working
 

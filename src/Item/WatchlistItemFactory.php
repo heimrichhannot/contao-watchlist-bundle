@@ -56,10 +56,10 @@ class WatchlistItemFactory
     }
 
     /**
-     * @param Collection<WatchlistItemModel>|null $collection
+     * @param Collection<WatchlistItemModel>|WatchlistItemModel[]|null $collection
      * @return array<WatchlistItem>
      */
-    public function buildForCollection(Collection|null $collection = null): array
+    public function buildForCollection(Collection|array|null $collection = null): array
     {
         if (null === $collection) {
             return [];

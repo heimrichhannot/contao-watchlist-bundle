@@ -7,6 +7,7 @@ use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Image\Studio\Figure;
 use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\Image;
+use Contao\Image\PictureConfiguration;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
@@ -18,7 +19,6 @@ class WatchlistItem
     private readonly WatchlistItemType $type;
     private ?FilesystemItem $file;
     private ?WatchlistConfigModel $config;
-    private ?Figure $figure;
     private string $downloadUrl;
 
     /**
@@ -64,12 +64,16 @@ class WatchlistItem
         };
     }
 
-    public function getImage(): ?Figure
+    public function getTitle(): string
     {
-        if (isset($this->figure)) {
-            return $this->figure;
+        if ($this->model->title) {
+            return $this->model->title;
         }
+        return $this->file?->getName() ?: '';
+    }
 
+    public function getImage(PictureConfiguration|array|int|string|null $size = null): ?Figure
+    {
         $this->resolveFile();
         if (!$this->fileExist()) {
             return null;
@@ -77,14 +81,15 @@ class WatchlistItem
 
         $figureBuilder = $this->studio->createFigureBuilder()
             ->fromUuid($this->file->getUuid())
-            ->enableLightbox();;
+            ->enableLightbox();
 
-        if ($this->getConfig()?->imgSize) {
+        if ($size) {
+            $figureBuilder->setSize($size);
+        } elseif ($this->getConfig()?->imgSize) {
             $figureBuilder->setSize($this->getConfig()->imgSize);
         }
 
-        $this->figure = $figureBuilder->buildIfResourceExists();
-        return $this->figure;
+        return $figureBuilder->buildIfResourceExists();
     }
 
     public function getFile(): ?FilesystemItem
@@ -142,14 +147,6 @@ class WatchlistItem
         $data['existing'] = true;
         $data['fileItem'] = $this->file;
         $data['file'] = (string)$this->file->getUuid();
-
-        // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
-//        $url = $this->insertTagParser->replace('{{download_link::' . $file->path . '}}');
-//        $query = parse_url((string)$url, \PHP_URL_QUERY);
-//        $url = $this->utils->url()->addQueryStringParameterToUrl($query, $currentUrl);
-//
-//        $cleanedItem['downloadUrl'] = $this->utils->url()->removeQueryStringParameterFromUrl(['wl_root_page', 'wl_url'], $url);
-
         $data['downloadUrl'] = $this->getDownloadUrl();
 
         if (empty($data['title'])) {
@@ -169,14 +166,9 @@ class WatchlistItem
         $data['entityTable'] = $this->model->entityTable;
         $data['entity'] = $this->model->entity;
         $data['entityUrl'] = $this->model->entityUrl;
-
-
         $data['entityFile'] = (string)$this->getFile()?->getUuid() ?: '';
         $data['existing'] = $this->fileExist();
         $data['hash'] = md5(implode('_', [$this->getType()->value, $this->model->pid, $this->model->entityTable, $this->model->entity]));
-
-//        $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
-
         $data['figure'] = $this->getImage();
 
         return $data;
