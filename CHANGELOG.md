@@ -3,7 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [4.0.0-beta2.0] - 2026-05-28
-
+- Added: WatchlistItem::getTitle() and WatchlistItem::getFileSize() ([#12](https://github.com/heimrichhannot/contao-watchlist-bundle/pull/12))
+- Changed: modernized share module ([#12](https://github.com/heimrichhannot/contao-watchlist-bundle/pull/12))
+  - use new template system [POSSIBLE BC BREAK!] 
+  - update templates for easier variant creation [POSSIBLE BC BREAK!]
+- Changed: WatchlistItem::getImage() now features a size parameter ([#12](https://github.com/heimrichhannot/contao-watchlist-bundle/pull/12))
+- Fixed: typo in share module template name ([#12](https://github.com/heimrichhannot/contao-watchlist-bundle/pull/12))
 
 ## [4.0.0-beta1.2] - 2026-05-28
 - Fixed: download links in shared watchlist not working
