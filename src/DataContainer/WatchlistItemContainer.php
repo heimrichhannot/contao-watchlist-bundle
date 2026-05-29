@@ -10,32 +10,29 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Database;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class WatchlistItemContainer
 {
-    const TYPE_FILE = 'file';
-    const TYPE_ENTITY = 'entity';
+    public const TYPE_FILE = 'file';
+    public const TYPE_ENTITY = 'entity';
 
-    const TYPES = [
+    public const TYPES = [
         self::TYPE_FILE,
         self::TYPE_ENTITY,
     ];
 
     public function __construct(
         private readonly Utils $utils,
-        private readonly ContaoFramework $framework
-    )
-    {
-        $this->framework = $framework;
+    ) {
     }
 
     #[AsCallback(table: 'tl_watchlist_item', target: 'fields.entityTable.options')]
     public function getDataContainers()
     {
         $arrTables = Database::getInstance()->listTables();
+
         return array_values($arrTables);
     }
 

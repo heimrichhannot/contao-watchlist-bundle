@@ -7,6 +7,7 @@ use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Image\Studio\Figure;
 use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\Image;
+use Contao\Image\PictureConfiguration;
 use Contao\System;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
@@ -18,7 +19,6 @@ class WatchlistItem
     private readonly WatchlistItemType $type;
     private ?FilesystemItem $file;
     private ?WatchlistConfigModel $config;
-    private ?Figure $figure;
     private string $downloadUrl;
 
     /**
@@ -29,8 +29,7 @@ class WatchlistItem
         private readonly VirtualFilesystemInterface $filesystem,
         private readonly Studio $studio,
         private readonly \Closure $downloadUrlCallback,
-    )
-    {
+    ) {
         $this->type = WatchlistItemType::from($this->model->type ?? WatchlistItemType::FILE->value);
     }
 
@@ -42,12 +41,14 @@ class WatchlistItem
     public function fileExist(): bool
     {
         $this->resolveFile();
-        return $this->file !== null;
+
+        return null !== $this->file;
     }
 
     public function getPath(): ?string
     {
         $this->resolveFile();
+
         return $this->file?->getPath();
     }
 
@@ -64,12 +65,17 @@ class WatchlistItem
         };
     }
 
-    public function getImage(): ?Figure
+    public function getTitle(): string
     {
-        if (isset($this->figure)) {
-            return $this->figure;
+        if ($this->model->title) {
+            return $this->model->title;
         }
 
+        return $this->getFile()?->getName() ?: '';
+    }
+
+    public function getImage(PictureConfiguration|array|int|string|null $size = null): ?Figure
+    {
         $this->resolveFile();
         if (!$this->fileExist()) {
             return null;
@@ -77,28 +83,59 @@ class WatchlistItem
 
         $figureBuilder = $this->studio->createFigureBuilder()
             ->fromUuid($this->file->getUuid())
-            ->enableLightbox();;
+            ->enableLightbox();
 
-        if ($this->getConfig()?->imgSize) {
+        if ($size) {
+            $figureBuilder->setSize($size);
+        } elseif ($this->getConfig()?->imgSize) {
             $figureBuilder->setSize($this->getConfig()->imgSize);
         }
 
-        $this->figure = $figureBuilder->buildIfResourceExists();
-        return $this->figure;
+        return $figureBuilder->buildIfResourceExists();
     }
 
     public function getFile(): ?FilesystemItem
     {
         $this->resolveFile();
+
         return $this->file;
     }
 
-    public function getDownloadUrl()
+    public function getDownloadUrl(): string
     {
         if (!isset($this->downloadUrl)) {
-            $this->downloadUrl =  ($this->downloadUrlCallback)($this);
+            $this->downloadUrl = ($this->downloadUrlCallback)($this);
         }
+
         return $this->downloadUrl;
+    }
+
+    public function getFileSize(bool $readable = true): string
+    {
+        if (!$this->getFile()) {
+            return '';
+        }
+
+        return System::getReadableSize($this->file->getFileSize());
+    }
+
+    public function getUrl(): string
+    {
+        if (WatchlistItemType::ENTITY === $this->type) {
+            return $this->model->entityUrl ?? '';
+        }
+
+        return $this->getDownloadUrl();
+    }
+
+    public function isFile(): bool
+    {
+        return WatchlistItemType::FILE === $this->type;
+    }
+
+    public function isEntity(): bool
+    {
+        return WatchlistItemType::ENTITY === $this->type;
     }
 
     private function resolveFile(): void
@@ -124,9 +161,11 @@ class WatchlistItem
         $watchlist = WatchlistModel::findByPk($this->model->pid);
         if (!$watchlist) {
             $this->config = null;
+
             return $this->config;
         }
         $this->config = WatchlistConfigModel::findByPk($watchlist->config);
+
         return $this->config;
     }
 
@@ -136,24 +175,17 @@ class WatchlistItem
             $data['existing'] = false;
             $data['fileItem'] = null;
             $data['file'] = '';
+
             return $data;
         }
 
         $data['existing'] = true;
         $data['fileItem'] = $this->file;
-        $data['file'] = (string)$this->file->getUuid();
-
-        // create the url with file-GET-parameter so that also nonpublic files can be accessed safely
-//        $url = $this->insertTagParser->replace('{{download_link::' . $file->path . '}}');
-//        $query = parse_url((string)$url, \PHP_URL_QUERY);
-//        $url = $this->utils->url()->addQueryStringParameterToUrl($query, $currentUrl);
-//
-//        $cleanedItem['downloadUrl'] = $this->utils->url()->removeQueryStringParameterFromUrl(['wl_root_page', 'wl_url'], $url);
-
+        $data['file'] = (string) $this->file->getUuid();
         $data['downloadUrl'] = $this->getDownloadUrl();
 
         if (empty($data['title'])) {
-            $data['title'] = $this->file->getName();
+            $data['title'] = $this->getTitle();
         }
 
         $data['filesize'] = System::getReadableSize($this->file->getFileSize());
@@ -169,14 +201,9 @@ class WatchlistItem
         $data['entityTable'] = $this->model->entityTable;
         $data['entity'] = $this->model->entity;
         $data['entityUrl'] = $this->model->entityUrl;
-
-
-        $data['entityFile'] = (string)$this->getFile()?->getUuid() ?: '';
+        $data['entityFile'] = (string) $this->getFile()?->getUuid() ?: '';
         $data['existing'] = $this->fileExist();
         $data['hash'] = md5(implode('_', [$this->getType()->value, $this->model->pid, $this->model->entityTable, $this->model->entity]));
-
-//        $cleanedItem['postData'] = htmlspecialchars(json_encode($cleanedItem), \ENT_QUOTES, 'UTF-8');
-
         $data['figure'] = $this->getImage();
 
         return $data;

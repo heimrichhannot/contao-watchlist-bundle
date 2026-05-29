@@ -7,7 +7,6 @@ use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\Model\Collection;
-use Contao\PageModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -23,9 +22,7 @@ class WatchlistItemFactory
         private readonly RequestStack $requestStack,
         private readonly PageFinder $pageFinder,
         private readonly ContentUrlGenerator $contentUrlGenerator,
-
-    )
-    {
+    ) {
     }
 
     public function build(int|WatchlistItemModel $instance): WatchlistItem
@@ -34,32 +31,38 @@ class WatchlistItemFactory
             $instance = WatchlistItemModel::findByPk($instance);
         }
 
-        if (!($instance instanceof WatchlistItemModel)) {
+        if (!$instance instanceof WatchlistItemModel) {
             throw new \RuntimeException(sprintf('Could not find watchlist item with id %s', $instance));
         }
 
         $url = $this->getUrl($instance);
-        $helper = $this->fileDownloadHelper;
 
         return new WatchlistItem(
             $instance,
             $this->filesStorage,
             $this->studio,
-            function(WatchlistItem $item) use ($url, $helper) {
-                    return $helper->generateDownloadUrl(
-                        $url,
-                        $item->getFile(),
-                        context: ['watchlist' => $item->getModel()->pid]
-                    );
+            function (WatchlistItem $item) use ($url): string {
+                if (!$item->getFile()) {
+                    return '';
+                }
+
+                return $this->fileDownloadHelper->generateDownloadUrl(
+                    $url,
+                    $item->getFile(),
+                    context: [
+                        'watchlist' => $item->getModel()->pid,
+                    ]
+                );
             }
         );
     }
 
     /**
-     * @param Collection<WatchlistItemModel>|null $collection
+     * @param Collection<WatchlistItemModel>|WatchlistItemModel[]|null $collection
+     *
      * @return array<WatchlistItem>
      */
-    public function buildForCollection(Collection|null $collection = null): array
+    public function buildForCollection(Collection|array|null $collection = null): array
     {
         if (null === $collection) {
             return [];
@@ -85,6 +88,7 @@ class WatchlistItemFactory
                 if (!str_starts_with($wlUrl, '/')) {
                     $wlUrl = '/'.$wlUrl;
                 }
+
                 return $request->getSchemeAndHttpHost().$wlUrl;
             }
 
@@ -100,6 +104,7 @@ class WatchlistItemFactory
         if (!$page) {
             throw new \RuntimeException(sprintf('Could not find page for watchlist config with id %s', $config->id));
         }
+
         return $this->contentUrlGenerator->generate($page);
     }
 }

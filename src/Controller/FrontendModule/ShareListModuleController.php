@@ -8,16 +8,16 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
-use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Filesystem\FileDownloadHelper;
 use Contao\CoreBundle\Filesystem\FilesystemItem;
 use Contao\CoreBundle\Filesystem\FilesystemItemIterator;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
-use Contao\Template;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItem;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
@@ -30,10 +30,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\RouterInterface;
 
-#[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous', template: 'frontend_modules/watchlist_share_list')]
+#[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous', template: 'frontend_module/watchlist_share_list')]
 class ShareListModuleController extends AbstractFrontendModuleController
 {
-    const TYPE = 'watchlist_share_list';
+    public const TYPE = 'watchlist_share_list';
 
     public function __construct(
         protected ContaoFramework $framework,
@@ -43,17 +43,17 @@ class ShareListModuleController extends AbstractFrontendModuleController
         private readonly FileDownloadHelper $downloadHelper,
         private readonly VirtualFilesystemInterface $filesStorage,
         private readonly WatchlistContentFactory $watchlistContentFactory,
-    )
-    {
+    ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, ?array $classes = null): Response
     {
         $this->handleDownload($request);
+
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    protected function getResponse(Template $template, ModuleModel $module, Request $request): Response
+    protected function getResponse(FragmentTemplate $template, ModuleModel $model, Request $request): Response
     {
         if (!($watchlistUuid = $request->get('watchlist'))) {
             $template->watchlistNotFound = true;
@@ -65,45 +65,48 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
         if (!$watchlist) {
             $template->watchlistNotFound = true;
+
             return $template->getResponse();
         }
 
-        $items = [];
-
         $watchlistItemModels = $this->watchlistUtil->getWatchlistItems(
             $watchlist->id,
-            ['modelOptions' => ['order' => 'title ASC'],],
+            [
+                'modelOptions' => [
+                    'order' => 'title ASC',
+                ],
+            ],
         );
-        foreach ($watchlistItemModels as $model) {
-            $item = $model->row();
-            $wlItem = $this->watchlistItemFactory->build($model);
-            $item = $wlItem->applyToTemplateData($item);
+        $items = $this->watchlistItemFactory->buildForCollection($watchlistItemModels);
+        $template->set('items', $items);
 
-            if (WatchlistItemType::FILE === $wlItem->getType() && $wlItem->fileExist()) {
+        foreach ($items as $item) {
+            if (WatchlistItemType::FILE === $item->getType() && $item->fileExist()) {
                 $template->hasDownloadableFiles = true;
+                $template->set('has_downloads', true);
+
+                $downloadAll = $this->router->generate('huh_watchlist_downlad_all', [
+                    'watchlist' => $watchlist->id,
+                ]);
+                $template->watchlistDownloadAllUrl = $downloadAll;
+                $template->set('download_all', $downloadAll);
+                break;
             }
-
-            $item['watchlistConfig'] = $watchlist->config;
-
-            $items[] = $item;
         }
-
-        $template->items = $items;
-
-        $template->watchlistDownloadAllUrl = $this->router->generate('huh_watchlist_downlad_all', ['watchlist' => $watchlist->id]);
 
         return $template->getResponse();
     }
 
     protected function getFilesystemItems(WatchlistModel $watchlist): FilesystemItemIterator
     {
-        $content =  $this->watchlistContentFactory->build(
+        $content = $this->watchlistContentFactory->build(
             $watchlist,
             pageModel: $this->getPageModel(),
         );
 
-        $fileItems = array_map(fn(WatchlistItem $item) => $item->getFile(), $content->items);
+        $fileItems = array_map(fn (WatchlistItem $item) => $item->getFile(), $content->items);
         $fileItems = array_values(array_filter($fileItems));
+
         return new FilesystemItemIterator($fileItems);
     }
 
@@ -112,7 +115,7 @@ class ShareListModuleController extends AbstractFrontendModuleController
         $response = $this->downloadHelper->handle(
             $request,
             $this->filesStorage,
-            function (FilesystemItem $item, array $context): Response|null {
+            function (FilesystemItem $item, array $context): ?Response {
                 $watchlist = WatchlistModel::findByPk($context['watchlist'] ?? 0);
                 if (null === $watchlist) {
                     return new Response('', Response::HTTP_NO_CONTENT);

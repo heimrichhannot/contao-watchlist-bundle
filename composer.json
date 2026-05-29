@@ -21,8 +21,8 @@
     },
     "require": {
         "php": "^8.1",
-        "ext-zip": "*",
         "ext-json": "*",
+        "ext-zip": "*",
         "contao/core-bundle": "^5.3",
         "doctrine/dbal": "^3.0",
         "heimrichhannot/contao-encore-contracts": "^1.0",
@@ -33,7 +33,8 @@
         "symfony/http-foundation": "^6.4 || ^7.0",
         "symfony/http-kernel": "^6.4 || ^7.0",
         "symfony/routing": "^6.4 || ^7.0",
-        "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0"
+        "symfony/translation-contracts": "^1.0 || ^2.0 || ^3.0",
+        "symfony/uid": "^6.4 || ^7.0"
     },
     "old": {
         "heimrichhannot/contao-inserttagcollection-bundle": "^1.1",
