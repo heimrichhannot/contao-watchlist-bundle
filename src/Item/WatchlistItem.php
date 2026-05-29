@@ -106,6 +106,14 @@ class WatchlistItem
         return $this->downloadUrl;
     }
 
+    public function getFileSize(bool $readable = true): string
+    {
+        if (!$this->file) {
+            return '';
+        }
+        return System::getReadableSize($this->file->getFileSize());
+    }
+
     private function resolveFile(): void
     {
         if (isset($this->file)) {
@@ -150,7 +158,7 @@ class WatchlistItem
         $data['downloadUrl'] = $this->getDownloadUrl();
 
         if (empty($data['title'])) {
-            $data['title'] = $this->file->getName();
+            $data['title'] = $this->getTitle();
         }
 
         $data['filesize'] = System::getReadableSize($this->file->getFileSize());
