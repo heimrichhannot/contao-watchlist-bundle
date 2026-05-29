@@ -8,8 +8,8 @@
 
 namespace HeimrichHannot\WatchlistBundle\Controller\FrontendModule;
 
-use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Filesystem\FileDownloadHelper;
 use Contao\CoreBundle\Filesystem\FilesystemItem;
@@ -33,7 +33,7 @@ use Symfony\Component\Routing\RouterInterface;
 #[AsFrontendModule(ShareListModuleController::TYPE, category: 'miscellaneous', template: 'frontend_module/watchlist_share_list')]
 class ShareListModuleController extends AbstractFrontendModuleController
 {
-    const TYPE = 'watchlist_share_list';
+    public const TYPE = 'watchlist_share_list';
 
     public function __construct(
         protected ContaoFramework $framework,
@@ -43,13 +43,13 @@ class ShareListModuleController extends AbstractFrontendModuleController
         private readonly FileDownloadHelper $downloadHelper,
         private readonly VirtualFilesystemInterface $filesStorage,
         private readonly WatchlistContentFactory $watchlistContentFactory,
-    )
-    {
+    ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, ?array $classes = null): Response
     {
         $this->handleDownload($request);
+
         return parent::__invoke($request, $model, $section, $classes);
     }
 
@@ -65,24 +65,29 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
         if (!$watchlist) {
             $template->watchlistNotFound = true;
+
             return $template->getResponse();
         }
 
         $watchlistItemModels = $this->watchlistUtil->getWatchlistItems(
             $watchlist->id,
-            ['modelOptions' => ['order' => 'title ASC'],],
+            [
+                'modelOptions' => [
+                    'order' => 'title ASC',
+                ],
+            ],
         );
         $items = $this->watchlistItemFactory->buildForCollection($watchlistItemModels);
         $template->set('items', $items);
-
-
 
         foreach ($items as $item) {
             if (WatchlistItemType::FILE === $item->getType() && $item->fileExist()) {
                 $template->hasDownloadableFiles = true;
                 $template->set('has_downloads', true);
 
-                $downloadAll = $this->router->generate('huh_watchlist_downlad_all', ['watchlist' => $watchlist->id]);
+                $downloadAll = $this->router->generate('huh_watchlist_downlad_all', [
+                    'watchlist' => $watchlist->id,
+                ]);
                 $template->watchlistDownloadAllUrl = $downloadAll;
                 $template->set('download_all', $downloadAll);
                 break;
@@ -94,13 +99,14 @@ class ShareListModuleController extends AbstractFrontendModuleController
 
     protected function getFilesystemItems(WatchlistModel $watchlist): FilesystemItemIterator
     {
-        $content =  $this->watchlistContentFactory->build(
+        $content = $this->watchlistContentFactory->build(
             $watchlist,
             pageModel: $this->getPageModel(),
         );
 
-        $fileItems = array_map(fn(WatchlistItem $item) => $item->getFile(), $content->items);
+        $fileItems = array_map(fn (WatchlistItem $item) => $item->getFile(), $content->items);
         $fileItems = array_values(array_filter($fileItems));
+
         return new FilesystemItemIterator($fileItems);
     }
 
@@ -109,7 +115,7 @@ class ShareListModuleController extends AbstractFrontendModuleController
         $response = $this->downloadHelper->handle(
             $request,
             $this->filesStorage,
-            function (FilesystemItem $item, array $context): Response|null {
+            function (FilesystemItem $item, array $context): ?Response {
                 $watchlist = WatchlistModel::findByPk($context['watchlist'] ?? 0);
                 if (null === $watchlist) {
                     return new Response('', Response::HTTP_NO_CONTENT);

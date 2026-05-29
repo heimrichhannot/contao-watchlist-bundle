@@ -29,8 +29,7 @@ class WatchlistItem
         private readonly VirtualFilesystemInterface $filesystem,
         private readonly Studio $studio,
         private readonly \Closure $downloadUrlCallback,
-    )
-    {
+    ) {
         $this->type = WatchlistItemType::from($this->model->type ?? WatchlistItemType::FILE->value);
     }
 
@@ -42,12 +41,14 @@ class WatchlistItem
     public function fileExist(): bool
     {
         $this->resolveFile();
-        return $this->file !== null;
+
+        return null !== $this->file;
     }
 
     public function getPath(): ?string
     {
         $this->resolveFile();
+
         return $this->file?->getPath();
     }
 
@@ -69,6 +70,7 @@ class WatchlistItem
         if ($this->model->title) {
             return $this->model->title;
         }
+
         return $this->file?->getName() ?: '';
     }
 
@@ -95,14 +97,16 @@ class WatchlistItem
     public function getFile(): ?FilesystemItem
     {
         $this->resolveFile();
+
         return $this->file;
     }
 
     public function getDownloadUrl()
     {
         if (!isset($this->downloadUrl)) {
-            $this->downloadUrl =  ($this->downloadUrlCallback)($this);
+            $this->downloadUrl = ($this->downloadUrlCallback)($this);
         }
+
         return $this->downloadUrl;
     }
 
@@ -111,6 +115,7 @@ class WatchlistItem
         if (!$this->file) {
             return '';
         }
+
         return System::getReadableSize($this->file->getFileSize());
     }
 
@@ -137,9 +142,11 @@ class WatchlistItem
         $watchlist = WatchlistModel::findByPk($this->model->pid);
         if (!$watchlist) {
             $this->config = null;
+
             return $this->config;
         }
         $this->config = WatchlistConfigModel::findByPk($watchlist->config);
+
         return $this->config;
     }
 
@@ -149,12 +156,13 @@ class WatchlistItem
             $data['existing'] = false;
             $data['fileItem'] = null;
             $data['file'] = '';
+
             return $data;
         }
 
         $data['existing'] = true;
         $data['fileItem'] = $this->file;
-        $data['file'] = (string)$this->file->getUuid();
+        $data['file'] = (string) $this->file->getUuid();
         $data['downloadUrl'] = $this->getDownloadUrl();
 
         if (empty($data['title'])) {
@@ -174,7 +182,7 @@ class WatchlistItem
         $data['entityTable'] = $this->model->entityTable;
         $data['entity'] = $this->model->entity;
         $data['entityUrl'] = $this->model->entityUrl;
-        $data['entityFile'] = (string)$this->getFile()?->getUuid() ?: '';
+        $data['entityFile'] = (string) $this->getFile()?->getUuid() ?: '';
         $data['existing'] = $this->fileExist();
         $data['hash'] = md5(implode('_', [$this->getType()->value, $this->model->pid, $this->model->entityTable, $this->model->entity]));
         $data['figure'] = $this->getImage();

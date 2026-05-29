@@ -8,7 +8,6 @@ use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
-use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
@@ -16,15 +15,14 @@ use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/src',
-        __DIR__ . '/contao',
-
+        __DIR__.'/src',
+        __DIR__.'/contao',
     ])
     ->withPhpVersion(PhpVersion::PHP_84)
     ->withRules([
         AddVoidReturnTypeWhereNoReturnRector::class,
-        # In Vorbereitung für PHP 8.4:
-        ExplicitNullableParamTypeRector::class
+        // In Vorbereitung für PHP 8.4:
+        ExplicitNullableParamTypeRector::class,
     ])
     ->withImportNames(
         importShortClasses: false,
@@ -37,7 +35,7 @@ return RectorConfig::configure()
     )
     ->withSets([
         LevelSetList::UP_TO_PHP_81,
-        ContaoLevelSetList::UP_TO_CONTAO_413,
+        ContaoLevelSetList::UP_TO_CONTAO_53,
         ContaoSetList::FQCN,
         ContaoSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ])

@@ -22,9 +22,7 @@ class WatchlistItemFactory
         private readonly RequestStack $requestStack,
         private readonly PageFinder $pageFinder,
         private readonly ContentUrlGenerator $contentUrlGenerator,
-
-    )
-    {
+    ) {
     }
 
     public function build(int|WatchlistItemModel $instance): WatchlistItem
@@ -33,7 +31,7 @@ class WatchlistItemFactory
             $instance = WatchlistItemModel::findByPk($instance);
         }
 
-        if (!($instance instanceof WatchlistItemModel)) {
+        if (!$instance instanceof WatchlistItemModel) {
             throw new \RuntimeException(sprintf('Could not find watchlist item with id %s', $instance));
         }
 
@@ -44,16 +42,19 @@ class WatchlistItemFactory
             $instance,
             $this->filesStorage,
             $this->studio,
-            fn(WatchlistItem $item) => $helper->generateDownloadUrl(
+            fn (WatchlistItem $item) => $helper->generateDownloadUrl(
                 $url,
                 $item->getFile(),
-                context: ['watchlist' => $item->getModel()->pid]
+                context: [
+                    'watchlist' => $item->getModel()->pid,
+                ]
             )
         );
     }
 
     /**
      * @param Collection<WatchlistItemModel>|WatchlistItemModel[]|null $collection
+     *
      * @return array<WatchlistItem>
      */
     public function buildForCollection(Collection|array|null $collection = null): array
@@ -82,6 +83,7 @@ class WatchlistItemFactory
                 if (!str_starts_with($wlUrl, '/')) {
                     $wlUrl = '/'.$wlUrl;
                 }
+
                 return $request->getSchemeAndHttpHost().$wlUrl;
             }
 
@@ -97,6 +99,7 @@ class WatchlistItemFactory
         if (!$page) {
             throw new \RuntimeException(sprintf('Could not find page for watchlist config with id %s', $config->id));
         }
+
         return $this->contentUrlGenerator->generate($page);
     }
 }
