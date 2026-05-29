@@ -121,21 +121,21 @@ class WatchlistItem
 
     public function getUrl(): string
     {
-        if ($this->type === WatchlistItemType::ENTITY) {
+        if (WatchlistItemType::ENTITY === $this->type) {
             return $this->model->entityUrl ?? '';
-        } else {
-            return $this->getDownloadUrl();
         }
+
+        return $this->getDownloadUrl();
     }
 
     public function isFile(): bool
     {
-        return $this->type === WatchlistItemType::FILE;
+        return WatchlistItemType::FILE === $this->type;
     }
 
     public function isEntity(): bool
     {
-        return $this->type === WatchlistItemType::ENTITY;
+        return WatchlistItemType::ENTITY === $this->type;
     }
 
     private function resolveFile(): void

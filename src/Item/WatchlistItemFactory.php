@@ -45,6 +45,7 @@ class WatchlistItemFactory
                 if (!$item->getFile()) {
                     return '';
                 }
+
                 return $this->fileDownloadHelper->generateDownloadUrl(
                     $url,
                     $item->getFile(),
