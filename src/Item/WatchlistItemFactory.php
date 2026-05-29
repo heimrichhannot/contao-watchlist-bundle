@@ -7,7 +7,6 @@ use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\CoreBundle\Routing\ContentUrlGenerator;
 use Contao\Model\Collection;
-use Contao\PageModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistConfigModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistItemModel;
 use HeimrichHannot\WatchlistBundle\Model\WatchlistModel;
@@ -45,13 +44,11 @@ class WatchlistItemFactory
             $instance,
             $this->filesStorage,
             $this->studio,
-            function(WatchlistItem $item) use ($url, $helper) {
-                    return $helper->generateDownloadUrl(
-                        $url,
-                        $item->getFile(),
-                        context: ['watchlist' => $item->getModel()->pid]
-                    );
-            }
+            fn(WatchlistItem $item) => $helper->generateDownloadUrl(
+                $url,
+                $item->getFile(),
+                context: ['watchlist' => $item->getModel()->pid]
+            )
         );
     }
 

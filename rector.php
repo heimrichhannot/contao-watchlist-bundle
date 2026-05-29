@@ -7,6 +7,7 @@ use Contao\Rector\Set\ContaoSetList;
 use Rector\CodingStyle\Rector\FuncCall\FunctionFirstClassCallableRector;
 use Rector\Config\RectorConfig;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
+use Rector\Php81\Rector\Array_\ArrayToFirstClassCallableRector;
 use Rector\Php81\Rector\Array_\FirstClassCallableRector;
 use Rector\Php84\Rector\Param\ExplicitNullableParamTypeRector;
 use Rector\Set\ValueObject\LevelSetList;
@@ -41,7 +42,7 @@ return RectorConfig::configure()
         ContaoSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ])
     ->withSkip([
-        FirstClassCallableRector::class,
+        ArrayToFirstClassCallableRector::class,
         FunctionFirstClassCallableRector::class,
         RestoreDefaultNullToNullableTypePropertyRector::class,
     ]);

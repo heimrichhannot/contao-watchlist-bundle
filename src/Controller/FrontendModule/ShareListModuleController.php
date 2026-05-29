@@ -18,7 +18,6 @@ use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Twig\FragmentTemplate;
 use Contao\ModuleModel;
-use Contao\Template;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItem;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItemFactory;
 use HeimrichHannot\WatchlistBundle\Item\WatchlistItemType;
