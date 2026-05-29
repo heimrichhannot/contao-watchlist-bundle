@@ -71,7 +71,7 @@ class WatchlistItem
             return $this->model->title;
         }
 
-        return $this->file?->getName() ?: '';
+        return $this->getFile()?->getName() ?: '';
     }
 
     public function getImage(PictureConfiguration|array|int|string|null $size = null): ?Figure
@@ -101,7 +101,7 @@ class WatchlistItem
         return $this->file;
     }
 
-    public function getDownloadUrl()
+    public function getDownloadUrl(): string
     {
         if (!isset($this->downloadUrl)) {
             $this->downloadUrl = ($this->downloadUrlCallback)($this);
@@ -112,11 +112,30 @@ class WatchlistItem
 
     public function getFileSize(bool $readable = true): string
     {
-        if (!$this->file) {
+        if (!$this->getFile()) {
             return '';
         }
 
         return System::getReadableSize($this->file->getFileSize());
+    }
+
+    public function getUrl(): string
+    {
+        if ($this->type === WatchlistItemType::ENTITY) {
+            return $this->model->entityUrl ?? '';
+        } else {
+            return $this->getDownloadUrl();
+        }
+    }
+
+    public function isFile(): bool
+    {
+        return $this->type === WatchlistItemType::FILE;
+    }
+
+    public function isEntity(): bool
+    {
+        return $this->type === WatchlistItemType::ENTITY;
     }
 
     private function resolveFile(): void

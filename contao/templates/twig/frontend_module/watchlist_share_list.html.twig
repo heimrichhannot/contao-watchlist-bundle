@@ -55,26 +55,27 @@
             </h6>
         {% endblock %}
 
-        {% if not item.fileExist %}
+        {% if item.isFile and not item.fileExist %}
             <div class="non-existing">
                 <small>
                     {{ ('huh.watchlist.misc.linked' ~ item.type|capitalize ~ 'Missing')|trans }}
                 </small>
             </div>
-        {% else %}
-            {% if item.downloadUrl %}
-                <div class="download-wrapper">
-                    <a{{ attrs().addClass('download').set('href', item.downloadUrl).mergeWith(link_attributes|default) }}>
+        {% elseif item.url is not empty %}
+            <div{{ attrs().addClass("download-wrapper", item.isFile).addClass("show-wrapper", item.isEntity) }}>
+                <a{{ attrs()
+                    .addClass('download', item.isFile)
+                    .addClass("show", item.isEntity)
+                    .set('href', item.url)
+                    .set('target', '_blank', item.isEntity)
+                    .mergeWith(link_attributes|default) }}>
+                    {% if item.isFile %}
                         {{ 'huh.watchlist.misc.download'|trans }}
-                    </a>
-                </div>
-            {% elseif item.entityUrl %}
-                <div class="show-wrapper">
-                    <a{{ attrs().addClass('show').set('href', item.model.entityUrl).mergeWith(link_attributes|default) }}>
+                    {% else %}
                         {{ 'huh.watchlist.misc.show'|trans }}
-                    </a>
-                </div>
-            {% endif %}
+                    {% endif %}
+                </a>
+            </div>
         {% endif %}
     </div>
 {% endblock %}

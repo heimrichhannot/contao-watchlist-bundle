@@ -10,7 +10,6 @@ namespace HeimrichHannot\WatchlistBundle\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\Database;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 
@@ -26,10 +25,8 @@ class WatchlistItemContainer
 
     public function __construct(
         private readonly Utils $utils,
-        private readonly ContaoFramework $framework
     )
     {
-        $this->framework = $framework;
     }
 
     #[AsCallback(table: 'tl_watchlist_item', target: 'fields.entityTable.options')]

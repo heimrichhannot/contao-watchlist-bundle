@@ -36,19 +36,23 @@ class WatchlistItemFactory
         }
 
         $url = $this->getUrl($instance);
-        $helper = $this->fileDownloadHelper;
 
         return new WatchlistItem(
             $instance,
             $this->filesStorage,
             $this->studio,
-            fn (WatchlistItem $item) => $helper->generateDownloadUrl(
-                $url,
-                $item->getFile(),
-                context: [
-                    'watchlist' => $item->getModel()->pid,
-                ]
-            )
+            function (WatchlistItem $item) use ($url): string {
+                if (!$item->getFile()) {
+                    return '';
+                }
+                return $this->fileDownloadHelper->generateDownloadUrl(
+                    $url,
+                    $item->getFile(),
+                    context: [
+                        'watchlist' => $item->getModel()->pid,
+                    ]
+                );
+            }
         );
     }
 
