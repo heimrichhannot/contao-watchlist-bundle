@@ -483,6 +483,14 @@ class WatchlistUtil
             return '';
         }
 
-        return $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, Environment::get('url').'/'.$sharePage->getFrontendUrl());
+        $url = $sharePage->getFrontendUrl();
+
+        // getFrontendUrl() already returns an absolute url if the share page lives on another
+        // domain than the current request, so only prepend the current host if it doesn't
+        if (!preg_match('@^(?:https?:)?//@', $url)) {
+            $url = Environment::get('url').'/'.ltrim($url, '/');
+        }
+
+        return $this->urlUtil->addQueryString('watchlist='.$watchlist->uuid, $url);
     }
 }
