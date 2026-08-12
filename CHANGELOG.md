@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.11.2] - 2026-08-12
+- Fixed: share URL generation
+
 ## [3.11.1] - 2026-04-15
 - Fixed: language issues
 - Fixed: session issues
