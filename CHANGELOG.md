@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+- Changed: allow doctrine/dbal 4
+
 ## [4.0.0-beta2.0] - 2026-05-28
 - Added: new methods to WatchlistItem like WatchlistItem::getTitle() and WatchlistItem::getFileSize() ([#12](https://github.com/heimrichhannot/contao-watchlist-bundle/pull/12))
 - Changed: modernized share module ([#12](https://github.com/heimrichhannot/contao-watchlist-bundle/pull/12))
